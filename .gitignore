@@ -7,6 +7,3 @@ coverage
 .vite
 .turbo
 *.log
-.env
-.env.*
-!/.env.example

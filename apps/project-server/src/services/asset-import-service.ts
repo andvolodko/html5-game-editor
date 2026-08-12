@@ -1,0 +1,206 @@
+import { mkdir, rename, rm, writeFile } from "node:fs/promises";
+import path from "node:path";
+import {
+  computeAssetDatabaseRevision,
+  ownedAssetPaths,
+  type AssetDatabaseData,
+  type AssetRecord,
+} from "@game-editor/assets";
+import { DomainError } from "@game-editor/core";
+import { createId } from "@game-editor/shared";
+import type { ProjectService } from "./project-service.js";
+import type { AssetDatabaseStore } from "./asset-database-store.js";
+import type {
+  AssetImporterRegistry,
+  ImportFile,
+  PreparedAssetImport,
+} from "./asset-importer.js";
+import {
+  allocateUniqueFileName,
+  normalizeAssetDestination,
+} from "./asset-path-utils.js";
+
+const SCENES_FOLDER = "assets/scenes";
+
+export interface AssetImportResult {
+  imported: AssetRecord[];
+  errors: Array<{ fileName: string; message: string }>;
+  database: AssetDatabaseData;
+  revision: string;
+}
+
+/**
+ * Orchestrates pluggable importers with a transactional commit:
+ * prepare → stage bytes → move to final paths → single manifest save.
+ * On failure after staging, rolls back written files and does not save the DB.
+ */
+export class AssetImportService {
+  constructor(
+    private readonly projectService: ProjectService,
+    private readonly store: AssetDatabaseStore,
+    private readonly registry: AssetImporterRegistry,
+  ) {}
+
+  async importFiles(
+    files: readonly ImportFile[],
+    destinationFolder?: string,
+  ): Promise<AssetImportResult> {
+    const destination = normalizeAssetDestination(destinationFolder);
+    if (destination === SCENES_FOLDER || destination.startsWith(`${SCENES_FOLDER}/`)) {
+      throw new DomainError(
+        "INVALID_DESTINATION",
+        "Cannot import assets into the scenes folder (assets/scenes)",
+      );
+    }
+    const database = await this.store.load();
+    const errors: Array<{ fileName: string; message: string }> = [];
+    const prepared: PreparedAssetImport[] = [];
+
+    const existingNames = new Set<string>();
+    const existingFolders = new Set<string>();
+    for (const asset of database.getAll()) {
+      for (const assetPath of ownedAssetPaths(asset)) {
+        const dir = path.posix.dirname(assetPath);
+        if (dir === destination) {
+          existingNames.add(path.posix.basename(assetPath).toLowerCase());
+        }
+        if (dir === destination || dir.startsWith(`${destination}/`)) {
+          const rest =
+            dir === destination ? "" : dir.slice(destination.length + 1);
+          const first = rest.split("/")[0];
+          if (first) {
+            existingFolders.add(first.toLowerCase());
+          }
+        }
+      }
+    }
+
+    const allocateRelativePath = (desiredFileName: string): string => {
+      const uniqueName = allocateUniqueFileName(
+        path.basename(desiredFileName),
+        existingNames,
+      );
+      existingNames.add(uniqueName.toLowerCase());
+      return path.posix.join(destination, uniqueName);
+    };
+
+    const allocateUniqueFolder = (desiredFolderName: string): string => {
+      const sanitized = path.basename(desiredFolderName);
+      let candidate = sanitized;
+      let index = 1;
+      while (
+        existingFolders.has(candidate.toLowerCase()) ||
+        existingNames.has(candidate.toLowerCase())
+      ) {
+        candidate = `${sanitized}-${String(index)}`;
+        index += 1;
+      }
+      existingFolders.add(candidate.toLowerCase());
+      return path.posix.join(destination, candidate);
+    };
+
+    const context = {
+      destinationFolder: destination,
+      allocateRelativePath,
+      allocateUniqueFolder,
+    };
+
+    let remaining: readonly ImportFile[] = files;
+    for (const bundleImporter of this.registry.listBundles()) {
+      const partitioned = bundleImporter.partition(remaining);
+      errors.push(...partitioned.errors);
+      remaining = partitioned.remaining;
+      for (const bundle of partitioned.bundles) {
+        try {
+          prepared.push(await bundleImporter.prepareBundle(bundle, context));
+        } catch (error) {
+          errors.push({
+            fileName: bundle[0]?.fileName ?? bundleImporter.id,
+            message: error instanceof Error ? error.message : "Import failed",
+          });
+        }
+      }
+    }
+
+    for (const file of remaining) {
+      const importer = this.registry.find(file);
+      if (!importer) {
+        errors.push({
+          fileName: file.fileName,
+          message: `Unsupported file type: ${file.fileName}`,
+        });
+        continue;
+      }
+
+      try {
+        prepared.push(await importer.prepare(file, context));
+      } catch (error) {
+        errors.push({
+          fileName: file.fileName,
+          message: error instanceof Error ? error.message : "Import failed",
+        });
+      }
+    }
+
+    if (prepared.length === 0) {
+      throw new DomainError(
+        "ASSET_IMPORT_FAILED",
+        errors.map((e) => e.message).join("; ") || "No files imported",
+      );
+    }
+
+    const batchId = createId("import");
+    const stagingRootRelative = path.posix.join(".project", "import-tmp", batchId);
+    const stagingRootAbsolute =
+      this.projectService.resolveProjectPath(stagingRootRelative);
+    const committedAbsolutePaths: string[] = [];
+
+    try {
+      await mkdir(stagingRootAbsolute, { recursive: true });
+
+      for (const item of prepared) {
+        for (const file of item.files) {
+          const stagedAbsolute = path.join(
+            stagingRootAbsolute,
+            ...file.relativePath.split("/"),
+          );
+          await mkdir(path.dirname(stagedAbsolute), { recursive: true });
+          await writeFile(stagedAbsolute, file.bytes);
+        }
+      }
+
+      for (const item of prepared) {
+        for (const file of item.files) {
+          const stagedAbsolute = path.join(
+            stagingRootAbsolute,
+            ...file.relativePath.split("/"),
+          );
+          const finalAbsolute = this.projectService.resolveProjectPath(
+            file.relativePath,
+          );
+          await mkdir(path.dirname(finalAbsolute), { recursive: true });
+          await rename(stagedAbsolute, finalAbsolute);
+          committedAbsolutePaths.push(finalAbsolute);
+        }
+        database.add(item.record);
+      }
+
+      const databaseJson = await this.store.save(database);
+      return {
+        imported: prepared.map((item) => item.record),
+        errors,
+        database: databaseJson,
+        revision: computeAssetDatabaseRevision(databaseJson),
+      };
+    } catch (error) {
+      for (const absolute of committedAbsolutePaths) {
+        await rm(absolute, { force: true }).catch(() => undefined);
+      }
+      throw error;
+    } finally {
+      await rm(stagingRootAbsolute, { recursive: true, force: true }).catch(
+        () => undefined,
+      );
+    }
+  }
+}

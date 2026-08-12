@@ -1,0 +1,44 @@
+{
+  "id": "scene_81145854-9ab5-48b0-bb19-a89b28d159f8",
+  "name": "Main Scene",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "node_3b10e015-f3d4-41fd-8ffc-da36f424c1f9",
+      "name": "Welcome",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_53d4ac03-417f-4c0a-ae93-2ed62d5973a5",
+          "position": {
+            "x": 840,
+            "y": 480
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_ed2ab98d-028d-45ea-8f2a-a890635dfcf3",
+          "text": "Example Game 2",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 48,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fill": 15263976,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440
+          }
+        }
+      ],
+      "children": []
+    }
+  ]
+}

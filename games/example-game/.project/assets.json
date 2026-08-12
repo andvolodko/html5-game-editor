@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "asset_03a7df2b-9f52-447f-8d6f-9b58f3bb3485",
+      "type": "spine",
+      "name": "raptor",
+      "path": "assets/spine/raptor/raptor.json",
+      "metadata": {
+        "kind": "spine",
+        "skeletonFormat": "json",
+        "atlasPath": "assets/spine/raptor/raptor.atlas",
+        "pagePaths": [
+          "assets/spine/raptor/raptor.png"
+        ],
+        "skins": [
+          "default"
+        ],
+        "animations": [
+          "gun-grab",
+          "gun-holster",
+          "jump",
+          "roar",
+          "walk"
+        ]
+      }
+    },
+    {
+      "id": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+      "type": "texture",
+      "name": "2222",
+      "path": "assets/ui/2222.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 502,
+        "height": 449,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b3d41acd-42c8-406e-946f-6e15d28e2c77",
+      "type": "spine",
+      "name": "spineboy",
+      "path": "assets/spine/spineboy/spineboy.json",
+      "metadata": {
+        "kind": "spine",
+        "skeletonFormat": "json",
+        "atlasPath": "assets/spine/spineboy/spineboy.atlas",
+        "pagePaths": [
+          "assets/spine/spineboy/spineboy.png"
+        ],
+        "skins": [
+          "default"
+        ],
+        "animations": [
+          "aim",
+          "death",
+          "hit",
+          "idle",
+          "jump",
+          "run",
+          "shoot",
+          "walk"
+        ]
+      }
+    },
+    {
+      "id": "asset_b8f604c4-25db-4cf1-bd5f-8fb354ee280f",
+      "type": "texture",
+      "name": "11",
+      "path": "assets/ui/11.webp",
+      "metadata": {
+        "kind": "texture",
+        "width": 1600,
+        "height": 1600,
+        "mimeType": "image/webp"
+      }
+    }
+  ]
+}

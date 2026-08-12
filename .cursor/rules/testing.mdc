@@ -1,0 +1,39 @@
+---
+description: Vitest conventions for domain, commands, server, and security tests
+globs: "**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx"
+alwaysApply: false
+---
+
+# Testing
+
+Stack: **Vitest**, colocated `*.test.ts` next to the unit under test. Prefer `describe`/`it` + `expect`. No snapshot tests unless the golden output is intentionally stable and reviewed (prefer explicit assertions).
+
+## Organization
+
+* Name files `<module>.test.ts` (e.g. `commands.test.ts`, `project-root-guard.test.ts`, `router.assets.test.ts`).
+* Unit-test pure domain in packages (`@game-editor/scene`, `assets`, `commands`, `editor-core`) without Pixi/Three/React.
+* Integration-test filesystem/HTTP in `apps/project-server` using `mkdtemp` + `rm` sandboxes and, when needed, an ephemeral `createServer` + `fetch` (see `router.assets.test.ts`). Never write into real game project folders under `games/` from tests.
+* Keep UI React tests rare; put workflow/folder logic tests in `editor-core` (`asset-workflows.test.ts`, `asset-browser-model.test.ts`).
+
+## What must be covered
+
+When changing behavior, add or update tests for:
+
+* **Commands**: execute + undo (+ redo when applicable); selection side effects (`CreateSpriteCommand`, `SetTransform2DCommand`).
+* **Dirty/save**: undo back to saved snapshot → clean (`DocumentManager` / `Editor` tests).
+* **Serialization**: `JSON` round-trip + `parseSceneData` / `parseAssetDatabase`; deterministic ordering where promised.
+* **Schema**: reject invalid shapes and invariant breaks (e.g. asset `type`/`metadata.kind`).
+* **Assets**: import success, duplicate naming (`wild-1.png`), mixed supported/unsupported batch, registry/service path — not only the texture helper in isolation.
+* **Security**: `ProjectRootGuard` traversal rejection; safe destination normalization; scene id allowlist failures when touched.
+* **Coords**: pure viewport math (`clientPointToWorld`) without bootstrapping Pixi.
+
+## Style
+
+* Assert observable outcomes (scene nodes, file contents, HTTP status/JSON, thrown `DomainError` codes), not private fields or call-order spies unless the interaction is the API (`SceneRenderer` fakes for viewport sync are fine).
+* Use `vi.fn` for ports (`SceneApiClient`, `AssetApiClient`, `SceneRenderer`); do not mock the filesystem layer when testing `ProjectRootGuard` / import services — use real temp dirs.
+* Prefer small fixtures (`createEmptyScene`, `createTextureAssetRecord`, tiny PNG buffers) over large copied project trees.
+* Do not add tests that only restate types. Do not skip failing security/path tests.
+
+## Gaps to avoid reintroducing
+
+Meaningful regressions without tests (undo asymmetry, path escape, partial import leaving orphans, schema drift) are incomplete. If a change is hard to unit-test, add a focused integration test rather than leaving it uncovered.

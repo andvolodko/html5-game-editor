@@ -587,6 +587,8 @@ Design extension points instead.
 
 # 13. PixiJS Support
 
+Installed runtime: **pixi.js@8.19.0** (see `@game-editor/renderer-pixi`).
+
 Initial supported resources:
 
 * PNG;
@@ -596,22 +598,37 @@ Initial supported resources:
 * fonts;
 * audio metadata where appropriate.
 
-Initial Pixi components:
+## Supported Pixi node types
 
-* Transform2D;
-* Container;
-* Sprite;
-* Text.
+| Type | Status | Notes |
+| --- | --- | --- |
+| Container | Supported | Transform2D-only grouping; `canHaveChildren` |
+| Sprite | Supported | Texture assetId + display size |
+| NineSliceSprite | Supported | |
+| TilingSprite | Supported | |
+| Graphics | Supported | MVP shapes: rect / rounded-rect / circle / ellipse / polygon |
+| Text | Supported | Common TextStyle subset |
+| BitmapText | Supported | Font assets not imported yet; unassigned font → placeholder |
+| HTMLText | Supported | |
+| Mesh | Supported | Default textured quad (no custom shader editor) |
+| MeshSimple | Supported | |
+| MeshRope | Supported | |
+| MeshPlane | Supported | |
+| PerspectiveMesh | Supported | Corner positions in Inspector |
+| AnimatedSprite | Supported | Frames as assetId[]; basic play/loop/speed |
+| Spine | Supported | Bundled skeleton+atlas+pages; Pixi playback via `@esotericsoftware/spine-pixi-v8` |
+| ParticleContainer | Deferred | Pixi Particle API accepts Particle children only — incompatible with Container hierarchy |
+
+Node creation is driven by `NodeTypeRegistry` (`pixi.*` stable IDs). Menus and `CreateNodeCommand` share that registry. Leaf visuals cannot receive scene children (domain `canMoveNode` / create-parent policy).
 
 Future compatibility:
 
-* Spine;
-* particles;
+* particles / ParticleContainer (experimental);
 * masks;
 * filters;
-* NineSlice;
-* bitmap fonts;
-* custom shaders.
+* bitmap font asset importer;
+* custom shaders;
+* visual mesh vertex editor.
 
 ---
 
@@ -757,6 +774,8 @@ AudioImporter
 FontImporter
 SpineImporter
 ```
+
+Shipping a game that uses the Spine runtime requires a Spine Editor license (Esoteric Software). The importer does not gate on that license.
 
 ---
 
@@ -1187,7 +1206,7 @@ Example game:
 games/example-game/
 ├── src/
 ├── assets/
-├── scenes/
+│   └── scenes/
 ├── project.json
 ├── package.json
 └── vite.config.ts

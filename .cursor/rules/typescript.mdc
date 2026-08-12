@@ -1,0 +1,34 @@
+---
+description: TypeScript conventions matching this monorepo’s actual patterns
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: false
+---
+
+# TypeScript (repo conventions)
+
+`tsconfig.base.json` is the source of truth: `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`, `verbatimModuleSyntax`.
+
+## Typing
+
+* Do not use `any`. Prefer `unknown` at JSON/HTTP/multipart boundaries, then narrow with Zod (`parseSceneData`, `parseAssetDatabase`) or explicit guards.
+* Public package exports and constructor/`Editor` façade methods need explicit types (see `@game-editor/editor-core`, `@game-editor/scene`, `@game-editor/assets`).
+* Prefer **interfaces** for object shapes (`SceneData`, `AssetRecord`, `AssetApiClient`); prefer **type aliases** for unions and status literals (`ComponentData`, `DocumentDirtyState`, `AssetManagerStatus`).
+* Serialized variants use **discriminated unions** on `type` / `kind` (e.g. `ComponentData`, `AssetMetadata`). Keep discriminants and Zod schemas aligned; enforce invariants like `AssetRecord.type === metadata.kind`.
+* Avoid type assertions. Allowed only at justified boundaries (e.g. Pixi `Assets.load` → `Texture`, `JSON.parse` → `unknown` then validate). Prefer `as const` / narrowing over `as T`.
+* Prefer optional fields (`assetId?: string`) over `| null` unless null is meaningful. Use `ReadonlySet` / `readonly T[]` for values returned from managers that callers must not mutate.
+* Domain IDs are non-empty strings from `createId(prefix)` in `@game-editor/shared` (`asset_`, `node_`, `comp_`, `scene_`, …). Do not invent parallel ID helpers. Typed errors use `DomainError` / `ValidationError` from `@game-editor/core` — not Result monads.
+
+## Imports and packages
+
+* Relative imports inside packages/apps that emit Node ESM use the `.js` suffix (`./document-manager.js`). App/Vite consumers import workspace packages by name (`@game-editor/scene`), never by deep relative paths into another package’s `src`.
+* Import types with `import type { … }` when values are not needed (`verbatimModuleSyntax`).
+* Export public API through each package’s `src/index.ts` barrel. Do not reach into another package’s internal files.
+* Respect dependency direction: domain packages must not import `apps/*` or `editor-core`; `runtime` must not import editor packages; renderers stay out of serialized models.
+* Do not introduce import cycles. Split shared types into `@game-editor/scene` / `@game-editor/assets` / `@game-editor/shared` instead of crossing layers.
+
+## Naming
+
+* Match existing names: `DocumentManager`, `SelectionManager`, `AssetManager`, `CommandManager`, `PixiSceneRenderer`, `ProjectRootGuard`, `AssetImportService`.
+* Commands: `CreateSpriteCommand`, `SetTransform2DCommand` implementing `Command` from `@game-editor/commands`. **One command class per file** under `packages/editor-core/src/commands/` (see `.cursor/rules/editor-commands.mdc`).
+* Files: kebab-case modules (`asset-workflows.ts`, `create-sprite-command.ts`); PascalCase classes; camelCase functions.
+* Prefer focused modules over god files; see `.cursor/rules/class-size.mdc`.

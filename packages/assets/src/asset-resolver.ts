@@ -1,0 +1,40 @@
+/**
+ * Renderer/runtime port: resolve a stable assetId to a loadable URL.
+ * Editor supplies project-server HTTP URLs; games may supply bundled asset URLs.
+ * Never put filesystem paths from the browser into this interface.
+ */
+export interface AssetResolver {
+  resolveUrl(assetId: string): string | undefined;
+  /**
+   * Optional Pixi (etc.) format hint when the URL has no file extension.
+   * Returns values like `"png"`, `"jpg"`, `"webp"`.
+   */
+  resolveTextureFormat?(assetId: string): string | undefined;
+  /** Atlas / page bytes for a spine bundle, keyed by allowlisted basename. */
+  resolveSpinePartUrl?(assetId: string, part: string): string | undefined;
+  /** Resolved URLs for a spine bundle (skeleton + atlas + pages). */
+  resolveSpineUrls?(assetId: string): SpineAssetUrls | undefined;
+}
+
+export interface SpineAssetUrls {
+  skeletonUrl: string;
+  skeletonFormat: "json" | "skel";
+  atlasUrl: string;
+  /** Atlas page basename → fetch URL. */
+  pageUrls: Readonly<Record<string, string>>;
+}
+
+/** Adapts a plain function to AssetResolver. */
+export function createAssetResolver(
+  resolveUrl: (assetId: string) => string | undefined,
+  resolveTextureFormat?: (assetId: string) => string | undefined,
+  resolveSpinePartUrl?: (assetId: string, part: string) => string | undefined,
+  resolveSpineUrls?: (assetId: string) => SpineAssetUrls | undefined,
+): AssetResolver {
+  return {
+    resolveUrl,
+    ...(resolveTextureFormat !== undefined ? { resolveTextureFormat } : {}),
+    ...(resolveSpinePartUrl !== undefined ? { resolveSpinePartUrl } : {}),
+    ...(resolveSpineUrls !== undefined ? { resolveSpineUrls } : {}),
+  };
+}

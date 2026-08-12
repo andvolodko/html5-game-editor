@@ -23,6 +23,10 @@ Never violate these rules unless the user explicitly requests an architecture ch
 9. Games that do not use Three.js must not be forced to bundle Three.js.
 10. React components must not become the canonical source of truth for scene/domain state.
 
+## Game projects
+
+Editable game content lives under `games/<name>/` (scenes, assets, `.project/`, `project.json`) alongside the buildable package — not in a separate top-level `projects/` tree. `project-server` defaults to `games/example-game`; override with `PROJECT_ROOT`.
+
 ## Scene architecture
 
 Prefer component composition over deep inheritance.
@@ -139,7 +143,7 @@ Especially test:
 
 Avoid:
 
-* god classes;
+* god classes (see `.cursor/rules/class-size.mdc` for size thresholds and split seams);
 * global mutable singletons;
 * uncontrolled event buses;
 * deep inheritance;

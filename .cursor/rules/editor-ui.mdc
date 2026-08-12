@@ -1,0 +1,35 @@
+---
+description: Editor React UI vs editor-core separation and viewport rules
+globs: "apps/editor/**,packages/editor-core/**"
+alwaysApply: false
+---
+
+# Editor UI / editor-core
+
+Canonical scene and editor state lives in **`Editor`** (`DocumentManager`, `SelectionManager`, `CommandManager`, `AssetManager`, `EditorViewportController`). React is a view layer.
+
+## Separation
+
+* React must not own scene trees, transforms, or asset catalogues as source of truth. Read via `useEditor` / `useEditorState`; mutate via `Editor` / commands / workflows (`importDroppedFiles`, `dropAssetOntoScene`).
+* Do not call `document`/`scene` mutators from components except through `editor.execute`, `editor.createSprite*`, `editor.setTransform2D`, `editor.saveScene` / `loadScene`, or exported workflows.
+* Do not mutate `PIXI.DisplayObject` / `THREE.Object3D` from React. Viewport tools (e.g. `bindPixiTransformTool`) map renderer pointer callbacks → `editor.selectNodes` / `editor.setTransform2D`. Preview-only motion may update the renderer; **commit one command on gesture end**.
+* Keep application policy in `packages/editor-core` (commands, asset workflows, browser folder helpers). Keep panels thin: `HierarchyPanel`, `InspectorPanel`, `AssetsPanel`, `ScenePanel`, `Toolbar`.
+
+## Selection, layout, assets
+
+* Node selection is **stable node IDs** in `SelectionManager` — never store PIXI/THREE objects in selection.
+* Asset Browser selection (`selectedAssetId`, search, `currentFolder`) may stay UI-local; do not confuse it with scene selection. Import destination should follow the browser folder model (`ASSETS_ROOT_FOLDER`, `listAssetsInFolder`, …).
+* Docking (`DockLayout` / dockview) is layout-only; it must not become domain state.
+
+## React performance and lifecycle
+
+* Prefer `useEditorState(selector)` so panels re-render from `Editor` revision/selection, not copied scene graphs in React state.
+* Do not push per-frame drag positions through React state. Drag preview stays in `PixiSceneRenderer.previewNodePosition`; undoable update is one `SetTransform2DCommand` on pointer-up.
+* Every `editor.subscribe` / `selection.subscribe` / `assets.subscribe` / `setPointerHandlers` / `attachRenderer` must be disposed in the same scope (effect cleanup).
+* `PixiSceneRenderer`: construct in `ScenePanel` effect; on teardown call `unbindTool`, `editor.detachRenderer`, and `renderer.destroy()`. Pass `AssetResolver` (`editor.assets`), not ad-hoc FS paths.
+* Inspector drafts (string inputs) are UI-only until blur/Enter commits a command. Display size on sprites is a scene override, not live asset metadata.
+
+## Dirty / undo
+
+* Meaningful edits go through commands so `CommandManager` undo/redo works. Continuous tools → one logical command per completed interaction.
+* Dirty tracking is `DocumentManager` content snapshot vs last save — do not invent a parallel dirty flag in React.

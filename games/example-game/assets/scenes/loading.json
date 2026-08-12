@@ -1,0 +1,66 @@
+{
+  "id": "scene_89ecaa39-c734-49b4-b14c-1f627a95551a",
+  "name": "loading",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "node_227af3f8-374d-4b5f-93b0-95b5c5ef52f2",
+      "name": "Container",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_e152e89f-f4c1-4a02-805e-71470e62bbc3",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_f0572a57-7627-45b9-99cf-143b8809e7cd",
+          "name": "Text",
+          "parentId": "node_227af3f8-374d-4b5f-93b0-95b5c5ef52f2",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_7eae4af3-82e4-4ae5-9f63-e957fcbd12f8",
+              "position": {
+                "x": 1010,
+                "y": 600
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_d5975e5a-c654-4b4e-a7e1-a51f560d8722",
+              "text": "Loading...",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 64,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fill": 1604694,
+                "align": "center",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "wordWrap": true,
+                "wordWrapWidth": 440
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
+    }
+  ]
+}

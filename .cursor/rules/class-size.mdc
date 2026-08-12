@@ -1,0 +1,24 @@
+---
+description: Keep classes and modules focused; split god objects before adding features
+alwaysApply: true
+---
+
+# Class and module size
+
+Prefer modules/classes **under ~300 lines** when they hold behavior. Treat **~500+ lines** or **2+ unrelated responsibility clusters** as a required split before adding more features there.
+
+## How to split
+
+1. Extract pure helpers / registries first (no behavior change).
+2. Extract collaboration objects (texture cache, drag controller) with clear ownership.
+3. Keep thin façades (`Editor`, `PixiSceneRenderer`) that delegate.
+
+React surfaces: extract hooks / row / menu components when a panel mixes tree + DnD + menus + rename.
+
+Strategy registries (painters, factories, node-type defs, inspector fields): **one visual category per file**, not one mega-switch. Align splits across `visual-components` → `schema` → `factories` → `pixi-definitions` → `painters` → inspector fields.
+
+## Do not
+
+- Split solely to hit a line count if the module is one coherent algorithm.
+- Move domain logic into React, or renderer objects into serialized scene data.
+- Create circular package deps while extracting.

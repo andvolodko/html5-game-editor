@@ -2,5 +2,8 @@
   "name": "example-game",
   "version": 1,
   "displayName": "Example Game",
-  "renderers": ["pixi"]
+  "renderers": [
+    "pixi"
+  ],
+  "startScene": "loading"
 }

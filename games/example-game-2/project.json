@@ -1,0 +1,9 @@
+{
+  "name": "example-game-2",
+  "version": 1,
+  "displayName": "Example Game 2",
+  "renderers": [
+    "pixi"
+  ],
+  "startScene": "main"
+}

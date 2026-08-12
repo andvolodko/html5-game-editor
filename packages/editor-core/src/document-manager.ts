@@ -1,0 +1,310 @@
+import {
+  createEmptyScene,
+  findNodeById,
+  flattenSubtree,
+  getSprite,
+  getTransform2D,
+  getVisualComponent,
+  insertNodeInScene,
+  moveNodeInScene,
+  detachNodeFromScene,
+  type SceneData,
+  type SceneNodeData,
+  type Transform2DComponentData,
+  type VisualComponentData,
+} from "@game-editor/scene";
+
+export type DocumentDirtyState = "clean" | "dirty" | "saving" | "save-error";
+
+/** True when leaving/reloading the document would discard unpersisted edits. */
+export function hasUnsavedChanges(state: DocumentDirtyState): boolean {
+  return state === "dirty" || state === "save-error";
+}
+
+export type SceneMutation =
+  | { kind: "create"; nodeId: string }
+  | {
+      kind: "update";
+      nodeId: string;
+      /** Defaults to full visual refresh when omitted. */
+      reason?: "transform" | "visual" | "metadata";
+    }
+  | { kind: "destroy"; nodeId: string }
+  | {
+      kind: "move";
+      nodeId: string;
+      parentId: string | undefined;
+      index: number;
+    }
+  /** Scene document metadata (name, future settings) — not a node. */
+  | { kind: "scene-meta" }
+  | { kind: "reload" };
+
+export type DocumentListener = (mutation: SceneMutation | { kind: "state" }) => void;
+
+/**
+ * Owns the editable scene document. Commands mutate through this API only —
+ * there is no public mutable scene escape hatch.
+ */
+export class DocumentManager {
+  private scene: SceneData;
+  private revision = 0;
+  private savedSnapshot: string;
+  private dirtyState: DocumentDirtyState = "clean";
+  private saveError: string | undefined;
+  private readonly listeners = new Set<DocumentListener>();
+
+  constructor(scene: SceneData = createEmptyScene("Main Scene")) {
+    this.scene = scene;
+    this.savedSnapshot = stableSceneSnapshot(scene);
+  }
+
+  getScene(): SceneData {
+    return this.scene;
+  }
+
+  getRevision(): number {
+    return this.revision;
+  }
+
+  getDirtyState(): DocumentDirtyState {
+    return this.dirtyState;
+  }
+
+  getSaveError(): string | undefined {
+    return this.saveError;
+  }
+
+  subscribe(listener: DocumentListener): () => void {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
+
+  /** Replace the whole document (e.g. load). Marks clean. */
+  replaceScene(scene: SceneData): void {
+    this.scene = scene;
+    this.revision += 1;
+    this.savedSnapshot = stableSceneSnapshot(scene);
+    this.dirtyState = "clean";
+    this.saveError = undefined;
+    this.emit({ kind: "reload" });
+  }
+
+  addRootNode(node: SceneNodeData): void {
+    this.insertNode(node, undefined, this.scene.nodes.length);
+  }
+
+  /**
+   * Insert a node (subtree) under parent. Emits a single `create` for the root;
+   * the viewport walks the subtree incrementally.
+   */
+  insertNode(
+    node: SceneNodeData,
+    parentId: string | undefined,
+    index: number,
+  ): void {
+    insertNodeInScene(this.scene, node, parentId, index);
+    this.afterContentMutation({ kind: "create", nodeId: node.id });
+  }
+
+  removeNode(nodeId: string): boolean {
+    if (!findNodeById(this.scene, nodeId)) {
+      return false;
+    }
+    detachNodeFromScene(this.scene, nodeId);
+    this.afterContentMutation({ kind: "destroy", nodeId });
+    return true;
+  }
+
+  renameNode(nodeId: string, name: string): void {
+    const node = findNodeById(this.scene, nodeId);
+    if (!node) {
+      throw new Error(`DocumentManager: unknown node ${nodeId}`);
+    }
+    node.name = name;
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "metadata",
+    });
+  }
+
+  /** Rename the open scene document (not a hierarchy node). */
+  renameScene(name: string): void {
+    this.scene.name = name;
+    this.afterContentMutation({ kind: "scene-meta" });
+  }
+
+  applyTransform2D(nodeId: string, values: Transform2DComponentData): void {
+    const node = findNodeById(this.scene, nodeId);
+    const transform = node ? getTransform2D(node) : undefined;
+    if (!transform) {
+      throw new Error(`DocumentManager: node ${nodeId} missing Transform2D`);
+    }
+
+    transform.position = { ...values.position };
+    transform.rotation = values.rotation;
+    transform.scale = { ...values.scale };
+    if (values.anchor !== undefined) {
+      transform.anchor = { ...values.anchor };
+    } else {
+      delete transform.anchor;
+    }
+
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "transform",
+    });
+  }
+
+  applySpriteSize(
+    nodeId: string,
+    size: { width: number; height: number },
+  ): void {
+    const node = findNodeById(this.scene, nodeId);
+    const sprite = node ? getSprite(node) : undefined;
+    if (!sprite) {
+      throw new Error(`DocumentManager: node ${nodeId} missing Sprite`);
+    }
+
+    sprite.width = size.width;
+    sprite.height = size.height;
+
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "visual",
+    });
+  }
+
+  /** Replace the node's leaf visual component in-place (same component id/type). */
+  applyVisualComponent(nodeId: string, values: VisualComponentData): void {
+    const node = findNodeById(this.scene, nodeId);
+    const visual = node ? getVisualComponent(node) : undefined;
+    if (!node || !visual) {
+      throw new Error(
+        `DocumentManager: node ${nodeId} missing visual component`,
+      );
+    }
+    if (visual.type !== values.type || visual.id !== values.id) {
+      throw new Error(
+        `DocumentManager: visual component identity mismatch on ${nodeId}`,
+      );
+    }
+
+    const index = node.components.findIndex(
+      (component) => component.id === visual.id,
+    );
+    if (index < 0) {
+      throw new Error(
+        `DocumentManager: visual component missing from ${nodeId}`,
+      );
+    }
+    node.components[index] = structuredClone(values);
+
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "visual",
+    });
+  }
+
+  /**
+   * Reparent/reorder a node. Optional `transformAfter` is applied after the move
+   * (used to preserve world pose). Emits a single `move` mutation.
+   */
+  moveNode(
+    nodeId: string,
+    toParentId: string | undefined,
+    toIndex: number,
+    transformAfter?: Transform2DComponentData,
+  ): void {
+    const result = moveNodeInScene(this.scene, nodeId, toParentId, toIndex);
+    if (transformAfter) {
+      const node = findNodeById(this.scene, nodeId);
+      const transform = node ? getTransform2D(node) : undefined;
+      if (!transform) {
+        throw new Error(`DocumentManager: node ${nodeId} missing Transform2D`);
+      }
+      transform.position = { ...transformAfter.position };
+      transform.rotation = transformAfter.rotation;
+      transform.scale = { ...transformAfter.scale };
+      if (transformAfter.anchor !== undefined) {
+        transform.anchor = { ...transformAfter.anchor };
+      } else {
+        delete transform.anchor;
+      }
+    }
+    this.afterContentMutation({
+      kind: "move",
+      nodeId,
+      parentId: result.toParentId,
+      index: result.toIndex,
+    });
+  }
+
+  beginSave(): void {
+    this.dirtyState = "saving";
+    this.saveError = undefined;
+    this.emit({ kind: "state" });
+  }
+
+  markSaved(savedScene?: SceneData): void {
+    if (savedScene !== undefined) {
+      this.scene = savedScene;
+    }
+    this.savedSnapshot = stableSceneSnapshot(this.scene);
+    this.dirtyState = "clean";
+    this.saveError = undefined;
+    this.emit({ kind: "state" });
+  }
+
+  failSave(message: string): void {
+    this.dirtyState = "save-error";
+    this.saveError = message;
+    this.emit({ kind: "state" });
+  }
+
+  /**
+   * Recompute dirty by comparing current scene to last saved snapshot.
+   * Enables undo back to a clean document.
+   */
+  syncDirtyFromContent(): void {
+    if (this.dirtyState === "saving") {
+      return;
+    }
+    const matches = stableSceneSnapshot(this.scene) === this.savedSnapshot;
+    this.dirtyState = matches ? "clean" : "dirty";
+    if (matches) {
+      this.saveError = undefined;
+    }
+    this.emit({ kind: "state" });
+  }
+
+  listSubtreeIds(nodeId: string): string[] {
+    const node = findNodeById(this.scene, nodeId);
+    return node ? flattenSubtree(node).map((n) => n.id) : [];
+  }
+
+  private afterContentMutation(mutation: SceneMutation): void {
+    this.revision += 1;
+    if (this.dirtyState !== "saving") {
+      this.dirtyState = "dirty";
+      this.saveError = undefined;
+    }
+    this.emit(mutation);
+  }
+
+  private emit(mutation: SceneMutation | { kind: "state" }): void {
+    for (const listener of this.listeners) {
+      listener(mutation);
+    }
+  }
+}
+
+function stableSceneSnapshot(scene: SceneData): string {
+  return JSON.stringify(scene);
+}

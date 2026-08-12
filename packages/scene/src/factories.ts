@@ -1,26 +1,28 @@
-import { createId } from "@game-editor/shared";
-import { SCENE_SCHEMA_VERSION, type SceneData, type SceneNodeData } from "./types.js";
-
-export function createEmptyScene(name = "Untitled Scene"): SceneData {
-  return {
-    id: createId("scene"),
-    name,
-    version: SCENE_SCHEMA_VERSION,
-    nodes: [],
-  };
-}
-
-export function createEmptyNode(name = "Node", parentId?: string): SceneNodeData {
-  const node: SceneNodeData = {
-    id: createId("node"),
-    name,
-    components: [],
-    children: [],
-  };
-
-  if (parentId !== undefined) {
-    node.parentId = parentId;
-  }
-
-  return node;
-}
+export {
+  createEmptyScene,
+  createEmptyNode,
+  createTransform2D,
+  createSpriteNode,
+  createNodeWithVisual,
+} from "./factories/scene.js";
+export {
+  createSpriteComponent,
+  createNineSliceSpriteComponent,
+  createTilingSpriteComponent,
+  createAnimatedSpriteComponent,
+} from "./factories/sprites.js";
+export {
+  createDefaultTextStyle,
+  createTextComponent,
+  createBitmapTextComponent,
+  createHTMLTextComponent,
+} from "./factories/text.js";
+export { createGraphicsComponent } from "./factories/graphics.js";
+export {
+  createMeshComponent,
+  createMeshSimpleComponent,
+  createMeshRopeComponent,
+  createMeshPlaneComponent,
+  createPerspectiveMeshComponent,
+} from "./factories/mesh.js";
+export { createSpineComponent } from "./factories/spine.js";

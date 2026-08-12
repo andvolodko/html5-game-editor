@@ -1,0 +1,29 @@
+---
+description: One editor command class per file under editor-core/commands
+globs: "packages/editor-core/**/*.ts"
+alwaysApply: false
+---
+
+# Editor commands layout
+
+Undoable editor mutations live in `@game-editor/editor-core` under:
+
+```text
+packages/editor-core/src/commands/
+```
+
+## Rules
+
+* **One command class per file.** Name files `kebab-case` matching the class, e.g. `CreateSpriteCommand` → `create-sprite-command.ts`.
+* Do **not** add new command classes to a multi-command bag file (`commands.ts`, `hierarchy-commands.ts`, etc.).
+* Shared helpers used by multiple commands (e.g. `cloneTransform2D`) go in small sibling modules (`clone-transform-2d.ts`), not inside a command file that other commands import for side effects.
+* Factory helpers that only wire commands (e.g. `createDeleteSelectionCommand`) may live in their own file next to the commands they construct.
+* Re-export public commands from `packages/editor-core/src/commands/index.ts` and from the package `src/index.ts` barrel.
+* Commands implement `Command` from `@game-editor/commands` and mutate through `DocumentManager` / `SelectionManager` — never Pixi/Three objects or React state.
+
+## When adding a command
+
+1. Create `packages/editor-core/src/commands/<name>-command.ts`.
+2. Export it from `commands/index.ts` and the package `index.ts` if it is public API.
+3. Add/extend unit tests under `packages/editor-core/src/`.
+4. Wire the `Editor` façade only if the UI/hotkeys need a convenience method.

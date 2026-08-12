@@ -1,0 +1,35 @@
+---
+description: project-server filesystem and HTTP security invariants
+globs: "apps/project-server/**"
+alwaysApply: false
+---
+
+# project-server security
+
+Browser input is untrusted. All project filesystem access goes through **`ProjectService.resolveProjectPath`** → **`ProjectRootGuard.resolveSafe`**. Do not call `path.resolve`/`readFile`/`writeFile` on user-influenced paths without that guard.
+
+## Path confinement
+
+* Resolve only **project-relative** paths. Reject traversal (`../`, absolute inputs that escape root) via `ProjectRootGuard` (`PATH_ESCAPE`).
+* Do not reimplement root checks in each route. New file services (`SceneFileService`, `AssetDatabaseStore`, `AssetImportService`, content serving) must take `ProjectService` (or the guard) as a dependency.
+* Never expose APIs that take absolute client paths or raw shell commands. No `child_process` / “execute command” endpoints.
+* Do not return internal absolute server paths in JSON error payloads meant for the browser (health may report configured root for local dev only).
+
+## Uploads and assets
+
+* Multipart parsing (`parseAssetImportMultipart`) must keep size/file-count limits (`MAX_ASSET_IMPORT_FILE_BYTES` / `MAX_ASSET_IMPORT_FILES` in `import-limits.ts`). Reject non-multipart bodies.
+* Treat upload `filename` as untrusted: use `path.basename`, then destination helpers (`normalizeAssetDestination`, `allocateUniqueFileName`). Never overwrite on name collision; allocate `name-N.ext`.
+* Import only through **`AssetImportService`** + **`AssetImporterRegistry`** (e.g. `TextureAssetImporter`). Validate extension/MIME via shared helpers (`isSupportedTextureExtension` from `@game-editor/assets`). Unsupported files become per-file errors, not silent writes.
+* Stage → commit → single manifest save; on failure roll back written files and do not leave a partial `.project/assets.json` update. Keep staging under `.project/import-tmp/…` inside the root.
+* Serve bytes only for IDs present in the asset DB (`GET /assets/:id/content`), after resolving `record.path` through `ProjectService`. Do not add “read any relative path” endpoints.
+
+## HTTP and persistence
+
+* Validate scene IDs with a tight allowlist (`SceneFileService` pattern) before joining into `assets/scenes/`. Parse/validate bodies with Zod domain parsers (`parseSceneData`, asset schemas) before writing.
+* Persist with atomic write (temp file + `rename`) for scene JSON and `.project/assets.json`.
+* CORS `*` is **local-dev only** (documented on responses). Do not expand trust (auth, wide CORS, arbitrary origins) without an explicit product change.
+* Map `ValidationError` / `DomainError` to 4xx with `{ ok: false, error, message }`; do not leak stack traces. Avoid swallowing FS errors.
+
+## Concurrency
+
+* Assume single-writer local use for now. Do not add unlocked read-modify-write of the asset manifest across new endpoints without a clear locking/merge strategy. Prefer load → mutate → atomic save in one service method.

@@ -1,0 +1,38 @@
+{
+  "id": "scene_b7be4515-f3d5-4ec9-af9b-40f2285e1161",
+  "name": "Main Scene",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "node_456525b1-2d04-498a-b24b-73a86a9371e5",
+      "name": "2222",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_ad428989-8a6d-403b-80c8-f14c8ad3ba15",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Sprite",
+          "id": "comp_c4eafd27-50d3-47c9-932f-612f119df6bc",
+          "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+          "width": 502,
+          "height": 449,
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "children": []
+    }
+  ]
+}

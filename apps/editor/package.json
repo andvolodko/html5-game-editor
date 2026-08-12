@@ -8,11 +8,15 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
     "lint": "eslint src --max-warnings=0"
   },
   "dependencies": {
+    "@game-editor/assets": "workspace:*",
     "@game-editor/commands": "workspace:*",
     "@game-editor/editor-core": "workspace:*",
+    "@game-editor/renderer-pixi": "workspace:*",
+    "@game-editor/runtime": "workspace:*",
     "@game-editor/scene": "workspace:*",
     "@game-editor/shared": "workspace:*",
     "dockview": "^4.4.0",
@@ -24,6 +28,7 @@
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^4.7.0",
     "typescript": "^5.9.2",
-    "vite": "^7.0.6"
+    "vite": "^7.0.6",
+    "vitest": "^3.2.4"
   }
 }

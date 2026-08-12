@@ -1,0 +1,93 @@
+{
+  "id": "scene_d2878f56-e775-4d80-8a82-1148385e4be4",
+  "name": "spine",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "node_0f888b5e-7603-4c2c-8c17-3012224857c5",
+      "name": "1",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_cffdb41d-0c71-46ef-ac3d-e5924f34de05",
+          "position": {
+            "x": 206.5250157953593,
+            "y": 174.17166083020845
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Sprite",
+          "id": "comp_48f9da4a-3bcd-4aaf-b0dd-ab296e1a960a",
+          "assetId": "asset_b8f604c4-25db-4cf1-bd5f-8fb354ee280f",
+          "width": 367.3581574907264,
+          "height": 303.2549893790642
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_f6cf1db7-cbfb-4ca6-b63c-f79d46cf8f12",
+      "name": "Spineboy",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_ee5d828c-453c-4fa5-b37d-2d0761632072",
+          "position": {
+            "x": 1583.164669953099,
+            "y": 1054.6181297537123
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Spine",
+          "id": "comp_1688429b-193e-4352-9973-cc3005ea4ae6",
+          "assetId": "asset_b3d41acd-42c8-406e-946f-6e15d28e2c77",
+          "skin": "default",
+          "animation": "idle",
+          "loop": false,
+          "timeScale": 1,
+          "playing": false
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_2f3bb400-65f1-42cc-95ec-565e5bf685d3",
+      "name": "Raptor",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_cb7daae4-7be0-41d6-a164-d3ff6f86c11e",
+          "position": {
+            "x": 796.2747518559424,
+            "y": 1197.4102717654714
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Spine",
+          "id": "comp_1dffae9a-cc62-4960-a099-d0f2f7a1120c",
+          "assetId": "asset_03a7df2b-9f52-447f-8d6f-9b58f3bb3485",
+          "animation": "jump",
+          "loop": false,
+          "timeScale": 1,
+          "playing": false
+        }
+      ],
+      "children": []
+    }
+  ]
+}

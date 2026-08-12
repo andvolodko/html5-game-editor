@@ -9,17 +9,26 @@
       "import": "./src/index.ts"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
     "lint": "eslint src --max-warnings=0"
   },
   "dependencies": {
+    "@esotericsoftware/spine-pixi-v8": "^4.3.13",
+    "@game-editor/assets": "workspace:*",
     "@game-editor/core": "workspace:*",
-    "@game-editor/scene": "workspace:*"
+    "@game-editor/scene": "workspace:*",
+    "@game-editor/shared": "workspace:*",
+    "pixi.js": "^8.12.0"
   },
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   }
 }

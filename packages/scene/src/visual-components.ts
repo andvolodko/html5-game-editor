@@ -1,0 +1,282 @@
+import type { Vec2 } from "./types.js";
+
+/**
+ * Stable visual component discriminants (domain identity — not PIXI class names).
+ * Editor registry IDs map as `pixi.<kebab>` → these PascalCase types.
+ */
+
+export interface SpriteComponentData {
+  type: "Sprite";
+  id: string;
+  /** Stable asset id — never a filesystem path. Optional for placeholder sprites. */
+  assetId?: string;
+  /** Display width override (px). Not automatically updated when the asset changes. */
+  width: number;
+  /** Display height override (px). Not automatically updated when the asset changes. */
+  height: number;
+  /** Texture anchor in 0–1 UV space. Defaults to center when omitted. */
+  anchor?: Vec2;
+  /** Optional hex RGB tint. Omitted means no tint (renderer default). */
+  tint?: number;
+}
+
+export interface NineSliceSpriteComponentData {
+  type: "NineSliceSprite";
+  id: string;
+  assetId?: string;
+  width: number;
+  height: number;
+  leftWidth: number;
+  rightWidth: number;
+  topHeight: number;
+  bottomHeight: number;
+  tint?: number;
+}
+
+export interface TilingSpriteComponentData {
+  type: "TilingSprite";
+  id: string;
+  assetId?: string;
+  width: number;
+  height: number;
+  tilePosition: Vec2;
+  tileScale: Vec2;
+  tileRotation: number;
+  anchor?: Vec2;
+  tint?: number;
+}
+
+export type GraphicsShapeData =
+  | {
+      type: "rectangle";
+      width: number;
+      height: number;
+    }
+  | {
+      type: "rounded-rectangle";
+      width: number;
+      height: number;
+      radius: number;
+    }
+  | {
+      type: "circle";
+      radius: number;
+    }
+  | {
+      type: "ellipse";
+      width: number;
+      height: number;
+    }
+  | {
+      type: "polygon";
+      points: Vec2[];
+    };
+
+export interface GraphicsComponentData {
+  type: "Graphics";
+  id: string;
+  shape: GraphicsShapeData;
+  fillColor: number;
+  fillAlpha: number;
+  strokeColor: number;
+  strokeAlpha: number;
+  strokeWidth: number;
+}
+
+export interface TextStyleData {
+  fontFamily: string;
+  fontSize: number;
+  fontWeight: string;
+  fontStyle: string;
+  fill: number;
+  align: "left" | "center" | "right";
+  letterSpacing: number;
+  lineHeight: number;
+  wordWrap: boolean;
+  wordWrapWidth: number;
+}
+
+export interface TextComponentData {
+  type: "Text";
+  id: string;
+  text: string;
+  style: TextStyleData;
+  anchor?: Vec2;
+}
+
+export interface BitmapTextComponentData {
+  type: "BitmapText";
+  id: string;
+  text: string;
+  /** Bitmap font family name once a font asset exists; optional until assigned. */
+  fontFamily?: string;
+  fontSize: number;
+  align: "left" | "center" | "right";
+  letterSpacing: number;
+  tint?: number;
+  anchor?: Vec2;
+}
+
+export interface HTMLTextComponentData {
+  type: "HTMLText";
+  id: string;
+  text: string;
+  style: TextStyleData;
+  anchor?: Vec2;
+}
+
+export interface MeshSimpleComponentData {
+  type: "MeshSimple";
+  id: string;
+  assetId?: string;
+  vertices: number[];
+  uvs: number[];
+  indices: number[];
+  autoUpdate: boolean;
+}
+
+export interface MeshRopeComponentData {
+  type: "MeshRope";
+  id: string;
+  assetId?: string;
+  points: Vec2[];
+  textureScale: number;
+  autoUpdate: boolean;
+}
+
+export interface MeshPlaneComponentData {
+  type: "MeshPlane";
+  id: string;
+  assetId?: string;
+  width: number;
+  height: number;
+  verticesX: number;
+  verticesY: number;
+}
+
+export interface PerspectiveMeshComponentData {
+  type: "PerspectiveMesh";
+  id: string;
+  assetId?: string;
+  width: number;
+  height: number;
+  verticesX: number;
+  verticesY: number;
+  /** Quad corners in local space: TL, TR, BR, BL. */
+  corners: [Vec2, Vec2, Vec2, Vec2];
+}
+
+/**
+ * Raw Mesh with a default textured quad. Shader editing is out of scope —
+ * renderer uses the built-in texture mesh path.
+ */
+export interface MeshComponentData {
+  type: "Mesh";
+  id: string;
+  assetId?: string;
+  vertices: number[];
+  uvs: number[];
+  indices: number[];
+}
+
+export interface AnimatedSpriteComponentData {
+  type: "AnimatedSprite";
+  id: string;
+  /** Frame textures by stable asset id (order = animation order). */
+  frames: string[];
+  animationSpeed: number;
+  loop: boolean;
+  playing: boolean;
+  anchor?: Vec2;
+  tint?: number;
+  width?: number;
+  height?: number;
+}
+
+export interface SpineComponentData {
+  type: "Spine";
+  id: string;
+  /** Stable spine asset id — never a filesystem path. */
+  assetId?: string;
+  skin?: string;
+  animation?: string;
+  loop: boolean;
+  timeScale: number;
+  playing: boolean;
+}
+
+export type VisualComponentData =
+  | SpriteComponentData
+  | NineSliceSpriteComponentData
+  | TilingSpriteComponentData
+  | GraphicsComponentData
+  | TextComponentData
+  | BitmapTextComponentData
+  | HTMLTextComponentData
+  | MeshComponentData
+  | MeshSimpleComponentData
+  | MeshRopeComponentData
+  | MeshPlaneComponentData
+  | PerspectiveMeshComponentData
+  | AnimatedSpriteComponentData
+  | SpineComponentData;
+
+/** Component types that are renderable leaves (may not receive scene children). */
+export const LEAF_VISUAL_COMPONENT_TYPES = [
+  "Sprite",
+  "NineSliceSprite",
+  "TilingSprite",
+  "Graphics",
+  "Text",
+  "BitmapText",
+  "HTMLText",
+  "Mesh",
+  "MeshSimple",
+  "MeshRope",
+  "MeshPlane",
+  "PerspectiveMesh",
+  "AnimatedSprite",
+  "Spine",
+] as const;
+
+export type LeafVisualComponentType =
+  (typeof LEAF_VISUAL_COMPONENT_TYPES)[number];
+
+export function isLeafVisualComponentType(
+  type: string,
+): type is LeafVisualComponentType {
+  return (LEAF_VISUAL_COMPONENT_TYPES as readonly string[]).includes(type);
+}
+
+/** Default texture/layout anchor (center) when omitted on supporting visuals. */
+export const DEFAULT_VISUAL_ANCHOR: Vec2 = { x: 0.5, y: 0.5 };
+
+const ANCHOR_VISUAL_TYPES = new Set<LeafVisualComponentType>([
+  "Sprite",
+  "TilingSprite",
+  "Text",
+  "BitmapText",
+  "HTMLText",
+  "AnimatedSprite",
+]);
+
+/** Whether the leaf visual exposes a 0–1 UV/layout `anchor` field. */
+export function visualComponentSupportsAnchor(
+  visual: VisualComponentData,
+): boolean {
+  return ANCHOR_VISUAL_TYPES.has(visual.type);
+}
+
+/** Resolved anchor for paint/UI (defaults to center when omitted). */
+export function getVisualAnchorOrDefault(visual: VisualComponentData): Vec2 {
+  if (!visualComponentSupportsAnchor(visual)) {
+    return { ...DEFAULT_VISUAL_ANCHOR };
+  }
+  const anchor =
+    "anchor" in visual && visual.anchor !== undefined
+      ? visual.anchor
+      : undefined;
+  return anchor
+    ? { x: anchor.x, y: anchor.y }
+    : { ...DEFAULT_VISUAL_ANCHOR };
+}

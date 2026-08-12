@@ -1,32 +1,72 @@
 import { z } from "zod";
+import { ASSET_SCHEMA_VERSION, type AssetDatabaseData, type AssetRecord } from "./types.js";
 
-export const assetTypeSchema = z.enum([
-  "texture",
-  "spritesheet",
-  "model3d",
-  "audio",
-  "font",
-  "spine",
-  "environment",
-  "scene",
-  "prefab",
-]);
+export const assetTypeSchema = z.enum(["texture", "spine"]);
 
-export const assetRecordSchema = z.object({
-  id: z.string().min(1),
-  type: assetTypeSchema,
-  path: z.string().min(1),
-  name: z.string().min(1),
-  metadata: z.record(z.string(), z.unknown()).optional(),
+export const textureAssetMetadataSchema = z.object({
+  kind: z.literal("texture"),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  mimeType: z.string().min(1),
 });
 
-export const assetDatabaseSchema = z.object({
+export const spineAssetMetadataSchema = z.object({
+  kind: z.literal("spine"),
+  skeletonFormat: z.enum(["json", "skel"]),
+  atlasPath: z.string().min(1),
+  pagePaths: z.array(z.string().min(1)).min(1),
+  skins: z.array(z.string().min(1)),
+  animations: z.array(z.string().min(1)),
+});
+
+export const assetMetadataSchema = z.discriminatedUnion("kind", [
+  textureAssetMetadataSchema,
+  spineAssetMetadataSchema,
+]);
+
+const assetRecordObjectSchema = z.object({
+  id: z.string().min(1),
+  type: assetTypeSchema,
+  name: z.string().min(1),
+  path: z.string().min(1),
+  metadata: assetMetadataSchema,
+});
+
+/** Enforces `type === metadata.kind`. */
+export const assetRecordSchema: z.ZodType<AssetRecord> = assetRecordObjectSchema.superRefine(
+  (value, ctx) => {
+    if (value.type !== value.metadata.kind) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `AssetRecord.type (${value.type}) must equal metadata.kind (${value.metadata.kind})`,
+        path: ["type"],
+      });
+    }
+  },
+) as z.ZodType<AssetRecord>;
+
+export const assetDatabaseSchema: z.ZodType<AssetDatabaseData> = z.object({
   version: z.number().int().positive(),
   assets: z.array(assetRecordSchema),
 });
 
-export type ParsedAssetDatabase = z.infer<typeof assetDatabaseSchema>;
-
-export function parseAssetDatabase(input: unknown): ParsedAssetDatabase {
+export function parseAssetDatabase(input: unknown): AssetDatabaseData {
   return assetDatabaseSchema.parse(input);
+}
+
+export function parseAssetRecord(input: unknown): AssetRecord {
+  return assetRecordSchema.parse(input);
+}
+
+export function isCurrentAssetSchemaVersion(version: number): boolean {
+  return version === ASSET_SCHEMA_VERSION;
+}
+
+/** Deterministic JSON for Git-friendly persistence (assets sorted by id). */
+export function serializeAssetDatabase(data: AssetDatabaseData): string {
+  const normalized: AssetDatabaseData = {
+    version: data.version,
+    assets: [...data.assets].sort((a, b) => a.id.localeCompare(b.id)),
+  };
+  return `${JSON.stringify(normalized, null, 2)}\n`;
 }

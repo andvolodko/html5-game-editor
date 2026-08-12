@@ -1,5 +1,5 @@
 import type { RendererKind, RenderLayer } from "@game-editor/core";
-import type { SceneData, SceneRenderer } from "@game-editor/scene";
+import { flattenNodes, type SceneData, type SceneRenderer } from "@game-editor/scene";
 
 export interface RuntimeRendererRegistration {
   kind: RendererKind;
@@ -21,8 +21,10 @@ export class GameRuntime {
 
   loadScene(scene: SceneData): void {
     this.scene = scene;
+    const nodes = flattenNodes(scene);
     for (const registration of this.renderers.values()) {
-      for (const node of scene.nodes) {
+      registration.renderer.clear();
+      for (const node of nodes) {
         registration.renderer.createNode(node);
       }
     }

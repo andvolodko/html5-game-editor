@@ -1,0 +1,35 @@
+---
+description: Prefer named constants over unexplained numeric literals
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: false
+---
+
+# No magic numbers
+
+Do not leave unexplained numeric literals in behavior code. Name values that encode domain meaning, UI layout, input protocols, timing, or rendering.
+
+## Prefer
+
+```ts
+const MIDDLE_MOUSE_BUTTON = 1;
+const VIEWPORT_SCALE_STEP = 0.1;
+const DEFAULT_FONT_SIZE = 24;
+
+if (event.button === MIDDLE_MOUSE_BUTTON) { /* … */ }
+```
+
+Colocate constants with the module that owns them, or share via a small `*-constants.ts` / existing domain module when reused across files.
+
+## Allowed without naming
+
+* Loop / array indices and obvious arithmetic (`i + 1`, `length - 1`, `/ 2` for midpoint).
+* Identity math (`* 1`, `+ 0`) and empty defaults (`0`, `1` for scale/alpha when they are literal identities).
+* Enum-like discriminants already expressed as string unions or typed enums.
+* Test expectations that mirror a fixture’s explicit setup values in the same test.
+* CSS in stylesheets / style objects when the number is a one-off layout token next to related styles (prefer design tokens when the value repeats).
+
+## Do not
+
+* Scatter the same literal (e.g. `0.1`, `24`, button `1`) across files — extract one shared constant.
+* Name every trivial `0`/`1`; name values a reader would otherwise have to reverse-engineer.
+* Put renderer/UI literals into serialized scene defaults unless they are real domain defaults (then name them in the domain/factory module).

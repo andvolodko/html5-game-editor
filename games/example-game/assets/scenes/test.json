@@ -1,0 +1,420 @@
+{
+  "id": "scene_32cbc172-a0fb-4eed-91d2-1ba052bcf517",
+  "name": "test",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "node_579999c6-079b-4f0b-867d-66bf3246f34e",
+      "name": "Container",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_6d568154-908b-4450-98a6-947855d7d7d5",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_03e59cc9-3223-4ff3-b33e-fa72b4fcbd46",
+          "name": "Sprite",
+          "parentId": "node_579999c6-079b-4f0b-867d-66bf3246f34e",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_e86d6d4e-8878-468b-8d64-40edd3ef4873",
+              "position": {
+                "x": 670,
+                "y": 200
+              },
+              "rotation": -18.516133011613384,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Sprite",
+              "id": "comp_c732250f-f216-43c8-ae3d-3e87b462d7e5",
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "node_157012a2-a406-40fd-b77f-1a619c08ae21",
+      "name": "Mesh",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_569d26d3-38ed-4c49-b7b5-1b983b0089ab",
+          "position": {
+            "x": 312,
+            "y": 173
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Mesh",
+          "id": "comp_3e4ec777-44ee-4976-aa73-d280bcaec28d",
+          "vertices": [
+            -50,
+            -50,
+            50,
+            -50,
+            50,
+            50,
+            -50,
+            50
+          ],
+          "uvs": [
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            0,
+            2,
+            3
+          ]
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_6cf66825-fcf6-44fc-8df2-23272031167a",
+      "name": "Simple Mesh",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_84c662f6-996c-4f1d-8bfb-cace882587de",
+          "position": {
+            "x": 462,
+            "y": 132
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "MeshSimple",
+          "id": "comp_729d5cc7-e16b-4622-9c9e-192094935416",
+          "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+          "vertices": [
+            -50,
+            -50,
+            50,
+            -50,
+            50,
+            50,
+            -50,
+            50
+          ],
+          "uvs": [
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            0,
+            2,
+            3
+          ],
+          "autoUpdate": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_77860845-c1f5-4f9f-913e-283a5e89c5b4",
+      "name": "Rope",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_51f4881f-655e-453d-9481-a60e479f744e",
+          "position": {
+            "x": 1540,
+            "y": -10
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "MeshRope",
+          "id": "comp_ee91016d-d407-479e-a439-874812f3e444",
+          "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+          "points": [
+            {
+              "x": -100,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 100,
+              "y": 0
+            }
+          ],
+          "textureScale": 1,
+          "autoUpdate": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_abf6d91e-dd18-4f88-99e7-3260c7cad1d3",
+      "name": "Rope Copy",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_ed57ffc5-9f51-4479-b982-0b8aff9c3bd9",
+          "position": {
+            "x": 1300,
+            "y": -10
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "MeshRope",
+          "id": "comp_dcc89486-e05e-4315-ac3d-11bb0adae084",
+          "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+          "points": [
+            {
+              "x": -100,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 100,
+              "y": 0
+            }
+          ],
+          "textureScale": 1,
+          "autoUpdate": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_decc0df1-7a8b-4f48-8308-876b42f531f8",
+      "name": "Rope Copy Copy",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_b53be7b5-ed34-4521-b353-56d3d38a5d1f",
+          "position": {
+            "x": 1050,
+            "y": 110
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "MeshRope",
+          "id": "comp_ad9206b2-8a7c-452c-ac3f-f99cc0d7bbb3",
+          "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+          "points": [
+            {
+              "x": -100,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 100,
+              "y": 0
+            }
+          ],
+          "textureScale": 1,
+          "autoUpdate": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_8799116b-7956-4a7d-a723-b146eb9ff504",
+      "name": "Plane",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_b839251c-b856-46c1-845d-f36537002b31",
+          "position": {
+            "x": 167,
+            "y": 398
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "MeshPlane",
+          "id": "comp_ca8f6d08-a63a-4aa3-ab64-0f23af1c4ac6",
+          "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+          "width": 200,
+          "height": 200,
+          "verticesX": 10,
+          "verticesY": 10
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_c7917cee-2592-4e6f-9ac0-b42ea98c99a9",
+      "name": "Perspective Mesh",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_d0a2c748-4775-4f85-931c-4496b4b8f91f",
+          "position": {
+            "x": 414,
+            "y": 405
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "PerspectiveMesh",
+          "id": "comp_4b182ea8-4578-40b8-9c96-9d93395e7fe3",
+          "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+          "width": 200,
+          "height": 200,
+          "verticesX": 10,
+          "verticesY": 10,
+          "corners": [
+            {
+              "x": -100,
+              "y": -100
+            },
+            {
+              "x": 100,
+              "y": -100
+            },
+            {
+              "x": 100,
+              "y": 100
+            },
+            {
+              "x": -100,
+              "y": 100
+            }
+          ]
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_14a03fff-7465-4624-93b3-b7a9990735d9",
+      "name": "Graphics",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_d257380d-a340-4908-94c2-08ca69478e8b",
+          "position": {
+            "x": 858,
+            "y": 163
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Graphics",
+          "id": "comp_57b49908-46fd-48f3-a2f4-d578198a924a",
+          "shape": {
+            "type": "circle",
+            "radius": 50
+          },
+          "fillColor": 11739939,
+          "fillAlpha": 1,
+          "strokeColor": 0,
+          "strokeAlpha": 0,
+          "strokeWidth": 0
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_9c594c07-580e-49d8-9f5d-eec4b796f066",
+      "name": "2",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_3d864d4c-66a4-40a7-b04f-a0cb35b396b7",
+          "position": {
+            "x": 1429,
+            "y": 470
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Sprite",
+          "id": "comp_f8841c7b-47f5-4f65-859f-f7fb8da2862d",
+          "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+          "width": 502,
+          "height": 449
+        }
+      ],
+      "children": []
+    }
+  ]
+}
