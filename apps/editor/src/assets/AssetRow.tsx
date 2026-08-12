@@ -70,7 +70,9 @@ function AssetRowComponent({
                 ? "asset-row-icon spine"
                 : asset.type === "audio"
                   ? "asset-row-icon audio"
-                  : "asset-row-icon texture"
+                  : asset.type === "gltf"
+                    ? "asset-row-icon gltf"
+                    : "asset-row-icon texture"
             }
             aria-hidden
           />

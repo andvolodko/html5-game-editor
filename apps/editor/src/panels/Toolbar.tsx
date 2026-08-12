@@ -2,8 +2,10 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import {
   isChordLetter,
   isValidSceneFileId,
+  NODE_TYPE_RENDERER_LABELS,
   type ProjectListEntry,
 } from "@game-editor/editor-core";
+import { getSceneRendererKind } from "@game-editor/scene";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
 import { useEditorLayoutControls } from "../layout/layout-context";
@@ -316,24 +318,42 @@ export function Toolbar() {
           openMenu={openMenu}
           onToggle={toggleMenu}
         >
-          {editor.getNodeTypeRegistry().listMenuGroups().map((group) => (
-            <li key={group.category} className="toolbar-menu-submenu" role="none">
-              <span className="toolbar-menu-submenu-label">{group.category}</span>
-              <ul className="toolbar-menu-submenu-list" role="menu">
-                {group.types.map((def) => (
-                  <MenuItem
-                    key={def.id}
-                    onClick={() => {
-                      editor.createNode(def.id);
-                      closeMenus();
-                    }}
-                  >
-                    {def.label}
-                  </MenuItem>
-                ))}
-              </ul>
-            </li>
-          ))}
+          {editor
+            .getNodeTypeRegistry()
+            .listRendererMenuGroups()
+            .map((group) => {
+              const kind = getSceneRendererKind(scene);
+              if (kind !== "hybrid" && group.renderer !== kind) {
+                return null;
+              }
+              if (group.types.length === 0) {
+                return null;
+              }
+              return (
+                <li
+                  key={group.renderer}
+                  className="toolbar-menu-submenu"
+                  role="none"
+                >
+                  <span className="toolbar-menu-submenu-label">
+                    {NODE_TYPE_RENDERER_LABELS[group.renderer]}
+                  </span>
+                  <ul className="toolbar-menu-submenu-list" role="menu">
+                    {group.types.map((def) => (
+                      <MenuItem
+                        key={def.id}
+                        onClick={() => {
+                          editor.createNode(def.id);
+                          closeMenus();
+                        }}
+                      >
+                        {def.label}
+                      </MenuItem>
+                    ))}
+                  </ul>
+                </li>
+              );
+            })}
         </ToolbarMenu>
       </nav>
       <div className="toolbar-meta">

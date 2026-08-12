@@ -27,10 +27,12 @@ describe("ComponentRegistry", () => {
     );
 
     expect(registry.has("shared.ChangeScene")).toBe(true);
+    expect(registry.has("shared.LoadAllSceneAssets")).toBe(true);
     expect(registry.has("shared.PerformanceMeter")).toBe(true);
     expect(registry.has("shared.AudioClick")).toBe(true);
     expect(registry.list().map((d) => d.id)).toEqual([
       "shared.ChangeScene",
+      "shared.LoadAllSceneAssets",
       "shared.AudioClick",
       "example.Spin",
       "shared.PerformanceMeter",
@@ -85,6 +87,7 @@ describe("ComponentRegistry", () => {
     const registry = new ComponentRegistry();
     applyComponentCatalog(registry, parsed);
     expect(registry.has("shared.ChangeScene")).toBe(true);
+    expect(registry.has("shared.LoadAllSceneAssets")).toBe(true);
     expect(registry.has("shared.PerformanceMeter")).toBe(true);
     expect(registry.has("shared.AudioClick")).toBe(true);
     expect(parsed.busEvents).toEqual([{ id: "game.start", label: "Start" }]);

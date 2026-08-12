@@ -45,6 +45,8 @@ describe("resolveGameProject", () => {
     expect(loaded.project.startScene).toBe("loading");
     expect(loaded.scene.name).toBe("Loading");
     expect(loaded.scene.nodes).toHaveLength(1);
+    expect(Object.keys(loaded.scenes).sort()).toEqual(["loading", "main"]);
+    expect(loaded.scenes.main?.name).toBe("Main");
     expect(loaded.assetResolver.resolveUrl("asset_hero")).toBe(
       "/assets/ui/hero.png",
     );

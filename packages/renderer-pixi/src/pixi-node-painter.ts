@@ -41,6 +41,9 @@ export interface NodePainterHost {
  * Paints node visuals and editor selection chrome for the Pixi runtime graph.
  */
 export class PixiNodePainter {
+  private readonly paintEpoch = new WeakMap<RuntimeNode, number>();
+  private readonly paintInFlight = new WeakMap<RuntimeNode, boolean>();
+
   constructor(private readonly host: NodePainterHost) {}
 
   paint(runtime: RuntimeNode): void {
@@ -52,7 +55,32 @@ export class PixiNodePainter {
     this.paintSelection(runtime);
   }
 
+  /**
+   * Coalesce overlapping paints. `createNode` + immediate `updateNode`
+   * (Load All Scene Assets `setText` in the script constructor) used to start
+   * two paints while `runtime.visual` was still unset, so Text duplicated.
+   */
   async paintVisuals(runtime: RuntimeNode): Promise<void> {
+    const nextEpoch = (this.paintEpoch.get(runtime) ?? 0) + 1;
+    this.paintEpoch.set(runtime, nextEpoch);
+    if (this.paintInFlight.get(runtime) === true) {
+      return;
+    }
+    this.paintInFlight.set(runtime, true);
+    try {
+      while (this.host.graph.has(runtime.node.id)) {
+        const started = this.paintEpoch.get(runtime) ?? 0;
+        await this.paintVisualsPass(runtime);
+        if ((this.paintEpoch.get(runtime) ?? 0) === started) {
+          break;
+        }
+      }
+    } finally {
+      this.paintInFlight.set(runtime, false);
+    }
+  }
+
+  private async paintVisualsPass(runtime: RuntimeNode): Promise<void> {
     const visualData = getVisualComponent(runtime.node);
     runtime.placeholder?.clear();
     // Never put hitArea on the node container — it would prune child sprites

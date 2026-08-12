@@ -219,6 +219,39 @@ export const spineComponentSchema = z.object({
   playing: z.boolean(),
 });
 
+export const model3DComponentSchema = z.object({
+  type: z.literal("Model3D"),
+  id: z.string().min(1),
+  assetId: z.string().min(1).optional(),
+  animation: z.string().min(1).optional(),
+  loop: z.boolean(),
+  timeScale: z.number().positive(),
+  playing: z.boolean(),
+});
+
+export const perspectiveCameraComponentSchema = z.object({
+  type: z.literal("PerspectiveCamera"),
+  id: z.string().min(1),
+  fov: z.number().positive(),
+  near: z.number().positive(),
+  far: z.number().positive(),
+  active: z.boolean().optional(),
+});
+
+export const directionalLightComponentSchema = z.object({
+  type: z.literal("DirectionalLight"),
+  id: z.string().min(1),
+  color: z.number().int().nonnegative(),
+  intensity: z.number().nonnegative(),
+});
+
+export const ambientLightComponentSchema = z.object({
+  type: z.literal("AmbientLight"),
+  id: z.string().min(1),
+  color: z.number().int().nonnegative(),
+  intensity: z.number().nonnegative(),
+});
+
 /** JSON-compatible property bag for Script components (no functions / undefined). */
 export const scriptPropertyValueSchema: z.ZodType<unknown> = z.lazy(() =>
   z.union([
@@ -255,6 +288,10 @@ export const componentSchema = z.discriminatedUnion("type", [
   perspectiveMeshComponentSchema,
   animatedSpriteComponentSchema,
   spineComponentSchema,
+  model3DComponentSchema,
+  perspectiveCameraComponentSchema,
+  directionalLightComponentSchema,
+  ambientLightComponentSchema,
   scriptComponentSchema,
 ]);
 
@@ -263,6 +300,7 @@ export const sceneNodeSchema: z.ZodType<SceneNodeData> = z.lazy(() =>
     id: z.string().min(1),
     name: z.string().min(1),
     parentId: z.string().min(1).optional(),
+    layer: z.enum(["background", "foreground"]).optional(),
     components: z.array(componentSchema),
     children: z.array(sceneNodeSchema),
   }),
@@ -272,11 +310,64 @@ export const sceneDataSchema: z.ZodType<SceneData> = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   version: z.number().int().positive(),
+  renderer: z.enum(["pixi", "three", "hybrid"]).optional(),
   nodes: z.array(sceneNodeSchema),
 });
 
 export function parseSceneData(input: unknown): SceneData {
-  return sceneDataSchema.parse(input);
+  return sceneDataSchema.parse(withModel3DPlaybackDefaults(input));
+}
+
+/**
+ * Older Model3D entries may omit playback fields. Fill defaults before Zod
+ * so the schema can keep loop/timeScale/playing required (matches TS types).
+ */
+function withModel3DPlaybackDefaults(input: unknown): unknown {
+  if (!input || typeof input !== "object") {
+    return input;
+  }
+  const scene = input as { nodes?: unknown };
+  if (!Array.isArray(scene.nodes)) {
+    return input;
+  }
+  return {
+    ...scene,
+    nodes: scene.nodes.map((node) => patchModel3DNodeTree(node)),
+  };
+}
+
+function patchModel3DNodeTree(node: unknown): unknown {
+  if (!node || typeof node !== "object") {
+    return node;
+  }
+  const n = node as {
+    components?: unknown[];
+    children?: unknown[];
+  };
+  const components = Array.isArray(n.components)
+    ? n.components.map((comp) => {
+        if (!comp || typeof comp !== "object") {
+          return comp;
+        }
+        const c = comp as Record<string, unknown>;
+        if (c.type !== "Model3D") {
+          return comp;
+        }
+        return {
+          ...c,
+          loop: typeof c.loop === "boolean" ? c.loop : true,
+          timeScale:
+            typeof c.timeScale === "number" && c.timeScale > 0
+              ? c.timeScale
+              : 1,
+          playing: typeof c.playing === "boolean" ? c.playing : true,
+        };
+      })
+    : n.components;
+  const children = Array.isArray(n.children)
+    ? n.children.map((child) => patchModel3DNodeTree(child))
+    : n.children;
+  return { ...n, components, children };
 }
 
 export function isCurrentSceneSchemaVersion(version: number): boolean {

@@ -3,6 +3,7 @@ export type {
   TextureAssetMetadata,
   SpineAssetMetadata,
   AudioAssetMetadata,
+  GltfAssetMetadata,
   AssetMetadata,
   AssetRecord,
   AssetDatabaseData,
@@ -13,6 +14,7 @@ export {
   textureAssetMetadataSchema,
   spineAssetMetadataSchema,
   audioAssetMetadataSchema,
+  gltfAssetMetadataSchema,
   assetMetadataSchema,
   assetRecordSchema,
   assetDatabaseSchema,
@@ -26,12 +28,13 @@ export {
   createTextureAssetRecord,
   createSpineAssetRecord,
   createAudioAssetRecord,
+  createGltfAssetRecord,
   normalizeProjectRelativePath,
   humanizeAssetNodeName,
 } from "./factories.js";
 export { AssetDatabase, assetRecordsEquivalent } from "./asset-database.js";
 export { parseDeletableAssetFolderPath } from "./deletable-asset-folder-path.js";
-export type { AssetResolver, SpineAssetUrls } from "./asset-resolver.js";
+export type { AssetResolver, SpineAssetUrls, GltfAssetUrls } from "./asset-resolver.js";
 export { createAssetResolver } from "./asset-resolver.js";
 export type { StaticAssetResolverOptions } from "./static-asset-resolver.js";
 export { createStaticAssetResolver } from "./static-asset-resolver.js";
@@ -54,6 +57,25 @@ export {
   isSupportedAudioFile,
 } from "./audio-extensions.js";
 export type { AudioFileExtension } from "./audio-extensions.js";
+export {
+  GLTF_FILE_EXTENSIONS,
+  isSupportedGltfExtension,
+  isSupportedGlbExtension,
+  isSupportedGltfJsonExtension,
+  mimeTypeForGltfFileName,
+  gltfFormatFromFileName,
+  isSupportedGltfFile,
+  collectGltfExternalUris,
+  parseGltfJsonBytes,
+  parseGlbJson,
+  extractGltfAnimationNames,
+  extractGltfAnimationNamesFromBytes,
+  isAllowedGltfPartName,
+  ownedGltfPaths,
+  resolveGltfPartRelativePath,
+  mimeTypeForGltfPart,
+} from "./gltf-extensions.js";
+export type { GltfFileExtension } from "./gltf-extensions.js";
 export {
   SPINE_ATLAS_EXTENSION,
   SPINE_JSON_EXTENSION,

@@ -4,6 +4,7 @@ import {
   type AssetDatabaseData,
   type AssetRecord,
   type AudioAssetMetadata,
+  type GltfAssetMetadata,
   type SpineAssetMetadata,
   type TextureAssetMetadata,
 } from "./types.js";
@@ -81,6 +82,38 @@ export function createAudioAssetRecord(input: {
   return {
     id: input.id ?? createId("asset"),
     type: "audio",
+    name: input.name,
+    path: normalizeProjectRelativePath(input.path),
+    metadata,
+  };
+}
+
+export function createGltfAssetRecord(input: {
+  name: string;
+  path: string;
+  mimeType: string;
+  format: "glb" | "gltf";
+  animations?: string[];
+  bufferPaths?: string[];
+  imagePaths?: string[];
+  id?: string;
+}): AssetRecord {
+  const metadata: GltfAssetMetadata = {
+    kind: "gltf",
+    mimeType: input.mimeType,
+    format: input.format,
+    animations: input.animations ? [...input.animations] : [],
+    ...(input.bufferPaths !== undefined
+      ? { bufferPaths: input.bufferPaths.map(normalizeProjectRelativePath) }
+      : {}),
+    ...(input.imagePaths !== undefined
+      ? { imagePaths: input.imagePaths.map(normalizeProjectRelativePath) }
+      : {}),
+  };
+
+  return {
+    id: input.id ?? createId("asset"),
+    type: "gltf",
     name: input.name,
     path: normalizeProjectRelativePath(input.path),
     metadata,

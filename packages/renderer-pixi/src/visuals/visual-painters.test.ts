@@ -7,6 +7,7 @@ import {
   MeshSimple,
   NineSliceSprite,
   PerspectiveMesh,
+  Text,
   TilingSprite,
 } from "pixi.js";
 import {
@@ -20,8 +21,10 @@ import {
   createPerspectiveMeshComponent,
   createSpineComponent,
   createSpriteNode,
+  createTextComponent,
   createTilingSpriteComponent,
   createContainerNode,
+  getText,
 } from "@game-editor/scene";
 import { PixiSceneRenderer } from "../pixi-scene-renderer.js";
 
@@ -215,6 +218,30 @@ describe("PixiSceneRenderer visual painters", () => {
     expect(bounds.y).toBeCloseTo(-height / 2, 5);
     expect(bounds.width).toBeCloseTo(width, 5);
     expect(bounds.height).toBeCloseTo(height, 5);
+
+    await renderer.destroy();
+  });
+
+  it("does not duplicate Text when updateNode races the initial paint", async () => {
+    const renderer = makeRenderer();
+    await renderer.whenReady();
+    const node = createNodeWithVisual(
+      "Label",
+      { x: 0, y: 0 },
+      createTextComponent({ text: "Loading..." }),
+    );
+    renderer.createNode(node);
+    const text = getText(node);
+    if (text) {
+      text.text = "0%";
+    }
+    renderer.updateNode(node);
+    await flushPaint();
+
+    const root = renderer.getRuntimeVisualsRoot(node.id);
+    const texts = root?.children.filter((child) => child instanceof Text) ?? [];
+    expect(texts).toHaveLength(1);
+    expect(texts[0]?.text).toBe("0%");
 
     await renderer.destroy();
   });

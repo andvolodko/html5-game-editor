@@ -66,6 +66,15 @@
                 "wordWrap": true,
                 "wordWrapWidth": 440
               }
+            },
+            {
+              "type": "Script",
+              "id": "comp_8424b458-824b-4d70-a3ad-a86bd473a8cf",
+              "scriptId": "shared.LoadAllSceneAssets",
+              "properties": {
+                "completeEvent": "loading.complete",
+                "template": "{percent}%"
+              }
             }
           ],
           "children": []

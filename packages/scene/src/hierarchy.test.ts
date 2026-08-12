@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   canMoveNode,
+  createContainerNode,
   createEmptyScene,
+  createNodeWithTransform3D,
   createSpriteNode,
   createTransform2D,
   getNodeLocation,
@@ -54,6 +56,14 @@ describe("hierarchy moveNodeInScene", () => {
     expect(canMoveNode(scene, game.id, reels.id)).toBe(false);
     expect(() => moveNodeInScene(scene, game.id, reels.id, 0)).toThrow(/invalid/);
     expect(canMoveNode(scene, game.id, game.id)).toBe(false);
+  });
+
+  it("rejects parenting Transform3D under Transform2D", () => {
+    const scene = createEmptyScene("X");
+    const parent2d = createContainerNode("UI2D");
+    const child3d = createNodeWithTransform3D("Cam", { x: 0, y: 1, z: 2 });
+    scene.nodes = [parent2d, child3d];
+    expect(canMoveNode(scene, child3d.id, parent2d.id)).toBe(false);
   });
 
   it("serializes hierarchy after reorder", () => {

@@ -4,7 +4,7 @@ export const ASSET_SCHEMA_VERSION = 1 as const;
  * Persisted asset kinds. Only kinds with importers/metadata are included.
  * Extend this union when a new importer ships — do not stub empty kinds.
  */
-export type AssetType = "texture" | "spine" | "audio";
+export type AssetType = "texture" | "spine" | "audio" | "gltf";
 
 export interface TextureAssetMetadata {
   kind: "texture";
@@ -30,10 +30,24 @@ export interface AudioAssetMetadata {
   mimeType: string;
 }
 
+export interface GltfAssetMetadata {
+  kind: "gltf";
+  mimeType: string;
+  /** Container format on disk (GLB single-file vs JSON glTF). */
+  format: "glb" | "gltf";
+  /** Cached at import for Inspector animation dropdown. */
+  animations: string[];
+  /** Project-relative buffer files owned by a multi-file .gltf asset. */
+  bufferPaths?: string[];
+  /** Project-relative image files owned by a multi-file .gltf asset. */
+  imagePaths?: string[];
+}
+
 export type AssetMetadata =
   | TextureAssetMetadata
   | SpineAssetMetadata
-  | AudioAssetMetadata;
+  | AudioAssetMetadata
+  | GltfAssetMetadata;
 
 /**
  * Stable asset identity. Scenes must reference `id`, never raw filesystem paths.

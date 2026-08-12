@@ -1,6 +1,9 @@
 import { PixiSceneRenderer } from "@game-editor/renderer-pixi";
 import { ComponentRegistry } from "@game-editor/game-components";
-import { projectBackgroundToPixiColor } from "@game-editor/project";
+import {
+  GAME_MOUNT_ELEMENT_ID,
+  projectBackgroundToPixiColor,
+} from "@game-editor/project";
 import {
   GameRuntime,
   GameScreenHost,
@@ -16,9 +19,9 @@ const sceneModules = import.meta.glob("../assets/scenes/*.json", {
   import: "default",
 });
 
-const app = document.querySelector("#app");
+const app = document.querySelector(`#${GAME_MOUNT_ELEMENT_ID}`);
 if (!app) {
-  throw new Error("#app element missing");
+  throw new Error(`#${GAME_MOUNT_ELEMENT_ID} element missing`);
 }
 const root = app;
 

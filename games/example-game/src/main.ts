@@ -1,5 +1,4 @@
 import { EventBus } from "@game-editor/core";
-import { PixiSceneRenderer } from "@game-editor/renderer-pixi";
 import {
   ComponentRegistry,
   installSceneFlowRuntime,
@@ -7,28 +6,35 @@ import {
 import {
   GameRuntime,
   GameScreenHost,
+  collectSceneAssetIds,
   createHtmlAudioPlayer,
   resolveGameProject,
   sceneModulesById,
   type LoadedGameProject,
 } from "@game-editor/runtime";
 import { parseSceneData, type SceneData } from "@game-editor/scene";
-import { projectBackgroundToPixiColor } from "@game-editor/project";
+import {
+  GAME_MOUNT_ELEMENT_ID,
+  projectBackgroundToPixiColor,
+} from "@game-editor/project";
+import { preloadPixiSceneAsset } from "@game-editor/renderer-pixi";
+import { ThreeGltfCache } from "@game-editor/renderer-three";
 import projectJson from "../project.json";
 import assetsJson from "../.project/assets.json";
 import {
   installExampleGameRuntime,
   registerGameComponents,
 } from "./components/index.js";
+import { mountExampleGameRenderers } from "./mount-renderers.js";
 
 const sceneModules = import.meta.glob("../assets/scenes/*.json", {
   eager: true,
   import: "default",
 });
 
-const app = document.querySelector("#app");
+const app = document.querySelector(`#${GAME_MOUNT_ELEMENT_ID}`);
 if (!app) {
-  throw new Error("#app element missing");
+  throw new Error(`#${GAME_MOUNT_ELEMENT_ID} element missing`);
 }
 const root = app;
 
@@ -45,7 +51,11 @@ const session: {
   runtime?: GameRuntime;
   loaded?: LoadedGameProject;
   screen?: GameScreenHost;
-} = {};
+  renderers?: { destroy(): Promise<void> };
+  gltfCache: ThreeGltfCache;
+} = {
+  gltfCache: new ThreeGltfCache(),
+};
 
 function readScene(sceneId: string): SceneData {
   const raw = scenesById[sceneId];
@@ -55,13 +65,24 @@ function readScene(sceneId: string): SceneData {
   return parseSceneData(raw);
 }
 
-function changeScene(sceneId: string): void {
-  const { runtime, loaded } = session;
-  if (!runtime || !loaded) {
+async function changeScene(sceneId: string): Promise<void> {
+  const { runtime, loaded, screen } = session;
+  if (!runtime || !loaded || !screen) {
     return;
   }
   const design = loaded.project.resolution;
-  runtime.loadScene(readScene(sceneId));
+  const next = readScene(sceneId);
+  await session.renderers?.destroy();
+  session.renderers = await mountExampleGameRenderers({
+    frame: screen.frame,
+    scene: next,
+    assetResolver: loaded.assetResolver,
+    design,
+    backgroundColor: projectBackgroundToPixiColor(loaded.project.background),
+    runtime,
+    gltfCache: session.gltfCache,
+  });
+  runtime.loadScene(next);
   runtime.resize(design.width, design.height);
   runtime.render();
 }
@@ -74,9 +95,30 @@ session.runtime = new GameRuntime({
   components,
   services: {
     bus,
-    changeScene,
+    changeScene: (sceneId) => {
+      void changeScene(sceneId);
+    },
     resolveAssetUrl: (assetId) =>
       session.loaded?.assetResolver.resolveUrl(assetId),
+    listAllSceneAssetIds: () => {
+      const loaded = session.loaded;
+      if (!loaded) {
+        return [];
+      }
+      return collectSceneAssetIds(Object.values(loaded.scenes));
+    },
+    preloadSceneAsset: async (assetId, signal) => {
+      const resolver = session.loaded?.assetResolver;
+      if (!resolver) {
+        return;
+      }
+      if (resolver.resolveGltfUrls?.(assetId)) {
+        session.gltfCache.setResolver(resolver);
+        await session.gltfCache.ensureLoaded(assetId);
+        return;
+      }
+      await preloadPixiSceneAsset(resolver, assetId, signal);
+    },
     playAudio: createHtmlAudioPlayer(
       (assetId) => session.loaded?.assetResolver.resolveUrl(assetId),
     ),
@@ -96,29 +138,21 @@ async function boot(): Promise<void> {
   const screen = new GameScreenHost(viewport, design);
   session.screen = screen;
 
-  const renderer = new PixiSceneRenderer({
-    canvasParent: screen.frame,
-    assetResolver: session.loaded.assetResolver,
-    editable: false,
-    designResolution: design,
-    background: projectBackgroundToPixiColor(background),
-  });
-  await renderer.whenReady();
-
   const runtime = session.runtime;
   if (!runtime) {
     throw new Error("GameRuntime missing");
   }
 
-  runtime.registerRenderer({
-    kind: "pixi",
-    renderer,
-    layer: { id: "main", renderer: "pixi", order: 0 },
+  session.renderers = await mountExampleGameRenderers({
+    frame: screen.frame,
+    scene: session.loaded.scene,
+    assetResolver: session.loaded.assetResolver,
+    design,
+    backgroundColor: projectBackgroundToPixiColor(background),
+    runtime,
+    gltfCache: session.gltfCache,
   });
-  renderer.setPointerHandlers({
-    onNodePointerEvent: (nodeId, event) =>
-      runtime.emitNodePointerEvent(nodeId, event),
-  });
+
   runtime.loadScene(session.loaded.scene);
   runtime.resize(design.width, design.height);
   runtime.render();

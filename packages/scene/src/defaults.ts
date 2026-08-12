@@ -1,7 +1,10 @@
-import type { Vec2 } from "./types.js";
+import type { Vec2, Vec3 } from "./types.js";
 
 /** Default world position when creating a new scene node. */
 export const DEFAULT_NODE_SPAWN_POSITION: Vec2 = { x: 120, y: 120 };
+
+/** Default world position for new Three nodes (XZ plane drop maps y→z). */
+export const DEFAULT_NODE_SPAWN_POSITION_3D: Vec3 = { x: 0, y: 0, z: 0 };
 
 /** Default width/height for Sprite (and AnimatedSprite placeholder) display size. */
 export const DEFAULT_SPRITE_SIZE = 64;
@@ -40,3 +43,15 @@ export const DEFAULT_MESH_ROPE_BOUNDS_PAD_Y = 16;
 export const DEFAULT_MESH_ROPE_PLACEHOLDER_HEIGHT = 32;
 /** Default Spine playback rate (1 = authored speed). */
 export const DEFAULT_SPINE_TIME_SCALE = 1;
+
+export const DEFAULT_PERSPECTIVE_CAMERA_FOV = 50;
+export const DEFAULT_PERSPECTIVE_CAMERA_NEAR = 0.1;
+export const DEFAULT_PERSPECTIVE_CAMERA_FAR = 1000;
+
+export const DEFAULT_DIRECTIONAL_LIGHT_COLOR = 0xffffff;
+export const DEFAULT_DIRECTIONAL_LIGHT_INTENSITY = 1;
+export const DEFAULT_AMBIENT_LIGHT_COLOR = 0xffffff;
+export const DEFAULT_AMBIENT_LIGHT_INTENSITY = 0.4;
+
+/** Default Model3D playback rate (1 = authored speed). */
+export const DEFAULT_MODEL3D_TIME_SCALE = 1;

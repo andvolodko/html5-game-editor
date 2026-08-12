@@ -1,9 +1,11 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import {
+  mimeTypeForGltfPart,
   mimeTypeForSpinePart,
   mimeTypeForSpineSkeleton,
   parseDeletableAssetFolderPath,
+  resolveGltfPartRelativePath,
   resolveSpinePartRelativePath,
 } from "@game-editor/assets";
 import { ValidationError } from "@game-editor/core";
@@ -126,7 +128,9 @@ export const handleAssetContentRoute: RouteHandler = async (ctx) => {
   const absolute = ctx.deps.projectService.resolveProjectPath(record.path);
   const fileStat = await stat(absolute);
   const mime =
-    record.metadata.kind === "texture" || record.metadata.kind === "audio"
+    record.metadata.kind === "texture" ||
+    record.metadata.kind === "audio" ||
+    record.metadata.kind === "gltf"
       ? record.metadata.mimeType
       : record.metadata.kind === "spine"
         ? mimeTypeForSpineSkeleton(record.metadata.skeletonFormat)
@@ -159,15 +163,21 @@ export const handleAssetPartRoute: RouteHandler = async (ctx) => {
     sendNotFound(ctx.res);
     return true;
   }
-  const relative = resolveSpinePartRelativePath(record, part);
+  const relative =
+    resolveSpinePartRelativePath(record, part) ??
+    resolveGltfPartRelativePath(record, part);
   if (!relative) {
     sendNotFound(ctx.res);
     return true;
   }
   const absolute = ctx.deps.projectService.resolveProjectPath(relative);
   const fileStat = await stat(absolute);
+  const partMime =
+    record.metadata.kind === "spine"
+      ? mimeTypeForSpinePart(relative)
+      : mimeTypeForGltfPart(relative);
   ctx.res.writeHead(200, {
-    "content-type": mimeTypeForSpinePart(relative),
+    "content-type": partMime,
     "content-length": fileStat.size,
     "cache-control": `private, max-age=${String(ASSET_CONTENT_CACHE_MAX_AGE_SECONDS)}`,
     "access-control-allow-origin": "*",

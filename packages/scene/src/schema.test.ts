@@ -142,4 +142,42 @@ describe("scene schema", () => {
       }),
     ).toThrow();
   });
+
+  it("fills Model3D playback defaults for older JSON", () => {
+    const parsed = parseSceneData({
+      id: "scene_1",
+      name: "3D",
+      version: SCENE_SCHEMA_VERSION,
+      renderer: "three",
+      nodes: [
+        {
+          id: "node_1",
+          name: "Model",
+          components: [
+            {
+              type: "Transform3D",
+              id: "comp_t",
+              position: { x: 0, y: 0, z: 0 },
+              rotation: { x: 0, y: 0, z: 0 },
+              scale: { x: 1, y: 1, z: 1 },
+            },
+            {
+              type: "Model3D",
+              id: "comp_m",
+              assetId: "asset_glb",
+            },
+          ],
+          children: [],
+        },
+      ],
+    });
+    const model = parsed.nodes[0]?.components.find((c) => c.type === "Model3D");
+    expect(model).toMatchObject({
+      type: "Model3D",
+      assetId: "asset_glb",
+      loop: true,
+      timeScale: 1,
+      playing: true,
+    });
+  });
 });

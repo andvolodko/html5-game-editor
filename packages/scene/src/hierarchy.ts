@@ -1,6 +1,7 @@
 import type { SceneData, SceneNodeData } from "./types.js";
 import { nodeCanHaveChildren } from "./node-capabilities.js";
 import { findNodeById } from "./queries.js";
+import { canParentAcrossTransformSpace } from "./scene-layers.js";
 
 export interface NodeLocation {
   /** `undefined` means the scene root list (`scene.nodes`). */
@@ -91,6 +92,11 @@ export function canMoveNode(
   }
   // Leaf visuals (Sprite, Text, Mesh*, …) cannot accept scene children.
   if (!nodeCanHaveChildren(parent)) {
+    return false;
+  }
+  // Pixi (2D) and Three (3D) hierarchies must not nest across transform spaces.
+  const child = findNodeById(scene, nodeId);
+  if (!child || !canParentAcrossTransformSpace(child, parent)) {
     return false;
   }
   // Cannot parent under a descendant (would cycle).

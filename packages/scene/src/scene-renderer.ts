@@ -33,6 +33,11 @@ export interface SceneRenderer {
     parentId: string | undefined,
     index: number,
   ): void;
+  /**
+   * Optional: whether this renderer currently owns a runtime object for nodeId.
+   * MultiSceneRenderer uses this to avoid calling ops on filtered-out slots.
+   */
+  hasNode?(nodeId: string): boolean;
   /** Remove all runtime objects. Domain scene is unaffected. */
   clear(): void;
   resize(width: number, height: number): void;

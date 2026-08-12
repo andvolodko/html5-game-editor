@@ -38,7 +38,17 @@ import type {
 
   Transform2DComponentData,
 
+  Transform3DComponentData,
+
   VisualComponentData,
+
+  Model3DComponentData,
+
+  PerspectiveCameraComponentData,
+
+  DirectionalLightComponentData,
+
+  AmbientLightComponentData,
 
 } from "./types.js";
 
@@ -93,6 +103,24 @@ export function getTransform2D(
     (component): component is Transform2DComponentData =>
 
       component.type === "Transform2D",
+
+  );
+
+}
+
+
+
+export function getTransform3D(
+
+  node: SceneNodeData,
+
+): Transform3DComponentData | undefined {
+
+  return node.components.find(
+
+    (component): component is Transform3DComponentData =>
+
+      component.type === "Transform3D",
 
   );
 
@@ -319,6 +347,54 @@ export function getSpine(
 ): SpineComponentData | undefined {
 
   return getComponentByType(node, "Spine");
+
+}
+
+
+
+export function getModel3D(
+
+  node: SceneNodeData,
+
+): Model3DComponentData | undefined {
+
+  return getComponentByType(node, "Model3D");
+
+}
+
+
+
+export function getPerspectiveCamera(
+
+  node: SceneNodeData,
+
+): PerspectiveCameraComponentData | undefined {
+
+  return getComponentByType(node, "PerspectiveCamera");
+
+}
+
+
+
+export function getDirectionalLight(
+
+  node: SceneNodeData,
+
+): DirectionalLightComponentData | undefined {
+
+  return getComponentByType(node, "DirectionalLight");
+
+}
+
+
+
+export function getAmbientLight(
+
+  node: SceneNodeData,
+
+): AmbientLightComponentData | undefined {
+
+  return getComponentByType(node, "AmbientLight");
 
 }
 

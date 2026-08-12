@@ -87,6 +87,10 @@ export class PixiRuntimeGraph {
     return this.nodes.values();
   }
 
+  entries(): IterableIterator<[string, RuntimeNode]> {
+    return this.nodes.entries();
+  }
+
   create(node: SceneNodeData, options: RuntimeNodeCreateOptions): RuntimeNode {
     const editable = options.editable !== false;
     const container = new Container();

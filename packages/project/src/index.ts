@@ -27,3 +27,9 @@ export {
 } from "./project-background.js";
 export type { FittedRect } from "./fit-contain-rect.js";
 export { fitContainRect } from "./fit-contain-rect.js";
+export {
+  GAME_MOUNT_ELEMENT_ID,
+  GAME_LOADING_ELEMENT_ID,
+  GAME_ENTRY_MODULE_SRC,
+  DEFAULT_GAME_INDEX_TITLE,
+} from "./game-shell.js";

@@ -195,6 +195,15 @@ function assetMetadataEquivalent(
   if (left.kind === "audio" && right.kind === "audio") {
     return left.mimeType === right.mimeType;
   }
+  if (left.kind === "gltf" && right.kind === "gltf") {
+    return (
+      left.mimeType === right.mimeType &&
+      left.format === right.format &&
+      stringArraysEqual(left.animations, right.animations) &&
+      stringArraysEqual(left.bufferPaths ?? [], right.bufferPaths ?? []) &&
+      stringArraysEqual(left.imagePaths ?? [], right.imagePaths ?? [])
+    );
+  }
   return false;
 }
 

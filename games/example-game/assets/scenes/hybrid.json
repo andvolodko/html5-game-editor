@@ -1,0 +1,304 @@
+{
+  "id": "scene_hybrid",
+  "name": "Hybrid Demo",
+  "version": 1,
+  "renderer": "hybrid",
+  "nodes": [
+    {
+      "id": "node_ambient",
+      "name": "Ambient Light",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_ambient_t",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "AmbientLight",
+          "id": "comp_ambient",
+          "color": 16777215,
+          "intensity": 0.5
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_sun",
+      "name": "Directional Light",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_sun_t",
+          "position": {
+            "x": 4,
+            "y": 8,
+            "z": 3
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "DirectionalLight",
+          "id": "comp_sun",
+          "color": 16777215,
+          "intensity": 1
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_cube",
+      "name": "Model",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_cube_t",
+          "position": {
+            "x": 3.2456102768890895,
+            "y": 2.282215941637139,
+            "z": 2.9025002049304502
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0.5,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_cube",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_fg_label",
+      "name": "FG Label",
+      "layer": "foreground",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_fg_t",
+          "position": {
+            "x": 640,
+            "y": 180
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_fg_text",
+          "text": "Hybrid: Pixi under / Three / Pixi over",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 28,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fill": 1801230,
+            "align": "center",
+            "letterSpacing": 0,
+            "lineHeight": 34,
+            "wordWrap": false,
+            "wordWrapWidth": 800
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_2160fbbf-b951-4b5c-8133-69ddfc844ab0",
+      "name": "Monster01",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_fead239c-77be-4535-896b-6d4b472172cd",
+          "position": {
+            "x": 2.1395947338787398,
+            "y": 1.8574045172505136,
+            "z": 3.3962208338232607
+          },
+          "rotation": {
+            "x": -1.6764804073031565,
+            "y": 0.09533278218518244,
+            "z": -0.6242490506561422
+          },
+          "scale": {
+            "x": 0.6616131536733877,
+            "y": 0.4672577928547179,
+            "z": 0.5375566708848816
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_1951b809-3e33-4913-a3af-ed023e1551ab",
+          "assetId": "asset_3c85e8f0-0538-4af6-b7d1-33e1a070d3bb",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_6b1df325-e075-4cc7-9962-da99227fc45d",
+      "name": "11",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_f802f1d5-5b11-4672-b5c6-d0a44cdc20e7",
+          "position": {
+            "x": 600,
+            "y": 490
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Sprite",
+          "id": "comp_6b4e7d2c-a2cf-4e4c-b37b-e839d42842d1",
+          "assetId": "asset_b8f604c4-25db-4cf1-bd5f-8fb354ee280f",
+          "width": 1481.2819299118023,
+          "height": 1600
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_9f577172-0248-4db7-b4cd-32f44d81ea12",
+      "name": "2222",
+      "layer": "foreground",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_8129bab4-d747-451c-bd50-f56469dd1c81",
+          "position": {
+            "x": 222,
+            "y": 444
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Sprite",
+          "id": "comp_66d05d47-8a74-4aa3-9b97-d9c3fc7fa63c",
+          "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+          "width": 502,
+          "height": 449
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_c2d97b45-08fe-4197-ab8e-c994e0a6fcf9",
+      "name": "Perspective Camera",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_0db60c60-f579-4f38-ac6c-a34d7600a6c2",
+          "position": {
+            "x": 0,
+            "y": 3.5818939313990263,
+            "z": 10
+          },
+          "rotation": {
+            "x": -0.28936853295021225,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "PerspectiveCamera",
+          "id": "comp_6ac9e6d3-cad6-4ad1-9ecc-56c0a392d8de",
+          "fov": 50,
+          "near": 0.1,
+          "far": 1000,
+          "active": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_f5ae0df2-569f-4267-9140-37b996e8bb6f",
+      "name": "ManaRune",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_23f222e6-13f2-42c5-9d24-25f9ceb11aa1",
+          "position": {
+            "x": 2.1344477578765013,
+            "y": 1.7022265207907759,
+            "z": 3.1234880922413857
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1.5117946048854767,
+            "y": 1,
+            "z": 1.8358491064850573
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_645db93b-1059-41d5-9b0b-399d8e65ee0e",
+          "assetId": "asset_c49eee78-55fa-4261-b489-8b0c90fa9305",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        }
+      ],
+      "children": []
+    }
+  ]
+}

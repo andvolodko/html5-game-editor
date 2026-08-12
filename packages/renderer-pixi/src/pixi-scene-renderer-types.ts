@@ -5,6 +5,8 @@ import type { PixelGridStyle } from "./pixel-grid.js";
 export interface PixiSceneRendererOptions {
   canvasParent: HTMLElement;
   background?: number;
+  /** 0–1 clear alpha (0 = transparent overlay for hybrid FG). */
+  backgroundAlpha?: number;
   /**
    * Resolve scene assetIds to fetchable URLs.
    * Prefer AssetResolver; a plain function is accepted for convenience.

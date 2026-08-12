@@ -39,6 +39,7 @@ function clearPublishedPixiApp(destroyedApp: Application | undefined): void {
 export interface PixiAppLifecycleHost {
   canvasParent: HTMLElement;
   background: number;
+  backgroundAlpha: number;
   designResolution: { width: number; height: number } | undefined;
   editable: boolean;
   camera: ViewportCameraController;
@@ -110,6 +111,7 @@ export class PixiAppLifecycle {
     const design = this.host.designResolution;
     await app.init({
       background: this.host.background,
+      backgroundAlpha: this.host.backgroundAlpha,
       antialias: true,
       autoDensity: true,
       resolution: window.devicePixelRatio || 1,

@@ -10,11 +10,13 @@ import {
   MAX_VIEWPORT_SCALE,
   MIN_SNAP_GRID_SIZE,
   MIN_VIEWPORT_SCALE,
-  PixiSceneRenderer,
   snapPositionToGrid,
   VIEWPORT_SCALE_STEP,
 } from "@game-editor/renderer-pixi";
-import { DEFAULT_NODE_SPAWN_POSITION } from "@game-editor/scene";
+import {
+  DEFAULT_NODE_SPAWN_POSITION,
+  getSceneRendererKind,
+} from "@game-editor/scene";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
 import {
@@ -23,10 +25,25 @@ import {
   type EditorSettingsStorage,
   type PersistedSceneViewSettings,
 } from "../settings/editor-settings-storage";
-import { bindPixiTransformTool } from "../viewport/pixi-transform-tool";
+import type {
+  ThreeTransformMode,
+  ThreeViewMode,
+} from "../viewport/create-scene-viewport";
+import { useSceneViewport } from "../viewport/use-scene-viewport";
 
 function formatScalePercent(scale: number): string {
   return `${Math.round(scale * 100)}%`;
+}
+
+function isTypingTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+  if (target.isContentEditable) {
+    return true;
+  }
+  const tag = target.tagName;
+  return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
 }
 
 export function ScenePanel({
@@ -36,10 +53,12 @@ export function ScenePanel({
 }) {
   const editor = useEditor();
   const hostRef = useRef<HTMLDivElement | null>(null);
-  const rendererRef = useRef<PixiSceneRenderer | null>(null);
   const selectedIds = useEditorState((ed) => ed.selection.getSelectedNodeIds());
   const assetRevision = useEditorState(
     (ed) => ed.assets.getRevision() ?? "",
+  );
+  const sceneRendererKind = useEditorState((ed) =>
+    getSceneRendererKind(ed.getScene()),
   );
   const [dropActive, setDropActive] = useState(false);
   const [scale, setScale] = useState(1);
@@ -51,89 +70,78 @@ export function ScenePanel({
   const [snapGridSizeDraft, setSnapGridSizeDraft] = useState(
     String(initialSceneView.snapGridSize),
   );
-  const snapToGridRef = useRef(snapToGrid);
-  const snapGridSizeRef = useRef(snapGridSize);
-  snapToGridRef.current = snapToGrid;
-  snapGridSizeRef.current = snapGridSize;
+  const [threeTransformMode, setThreeTransformMode] =
+    useState<ThreeTransformMode>("translate");
+  const [threeViewMode, setThreeViewMode] =
+    useState<ThreeViewMode>("camera");
 
-  useEffect(() => {
-    const host = hostRef.current;
-    if (!host) {
-      return;
-    }
-
-    const renderer = new PixiSceneRenderer({
-      canvasParent: host,
-      assetResolver: editor.assets,
-      pixelGrid: true,
-      screenGuides: true,
-    });
-    rendererRef.current = renderer;
-    let cancelled = false;
-    let unbindTool: (() => void) | undefined;
-    let unbindCamera: (() => void) | undefined;
-
-    void renderer.whenReady().then(() => {
-      if (cancelled) {
-        return;
-      }
-      unbindTool = bindPixiTransformTool(editor, renderer);
-      unbindCamera = renderer.subscribeViewportCamera((state) => {
-        setScale(state.scale);
-      });
-      setScale(renderer.getViewportCamera().scale);
-      const orientations = renderer.getScreenGuideOrientations();
-      setShowLandscape(orientations.landscape);
-      setShowPortrait(orientations.portrait);
-      renderer.setSnapToGrid(snapToGridRef.current, snapGridSizeRef.current);
-      editor.attachRenderer(renderer);
-      renderer.setSelectedNodeIds(editor.selection.getSelectedNodeIds());
-    });
-
-    return () => {
-      cancelled = true;
-      unbindCamera?.();
-      unbindTool?.();
-      editor.detachRenderer();
-      rendererRef.current = null;
-      void renderer.destroy();
-    };
-  }, [editor]);
-
-  useEffect(() => {
-    rendererRef.current?.setSnapToGrid(snapToGrid, snapGridSize);
-  }, [snapToGrid, snapGridSize]);
+  const viewportRef = useSceneViewport({
+    editor,
+    hostRef,
+    snapToGrid,
+    snapGridSize,
+    threeTransformMode,
+    threeViewMode,
+    selectedIds,
+    onScale: setScale,
+    onGuides: (landscape, portrait) => {
+      setShowLandscape(landscape);
+      setShowPortrait(portrait);
+    },
+  });
 
   useEffect(() => {
     setSnapGridSizeDraft(String(snapGridSize));
   }, [snapGridSize]);
 
   useEffect(() => {
-    rendererRef.current?.setSelectedNodeIds(selectedIds);
-  }, [selectedIds]);
-
-  // Re-bind resolver when the catalogue changes (import/delete/refresh).
-  // Content URLs are stable by assetId, so path moves do not evict textures.
-  useEffect(() => {
-    rendererRef.current?.setAssetResolver(editor.assets);
+    viewportRef.current?.setAssetResolver(editor.assets);
   }, [editor, assetRevision]);
 
-  // Direct subscription so a late refresh still repaints even if React batched
-  // the revision read before the renderer ref existed.
   useEffect(() => {
     return editor.assets.subscribe(() => {
-      rendererRef.current?.setAssetResolver(editor.assets);
+      viewportRef.current?.setAssetResolver(editor.assets);
     });
   }, [editor]);
 
+  useEffect(() => {
+    if (sceneRendererKind === "pixi") {
+      return;
+    }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) {
+        return;
+      }
+      if (isTypingTarget(event.target)) {
+        return;
+      }
+      if (event.code === "KeyW") {
+        event.preventDefault();
+        setThreeTransformMode("translate");
+        return;
+      }
+      if (event.code === "KeyE") {
+        event.preventDefault();
+        setThreeTransformMode("rotate");
+        return;
+      }
+      if (event.code === "KeyR") {
+        event.preventDefault();
+        setThreeTransformMode("scale");
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [sceneRendererKind]);
+
   const nudgeScale = (direction: 1 | -1) => {
-    const renderer = rendererRef.current;
-    if (!renderer) {
+    const pixi = viewportRef.current?.pixi;
+    if (!pixi) {
       return;
     }
     const next =
-      renderer.getViewportCamera().scale * (1 + direction * VIEWPORT_SCALE_STEP);
-    renderer.setViewportScale(next);
+      pixi.getViewportCamera().scale * (1 + direction * VIEWPORT_SCALE_STEP);
+    pixi.setViewportScale(next);
   };
 
   const persistSceneView = (next: PersistedSceneViewSettings) => {
@@ -146,7 +154,10 @@ export function ScenePanel({
     setSnapToGrid(saved.snapToGrid);
     setSnapGridSize(saved.snapGridSize);
     settings.saveSceneView(saved);
-    rendererRef.current?.setSnapToGrid(saved.snapToGrid, saved.snapGridSize);
+    viewportRef.current?.pixi?.setSnapToGrid(
+      saved.snapToGrid,
+      saved.snapGridSize,
+    );
   };
 
   const commitSnapGridSizeDraft = () => {
@@ -162,6 +173,12 @@ export function ScenePanel({
       snapGridSize: next,
     });
   };
+
+  const isPixi = sceneRendererKind === "pixi";
+  const isThree = sceneRendererKind === "three";
+  const isHybrid = sceneRendererKind === "hybrid";
+  const showPixiChrome = isPixi || isHybrid;
+  const showThreeTools = isThree || isHybrid;
 
   return (
     <div
@@ -189,162 +206,261 @@ export function ScenePanel({
         if (!payload) {
           return;
         }
-        const renderer = rendererRef.current;
-        const world = renderer
-          ? renderer.clientToWorld(event.clientX, event.clientY)
+        const viewport = viewportRef.current;
+        const world = viewport
+          ? viewport.clientToWorld(event.clientX, event.clientY)
           : { ...DEFAULT_NODE_SPAWN_POSITION };
-        const position = snapToGrid
-          ? snapPositionToGrid(world, snapGridSize)
-          : world;
+        const position =
+          showPixiChrome && snapToGrid
+            ? snapPositionToGrid(world, snapGridSize)
+            : world;
         dropAssetOntoScene(editor, payload.assetId, position);
       }}
     >
       <div className="scene-toolbar" role="toolbar" aria-label="Scene preview">
         <div className="scene-toolbar-group">
-          <span className="scene-toolbar-label">Guides</span>
-          <button
-            type="button"
-            className={
-              showLandscape
-                ? "scene-toolbar-toggle active"
-                : "scene-toolbar-toggle"
-            }
-            aria-pressed={showLandscape}
-            title="Landscape screen outlines"
-            onClick={() => {
-              const next = !showLandscape;
-              setShowLandscape(next);
-              rendererRef.current?.setScreenGuideOrientations({
-                landscape: next,
-              });
-            }}
-          >
-            LS
-          </button>
-          <button
-            type="button"
-            className={
-              showPortrait
-                ? "scene-toolbar-toggle active"
-                : "scene-toolbar-toggle"
-            }
-            aria-pressed={showPortrait}
-            title="Portrait screen outlines"
-            onClick={() => {
-              const next = !showPortrait;
-              setShowPortrait(next);
-              rendererRef.current?.setScreenGuideOrientations({
-                portrait: next,
-              });
-            }}
-          >
-            PT
-          </button>
+          <span className="scene-toolbar-label mono">
+            {isHybrid ? "Hybrid" : isThree ? "Three.js" : "PixiJS"}
+          </span>
         </div>
-        <div className="scene-toolbar-group">
-          <span className="scene-toolbar-label">Scale</span>
-          <button
-            type="button"
-            className="scene-toolbar-btn"
-            title="Zoom out"
-            aria-label="Zoom out"
-            disabled={scale <= MIN_VIEWPORT_SCALE + 1e-9}
-            onClick={() => nudgeScale(-1)}
-          >
-            −
-          </button>
-          <input
-            className="scene-scale-input"
-            type="range"
-            min={MIN_VIEWPORT_SCALE}
-            max={MAX_VIEWPORT_SCALE}
-            step={VIEWPORT_SCALE_STEP}
-            value={scale}
-            aria-label="Preview scale"
-            onChange={(event) => {
-              const next = Number(event.target.value);
-              if (!Number.isFinite(next)) {
-                return;
-              }
-              rendererRef.current?.setViewportScale(next);
-            }}
-          />
-          <button
-            type="button"
-            className="scene-toolbar-btn"
-            title="Zoom in"
-            aria-label="Zoom in"
-            disabled={scale >= MAX_VIEWPORT_SCALE - 1e-9}
-            onClick={() => nudgeScale(1)}
-          >
-            +
-          </button>
-          <span className="scene-scale-value mono">{formatScalePercent(scale)}</span>
-          <button
-            type="button"
-            className="scene-toolbar-btn"
-            title="Reset pan and scale"
-            onClick={() => {
-              rendererRef.current?.resetViewportCamera();
-            }}
-          >
-            Reset
-          </button>
-        </div>
-        <div className="scene-toolbar-group">
-          <label
-            className="scene-toolbar-checkbox"
-            title={`Snap node moves and drops to a ${snapGridSize}px grid`}
-          >
-            <input
-              type="checkbox"
-              checked={snapToGrid}
-              onChange={(event) => {
-                persistSceneView({
-                  version: EDITOR_SCENE_VIEW_VERSION,
-                  snapToGrid: event.target.checked,
-                  snapGridSize,
-                });
-              }}
-            />
-            <span>Snap to grid</span>
-          </label>
-          <label
-            className="scene-toolbar-grid-size"
-            title="Snap grid size in world pixels"
-          >
-            <span className="scene-toolbar-label">Size</span>
-            <input
-              className="scene-grid-size-input mono"
-              type="number"
-              min={MIN_SNAP_GRID_SIZE}
-              max={MAX_SNAP_GRID_SIZE}
-              step={1}
-              inputMode="numeric"
-              aria-label="Snap grid size in pixels"
-              disabled={!snapToGrid}
-              value={snapGridSizeDraft}
-              onChange={(event) => {
-                setSnapGridSizeDraft(event.target.value);
-              }}
-              onBlur={commitSnapGridSizeDraft}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  commitSnapGridSizeDraft();
-                  (event.target as HTMLInputElement).blur();
+        {showThreeTools ? (
+          <>
+            <div className="scene-toolbar-group">
+              <span className="scene-toolbar-label">View</span>
+              <button
+                type="button"
+                className={
+                  threeViewMode === "camera"
+                    ? "scene-toolbar-toggle active"
+                    : "scene-toolbar-toggle"
                 }
-              }}
-            />
-            <span className="scene-grid-size-unit">px</span>
-          </label>
-        </div>
-        <span className="scene-toolbar-hint">
-          Middle-mouse drag to pan · Wheel to scale
-        </span>
+                aria-pressed={threeViewMode === "camera"}
+                title="Match Preview (active scene camera)"
+                onClick={() => setThreeViewMode("camera")}
+              >
+                Camera
+              </button>
+              <button
+                type="button"
+                className={
+                  threeViewMode === "editor"
+                    ? "scene-toolbar-toggle active"
+                    : "scene-toolbar-toggle"
+                }
+                aria-pressed={threeViewMode === "editor"}
+                title="Free orbit for editing lights and helpers"
+                onClick={() => setThreeViewMode("editor")}
+              >
+                Orbit
+              </button>
+            </div>
+            <div className="scene-toolbar-group">
+              <span className="scene-toolbar-label">Gizmo</span>
+              <button
+                type="button"
+                className={
+                  threeTransformMode === "translate"
+                    ? "scene-toolbar-toggle active"
+                    : "scene-toolbar-toggle"
+                }
+                aria-pressed={threeTransformMode === "translate"}
+                title="Move (W)"
+                onClick={() => setThreeTransformMode("translate")}
+              >
+                Move
+              </button>
+              <button
+                type="button"
+                className={
+                  threeTransformMode === "rotate"
+                    ? "scene-toolbar-toggle active"
+                    : "scene-toolbar-toggle"
+                }
+                aria-pressed={threeTransformMode === "rotate"}
+                title="Rotate (E)"
+                onClick={() => setThreeTransformMode("rotate")}
+              >
+                Rotate
+              </button>
+              <button
+                type="button"
+                className={
+                  threeTransformMode === "scale"
+                    ? "scene-toolbar-toggle active"
+                    : "scene-toolbar-toggle"
+                }
+                aria-pressed={threeTransformMode === "scale"}
+                title="Scale (R)"
+                onClick={() => setThreeTransformMode("scale")}
+              >
+                Scale
+              </button>
+            </div>
+          </>
+        ) : null}
+        {showPixiChrome ? (
+          <>
+            <div className="scene-toolbar-group">
+              <span className="scene-toolbar-label">Guides</span>
+              <button
+                type="button"
+                className={
+                  showLandscape
+                    ? "scene-toolbar-toggle active"
+                    : "scene-toolbar-toggle"
+                }
+                aria-pressed={showLandscape}
+                title="Landscape screen outlines"
+                onClick={() => {
+                  const next = !showLandscape;
+                  setShowLandscape(next);
+                  viewportRef.current?.pixi?.setScreenGuideOrientations({
+                    landscape: next,
+                  });
+                }}
+              >
+                LS
+              </button>
+              <button
+                type="button"
+                className={
+                  showPortrait
+                    ? "scene-toolbar-toggle active"
+                    : "scene-toolbar-toggle"
+                }
+                aria-pressed={showPortrait}
+                title="Portrait screen outlines"
+                onClick={() => {
+                  const next = !showPortrait;
+                  setShowPortrait(next);
+                  viewportRef.current?.pixi?.setScreenGuideOrientations({
+                    portrait: next,
+                  });
+                }}
+              >
+                PT
+              </button>
+            </div>
+            <div className="scene-toolbar-group">
+              <span className="scene-toolbar-label">Scale</span>
+              <button
+                type="button"
+                className="scene-toolbar-btn"
+                title="Zoom out"
+                aria-label="Zoom out"
+                disabled={scale <= MIN_VIEWPORT_SCALE + 1e-9}
+                onClick={() => nudgeScale(-1)}
+              >
+                −
+              </button>
+              <input
+                className="scene-scale-input"
+                type="range"
+                min={MIN_VIEWPORT_SCALE}
+                max={MAX_VIEWPORT_SCALE}
+                step={VIEWPORT_SCALE_STEP}
+                value={scale}
+                aria-label="Preview scale"
+                onChange={(event) => {
+                  const next = Number(event.target.value);
+                  if (!Number.isFinite(next)) {
+                    return;
+                  }
+                  viewportRef.current?.pixi?.setViewportScale(next);
+                }}
+              />
+              <button
+                type="button"
+                className="scene-toolbar-btn"
+                title="Zoom in"
+                aria-label="Zoom in"
+                disabled={scale >= MAX_VIEWPORT_SCALE - 1e-9}
+                onClick={() => nudgeScale(1)}
+              >
+                +
+              </button>
+              <span className="scene-scale-value mono">
+                {formatScalePercent(scale)}
+              </span>
+              <button
+                type="button"
+                className="scene-toolbar-btn"
+                title="Reset pan and scale"
+                onClick={() => {
+                  viewportRef.current?.pixi?.resetViewportCamera();
+                }}
+              >
+                Reset
+              </button>
+            </div>
+            <div className="scene-toolbar-group">
+              <label
+                className="scene-toolbar-checkbox"
+                title={`Snap node moves and drops to a ${snapGridSize}px grid`}
+              >
+                <input
+                  type="checkbox"
+                  checked={snapToGrid}
+                  onChange={(event) => {
+                    persistSceneView({
+                      version: EDITOR_SCENE_VIEW_VERSION,
+                      snapToGrid: event.target.checked,
+                      snapGridSize,
+                    });
+                  }}
+                />
+                <span>Snap to grid</span>
+              </label>
+              <label
+                className="scene-toolbar-grid-size"
+                title="Snap grid size in world pixels"
+              >
+                <span className="scene-toolbar-label">Size</span>
+                <input
+                  className="scene-grid-size-input mono"
+                  type="number"
+                  min={MIN_SNAP_GRID_SIZE}
+                  max={MAX_SNAP_GRID_SIZE}
+                  step={1}
+                  inputMode="numeric"
+                  aria-label="Snap grid size in pixels"
+                  disabled={!snapToGrid}
+                  value={snapGridSizeDraft}
+                  onChange={(event) => {
+                    setSnapGridSizeDraft(event.target.value);
+                  }}
+                  onBlur={commitSnapGridSizeDraft}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      commitSnapGridSizeDraft();
+                      (event.target as HTMLInputElement).blur();
+                    }
+                  }}
+                />
+                <span className="scene-grid-size-unit">px</span>
+              </label>
+            </div>
+            <span className="scene-toolbar-hint">
+              Middle-mouse drag to pan · Wheel to scale
+              {isHybrid
+                ? " · Select 2D node for Pixi gizmos · W/E/R for 3D gizmo"
+                : ""}
+            </span>
+          </>
+        ) : (
+          <span className="scene-toolbar-hint">
+            Left-drag orbit · Gizmo on selection · W/E/R move/rotate/scale ·
+            Wheel zoom · Drop GLB for Model3D
+          </span>
+        )}
       </div>
       <div ref={hostRef} className="scene-viewport" />
       {dropActive ? (
-        <div className="scene-drop-overlay">Drop asset to create Sprite</div>
+        <div className="scene-drop-overlay">
+          {isThree
+            ? "Drop GLB to create Model3D"
+            : "Drop asset to create Sprite / Model3D"}
+        </div>
       ) : null}
     </div>
   );

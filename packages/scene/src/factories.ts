@@ -2,8 +2,11 @@ export {
   createEmptyScene,
   createEmptyNode,
   createTransform2D,
+  createTransform3D,
+  vec2ToVec3OnXZ,
   createSpriteNode,
   createNodeWithVisual,
+  createNodeWithTransform3D,
 } from "./factories/scene.js";
 export {
   createSpriteComponent,
@@ -26,4 +29,10 @@ export {
   createPerspectiveMeshComponent,
 } from "./factories/mesh.js";
 export { createSpineComponent } from "./factories/spine.js";
+export {
+  createModel3DComponent,
+  createPerspectiveCameraComponent,
+  createDirectionalLightComponent,
+  createAmbientLightComponent,
+} from "./factories/three.js";
 export { createScriptComponent } from "./factories/script.js";

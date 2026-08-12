@@ -1,0 +1,91 @@
+{
+  "id": "scene_world3d",
+  "name": "World 3D",
+  "version": 1,
+  "renderer": "three",
+  "nodes": [
+    {
+      "id": "node_camera",
+      "name": "Perspective Camera",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_camera_t",
+          "position": { "x": 6, "y": 5, "z": 8 },
+          "rotation": { "x": -0.5, "y": 0.6, "z": 0 },
+          "scale": { "x": 1, "y": 1, "z": 1 }
+        },
+        {
+          "type": "PerspectiveCamera",
+          "id": "comp_camera",
+          "fov": 50,
+          "near": 0.1,
+          "far": 2000,
+          "active": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_ambient",
+      "name": "Ambient Light",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_ambient_t",
+          "position": { "x": 0, "y": 0, "z": 0 },
+          "rotation": { "x": 0, "y": 0, "z": 0 },
+          "scale": { "x": 1, "y": 1, "z": 1 }
+        },
+        {
+          "type": "AmbientLight",
+          "id": "comp_ambient",
+          "color": 16777215,
+          "intensity": 0.45
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_sun",
+      "name": "Directional Light",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_sun_t",
+          "position": { "x": 5, "y": 10, "z": 5 },
+          "rotation": { "x": 0, "y": 0, "z": 0 },
+          "scale": { "x": 1, "y": 1, "z": 1 }
+        },
+        {
+          "type": "DirectionalLight",
+          "id": "comp_sun",
+          "color": 16777215,
+          "intensity": 1
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_cube",
+      "name": "Placeholder Model",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_cube_t",
+          "position": { "x": 0, "y": 0.5, "z": 0 },
+          "rotation": { "x": 0, "y": 0.4, "z": 0 },
+          "scale": { "x": 1, "y": 1, "z": 1 }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_cube",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        }
+      ],
+      "children": []
+    }
+  ]
+}

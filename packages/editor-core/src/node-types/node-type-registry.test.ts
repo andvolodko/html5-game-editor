@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   NodeTypeRegistry,
   registerPixiNodeTypes,
+  registerThreeNodeTypes,
   resolveCreateParentId,
 } from "./index.js";
 import {
@@ -28,6 +29,18 @@ describe("NodeTypeRegistry", () => {
       "Mesh",
     ]);
     expect(groups[1]?.types.map((t) => t.id)).toContain("pixi.animated-sprite");
+  });
+
+  it("groups creatable types by PIXI then THREE", () => {
+    const registry = new NodeTypeRegistry();
+    registerPixiNodeTypes(registry);
+    registerThreeNodeTypes(registry);
+    const groups = registry.listRendererMenuGroups();
+    expect(groups.map((g) => g.renderer)).toEqual(["pixi", "three"]);
+    expect(groups[0]?.types.map((t) => t.id)).toContain("pixi.sprite");
+    expect(groups[0]?.types.every((t) => t.renderer === "pixi")).toBe(true);
+    expect(groups[1]?.types.map((t) => t.id)).toContain("three.model");
+    expect(groups[1]?.types.every((t) => t.renderer === "three")).toBe(true);
   });
 
   it("rejects duplicate registration", () => {

@@ -9,7 +9,10 @@
       "import": "./src/index.ts"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -17,10 +20,13 @@
     "lint": "eslint src --max-warnings=0"
   },
   "dependencies": {
+    "@game-editor/assets": "workspace:*",
     "@game-editor/core": "workspace:*",
-    "@game-editor/scene": "workspace:*"
+    "@game-editor/scene": "workspace:*",
+    "three": "^0.185.1"
   },
   "devDependencies": {
+    "@types/three": "^0.185.4",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   }

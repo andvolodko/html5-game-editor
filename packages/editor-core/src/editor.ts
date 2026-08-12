@@ -16,18 +16,27 @@ import {
   getTransform2D,
   type SceneData,
   type SceneRenderer,
+  type SceneRendererKind,
   type Vec2,
 } from "@game-editor/scene";
 import {
   CreateSpriteCommand,
   CreateSpineCommand,
+  CreateModel3DCommand,
   CreateNodeCommand,
   DeleteNodeCommand,
   DuplicateNodeCommand,
   MoveNodeCommand,
   RenameNodeCommand,
   SetSceneNameCommand,
+  SetSceneRendererCommand,
+  SetNodeLayerCommand,
   SetTransform2DCommand,
+  SetTransform3DCommand,
+  SetModel3DCommand,
+  SetPerspectiveCameraCommand,
+  SetDirectionalLightCommand,
+  SetAmbientLightCommand,
   SetSpriteSizeCommand,
   SetVisualComponentCommand,
   AddScriptComponentCommand,
@@ -37,6 +46,11 @@ import {
   type CreateSpriteOptions,
   type CreateNodeOptions,
   type Transform2DPatch,
+  type Transform3DPatch,
+  type Model3DPatch,
+  type PerspectiveCameraPatch,
+  type DirectionalLightPatch,
+  type AmbientLightPatch,
   type SpriteSizePatch,
 } from "./commands/index.js";
 import {
@@ -181,6 +195,13 @@ export class Editor {
     this.viewport.detach();
   }
 
+  /** Remount canvases when scene.renderer kind changes. */
+  subscribeViewportRemount(
+    listener: (kind: SceneRendererKind) => void,
+  ): () => void {
+    return this.viewport.subscribeRendererKindRemount(listener);
+  }
+
   execute(command: Command): void {
     this.commands.execute(command);
     this.document.syncDirtyFromContent();
@@ -243,6 +264,17 @@ export class Editor {
     const asset = this.assets.get(assetId);
     const command = new CreateSpineCommand(this.document, this.selection, {
       name: asset ? humanizeAssetNodeName(asset.name) : "Missing Spine",
+      position,
+      assetId,
+    });
+    this.execute(command);
+    return command.createdNodeId;
+  }
+
+  createModel3DFromAsset(assetId: string, position: Vec2): string {
+    const asset = this.assets.get(assetId);
+    const command = new CreateModel3DCommand(this.document, this.selection, {
+      name: asset ? humanizeAssetNodeName(asset.name) : "Missing Model",
       position,
       assetId,
     });
@@ -337,6 +369,34 @@ export class Editor {
 
   setTransform2D(nodeId: string, patch: Transform2DPatch): void {
     this.execute(new SetTransform2DCommand(this.document, nodeId, patch));
+  }
+
+  setTransform3D(nodeId: string, patch: Transform3DPatch): void {
+    this.execute(new SetTransform3DCommand(this.document, nodeId, patch));
+  }
+
+  setModel3D(nodeId: string, patch: Model3DPatch): void {
+    this.execute(new SetModel3DCommand(this.document, nodeId, patch));
+  }
+
+  setPerspectiveCamera(nodeId: string, patch: PerspectiveCameraPatch): void {
+    this.execute(new SetPerspectiveCameraCommand(this.document, nodeId, patch));
+  }
+
+  setDirectionalLight(nodeId: string, patch: DirectionalLightPatch): void {
+    this.execute(new SetDirectionalLightCommand(this.document, nodeId, patch));
+  }
+
+  setAmbientLight(nodeId: string, patch: AmbientLightPatch): void {
+    this.execute(new SetAmbientLightCommand(this.document, nodeId, patch));
+  }
+
+  setSceneRenderer(renderer: SceneRendererKind): void {
+    this.execute(new SetSceneRendererCommand(this.document, renderer));
+  }
+
+  setNodeLayer(nodeId: string, layer: "background" | "foreground"): void {
+    this.execute(new SetNodeLayerCommand(this.document, nodeId, layer));
   }
 
   /**

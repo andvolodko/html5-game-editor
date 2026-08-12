@@ -7,14 +7,26 @@ import {
   type ComponentDefinition,
 } from "@game-editor/game-components";
 import { projectBackgroundToPixiColor } from "@game-editor/project";
-import { PixiSceneRenderer } from "@game-editor/renderer-pixi";
-import type { SceneData } from "@game-editor/scene";
+import { PixiSceneRenderer, preloadPixiSceneAsset } from "@game-editor/renderer-pixi";
+import { ThreeGltfCache, ThreeSceneRenderer } from "@game-editor/renderer-three";
 import {
+  getSceneRendererKind,
+  nodeBelongsToPixiBackground,
+  nodeBelongsToPixiForeground,
+  nodeBelongsToThree,
+  type SceneData,
+} from "@game-editor/scene";
+import {
+  collectSceneAssetIds,
   createHtmlAudioPlayer,
   GameRuntime,
   GameScreenHost,
 } from "@game-editor/runtime";
 import { installActiveGameRuntime } from "../components/install-active-game-runtime";
+import {
+  createHybridRendererStack,
+  pickHybridNodeId,
+} from "../viewport/hybrid-stack";
 
 export interface GamePreviewStartOptions {
   canvasParent: HTMLElement;
@@ -30,15 +42,21 @@ export interface GamePreviewStartOptions {
   projectId?: string | null;
   /** Load a scene by file id for Change Scene / Loading Scene scripts. */
   loadSceneById?: (sceneId: string) => Promise<SceneData>;
+  /** All project scenes — used by Load All Scene Assets. */
+  listScenes?: () => Promise<readonly SceneData[]>;
+}
+
+interface PreviewRendererBundle {
+  destroy(): Promise<void>;
 }
 
 /**
- * Owns an isolated Pixi + GameRuntime preview session.
+ * Owns an isolated Pixi / Three / hybrid + GameRuntime preview session.
  * Never attaches to EditorViewportController.
  */
 export class GamePreviewSession {
   private screen: GameScreenHost | undefined;
-  private renderer: PixiSceneRenderer | undefined;
+  private bundle: PreviewRendererBundle | undefined;
   private runtime: GameRuntime | undefined;
   private bus: EventBus | undefined;
   private startToken = 0;
@@ -46,7 +64,7 @@ export class GamePreviewSession {
   private lastFrameMs = 0;
 
   get isRunning(): boolean {
-    return this.renderer !== undefined;
+    return this.runtime !== undefined;
   }
 
   /** Preview-session event bus (available while running). */
@@ -61,20 +79,8 @@ export class GamePreviewSession {
     const screen = new GameScreenHost(options.canvasParent, options.resolution);
     const design = screen.getResolution();
     options.canvasParent.style.background = options.background;
-
-    const renderer = new PixiSceneRenderer({
-      canvasParent: screen.frame,
-      assetResolver: options.assetResolver,
-      editable: false,
-      designResolution: design,
-      background: projectBackgroundToPixiColor(options.background),
-    });
-    await renderer.whenReady();
-    if (token !== this.startToken) {
-      await renderer.destroy();
-      screen.destroy();
-      return;
-    }
+    const kind = getSceneRendererKind(options.scene);
+    const pixiBgColor = projectBackgroundToPixiColor(options.background);
 
     const bus = new EventBus();
     const components = cloneComponentRegistry(options.components);
@@ -82,10 +88,12 @@ export class GamePreviewSession {
     await installActiveGameRuntime(options.projectId, components);
 
     if (token !== this.startToken) {
-      await renderer.destroy();
       screen.destroy();
       return;
     }
+
+    const gltfCache = new ThreeGltfCache();
+    gltfCache.setResolver(options.assetResolver);
 
     const runtime = new GameRuntime({
       components,
@@ -105,32 +113,50 @@ export class GamePreviewSession {
         },
         resolveAssetUrl: (assetId) =>
           options.assetResolver.resolveUrl(assetId),
+        listAllSceneAssetIds: async () => {
+          const scenes = options.listScenes
+            ? await options.listScenes()
+            : [options.scene];
+          if (token !== this.startToken) {
+            return [];
+          }
+          return collectSceneAssetIds(scenes);
+        },
+        preloadSceneAsset: async (assetId, signal) => {
+          if (options.assetResolver.resolveGltfUrls?.(assetId)) {
+            await gltfCache.ensureLoaded(assetId);
+            return;
+          }
+          await preloadPixiSceneAsset(options.assetResolver, assetId, signal);
+        },
         playAudio: createHtmlAudioPlayer((assetId) =>
           options.assetResolver.resolveUrl(assetId),
         ),
       },
     });
-    runtime.registerRenderer({
-      kind: "pixi",
-      renderer,
-      layer: { id: "main", renderer: "pixi", order: 0 },
+
+    const bundle = await mountPreviewRenderers({
+      frame: screen.frame,
+      kind,
+      assetResolver: options.assetResolver,
+      design,
+      pixiBgColor,
+      runtime,
+      gltfCache,
     });
-    renderer.setPointerHandlers({
-      onNodePointerEvent: (nodeId, event) =>
-        runtime.emitNodePointerEvent(nodeId, event),
-    });
-    runtime.loadScene(options.scene);
-    runtime.resize(design.width, design.height);
-    runtime.render();
 
     if (token !== this.startToken) {
-      await renderer.destroy();
+      await bundle.destroy();
       screen.destroy();
       return;
     }
 
+    runtime.loadScene(options.scene);
+    runtime.resize(design.width, design.height);
+    runtime.render();
+
     this.screen = screen;
-    this.renderer = renderer;
+    this.bundle = bundle;
     this.runtime = runtime;
     this.bus = bus;
     this.lastFrameMs = performance.now();
@@ -167,15 +193,145 @@ export class GamePreviewSession {
     }
     this.bus?.clear();
     this.bus = undefined;
-    const renderer = this.renderer;
-    this.renderer = undefined;
     this.runtime = undefined;
-    if (renderer) {
-      await renderer.destroy();
+    const bundle = this.bundle;
+    this.bundle = undefined;
+    if (bundle) {
+      await bundle.destroy();
     }
     this.screen?.destroy();
     this.screen = undefined;
   }
+}
+
+async function mountPreviewRenderers(args: {
+  frame: HTMLElement;
+  kind: ReturnType<typeof getSceneRendererKind>;
+  assetResolver: AssetResolver;
+  design: ProjectResolution;
+  pixiBgColor: number;
+  runtime: GameRuntime;
+  gltfCache: ThreeGltfCache;
+}): Promise<PreviewRendererBundle> {
+  const { frame, kind, assetResolver, design, pixiBgColor, runtime, gltfCache } =
+    args;
+  frame.replaceChildren();
+
+  if (kind === "three") {
+    const three = new ThreeSceneRenderer({
+      canvasParent: frame,
+      assetResolver,
+      editable: false,
+      background: pixiBgColor,
+      gltfCache,
+    });
+    await three.whenReady();
+    runtime.registerRenderer({
+      kind: "three",
+      renderer: three,
+      layer: { id: "main", renderer: "three", order: 0 },
+    });
+    const onPointer = (event: PointerEvent) => {
+      const nodeId = three.pickNodeId(event.clientX, event.clientY);
+      if (!nodeId) {
+        return;
+      }
+      if (event.type === "pointerdown") {
+        runtime.emitNodePointerEvent(nodeId, "pointerdown");
+      } else if (event.type === "pointerup") {
+        runtime.emitNodePointerEvent(nodeId, "pointerup");
+        runtime.emitNodePointerEvent(nodeId, "pointertap");
+      }
+    };
+    frame.addEventListener("pointerdown", onPointer);
+    frame.addEventListener("pointerup", onPointer);
+    return {
+      destroy: async () => {
+        frame.removeEventListener("pointerdown", onPointer);
+        frame.removeEventListener("pointerup", onPointer);
+        await three.destroy();
+      },
+    };
+  }
+
+  if (kind === "hybrid") {
+    const stack = await createHybridRendererStack({
+      host: frame,
+      assetResolver,
+      mode: "preview",
+      designResolution: design,
+      pixiBackgroundColor: pixiBgColor,
+      gltfCache,
+    });
+
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: stack.pixiBackground,
+      layer: { id: "pixi-bg", renderer: "pixi", order: 0 },
+      accepts: nodeBelongsToPixiBackground,
+    });
+    runtime.registerRenderer({
+      kind: "three",
+      renderer: stack.three,
+      layer: { id: "three", renderer: "three", order: 100 },
+      accepts: nodeBelongsToThree,
+    });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: stack.pixiForeground,
+      layer: { id: "pixi-fg", renderer: "pixi", order: 200 },
+      accepts: nodeBelongsToPixiForeground,
+    });
+
+    let downNodeId: string | undefined;
+    const onPointerDown = (event: PointerEvent) => {
+      downNodeId = pickHybridNodeId(stack, event.clientX, event.clientY);
+      if (downNodeId) {
+        runtime.emitNodePointerEvent(downNodeId, "pointerdown");
+      }
+    };
+    const onPointerUp = (event: PointerEvent) => {
+      const nodeId = pickHybridNodeId(stack, event.clientX, event.clientY);
+      if (nodeId) {
+        runtime.emitNodePointerEvent(nodeId, "pointerup");
+        if (nodeId === downNodeId) {
+          runtime.emitNodePointerEvent(nodeId, "pointertap");
+        }
+      }
+      downNodeId = undefined;
+    };
+    stack.hosts.inputHost.addEventListener("pointerdown", onPointerDown);
+    stack.hosts.inputHost.addEventListener("pointerup", onPointerUp);
+
+    return {
+      destroy: async () => {
+        stack.hosts.inputHost.removeEventListener("pointerdown", onPointerDown);
+        stack.hosts.inputHost.removeEventListener("pointerup", onPointerUp);
+        await stack.destroy();
+      },
+    };
+  }
+
+  const pixi = new PixiSceneRenderer({
+    canvasParent: frame,
+    assetResolver,
+    editable: false,
+    designResolution: design,
+    background: pixiBgColor,
+  });
+  await pixi.whenReady();
+  runtime.registerRenderer({
+    kind: "pixi",
+    renderer: pixi,
+    layer: { id: "main", renderer: "pixi", order: 0 },
+  });
+  pixi.setPointerHandlers({
+    onNodePointerEvent: (nodeId, event) =>
+      runtime.emitNodePointerEvent(nodeId, event),
+  });
+  return {
+    destroy: () => pixi.destroy(),
+  };
 }
 
 function cloneComponentRegistry(

@@ -14,6 +14,10 @@ export interface AssetResolver {
   resolveSpinePartUrl?(assetId: string, part: string): string | undefined;
   /** Resolved URLs for a spine bundle (skeleton + atlas + pages). */
   resolveSpineUrls?(assetId: string): SpineAssetUrls | undefined;
+  /** Buffer / image bytes for a multi-file glTF bundle. */
+  resolveGltfPartUrl?(assetId: string, part: string): string | undefined;
+  /** Root + part map for GLTFLoader URL rewriting. */
+  resolveGltfUrls?(assetId: string): GltfAssetUrls | undefined;
 }
 
 export interface SpineAssetUrls {
@@ -24,17 +28,28 @@ export interface SpineAssetUrls {
   pageUrls: Readonly<Record<string, string>>;
 }
 
+export interface GltfAssetUrls {
+  rootUrl: string;
+  format: "glb" | "gltf";
+  /** Basename → fetch URL for buffers/images. */
+  partUrls: Readonly<Record<string, string>>;
+}
+
 /** Adapts a plain function to AssetResolver. */
 export function createAssetResolver(
   resolveUrl: (assetId: string) => string | undefined,
   resolveTextureFormat?: (assetId: string) => string | undefined,
   resolveSpinePartUrl?: (assetId: string, part: string) => string | undefined,
   resolveSpineUrls?: (assetId: string) => SpineAssetUrls | undefined,
+  resolveGltfPartUrl?: (assetId: string, part: string) => string | undefined,
+  resolveGltfUrls?: (assetId: string) => GltfAssetUrls | undefined,
 ): AssetResolver {
   return {
     resolveUrl,
     ...(resolveTextureFormat !== undefined ? { resolveTextureFormat } : {}),
     ...(resolveSpinePartUrl !== undefined ? { resolveSpinePartUrl } : {}),
     ...(resolveSpineUrls !== undefined ? { resolveSpineUrls } : {}),
+    ...(resolveGltfPartUrl !== undefined ? { resolveGltfPartUrl } : {}),
+    ...(resolveGltfUrls !== undefined ? { resolveGltfUrls } : {}),
   };
 }

@@ -12,7 +12,7 @@ export type ComponentPropertyKind =
   | "asset";
 
 /** Asset catalogue kinds selectable from Script inspector fields. */
-export type ComponentAssetType = "texture" | "spine" | "audio";
+export type ComponentAssetType = "texture" | "spine" | "audio" | "gltf";
 
 /**
  * Playback pointer events forwarded from the Pixi host (no PIXI types here).
@@ -141,6 +141,19 @@ export interface ScriptRuntimeServices {
   ) => () => void;
   /** Resolve a catalogue assetId to a fetchable URL (audio, textures, …). */
   resolveAssetUrl?: (assetId: string) => string | undefined;
+  /**
+   * Catalogue assetIds referenced by bundled scenes.
+   * Used by Load All Scene Assets.
+   */
+  listAllSceneAssetIds?: () => readonly string[] | Promise<readonly string[]>;
+  /**
+   * Host preload (Pixi Assets / Three glTF cache / fetch).
+   * Shared scripts must not import renderer packages.
+   */
+  preloadSceneAsset?: (
+    assetId: string,
+    signal?: AbortSignal,
+  ) => Promise<void>;
   /** Play an audio catalogue asset by id (host owns HTMLAudioElement / decoder). */
   playAudio?: (assetId: string) => void;
   /** Read the host node's Transform2D (undefined if missing). */

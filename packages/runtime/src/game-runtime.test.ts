@@ -348,6 +348,58 @@ describe("GameRuntime.loadScene", () => {
     expect(text).toMatchObject({ type: "Text", text: "hello" });
   });
 
+  it("setTransform2D skips hybrid layers that do not own the node", () => {
+    const background = createMockRenderer();
+    const foreground = createMockRenderer();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.Mover",
+        displayName: "Mover",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            const t = ctx.services.getTransform2D?.(ctx.nodeId);
+            if (!t || !ctx.services.setTransform2D) {
+              return;
+            }
+            ctx.services.setTransform2D(ctx.nodeId, {
+              position: { x: t.position.x + 1, y: t.position.y },
+            });
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: background,
+      layer: { id: "pixi-bg", renderer: "pixi", order: 0 },
+      accepts: (node) => node.layer !== "foreground",
+    });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: foreground,
+      layer: { id: "pixi-fg", renderer: "pixi", order: 200 },
+      accepts: (node) => node.layer === "foreground",
+    });
+
+    const node = createSpriteNode("Raptor", { x: 0, y: 0 });
+    node.layer = "foreground";
+    node.components.push(createScriptComponent("test.Mover"));
+    const scene = createEmptyScene("Hybrid");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    runtime.tick(1 / 60);
+    expect(foreground.syncTransform).toHaveBeenCalledTimes(1);
+    expect(background.syncTransform).not.toHaveBeenCalled();
+  });
+
   it("tracks frame timing for getPerformanceStats", () => {
     const runtime = new GameRuntime();
     runtime.registerRenderer({

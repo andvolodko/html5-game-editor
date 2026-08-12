@@ -6,6 +6,7 @@ export {
   DEFAULT_EDITOR_BACKGROUND,
 } from "./editor-chrome.js";
 export { PixiSceneRenderer } from "./pixi-scene-renderer.js";
+export { preloadPixiSceneAsset } from "./preload-pixi-scene-asset.js";
 export type {
   PixiSceneRendererOptions,
   PixiPointerHandlers,

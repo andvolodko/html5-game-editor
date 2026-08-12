@@ -1,40 +1,5 @@
-import { cpSync, existsSync } from "node:fs";
-import path from "node:path";
-import { defineConfig, type Plugin } from "vite";
+import { defineGameViteConfig } from "@game-editor/project/vite";
 
-const GAME_CONTENT_ENTRIES = ["assets"] as const;
-
-/**
- * Copies project content folders into the Vite build output so production
- * hosts can serve textures/spine at the same paths as AssetDatabase.
- *
- * Bundled JS goes to `bundle/` (not `assets/`) to avoid colliding with
- * game content under `assets/`.
- */
-function gameContentPlugin(gameRoot = process.cwd()): Plugin {
-  return {
-    name: "game-content",
-    apply: "build",
-    closeBundle() {
-      const outDir = path.resolve(gameRoot, "dist");
-      for (const entry of GAME_CONTENT_ENTRIES) {
-        const source = path.join(gameRoot, entry);
-        if (!existsSync(source)) {
-          continue;
-        }
-        cpSync(source, path.join(outDir, entry), { recursive: true });
-      }
-    },
-  };
-}
-
-export default defineConfig({
-  server: {
-    port: 5175,
-  },
-  build: {
-    outDir: "dist",
-    assetsDir: "bundle",
-  },
-  plugins: [gameContentPlugin()],
+export default defineGameViteConfig({
+  port: 5175,
 });

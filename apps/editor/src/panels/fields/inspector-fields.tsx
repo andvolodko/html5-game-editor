@@ -161,6 +161,41 @@ export function EnumField({
   );
 }
 
+/** Optional string select with empty = undefined (Spine / Model3D clips). */
+export function OptionalSelectField({
+  label,
+  value,
+  options,
+  emptyLabel = "(default)",
+  onCommit,
+}: {
+  label: string;
+  value: string | undefined;
+  options: readonly string[];
+  emptyLabel?: string;
+  onCommit: (value: string | undefined) => void;
+}) {
+  return (
+    <label>
+      {label}
+      <select
+        value={value ?? ""}
+        onChange={(event) => {
+          const next = event.target.value;
+          onCommit(next.length > 0 ? next : undefined);
+        }}
+      >
+        <option value="">{emptyLabel}</option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 export function ColorField({
   label,
   value,

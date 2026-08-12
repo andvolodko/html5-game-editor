@@ -8,9 +8,9 @@
     "./components": "./src/components/index.ts"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -p tsconfig.json --noEmit && vite build",
-    "preview": "vite preview",
+    "dev": "vite --configLoader runner",
+    "build": "tsc -p tsconfig.json --noEmit && vite build --configLoader runner",
+    "preview": "vite preview --configLoader runner",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint src --max-warnings=0"
   },
@@ -19,6 +19,7 @@
     "@game-editor/game-components": "workspace:*",
     "@game-editor/project": "workspace:*",
     "@game-editor/renderer-pixi": "workspace:*",
+    "@game-editor/renderer-three": "workspace:*",
     "@game-editor/runtime": "workspace:*",
     "@game-editor/scene": "workspace:*"
   },

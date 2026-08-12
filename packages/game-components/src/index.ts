@@ -33,6 +33,11 @@ export {
 export { registerSharedComponents } from "./shared/register-shared-components.js";
 export { changeSceneComponent } from "./shared/change-scene.js";
 export {
+  loadAllSceneAssetsComponent,
+  LoadAllSceneAssetsBehaviour,
+  formatLoadAllSceneAssetsText,
+} from "./shared/load-all-scene-assets.js";
+export {
   performanceMeterComponent,
   PerformanceMeterBehaviour,
   formatPerformanceMeterText,

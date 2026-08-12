@@ -2,7 +2,10 @@ import type {
   NodeTypeCategoryGroup,
   NodeTypeDefinition,
   NodeTypeId,
+  NodeTypeRendererGroup,
 } from "./types.js";
+
+const RENDERER_MENU_ORDER: readonly ("pixi" | "three")[] = ["pixi", "three"];
 
 /**
  * Central declarative registry for creatable scene node types.
@@ -69,6 +72,26 @@ export class NodeTypeRegistry {
     return [...groups.values()].sort(
       (a, b) => a.categoryOrder - b.categoryOrder,
     );
+  }
+
+  /** Creatable types grouped by renderer for the Node menu. */
+  listRendererMenuGroups(): NodeTypeRendererGroup[] {
+    const groups = new Map<"pixi" | "three", NodeTypeDefinition[]>();
+    for (const def of this.list()) {
+      if (def.creatable === false) {
+        continue;
+      }
+      let types = groups.get(def.renderer);
+      if (!types) {
+        types = [];
+        groups.set(def.renderer, types);
+      }
+      types.push(def);
+    }
+    return RENDERER_MENU_ORDER.flatMap((renderer) => {
+      const types = groups.get(renderer);
+      return types === undefined ? [] : [{ renderer, types }];
+    });
   }
 
   clear(): void {

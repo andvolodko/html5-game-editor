@@ -4,15 +4,19 @@ import {
   flattenSubtree,
   getSprite,
   getTransform2D,
+  getTransform3D,
   getVisualComponent,
   insertNodeInScene,
   moveNodeInScene,
   detachNodeFromScene,
   type ComponentData,
+  type Model3DComponentData,
   type SceneData,
   type SceneNodeData,
   type ScriptComponentData,
+  type ThreeComponentData,
   type Transform2DComponentData,
+  type Transform3DComponentData,
   type VisualComponentData,
 } from "@game-editor/scene";
 
@@ -159,6 +163,84 @@ export class DocumentManager {
       kind: "update",
       nodeId,
       reason: "transform",
+    });
+  }
+
+  applyTransform3D(nodeId: string, values: Transform3DComponentData): void {
+    const node = findNodeById(this.scene, nodeId);
+    const transform = node ? getTransform3D(node) : undefined;
+    if (!transform) {
+      throw new Error(`DocumentManager: node ${nodeId} missing Transform3D`);
+    }
+
+    transform.position = { ...values.position };
+    transform.rotation = { ...values.rotation };
+    transform.scale = { ...values.scale };
+
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "transform",
+    });
+  }
+
+  applyModel3D(nodeId: string, values: Model3DComponentData): void {
+    this.applyThreeComponent(nodeId, values);
+  }
+
+  /** Replace a Three leaf component (Model3D / camera / light) in-place. */
+  applyThreeComponent(nodeId: string, values: ThreeComponentData): void {
+    const node = findNodeById(this.scene, nodeId);
+    if (!node) {
+      throw new Error(`DocumentManager: unknown node ${nodeId}`);
+    }
+    const index = node.components.findIndex((c) => c.type === values.type);
+    if (index < 0) {
+      throw new Error(
+        `DocumentManager: node ${nodeId} missing ${values.type}`,
+      );
+    }
+    const existing = node.components[index];
+    if (!existing || existing.id !== values.id) {
+      throw new Error(
+        `DocumentManager: ${values.type} identity mismatch on ${nodeId}`,
+      );
+    }
+    node.components[index] = structuredClone(values);
+
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "visual",
+    });
+  }
+
+  setSceneRenderer(renderer: "pixi" | "three" | "hybrid" | undefined): void {
+    if (renderer === undefined) {
+      delete this.scene.renderer;
+    } else {
+      this.scene.renderer = renderer;
+    }
+    this.afterContentMutation({ kind: "scene-meta" });
+  }
+
+  setNodeLayer(
+    nodeId: string,
+    layer: "background" | "foreground" | undefined,
+  ): void {
+    const node = findNodeById(this.scene, nodeId);
+    if (!node) {
+      throw new Error(`DocumentManager: unknown node ${nodeId}`);
+    }
+    if (layer === undefined || layer === "background") {
+      delete node.layer;
+    } else {
+      node.layer = layer;
+    }
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "visual",
     });
   }
 

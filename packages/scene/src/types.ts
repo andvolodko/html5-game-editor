@@ -94,10 +94,16 @@ export type {
 
 } from "./visual-components.js";
 
-
+export type {
+  Model3DComponentData,
+  PerspectiveCameraComponentData,
+  DirectionalLightComponentData,
+  AmbientLightComponentData,
+  ThreeComponentData,
+  LeafThreeComponentType,
+} from "./three-components.js";
 
 export {
-
   LEAF_VISUAL_COMPONENT_TYPES,
 
   isLeafVisualComponentType,
@@ -114,9 +120,14 @@ export {
 
 } from "./visual-components.js";
 
-
+export {
+  LEAF_THREE_COMPONENT_TYPES,
+  isLeafThreeComponentType,
+  isThreeComponentType,
+} from "./three-components.js";
 
 import type { VisualComponentData } from "./visual-components.js";
+import type { ThreeComponentData } from "./three-components.js";
 
 /**
  * User/script component instance. `scriptId` is a stable registry id
@@ -134,6 +145,7 @@ export type ComponentData =
   | Transform2DComponentData
   | Transform3DComponentData
   | VisualComponentData
+  | ThreeComponentData
   | ScriptComponentData;
 
 
@@ -145,6 +157,12 @@ export interface SceneNodeData {
   name: string;
 
   parentId?: string;
+
+  /**
+   * Hybrid 2D stack slot (Pixi under vs over Three).
+   * Ignored for Transform3D nodes. Default `"background"`.
+   */
+  layer?: "background" | "foreground";
 
   components: ComponentData[];
 
@@ -169,6 +187,13 @@ export interface SceneData {
   /** Persisted schema / format version. */
 
   version: number;
+
+  /**
+   * Active viewport renderer for this scene.
+   * Omitted / undefined defaults to `"pixi"`.
+   * `"hybrid"` stacks Pixi background → Three → Pixi foreground.
+   */
+  renderer?: "pixi" | "three" | "hybrid";
 
   nodes: SceneNodeData[];
 

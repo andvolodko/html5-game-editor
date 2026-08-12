@@ -129,6 +129,12 @@ button.active {
   position: relative;
 }
 
+.toolbar-menu-submenu + .toolbar-menu-submenu {
+  border-top: 1px solid var(--border);
+  margin-top: 0.15rem;
+  padding-top: 0.15rem;
+}
+
 .toolbar-menu-submenu-label {
   display: block;
   padding: 0.35rem 0.55rem;
@@ -505,6 +511,25 @@ button.active {
   position: absolute;
   left: 0;
   top: 0;
+  display: block;
+}
+
+.scene-viewport-stack {
+  position: absolute;
+  inset: 0;
+}
+
+.scene-viewport-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.scene-viewport-layer canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
@@ -937,6 +962,12 @@ button.active {
   background: #2a3140;
   border: 1px solid #6a9e78;
   border-radius: 50%;
+}
+
+.asset-row-icon.gltf {
+  background: #2a3140;
+  border: 1px solid #6a9e78;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
 }
 
 .asset-row-icon.spine {

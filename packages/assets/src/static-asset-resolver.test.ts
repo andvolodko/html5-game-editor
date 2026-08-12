@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { AssetDatabase } from "./asset-database.js";
 import {
+  createGltfAssetRecord,
   createSpineAssetRecord,
   createTextureAssetRecord,
 } from "./factories.js";
@@ -50,6 +51,34 @@ describe("createStaticAssetResolver", () => {
     });
     expect(resolver.resolveSpinePartUrl?.("asset_spine", "boy.atlas")).toBe(
       "/assets/spine/boy/boy.atlas",
+    );
+  });
+
+  it("resolves glTF root and part URLs", () => {
+    const database = new AssetDatabase();
+    database.add(
+      createGltfAssetRecord({
+        id: "asset_gltf",
+        name: "hero",
+        path: "assets/models/hero.gltf",
+        mimeType: "model/gltf+json",
+        format: "gltf",
+        bufferPaths: ["assets/models/hero.bin"],
+        imagePaths: ["assets/models/hero.png"],
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+
+    expect(resolver.resolveGltfUrls?.("asset_gltf")).toEqual({
+      rootUrl: "/assets/models/hero.gltf",
+      format: "gltf",
+      partUrls: {
+        "hero.bin": "/assets/models/hero.bin",
+        "hero.png": "/assets/models/hero.png",
+      },
+    });
+    expect(resolver.resolveGltfPartUrl?.("asset_gltf", "hero.bin")).toBe(
+      "/assets/models/hero.bin",
     );
   });
 });

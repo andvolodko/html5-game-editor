@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{title}}</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: {{background}};
+      }
+      #app {
+        width: 100%;
+        height: 100%;
+      }
+      #game-loading {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: {{background}};
+        color: #f2f4f8;
+        font-family: system-ui, sans-serif;
+        font-size: 1.25rem;
+        letter-spacing: 0.04em;
+        user-select: none;
+      }
+      #game-loading p {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="game-loading">
+      <p aria-live="polite">Loading <span id="game-loading-percent">0</span>%</p>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      (function () {
+        var PERCENT_COMPLETE = 100;
+        var overlay = document.getElementById("game-loading");
+        var percentEl = document.getElementById("game-loading-percent");
+        var entryUrl = "__GAME_ENTRY_URL__";
+
+        function downloadPercent(loaded, total) {
+          if (!(total > 0)) {
+            return 0;
+          }
+          return Math.min(
+            PERCENT_COMPLETE,
+            Math.round((loaded / total) * PERCENT_COMPLETE),
+          );
+        }
+
+        function setPercent(value) {
+          if (percentEl) {
+            percentEl.textContent = String(value);
+          }
+        }
+
+        function readBodyWithProgress(response, onPercent) {
+          var total = Number(response.headers.get("Content-Length"));
+          var body = response.body;
+          if (!body) {
+            onPercent(PERCENT_COMPLETE);
+            return Promise.resolve();
+          }
+          var reader = body.getReader();
+          var received = 0;
+          function pump() {
+            return reader.read().then(function (result) {
+              if (result.done) {
+                onPercent(PERCENT_COMPLETE);
+                return;
+              }
+              received += result.value.byteLength;
+              onPercent(downloadPercent(received, total));
+              return pump();
+            });
+          }
+          return pump();
+        }
+
+        function hideOverlay() {
+          if (overlay) {
+            overlay.remove();
+          }
+        }
+
+        function fail(error) {
+          console.error(error);
+          if (overlay) {
+            overlay.textContent = "Failed to load";
+          }
+        }
+
+        fetch(entryUrl)
+          .then(function (response) {
+            if (!response.ok) {
+              throw new Error("Failed to download bundle: " + response.status);
+            }
+            return readBodyWithProgress(response, setPercent);
+          })
+          .then(function () {
+            return import(entryUrl);
+          })
+          .then(hideOverlay)
+          .catch(fail);
+      })();
+    </script>
+  </body>
+</html>

@@ -56,6 +56,17 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
         components: editor.components,
         projectId: editor.project.getActiveProjectId(),
         loadSceneById: async (sceneId) => editor.loadSceneData(sceneId),
+        listScenes: async () => {
+          const currentId = editor.getSceneFileId();
+          const entries = await editor.listScenes();
+          return Promise.all(
+            entries.map((entry) =>
+              entry.id === currentId
+                ? structuredClone(editor.getScene())
+                : editor.loadSceneData(entry.id),
+            ),
+          );
+        },
       })
       .then(() => {
         if (sessionRef.current.isRunning) {

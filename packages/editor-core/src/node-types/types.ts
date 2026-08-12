@@ -34,3 +34,13 @@ export interface NodeTypeCategoryGroup {
   categoryOrder: number;
   types: NodeTypeDefinition[];
 }
+
+export interface NodeTypeRendererGroup {
+  renderer: "pixi" | "three";
+  types: NodeTypeDefinition[];
+}
+
+export const NODE_TYPE_RENDERER_LABELS: Record<"pixi" | "three", string> = {
+  pixi: "PIXI",
+  three: "THREE",
+};

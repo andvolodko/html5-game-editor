@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 import { CompositeCommand } from "@game-editor/commands";
-import type { Transform2DPatch } from "@game-editor/editor-core";
+import type { Transform2DPatch, Transform3DPatch } from "@game-editor/editor-core";
 import {
   SetTransform2DCommand,
   SetVisualComponentCommand,
 } from "@game-editor/editor-core";
 import {
   findNodeById,
+  getAmbientLight,
+  getDirectionalLight,
+  getModel3D,
+  getNodeLayer,
+  getPerspectiveCamera,
+  getSceneRendererKind,
   getSprite,
   getTransform2D,
+  getTransform3D,
   getVisualAnchorOrDefault,
   getVisualComponent,
   positionDeltaForAnchorChange,
@@ -17,6 +24,12 @@ import {
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
 import { VisualComponentInspector } from "./VisualComponentInspector";
+import { Model3DInspector } from "./Model3DInspector";
+import { PerspectiveCameraInspector } from "./PerspectiveCameraInspector";
+import {
+  AmbientLightInspector,
+  DirectionalLightInspector,
+} from "./ThreeLightInspector";
 import { ScriptComponentsInspector } from "./ScriptComponentsInspector";
 
 interface TransformDraft {
@@ -27,6 +40,18 @@ interface TransformDraft {
   scaleY: string;
   anchorX: string;
   anchorY: string;
+}
+
+interface Transform3DDraft {
+  x: string;
+  y: string;
+  z: string;
+  rotX: string;
+  rotY: string;
+  rotZ: string;
+  scaleX: string;
+  scaleY: string;
+  scaleZ: string;
 }
 
 interface SpriteSizeDraft {
@@ -44,6 +69,11 @@ export function InspectorPanel() {
       ? findNodeById(scene, selectedId)
       : undefined;
   const transform = node ? getTransform2D(node) : undefined;
+  const transform3D = node ? getTransform3D(node) : undefined;
+  const model3D = node ? getModel3D(node) : undefined;
+  const perspectiveCamera = node ? getPerspectiveCamera(node) : undefined;
+  const directionalLight = node ? getDirectionalLight(node) : undefined;
+  const ambientLight = node ? getAmbientLight(node) : undefined;
   const sprite = node ? getSprite(node) : undefined;
   const visual = node ? getVisualComponent(node) : undefined;
   const supportsAnchor = visual
@@ -58,6 +88,7 @@ export function InspectorPanel() {
       : undefined;
 
   const [draft, setDraft] = useState<TransformDraft | null>(null);
+  const [draft3D, setDraft3D] = useState<Transform3DDraft | null>(null);
   const [sizeDraft, setSizeDraft] = useState<SpriteSizeDraft | null>(null);
   const [sceneNameDraft, setSceneNameDraft] = useState(scene.name);
 
@@ -92,6 +123,35 @@ export function InspectorPanel() {
   ]);
 
   useEffect(() => {
+    if (!transform3D) {
+      setDraft3D(null);
+      return;
+    }
+    setDraft3D({
+      x: String(transform3D.position.x),
+      y: String(transform3D.position.y),
+      z: String(transform3D.position.z),
+      rotX: String(transform3D.rotation.x),
+      rotY: String(transform3D.rotation.y),
+      rotZ: String(transform3D.rotation.z),
+      scaleX: String(transform3D.scale.x),
+      scaleY: String(transform3D.scale.y),
+      scaleZ: String(transform3D.scale.z),
+    });
+  }, [
+    selectedId,
+    transform3D?.position.x,
+    transform3D?.position.y,
+    transform3D?.position.z,
+    transform3D?.rotation.x,
+    transform3D?.rotation.y,
+    transform3D?.rotation.z,
+    transform3D?.scale.x,
+    transform3D?.scale.y,
+    transform3D?.scale.z,
+  ]);
+
+  useEffect(() => {
     if (!sprite) {
       setSizeDraft(null);
       return;
@@ -111,6 +171,7 @@ export function InspectorPanel() {
       }
       editor.renameScene(trimmed);
     };
+    const rendererKind = getSceneRendererKind(scene);
 
     return (
       <div className="panel">
@@ -130,6 +191,26 @@ export function InspectorPanel() {
                   }
                 }}
               />
+            </label>
+            <label>
+              Renderer
+              <select
+                value={rendererKind}
+                onChange={(event) => {
+                  const next = event.target.value;
+                  if (
+                    next === "pixi" ||
+                    next === "three" ||
+                    next === "hybrid"
+                  ) {
+                    editor.setSceneRenderer(next);
+                  }
+                }}
+              >
+                <option value="pixi">PixiJS (2D)</option>
+                <option value="three">Three.js (3D)</option>
+                <option value="hybrid">Hybrid (Pixi + Three)</option>
+              </select>
             </label>
           </div>
           <dl className="inspector-meta">
@@ -264,9 +345,75 @@ export function InspectorPanel() {
     editor.setSpriteSize(node.id, { width, height });
   };
 
+  const commitTransform3D = () => {
+    if (!transform3D || !draft3D) {
+      return;
+    }
+    const position = {
+      x: Number(draft3D.x),
+      y: Number(draft3D.y),
+      z: Number(draft3D.z),
+    };
+    const rotation = {
+      x: Number(draft3D.rotX),
+      y: Number(draft3D.rotY),
+      z: Number(draft3D.rotZ),
+    };
+    const scale = {
+      x: Number(draft3D.scaleX),
+      y: Number(draft3D.scaleY),
+      z: Number(draft3D.scaleZ),
+    };
+    if (
+      [position.x, position.y, position.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z].some(
+        (n) => Number.isNaN(n),
+      )
+    ) {
+      return;
+    }
+    const unchanged =
+      position.x === transform3D.position.x &&
+      position.y === transform3D.position.y &&
+      position.z === transform3D.position.z &&
+      rotation.x === transform3D.rotation.x &&
+      rotation.y === transform3D.rotation.y &&
+      rotation.z === transform3D.rotation.z &&
+      scale.x === transform3D.scale.x &&
+      scale.y === transform3D.scale.y &&
+      scale.z === transform3D.scale.z;
+    if (unchanged) {
+      return;
+    }
+    const patch: Transform3DPatch = { position, rotation, scale };
+    editor.setTransform3D(node.id, patch);
+  };
+
   return (
     <div className="panel">
       <p className="panel-hint">Inspector · {node.name}</p>
+
+      {transform ? (
+        <section className="inspector-section">
+          <h3>2D Layer</h3>
+          <div className="inspector-grid">
+            <label>
+              Hybrid stack
+              <select
+                value={getNodeLayer(node)}
+                onChange={(event) => {
+                  const next = event.target.value;
+                  if (next === "background" || next === "foreground") {
+                    editor.setNodeLayer(node.id, next);
+                  }
+                }}
+              >
+                <option value="background">Background (under Three)</option>
+                <option value="foreground">Foreground (over Three)</option>
+              </select>
+            </label>
+          </div>
+        </section>
+      ) : null}
 
       {transform && draft ? (
         <section className="inspector-section">
@@ -349,6 +496,54 @@ export function InspectorPanel() {
             </label>
           </div>
         </section>
+      ) : null}
+
+      {transform3D && draft3D ? (
+        <section className="inspector-section">
+          <h3>Transform3D</h3>
+          <div className="inspector-grid">
+            {(
+              [
+                ["Pos X", "x"],
+                ["Pos Y", "y"],
+                ["Pos Z", "z"],
+                ["Rot X", "rotX"],
+                ["Rot Y", "rotY"],
+                ["Rot Z", "rotZ"],
+                ["Scale X", "scaleX"],
+                ["Scale Y", "scaleY"],
+                ["Scale Z", "scaleZ"],
+              ] as const
+            ).map(([label, key]) => (
+              <label key={key}>
+                {label}
+                <input
+                  value={draft3D[key]}
+                  onChange={(event) =>
+                    setDraft3D({ ...draft3D, [key]: event.target.value })
+                  }
+                  onBlur={commitTransform3D}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      commitTransform3D();
+                    }
+                  }}
+                />
+              </label>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {model3D ? <Model3DInspector editor={editor} node={node} /> : null}
+      {perspectiveCamera ? (
+        <PerspectiveCameraInspector editor={editor} node={node} />
+      ) : null}
+      {directionalLight ? (
+        <DirectionalLightInspector editor={editor} node={node} />
+      ) : null}
+      {ambientLight ? (
+        <AmbientLightInspector editor={editor} node={node} />
       ) : null}
 
       {sprite && sizeDraft ? (

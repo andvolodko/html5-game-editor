@@ -4,6 +4,11 @@ import {
   getSpine,
   getSprite,
   getTransform2D,
+  getTransform3D,
+  getModel3D,
+  getPerspectiveCamera,
+  getDirectionalLight,
+  getAmbientLight,
   findNodeById,
   parseSceneData,
   type SceneNodeData,
@@ -12,11 +17,15 @@ import {
 import {
   CreateSpriteCommand,
   CreateSpineCommand,
+  CreateModel3DCommand,
   Editor,
   EditorViewportController,
   DocumentManager,
   KEYBOARD_NUDGE_PIXELS,
   SetTransform2DCommand,
+  SetTransform3DCommand,
+  SetModel3DCommand,
+  SetSceneRendererCommand,
   SelectionManager,
 } from "./index.js";
 
@@ -504,5 +513,117 @@ describe("EditorViewportController", () => {
 
     cmd.undo();
     expect(destroyed).toContain(cmd.createdNodeId);
+  });
+});
+
+describe("editor three commands", () => {
+  it("creates Model3D, sets transform and model, undoes", () => {
+    const editor = new Editor({
+      scene: createEmptyScene("3D", { renderer: "three" }),
+    });
+    const create = new CreateModel3DCommand(
+      editor.document,
+      editor.selection,
+      {
+        name: "Monster",
+        position: { x: 1, y: 2 },
+        assetId: "asset_glb",
+      },
+    );
+    editor.execute(create);
+    const nodeId = create.createdNodeId;
+    expect(getModel3D(editor.getScene().nodes[0]!)?.assetId).toBe("asset_glb");
+
+    editor.execute(
+      new SetTransform3DCommand(editor.document, nodeId, {
+        position: { x: 3, y: 4, z: 5 },
+        rotation: { x: 0.1, y: 0.2, z: 0.3 },
+      }),
+    );
+    expect(getTransform3D(findNodeById(editor.getScene(), nodeId)!).position).toEqual({
+      x: 3,
+      y: 4,
+      z: 5,
+    });
+
+    editor.execute(
+      new SetModel3DCommand(editor.document, nodeId, {
+        playing: false,
+        loop: false,
+        animation: "Walk",
+      }),
+    );
+    expect(getModel3D(findNodeById(editor.getScene(), nodeId)!)).toMatchObject({
+      playing: false,
+      loop: false,
+      animation: "Walk",
+    });
+
+    editor.undo();
+    expect(getModel3D(findNodeById(editor.getScene(), nodeId)!)?.playing).toBe(
+      true,
+    );
+    editor.undo();
+    expect(getTransform3D(findNodeById(editor.getScene(), nodeId)!)?.position).toEqual({
+      x: 1,
+      y: 0,
+      z: 2,
+    });
+    editor.undo();
+    expect(editor.getScene().nodes).toHaveLength(0);
+  });
+
+  it("sets scene renderer kind with undo", () => {
+    const editor = new Editor({ scene: createEmptyScene("R") });
+    editor.execute(new SetSceneRendererCommand(editor.document, "hybrid"));
+    expect(editor.getScene().renderer).toBe("hybrid");
+    editor.undo();
+    expect(editor.getScene().renderer).toBeUndefined();
+  });
+
+  it("edits camera and light props with undo; activating camera is exclusive", () => {
+    const editor = new Editor({
+      scene: createEmptyScene("3D", { renderer: "three" }),
+    });
+    const camA = editor.createNode("three.perspective-camera");
+    const camB = editor.createNode("three.perspective-camera");
+    const sun = editor.createNode("three.directional-light");
+    const ambient = editor.createNode("three.ambient-light");
+
+    editor.setPerspectiveCamera(camA, { fov: 45, active: true });
+    expect(getPerspectiveCamera(findNodeById(editor.getScene(), camA)!)?.fov).toBe(
+      45,
+    );
+    expect(
+      getPerspectiveCamera(findNodeById(editor.getScene(), camA)!)?.active,
+    ).toBe(true);
+
+    editor.setPerspectiveCamera(camB, { active: true });
+    expect(
+      getPerspectiveCamera(findNodeById(editor.getScene(), camB)!)?.active,
+    ).toBe(true);
+    expect(
+      getPerspectiveCamera(findNodeById(editor.getScene(), camA)!)?.active,
+    ).toBeUndefined();
+
+    editor.setDirectionalLight(sun, { intensity: 2.5, color: 0xff0000 });
+    expect(
+      getDirectionalLight(findNodeById(editor.getScene(), sun)!),
+    ).toMatchObject({ intensity: 2.5, color: 0xff0000 });
+
+    editor.setAmbientLight(ambient, { intensity: 0.4 });
+    expect(
+      getAmbientLight(findNodeById(editor.getScene(), ambient)!)?.intensity,
+    ).toBe(0.4);
+
+    editor.undo();
+    editor.undo();
+    editor.undo();
+    expect(
+      getPerspectiveCamera(findNodeById(editor.getScene(), camA)!)?.active,
+    ).toBe(true);
+    expect(
+      getPerspectiveCamera(findNodeById(editor.getScene(), camB)!)?.active,
+    ).toBeUndefined();
   });
 });

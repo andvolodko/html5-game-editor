@@ -144,6 +144,18 @@ export class ViewportCameraController {
     this.setState(createDefaultViewportCamera());
   }
 
+  /**
+   * Copy camera from another layer without notifying listeners
+   * (avoids hybrid bg↔fg sync feedback).
+   */
+  applyExternalState(state: Readonly<ViewportCameraState>): void {
+    this.state = {
+      pan: { x: state.pan.x, y: state.pan.y },
+      scale: state.scale,
+    };
+    this.applyTransform();
+  }
+
   private setState(next: ViewportCameraState): void {
     this.state = next;
     this.applyTransform();

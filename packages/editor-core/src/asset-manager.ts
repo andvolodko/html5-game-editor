@@ -4,6 +4,7 @@ import {
   textureFormatFromMimeType,
   type AssetRecord,
   type AssetResolver,
+  type GltfAssetUrls,
   type SpineAssetUrls,
 } from "@game-editor/assets";
 import { collectReferencedAssetIds, type SceneData } from "@game-editor/scene";
@@ -143,6 +144,46 @@ export class AssetManager implements AssetResolver {
       skeletonFormat: asset.metadata.skeletonFormat,
       atlasUrl,
       pageUrls,
+    };
+  }
+
+  resolveGltfPartUrl(assetId: string, part: string): string | undefined {
+    if (!this.api || !this.database.has(assetId)) {
+      return undefined;
+    }
+    const asset = this.database.get(assetId);
+    if (!asset || asset.metadata.kind !== "gltf") {
+      return undefined;
+    }
+    return this.api.getAssetPartUrl(assetId, part);
+  }
+
+  resolveGltfUrls(assetId: string): GltfAssetUrls | undefined {
+    const asset = this.database.get(assetId);
+    if (!asset || asset.metadata.kind !== "gltf") {
+      return undefined;
+    }
+    const rootUrl = this.resolveUrl(assetId);
+    if (!rootUrl) {
+      return undefined;
+    }
+    const partUrls: Record<string, string> = {};
+    const owned = [
+      ...(asset.metadata.bufferPaths ?? []),
+      ...(asset.metadata.imagePaths ?? []),
+    ];
+    for (const partPath of owned) {
+      const name = getFileBasename(partPath);
+      const url = this.resolveGltfPartUrl(assetId, name);
+      if (!url) {
+        return undefined;
+      }
+      partUrls[name] = url;
+    }
+    return {
+      rootUrl,
+      format: asset.metadata.format,
+      partUrls,
     };
   }
 

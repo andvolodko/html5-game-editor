@@ -13,8 +13,16 @@ export { EditorViewportController } from "./viewport-controller.js";
 export {
   CreateSpriteCommand,
   CreateSpineCommand,
+  CreateModel3DCommand,
   CreateNodeCommand,
   SetTransform2DCommand,
+  SetTransform3DCommand,
+  SetModel3DCommand,
+  SetPerspectiveCameraCommand,
+  SetDirectionalLightCommand,
+  SetAmbientLightCommand,
+  SetSceneRendererCommand,
+  SetNodeLayerCommand,
   SetSpriteSizeCommand,
   SetVisualComponentCommand,
   MoveNodeCommand,
@@ -31,9 +39,16 @@ export {
 } from "./commands/index.js";
 export type {
   Transform2DPatch,
+  Transform3DPatch,
+  Model3DPatch,
+  PerspectiveCameraPatch,
+  DirectionalLightPatch,
+  AmbientLightPatch,
+  SceneRendererKind,
   SpriteSizePatch,
   CreateSpriteOptions,
   CreateSpineOptions,
+  CreateModel3DOptions,
   CreateNodeOptions,
   MoveNodeCommandArgs,
 } from "./commands/index.js";
@@ -42,13 +57,16 @@ export {
   defaultNodeTypeRegistry,
   ensureDefaultNodeTypesRegistered,
   registerPixiNodeTypes,
+  registerThreeNodeTypes,
   resolveCreateParentId,
+  NODE_TYPE_RENDERER_LABELS,
 } from "./node-types/index.js";
 export type {
   NodeTypeId,
   NodeCreationContext,
   NodeTypeDefinition,
   NodeTypeCategoryGroup,
+  NodeTypeRendererGroup,
 } from "./node-types/index.js";
 export {
   ComponentRegistry,

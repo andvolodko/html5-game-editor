@@ -40,6 +40,18 @@ export type {
 
   SpineComponentData,
 
+  Model3DComponentData,
+
+  PerspectiveCameraComponentData,
+
+  DirectionalLightComponentData,
+
+  AmbientLightComponentData,
+
+  ThreeComponentData,
+
+  LeafThreeComponentType,
+
   ScriptComponentData,
 
   VisualComponentData,
@@ -61,6 +73,12 @@ export {
   LEAF_VISUAL_COMPONENT_TYPES,
 
   isLeafVisualComponentType,
+
+  LEAF_THREE_COMPONENT_TYPES,
+
+  isLeafThreeComponentType,
+
+  isThreeComponentType,
 
   DEFAULT_VISUAL_ANCHOR,
 
@@ -116,6 +134,14 @@ export {
 
   spineComponentSchema,
 
+  model3DComponentSchema,
+
+  perspectiveCameraComponentSchema,
+
+  directionalLightComponentSchema,
+
+  ambientLightComponentSchema,
+
   scriptPropertyValueSchema,
 
   scriptComponentSchema,
@@ -141,6 +167,10 @@ export {
   createEmptyNode,
 
   createTransform2D,
+
+  createTransform3D,
+
+  vec2ToVec3OnXZ,
 
   createDefaultTextStyle,
 
@@ -172,11 +202,21 @@ export {
 
   createSpineComponent,
 
+  createModel3DComponent,
+
+  createPerspectiveCameraComponent,
+
+  createDirectionalLightComponent,
+
+  createAmbientLightComponent,
+
   createScriptComponent,
 
   createSpriteNode,
 
   createNodeWithVisual,
+
+  createNodeWithTransform3D,
 
 } from "./factories.js";
 
@@ -185,6 +225,8 @@ export {
   findNodeById,
 
   getTransform2D,
+
+  getTransform3D,
 
   getSprite,
 
@@ -218,6 +260,14 @@ export {
 
   getSpine,
 
+  getModel3D,
+
+  getPerspectiveCamera,
+
+  getDirectionalLight,
+
+  getAmbientLight,
+
   getScriptComponents,
 
   findScript,
@@ -236,13 +286,38 @@ export {
 
   getLeafVisualType,
 
+  getLeafThreeComponent,
+
+  getLeafThreeType,
+
   getNodeTypeId,
 
   visualTypeToNodeTypeId,
 
+  threeTypeToNodeTypeId,
+
   getNodeTypeIcon,
 
 } from "./node-capabilities.js";
+
+export {
+  getSceneRendererKind,
+  getNodeLayer,
+  getNodeTransformSpace,
+  canParentAcrossTransformSpace,
+  nodeBelongsToPixiBackground,
+  nodeBelongsToPixiForeground,
+  nodeBelongsToThree,
+  nodeBelongsToPixi,
+} from "./scene-layers.js";
+export type {
+  SceneNodeLayer,
+  SceneRendererKind,
+  NodeTransformSpace,
+} from "./scene-layers.js";
+
+export { MultiSceneRenderer } from "./multi-scene-renderer.js";
+export type { MultiSceneRendererSlot } from "./multi-scene-renderer.js";
 
 export {
 
@@ -384,6 +459,7 @@ export { collectReferencedAssetIds } from "./asset-refs.js";
 
 export {
   DEFAULT_NODE_SPAWN_POSITION,
+  DEFAULT_NODE_SPAWN_POSITION_3D,
   DEFAULT_SPRITE_SIZE,
   DEFAULT_NINE_SLICE_WIDTH,
   DEFAULT_NINE_SLICE_HEIGHT,
@@ -408,6 +484,14 @@ export {
   DEFAULT_MESH_ROPE_BOUNDS_PAD_Y,
   DEFAULT_MESH_ROPE_PLACEHOLDER_HEIGHT,
   DEFAULT_SPINE_TIME_SCALE,
+  DEFAULT_MODEL3D_TIME_SCALE,
+  DEFAULT_PERSPECTIVE_CAMERA_FOV,
+  DEFAULT_PERSPECTIVE_CAMERA_NEAR,
+  DEFAULT_PERSPECTIVE_CAMERA_FAR,
+  DEFAULT_DIRECTIONAL_LIGHT_COLOR,
+  DEFAULT_DIRECTIONAL_LIGHT_INTENSITY,
+  DEFAULT_AMBIENT_LIGHT_COLOR,
+  DEFAULT_AMBIENT_LIGHT_INTENSITY,
 } from "./defaults.js";
 
 

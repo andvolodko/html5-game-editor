@@ -7,9 +7,13 @@
     ".": {
       "types": "./src/index.ts",
       "import": "./src/index.ts"
+    },
+    "./vite": {
+      "types": "./src/vite/index.ts",
+      "import": "./src/vite/index.ts"
     }
   },
-  "files": ["dist", "src"],
+  "files": ["dist", "src", "templates"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -20,8 +24,12 @@
     "@game-editor/core": "workspace:*",
     "zod": "^3.25.76"
   },
+  "peerDependencies": {
+    "vite": "^7.0.0"
+  },
   "devDependencies": {
     "typescript": "^5.9.2",
+    "vite": "^7.0.6",
     "vitest": "^3.2.4"
   }
 }

@@ -4,14 +4,22 @@ import {
   type LeafVisualComponentType,
   type VisualComponentData,
 } from "./visual-components.js";
+import {
+  isLeafThreeComponentType,
+  type LeafThreeComponentType,
+  type ThreeComponentData,
+} from "./three-components.js";
 
 /**
  * True when the node may accept scene children.
- * Container-like nodes (Transform2D only, or no leaf visual) may have children.
- * Renderable leaf visuals (Sprite, Text, Mesh*, …) may not.
+ * Container-like nodes (Transform only, or no leaf visual/three) may have children.
+ * Renderable leaves (Sprite, Model3D, …) may not.
  */
 export function nodeCanHaveChildren(node: SceneNodeData): boolean {
-  return getLeafVisualComponent(node) === undefined;
+  return (
+    getLeafVisualComponent(node) === undefined &&
+    getLeafThreeComponent(node) === undefined
+  );
 }
 
 export function getLeafVisualComponent(
@@ -29,14 +37,36 @@ export function getLeafVisualType(
   return getLeafVisualComponent(node)?.type;
 }
 
+export function getLeafThreeComponent(
+  node: SceneNodeData,
+): ThreeComponentData | undefined {
+  return node.components.find(
+    (component): component is ThreeComponentData =>
+      isLeafThreeComponentType(component.type),
+  );
+}
+
+export function getLeafThreeType(
+  node: SceneNodeData,
+): LeafThreeComponentType | undefined {
+  return getLeafThreeComponent(node)?.type;
+}
+
 /**
- * Maps a domain visual/container to the stable editor registry id (`pixi.*`).
- * Container = Transform2D present and no leaf visual.
+ * Maps a domain visual/container to the stable editor registry id (`pixi.*` / `three.*`).
  */
 export function getNodeTypeId(node: SceneNodeData): string | undefined {
   const leaf = getLeafVisualType(node);
   if (leaf) {
     return visualTypeToNodeTypeId(leaf);
+  }
+  const threeLeaf = getLeafThreeType(node);
+  if (threeLeaf) {
+    return threeTypeToNodeTypeId(threeLeaf);
+  }
+  const hasTransform3D = node.components.some((c) => c.type === "Transform3D");
+  if (hasTransform3D) {
+    return "three.container";
   }
   const hasTransform2D = node.components.some((c) => c.type === "Transform2D");
   if (hasTransform2D) {
@@ -82,8 +112,42 @@ export function visualTypeToNodeTypeId(type: LeafVisualComponentType): string {
   }
 }
 
+export function threeTypeToNodeTypeId(type: LeafThreeComponentType): string {
+  switch (type) {
+    case "Model3D":
+      return "three.model";
+    case "PerspectiveCamera":
+      return "three.perspective-camera";
+    case "DirectionalLight":
+      return "three.directional-light";
+    case "AmbientLight":
+      return "three.ambient-light";
+    default: {
+      const _exhaustive: never = type;
+      return _exhaustive;
+    }
+  }
+}
+
 /** Hierarchy icon glyph for a node (plain text, not emoji). */
 export function getNodeTypeIcon(node: SceneNodeData): string {
+  const threeLeaf = getLeafThreeType(node);
+  if (threeLeaf) {
+    switch (threeLeaf) {
+      case "Model3D":
+        return "▣";
+      case "PerspectiveCamera":
+        return "◎";
+      case "DirectionalLight":
+        return "☀";
+      case "AmbientLight":
+        return "○";
+      default: {
+        const _exhaustive: never = threeLeaf;
+        return _exhaustive;
+      }
+    }
+  }
   const leaf = getLeafVisualType(node);
   switch (leaf) {
     case "Sprite":

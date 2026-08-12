@@ -1,9 +1,14 @@
 import type { AssetDatabase } from "./asset-database.js";
-import type { AssetResolver, SpineAssetUrls } from "./asset-resolver.js";
+import type {
+  AssetResolver,
+  GltfAssetUrls,
+  SpineAssetUrls,
+} from "./asset-resolver.js";
 import {
   getFileBasename,
   textureFormatFromMimeType,
 } from "./texture-extensions.js";
+import { resolveGltfPartRelativePath } from "./gltf-extensions.js";
 import { resolveSpinePartRelativePath } from "./spine-extensions.js";
 import { normalizeProjectRelativePath } from "./factories.js";
 
@@ -69,6 +74,35 @@ export function createStaticAssetResolver(
         skeletonFormat: asset.metadata.skeletonFormat,
         atlasUrl,
         pageUrls,
+      };
+    },
+
+    resolveGltfPartUrl(assetId: string, part: string): string | undefined {
+      const asset = database.get(assetId);
+      if (!asset) {
+        return undefined;
+      }
+      const partPath = resolveGltfPartRelativePath(asset, part);
+      return partPath === undefined ? undefined : toUrl(partPath);
+    },
+
+    resolveGltfUrls(assetId: string): GltfAssetUrls | undefined {
+      const asset = database.get(assetId);
+      if (!asset || asset.metadata.kind !== "gltf") {
+        return undefined;
+      }
+      const partUrls: Record<string, string> = {};
+      const owned = [
+        ...(asset.metadata.bufferPaths ?? []),
+        ...(asset.metadata.imagePaths ?? []),
+      ];
+      for (const partPath of owned) {
+        partUrls[getFileBasename(partPath)] = toUrl(partPath);
+      }
+      return {
+        rootUrl: toUrl(asset.path),
+        format: asset.metadata.format,
+        partUrls,
       };
     },
   };

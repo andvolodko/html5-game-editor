@@ -110,6 +110,7 @@ export class PixiSceneRenderer implements SceneRenderer {
       {
         canvasParent: options.canvasParent,
         background: options.background ?? DEFAULT_EDITOR_BACKGROUND,
+        backgroundAlpha: options.backgroundAlpha ?? 1,
         designResolution: options.designResolution
           ? {
               width: Math.max(1, Math.floor(options.designResolution.width)),
@@ -209,6 +210,11 @@ export class PixiSceneRenderer implements SceneRenderer {
 
   resetViewportCamera(): void {
     this.camera.reset();
+  }
+
+  /** Copy preview camera (hybrid layer sync). Does not emit subscribe events. */
+  applyViewportCamera(state: Readonly<ViewportCameraState>): void {
+    this.camera.applyExternalState(state);
   }
 
   subscribeViewportCamera(
@@ -389,6 +395,47 @@ export class PixiSceneRenderer implements SceneRenderer {
 
   getNodeCount(): number {
     return this.graph.size;
+  }
+
+  hasNode(nodeId: string): boolean {
+    return this.graph.has(nodeId);
+  }
+
+  /**
+   * Hit-test a client point against visible node visuals (smallest area wins).
+   * Used by hybrid preview input when canvases do not receive DOM events.
+   */
+  pickNodeId(clientX: number, clientY: number): string | undefined {
+    const canvas = this.lifecycle.app?.canvas;
+    if (!canvas) {
+      return undefined;
+    }
+    const rect = canvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    let bestId: string | undefined;
+    let bestArea = Number.POSITIVE_INFINITY;
+    for (const [nodeId, runtime] of this.graph.entries()) {
+      const target = runtime.visual ?? runtime.visualsRoot;
+      if (!target || !target.visible) {
+        continue;
+      }
+      const bounds = target.getBounds();
+      if (
+        x < bounds.x ||
+        y < bounds.y ||
+        x > bounds.x + bounds.width ||
+        y > bounds.y + bounds.height
+      ) {
+        continue;
+      }
+      const area = Math.max(1, bounds.width * bounds.height);
+      if (area < bestArea) {
+        bestArea = area;
+        bestId = nodeId;
+      }
+    }
+    return bestId;
   }
 
   getSize(): { width: number; height: number } {

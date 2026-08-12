@@ -15,6 +15,7 @@ import {
   getText,
   getTransform2D,
   type SceneData,
+  type SceneNodeData,
   type SceneRenderStats,
   type SceneRenderer,
 } from "@game-editor/scene";
@@ -39,6 +40,8 @@ export interface RuntimeRendererRegistration {
   kind: RendererKind;
   renderer: SceneRenderer;
   layer: RenderLayer;
+  /** When set, only matching nodes are synced to this renderer. */
+  accepts?: (node: SceneNodeData) => boolean;
 }
 
 export interface GameRuntimeOptions {
@@ -60,7 +63,7 @@ export interface GameRuntimeOptions {
  * Renderers are registered explicitly so Three.js stays optional per game.
  */
 export class GameRuntime {
-  private readonly renderers = new Map<RendererKind, RuntimeRendererRegistration>();
+  private readonly renderers = new Map<string, RuntimeRendererRegistration>();
   private scene: SceneData | undefined;
   private readonly scriptHost: ScriptHost;
   private readonly bus: EventBus;
@@ -93,6 +96,8 @@ export class GameRuntime {
     const externalSetText = options.services?.setText;
     const externalGetPerformanceStats = options.services?.getPerformanceStats;
     const externalResolveAssetUrl = options.services?.resolveAssetUrl;
+    const externalListAllSceneAssetIds = options.services?.listAllSceneAssetIds;
+    const externalPreloadSceneAsset = options.services?.preloadSceneAsset;
     const externalPlayAudio = options.services?.playAudio;
     const services: ScriptRuntimeServices = {
       bus: this.bus,
@@ -116,6 +121,8 @@ export class GameRuntime {
         return this.subscribeNodePointerEvent(nodeId, event, handler);
       },
       resolveAssetUrl: externalResolveAssetUrl,
+      listAllSceneAssetIds: externalListAllSceneAssetIds,
+      preloadSceneAsset: externalPreloadSceneAsset,
       playAudio: externalPlayAudio,
       getTransform2D: (nodeId) => {
         if (externalGetTransform2D) {
@@ -191,7 +198,7 @@ export class GameRuntime {
   }
 
   registerRenderer(registration: RuntimeRendererRegistration): void {
-    this.renderers.set(registration.kind, registration);
+    this.renderers.set(registration.layer.id, registration);
   }
 
   loadScene(scene: SceneData): void {
@@ -200,6 +207,9 @@ export class GameRuntime {
     for (const registration of this.renderers.values()) {
       registration.renderer.clear();
       for (const node of nodes) {
+        if (registration.accepts && !registration.accepts(node)) {
+          continue;
+        }
         registration.renderer.createNode(node);
       }
     }
@@ -244,7 +254,7 @@ export class GameRuntime {
   }
 
   getRegisteredRenderers(): RendererKind[] {
-    return [...this.renderers.keys()];
+    return [...new Set([...this.renderers.values()].map((r) => r.kind))];
   }
 
   /** Latest frame metrics (also exposed via script `getPerformanceStats`). */
@@ -367,9 +377,9 @@ export class GameRuntime {
     if (patch.scale) {
       transform.scale = { ...patch.scale };
     }
-    for (const registration of this.renderers.values()) {
-      registration.renderer.syncTransform(node);
-    }
+    this.forOwningRenderers(node, (renderer) => {
+      renderer.syncTransform(node);
+    });
   }
 
   private writeText(nodeId: string, text: string): void {
@@ -386,8 +396,30 @@ export class GameRuntime {
       return;
     }
     textComp.text = text;
+    this.forOwningRenderers(node, (renderer) => {
+      renderer.updateNode(node);
+    });
+  }
+
+  /**
+   * Hybrid stacks register multiple renderers; only the slot that accepted
+   * the node at loadScene owns a runtime object for it.
+   */
+  private forOwningRenderers(
+    node: SceneNodeData,
+    fn: (renderer: SceneRenderer) => void,
+  ): void {
     for (const registration of this.renderers.values()) {
-      registration.renderer.updateNode(node);
+      if (registration.accepts && !registration.accepts(node)) {
+        continue;
+      }
+      if (
+        registration.renderer.hasNode &&
+        !registration.renderer.hasNode(node.id)
+      ) {
+        continue;
+      }
+      fn(registration.renderer);
     }
   }
 }

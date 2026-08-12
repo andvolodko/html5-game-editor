@@ -36,6 +36,26 @@
       }
     },
     {
+      "id": "asset_3c85e8f0-0538-4af6-b7d1-33e1a070d3bb",
+      "type": "gltf",
+      "name": "Monster01",
+      "path": "assets/Monster01.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": [
+          "Monster01_action_0",
+          "Monster01_action_1",
+          "Monster01_action_2",
+          "Monster01_action_3",
+          "Monster01_action_4",
+          "Monster01_action_5",
+          "Monster01_action_6"
+        ]
+      }
+    },
+    {
       "id": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
       "type": "texture",
       "name": "2222",
@@ -94,6 +114,18 @@
         "width": 1600,
         "height": 1600,
         "mimeType": "image/webp"
+      }
+    },
+    {
+      "id": "asset_c49eee78-55fa-4261-b489-8b0c90fa9305",
+      "type": "gltf",
+      "name": "ManaRune",
+      "path": "assets/ManaRune.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": []
       }
     }
   ]

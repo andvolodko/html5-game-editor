@@ -4,6 +4,7 @@ import {
   isSupportedTextureExtension,
   mimeTypeForTextureFileName,
 } from "./texture-extensions.js";
+import { ownedGltfPaths } from "./gltf-extensions.js";
 import type { AssetRecord } from "./types.js";
 
 function normalizePath(pathValue: string): string {
@@ -132,6 +133,9 @@ export function ownedAssetPaths(record: AssetRecord): string[] {
       ...record.metadata.pagePaths,
     ];
   }
+  if (record.metadata.kind === "gltf") {
+    return ownedGltfPaths(record);
+  }
   return [record.path];
 }
 
@@ -156,6 +160,22 @@ export function relocateOwnedAssetPaths(
         ...record.metadata,
         atlasPath: relocate(record.metadata.atlasPath),
         pagePaths: record.metadata.pagePaths.map(relocate),
+      },
+    };
+  }
+
+  if (record.metadata.kind === "gltf") {
+    return {
+      ...record,
+      path: relocate(record.path),
+      metadata: {
+        ...record.metadata,
+        ...(record.metadata.bufferPaths
+          ? { bufferPaths: record.metadata.bufferPaths.map(relocate) }
+          : {}),
+        ...(record.metadata.imagePaths
+          ? { imagePaths: record.metadata.imagePaths.map(relocate) }
+          : {}),
       },
     };
   }

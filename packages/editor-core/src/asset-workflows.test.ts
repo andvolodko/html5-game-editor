@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { createEmptyScene, getSpine, getSprite } from "@game-editor/scene";
+import { createEmptyScene, getModel3D, getSpine, getSprite, getTransform3D, findNodeById } from "@game-editor/scene";
 import {
   createAudioAssetRecord,
+  createGltfAssetRecord,
   createSpineAssetRecord,
   createTextureAssetRecord,
   type AssetDatabaseData,
@@ -82,6 +83,24 @@ describe("asset workflows", () => {
     expect(() =>
       dropAssetOntoScene(editor, "asset_sfx", { x: 0, y: 0 }),
     ).toThrow(/Audio assets cannot be dropped/);
+  });
+
+  it("dropAssetOntoScene creates a Model3D node for gltf assets", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    editor.assets.getDatabase().add(
+      createGltfAssetRecord({
+        id: "asset_model",
+        name: "hero",
+        path: "assets/hero.glb",
+        mimeType: "model/gltf-binary",
+        format: "glb",
+      }),
+    );
+    const nodeId = dropAssetOntoScene(editor, "asset_model", { x: 5, y: 6 });
+    const node = findNodeById(editor.getScene(), nodeId);
+    expect(node?.name).toBe("Hero");
+    expect(getModel3D(node!)?.assetId).toBe("asset_model");
+    expect(getTransform3D(node!)?.position).toEqual({ x: 5, y: 0, z: 6 });
   });
 
   it("importDroppedFiles filters unsupported files and reports message", async () => {

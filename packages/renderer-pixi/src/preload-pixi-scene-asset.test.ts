@@ -1,0 +1,116 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  AssetDatabase,
+  createGltfAssetRecord,
+  createSpineAssetRecord,
+  createStaticAssetResolver,
+  createTextureAssetRecord,
+  createAudioAssetRecord,
+} from "@game-editor/assets";
+
+const load = vi.fn(async (_opts: unknown) => undefined);
+
+vi.mock("pixi.js", () => ({
+  Assets: {
+    load: (...args: unknown[]) => load(...args),
+  },
+}));
+
+import { preloadPixiSceneAsset } from "./preload-pixi-scene-asset.js";
+
+describe("preloadPixiSceneAsset", () => {
+  beforeEach(() => {
+    load.mockClear();
+    vi.unstubAllGlobals();
+  });
+
+  it("loads textures through Pixi Assets with the texture parser", async () => {
+    const database = new AssetDatabase();
+    database.add(
+      createTextureAssetRecord({
+        id: "asset_hero",
+        name: "hero",
+        path: "assets/hero.png",
+        width: 8,
+        height: 8,
+        mimeType: "image/png",
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+
+    await preloadPixiSceneAsset(resolver, "asset_hero");
+
+    expect(load).toHaveBeenCalledWith({
+      src: "/assets/hero.png",
+      parser: "texture",
+      format: "png",
+    });
+  });
+
+  it("loads spine atlas pages through Assets and fetches skeleton/atlas", async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      arrayBuffer: async () => new ArrayBuffer(0),
+    }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const database = new AssetDatabase();
+    database.add(
+      createSpineAssetRecord({
+        id: "asset_spine",
+        name: "boy",
+        path: "assets/spine/boy.json",
+        skeletonFormat: "json",
+        atlasPath: "assets/spine/boy.atlas",
+        pagePaths: ["assets/spine/boy.png"],
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+
+    await preloadPixiSceneAsset(resolver, "asset_spine");
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(load).toHaveBeenCalledWith("/assets/spine/boy.png");
+  });
+
+  it("skips glTF assets", async () => {
+    const database = new AssetDatabase();
+    database.add(
+      createGltfAssetRecord({
+        id: "asset_gltf",
+        name: "hero",
+        path: "assets/hero.glb",
+        mimeType: "model/gltf-binary",
+        format: "glb",
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+
+    await preloadPixiSceneAsset(resolver, "asset_gltf");
+    expect(load).not.toHaveBeenCalled();
+  });
+
+  it("fetches non-texture catalogue URLs (audio)", async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      arrayBuffer: async () => new ArrayBuffer(0),
+    }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const database = new AssetDatabase();
+    database.add(
+      createAudioAssetRecord({
+        id: "asset_sfx",
+        name: "click",
+        path: "assets/click.mp3",
+        mimeType: "audio/mpeg",
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+
+    await preloadPixiSceneAsset(resolver, "asset_sfx");
+    expect(load).not.toHaveBeenCalled();
+    expect(fetchMock).toHaveBeenCalled();
+    expect(String(fetchMock.mock.calls[0]?.[0])).toBe("/assets/click.mp3");
+  });
+});

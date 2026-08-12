@@ -12,6 +12,8 @@ import { parseSceneData, type SceneData } from "@game-editor/scene";
 export interface LoadedGameProject {
   project: ProjectData;
   scene: SceneData;
+  /** All bundled scenes keyed by file id (includes `project.startScene`). */
+  scenes: Readonly<Record<string, SceneData>>;
   assets: AssetDatabase;
   assetResolver: AssetResolver;
 }
@@ -38,18 +40,21 @@ export function resolveGameProject(
   input: ResolveGameProjectInput,
 ): LoadedGameProject {
   const project = parseProjectData(input.project);
-  const sceneRaw = input.scenes[project.startScene];
-  if (sceneRaw === undefined) {
+  const scenes: Record<string, SceneData> = {};
+  for (const [sceneId, raw] of Object.entries(input.scenes)) {
+    scenes[sceneId] = parseSceneData(raw);
+  }
+  const scene = scenes[project.startScene];
+  if (scene === undefined) {
     throw new Error(
       `Start scene "${project.startScene}" was not found in bundled scenes`,
     );
   }
-  const scene = parseSceneData(sceneRaw);
   const assets = AssetDatabase.fromUnknown(input.assets);
   const assetResolver = createStaticAssetResolver(assets, {
     baseUrl: input.baseUrl,
   });
-  return { project, scene, assets, assetResolver };
+  return { project, scene, scenes, assets, assetResolver };
 }
 
 /**
