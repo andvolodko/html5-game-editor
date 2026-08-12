@@ -26,16 +26,17 @@ describe("ComponentRegistry", () => {
       }),
     );
 
-    expect(registry.has("shared.Health")).toBe(true);
+    expect(registry.has("shared.ChangeScene")).toBe(true);
+    expect(registry.has("shared.PerformanceMeter")).toBe(true);
     expect(registry.list().map((d) => d.id)).toEqual([
       "shared.ChangeScene",
-      "shared.Health",
       "example.Spin",
+      "shared.PerformanceMeter",
     ]);
     expect(registry.listMenuGroups().map((g) => g.category)).toEqual([
       "Scene",
-      "Gameplay",
       "UI",
+      "Debug",
     ]);
   });
 
@@ -78,7 +79,8 @@ describe("ComponentRegistry", () => {
     );
     const registry = new ComponentRegistry();
     applyComponentCatalog(registry, parsed);
-    expect(registry.has("shared.Health")).toBe(true);
+    expect(registry.has("shared.ChangeScene")).toBe(true);
+    expect(registry.has("shared.PerformanceMeter")).toBe(true);
     expect(parsed.busEvents).toEqual([{ id: "game.start", label: "Start" }]);
   });
 });

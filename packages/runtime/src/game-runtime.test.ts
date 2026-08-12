@@ -9,8 +9,10 @@ import {
 import {
   createContainerNode,
   createEmptyScene,
+  createNodeWithVisual,
   createScriptComponent,
   createSpriteNode,
+  createTextComponent,
   type SceneNodeData,
   type SceneRenderer,
 } from "@game-editor/scene";
@@ -247,5 +249,65 @@ describe("GameRuntime.loadScene", () => {
       position: { x: 110, y: 50 },
       scale: { x: -1, y: 1 },
     });
+  });
+
+  it("exposes setText and syncs Text nodes via updateNode", () => {
+    const renderer = createMockRenderer();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.LabelWriter",
+        displayName: "Label Writer",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            ctx.services.setText?.(ctx.nodeId, "hello");
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+
+    const node = createNodeWithVisual(
+      "Label",
+      { x: 0, y: 0 },
+      createTextComponent({ text: "before" }),
+    );
+    node.components.push(createScriptComponent("test.LabelWriter"));
+    const scene = createEmptyScene("Text");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    runtime.tick(1 / 60);
+    expect(renderer.updateNode).toHaveBeenCalled();
+    const text = runtime
+      .getScene()
+      ?.nodes[0]?.components.find((c) => c.type === "Text");
+    expect(text).toMatchObject({ type: "Text", text: "hello" });
+  });
+
+  it("tracks frame timing for getPerformanceStats", () => {
+    const runtime = new GameRuntime();
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: createMockRenderer(),
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+    runtime.tick(1 / 60);
+    runtime.render();
+    const stats = runtime.getPerformanceStats();
+    expect(stats.frameTimeMs).toBeCloseTo(1000 / 60, 5);
+    expect(stats.fps).toBeCloseTo(60, 5);
+    expect(stats.gameLogicMs).toBeGreaterThanOrEqual(0);
+    expect(stats.rendererMs).toBeGreaterThanOrEqual(0);
   });
 });

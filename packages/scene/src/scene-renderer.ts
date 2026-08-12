@@ -1,5 +1,12 @@
 import type { SceneNodeData } from "./types.js";
 
+/** Optional GPU / canvas counters sampled after a frame (performance overlays). */
+export interface SceneRenderStats {
+  drawCalls: number;
+  triangles: number;
+  canvas: number;
+}
+
 /**
  * Port for translating scene nodes into renderer-specific runtime objects.
  * Implementations live in renderer-pixi / renderer-three.
@@ -28,4 +35,6 @@ export interface SceneRenderer {
   clear(): void;
   resize(width: number, height: number): void;
   render(): void;
+  /** Optional draw-call / triangle / canvas sample for performance meters. */
+  getRenderStats?(): SceneRenderStats;
 }

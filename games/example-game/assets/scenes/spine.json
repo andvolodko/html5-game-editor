@@ -11,8 +11,8 @@
           "type": "Transform2D",
           "id": "comp_cffdb41d-0c71-46ef-ac3d-e5924f34de05",
           "position": {
-            "x": 206.5250157953593,
-            "y": 174.17166083020845
+            "x": 620,
+            "y": 210
           },
           "rotation": 0,
           "scale": {
@@ -139,6 +139,56 @@
           "scriptId": "example.GoSpineButton",
           "properties": {
             "sceneName": "main"
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_afd4a59f-4829-4fa7-822c-4cedea9039ff",
+      "name": "Text 2",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_d92f8177-9278-465a-8232-078a2ba10d9b",
+          "position": {
+            "x": 10,
+            "y": 10
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_cc46521e-dfdd-485c-a148-b5a8eb59fb71",
+          "text": "Text",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 24,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fill": 16777215,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "wordWrap": true,
+            "wordWrapWidth": 440
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_5f9ffeda-4c89-41b6-bbeb-334dbffcdfed",
+          "scriptId": "shared.PerformanceMeter",
+          "properties": {
+            "enabled": true,
+            "refreshIntervalMs": 250
           }
         }
       ],

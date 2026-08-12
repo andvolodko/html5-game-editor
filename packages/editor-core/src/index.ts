@@ -58,6 +58,7 @@ export {
   registerSharedComponents,
   installSceneFlowRuntime,
   changeSceneComponent,
+  performanceMeterComponent,
 } from "@game-editor/game-components";
 export type {
   ComponentDefinition,
@@ -71,6 +72,7 @@ export type {
   ScriptRuntimeServices,
   ScriptTransform2D,
   ScriptTransform2DPatch,
+  ScriptPerformanceStats,
 } from "@game-editor/game-components";
 
 export {

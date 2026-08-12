@@ -12,6 +12,7 @@ export type {
   ScriptRuntimeServices,
   ScriptTransform2D,
   ScriptTransform2DPatch,
+  ScriptPerformanceStats,
   ComponentDefinition,
   ComponentCategoryGroup,
   DefineComponentInput,
@@ -25,11 +26,13 @@ export {
   ComponentRegistry,
   defaultComponentRegistry,
 } from "./registry.js";
-export {
-  healthComponent,
-  registerSharedComponents,
-} from "./shared/health.js";
+export { registerSharedComponents } from "./shared/register-shared-components.js";
 export { changeSceneComponent } from "./shared/change-scene.js";
+export {
+  performanceMeterComponent,
+  PerformanceMeterBehaviour,
+  formatPerformanceMeterText,
+} from "./shared/performance-meter.js";
 export { installSceneFlowRuntime } from "./shared/scene-flow-runtime.js";
 export type {
   ComponentCatalogEntry,

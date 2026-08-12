@@ -132,7 +132,7 @@ export {
 
 } from "./schema.js";
 
-export type { SceneRenderer } from "./scene-renderer.js";
+export type { SceneRenderer, SceneRenderStats } from "./scene-renderer.js";
 
 export {
 

@@ -10,6 +10,8 @@ import {
 } from "@game-editor/game-components";
 import { Editor } from "./editor.js";
 
+const SHARED_METER = "shared.PerformanceMeter";
+
 describe("script component commands", () => {
   function editorWithCatalog(): Editor {
     const editor = new Editor({ scene: createEmptyScene("Test") });
@@ -35,17 +37,19 @@ describe("script component commands", () => {
     const editor = editorWithCatalog();
     const nodeId = editor.createSprite("Hero");
 
-    const componentId = editor.addScriptComponent(nodeId, "shared.Health");
+    const componentId = editor.addScriptComponent(nodeId, SHARED_METER);
     const node = editor.getScene().nodes[0]!;
     expect(getScriptComponents(node)).toHaveLength(1);
-    expect(findScript(node, "shared.Health")?.id).toBe(componentId);
-    expect(findScript(node, "shared.Health")?.properties.maxHp).toBe(100);
+    expect(findScript(node, SHARED_METER)?.id).toBe(componentId);
+    expect(findScript(node, SHARED_METER)?.properties.refreshIntervalMs).toBe(
+      250,
+    );
 
     editor.undo();
     expect(getScriptComponents(editor.getScene().nodes[0]!)).toHaveLength(0);
 
     editor.redo();
-    expect(findScript(editor.getScene().nodes[0]!, "shared.Health")?.id).toBe(
+    expect(findScript(editor.getScene().nodes[0]!, SHARED_METER)?.id).toBe(
       componentId,
     );
   });
@@ -53,8 +57,8 @@ describe("script component commands", () => {
   it("rejects duplicate singleton scripts", () => {
     const editor = editorWithCatalog();
     const nodeId = editor.createSprite("Hero");
-    editor.addScriptComponent(nodeId, "shared.Health");
-    expect(() => editor.addScriptComponent(nodeId, "shared.Health")).toThrow(
+    editor.addScriptComponent(nodeId, SHARED_METER);
+    expect(() => editor.addScriptComponent(nodeId, SHARED_METER)).toThrow(
       /already on node/,
     );
   });
@@ -62,35 +66,37 @@ describe("script component commands", () => {
   it("removes a script with undo restoring order", () => {
     const editor = editorWithCatalog();
     const nodeId = editor.createSprite("Hero");
-    editor.addScriptComponent(nodeId, "shared.Health");
+    editor.addScriptComponent(nodeId, SHARED_METER);
     const spinId = editor.addScriptComponent(nodeId, "example.Spin");
 
     editor.removeComponent(nodeId, spinId);
     expect(
       getScriptComponents(editor.getScene().nodes[0]!).map((c) => c.scriptId),
-    ).toEqual(["shared.Health"]);
+    ).toEqual([SHARED_METER]);
 
     editor.undo();
     expect(
       getScriptComponents(editor.getScene().nodes[0]!).map((c) => c.scriptId),
-    ).toEqual(["shared.Health", "example.Spin"]);
+    ).toEqual([SHARED_METER, "example.Spin"]);
   });
 
   it("patches script properties with undo", () => {
     const editor = editorWithCatalog();
     const nodeId = editor.createSprite("Hero");
-    const componentId = editor.addScriptComponent(nodeId, "shared.Health");
+    const componentId = editor.addScriptComponent(nodeId, SHARED_METER);
 
-    editor.setScriptProperties(nodeId, componentId, { currentHp: 42 });
+    editor.setScriptProperties(nodeId, componentId, {
+      refreshIntervalMs: 42,
+    });
     expect(
-      findScript(editor.getScene().nodes[0]!, "shared.Health")?.properties
-        .currentHp,
+      findScript(editor.getScene().nodes[0]!, SHARED_METER)?.properties
+        .refreshIntervalMs,
     ).toBe(42);
 
     editor.undo();
     expect(
-      findScript(editor.getScene().nodes[0]!, "shared.Health")?.properties
-        .currentHp,
-    ).toBe(100);
+      findScript(editor.getScene().nodes[0]!, SHARED_METER)?.properties
+        .refreshIntervalMs,
+    ).toBe(250);
   });
 });

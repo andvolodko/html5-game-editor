@@ -1,6 +1,7 @@
 import { EventBus, type RendererKind, type RenderLayer } from "@game-editor/core";
 import type {
   ComponentRegistry,
+  ScriptPerformanceStats,
   ScriptRuntimeServices,
   ScriptTransform2D,
   ScriptTransform2DPatch,
@@ -8,11 +9,22 @@ import type {
 import {
   findNodeById,
   flattenNodes,
+  getBitmapText,
+  getHTMLText,
+  getText,
   getTransform2D,
   type SceneData,
+  type SceneRenderStats,
   type SceneRenderer,
 } from "@game-editor/scene";
 import { ScriptHost } from "./script-host.js";
+
+const MS_PER_SECOND = 1000;
+const EMPTY_RENDER_STATS: SceneRenderStats = {
+  drawCalls: 0,
+  triangles: 0,
+  canvas: 0,
+};
 
 export interface RuntimeRendererRegistration {
   kind: RendererKind;
@@ -47,6 +59,18 @@ export class GameRuntime {
   private changeSceneHandler:
     | ((sceneId: string) => void | Promise<void>)
     | undefined;
+  private lastTickMs = 0;
+  private lastRenderPassMs = 0;
+  private lastFrameDt = 0;
+  private performanceStats: ScriptPerformanceStats = {
+    frameTimeMs: 0,
+    fps: 0,
+    drawCalls: 0,
+    triangles: 0,
+    gameLogicMs: 0,
+    rendererMs: 0,
+    canvas: 0,
+  };
 
   constructor(options: GameRuntimeOptions = {}) {
     this.bus = options.services?.bus ?? new EventBus();
@@ -54,6 +78,8 @@ export class GameRuntime {
     const externalOnNodeClick = options.services?.onNodeClick;
     const externalGetTransform2D = options.services?.getTransform2D;
     const externalSetTransform2D = options.services?.setTransform2D;
+    const externalSetText = options.services?.setText;
+    const externalGetPerformanceStats = options.services?.getPerformanceStats;
     const services: ScriptRuntimeServices = {
       bus: this.bus,
       changeScene: (sceneId) => {
@@ -81,6 +107,19 @@ export class GameRuntime {
           return;
         }
         this.writeTransform2D(nodeId, patch);
+      },
+      setText: (nodeId, text) => {
+        if (externalSetText) {
+          externalSetText(nodeId, text);
+          return;
+        }
+        this.writeText(nodeId, text);
+      },
+      getPerformanceStats: () => {
+        if (externalGetPerformanceStats) {
+          return externalGetPerformanceStats();
+        }
+        return this.performanceStats;
       },
     };
     this.scriptHost = new ScriptHost(options.components, services);
@@ -140,7 +179,10 @@ export class GameRuntime {
    * Optional per-frame hook for script `update`. Not driven automatically in v1.
    */
   tick(dt: number): void {
+    this.lastFrameDt = Math.max(0, dt);
+    const startedMs = performance.now();
     this.scriptHost.tick(dt);
+    this.lastTickMs = performance.now() - startedMs;
   }
 
   resize(width: number, height: number): void {
@@ -150,16 +192,60 @@ export class GameRuntime {
   }
 
   render(): void {
+    const startedMs = performance.now();
     const ordered = [...this.renderers.values()].sort(
       (a, b) => a.layer.order - b.layer.order,
     );
     for (const registration of ordered) {
       registration.renderer.render();
     }
+    this.lastRenderPassMs = performance.now() - startedMs;
+    this.refreshPerformanceStats();
   }
 
   getRegisteredRenderers(): RendererKind[] {
     return [...this.renderers.keys()];
+  }
+
+  /** Latest frame metrics (also exposed via script `getPerformanceStats`). */
+  getPerformanceStats(): Readonly<ScriptPerformanceStats> {
+    return this.performanceStats;
+  }
+
+  private refreshPerformanceStats(): void {
+    const frameTimeMs = this.lastFrameDt * MS_PER_SECOND;
+    const fps = frameTimeMs > 0 ? MS_PER_SECOND / frameTimeMs : 0;
+    const renderStats = this.sampleRendererStats();
+    const gameLogicMs = this.lastTickMs;
+    const rendererMs =
+      this.lastRenderPassMs > 0
+        ? this.lastRenderPassMs
+        : Math.max(0, frameTimeMs - gameLogicMs);
+    this.performanceStats = {
+      frameTimeMs,
+      fps,
+      drawCalls: renderStats.drawCalls,
+      triangles: renderStats.triangles,
+      gameLogicMs,
+      rendererMs,
+      canvas: renderStats.canvas,
+    };
+  }
+
+  private sampleRendererStats(): SceneRenderStats {
+    let merged: SceneRenderStats = { ...EMPTY_RENDER_STATS };
+    for (const registration of this.renderers.values()) {
+      const sample = registration.renderer.getRenderStats?.();
+      if (!sample) {
+        continue;
+      }
+      merged = {
+        drawCalls: merged.drawCalls + sample.drawCalls,
+        triangles: merged.triangles + sample.triangles,
+        canvas: merged.canvas + sample.canvas,
+      };
+    }
+    return merged;
   }
 
   private subscribeNodeClick(
@@ -221,6 +307,25 @@ export class GameRuntime {
     }
     for (const registration of this.renderers.values()) {
       registration.renderer.syncTransform(node);
+    }
+  }
+
+  private writeText(nodeId: string, text: string): void {
+    const scene = this.scene;
+    if (!scene) {
+      return;
+    }
+    const node = findNodeById(scene, nodeId);
+    if (!node) {
+      return;
+    }
+    const textComp = getText(node) ?? getHTMLText(node) ?? getBitmapText(node);
+    if (!textComp) {
+      return;
+    }
+    textComp.text = text;
+    for (const registration of this.renderers.values()) {
+      registration.renderer.updateNode(node);
     }
   }
 }

@@ -79,6 +79,20 @@ export interface ScriptTransform2DPatch {
   scale?: { x: number; y: number };
 }
 
+/**
+ * Frame / renderer metrics for overlays such as Performance Meter.
+ * Host fills timing; draw/triangle/canvas may come from the active renderer.
+ */
+export interface ScriptPerformanceStats {
+  frameTimeMs: number;
+  fps: number;
+  drawCalls: number;
+  triangles: number;
+  gameLogicMs: number;
+  rendererMs: number;
+  canvas: number;
+}
+
 /** Services provided by GameRuntime / preview to script `create` factories. */
 export interface ScriptRuntimeServices {
   bus: EventBus;
@@ -96,6 +110,13 @@ export interface ScriptRuntimeServices {
    * Runtime-only; does not write scene files.
    */
   setTransform2D?: (nodeId: string, patch: ScriptTransform2DPatch) => void;
+  /**
+   * Set Text / HTMLText / BitmapText content on a node and sync renderers.
+   * Runtime-only; does not write scene files.
+   */
+  setText?: (nodeId: string, text: string) => void;
+  /** Latest frame performance snapshot (undefined when host has none yet). */
+  getPerformanceStats?: () => ScriptPerformanceStats | undefined;
 }
 
 export interface ScriptCreateContext {
@@ -107,7 +128,7 @@ export interface ScriptCreateContext {
 }
 
 export interface ComponentDefinition {
-  /** Stable registry id, e.g. `shared.Health`. Never a filesystem path. */
+  /** Stable registry id, e.g. `shared.ChangeScene`. Never a filesystem path. */
   id: string;
   displayName: string;
   category: string;

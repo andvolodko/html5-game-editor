@@ -15,9 +15,11 @@ import {
   DEFAULT_VISUAL_ANCHOR,
   type SceneNodeData,
   type SceneRenderer,
+  type SceneRenderStats,
   type SpriteGizmoHandle,
   type Vec2,
 } from "@game-editor/scene";
+import { samplePixiRenderStats } from "./pixi-render-stats.js";
 import { MOUSE_BUTTON_MIDDLE } from "@game-editor/shared";
 import { clientPointToWorld } from "./viewport-math.js";
 import {
@@ -933,6 +935,10 @@ export class PixiSceneRenderer implements SceneRenderer {
 
   resetSyncStats(): void {
     this.syncStats = { created: 0, destroyed: 0, reparented: 0, updated: 0 };
+  }
+
+  getRenderStats(): SceneRenderStats {
+    return samplePixiRenderStats(this.app);
   }
 
   private asNodeDragHost(): NodeDragHost {
