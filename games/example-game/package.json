@@ -1,0 +1,22 @@
+{
+  "name": "@games/example-game",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src --max-warnings=0"
+  },
+  "dependencies": {
+    "@game-editor/renderer-pixi": "workspace:*",
+    "@game-editor/runtime": "workspace:*",
+    "@game-editor/scene": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "vite": "^7.0.6"
+  }
+}

@@ -1,0 +1,150 @@
+---
+
+description: Core architectural rules for the game editor, runtime, scene model and renderers
+alwaysApply: true
+-----------------
+
+# Architecture Rules
+
+Read `PROJECT.md` before implementing architectural or cross-package changes.
+
+## Critical invariants
+
+Never violate these rules unless the user explicitly requests an architecture change.
+
+1. Runtime packages MUST NOT depend on editor packages.
+2. Serialized scene/domain models MUST NOT contain `PIXI.*` or `THREE.*` runtime objects.
+3. Renderer-specific implementation belongs in `renderer-pixi` or `renderer-three`.
+4. Persisted references to assets must use stable `assetId` values rather than filesystem paths.
+5. Persisted scene/project formats must be versioned.
+6. Browser filesystem operations must go through the project server.
+7. Filesystem operations must be constrained to the active project root.
+8. Each game must be independently buildable.
+9. Games that do not use Three.js must not be forced to bundle Three.js.
+10. React components must not become the canonical source of truth for scene/domain state.
+
+## Scene architecture
+
+Prefer component composition over deep inheritance.
+
+Prefer:
+
+```text
+Node
+├── Transform2D
+├── Sprite
+└── Button
+```
+
+over:
+
+```text
+SpriteButtonNode extends SpriteNode...
+```
+
+Scene data must remain:
+
+* serializable;
+* deterministic;
+* Git-friendly;
+* renderer-independent.
+
+## Editor mutations
+
+Any meaningful user mutation must be evaluated for undo/redo support.
+
+Prefer mutation flow:
+
+```text
+UI
+→ Command
+→ Domain model
+→ renderer synchronization
+```
+
+Avoid:
+
+```text
+React component
+→ directly mutates PIXI.Sprite / THREE.Object3D
+```
+
+Continuous interactions such as dragging must produce one command per completed interaction, not one command per pointer movement.
+
+## Asset architecture
+
+Scene nodes reference assets by stable ID.
+
+Do not persist paths such as:
+
+```ts
+"../../assets/button.png"
+```
+
+Persist:
+
+```ts
+"asset_123"
+```
+
+Asset path changes must be handled by AssetDatabase.
+
+## Package boundaries
+
+Before importing across packages:
+
+1. verify dependency direction;
+2. avoid cycles;
+3. avoid importing app code into packages;
+4. keep domain packages independent of UI frameworks.
+
+## TypeScript
+
+* Use strict TypeScript.
+* Avoid `any`.
+* Prefer `unknown` plus validation.
+* Prefer discriminated unions for serialized variants.
+* Public APIs require explicit types.
+* Do not hide type errors using assertions unless justified.
+
+## New features
+
+Before implementing a significant feature:
+
+1. inspect existing code;
+2. identify affected packages;
+3. describe the implementation plan;
+4. identify undo/redo implications;
+5. identify persistence/schema implications;
+6. identify renderer implications;
+7. identify tests.
+
+For architectural changes, do not start coding until the implementation plan is coherent.
+
+## Tests
+
+Core domain behavior should have tests.
+
+Especially test:
+
+* undo/redo;
+* serialization;
+* migrations;
+* asset references;
+* resource locking;
+* scene operations;
+* asset pipeline behavior.
+
+## Quality
+
+Avoid:
+
+* god classes;
+* global mutable singletons;
+* uncontrolled event buses;
+* deep inheritance;
+* duplicate domain models;
+* silent error handling;
+* hidden cyclic dependencies.
+
+Prefer explicit, testable modules with clear ownership.

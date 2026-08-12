@@ -1,0 +1,152 @@
+:root {
+  color-scheme: dark;
+  --bg: #14161c;
+  --bg-elevated: #1b1f29;
+  --bg-panel: #171a22;
+  --border: #2a3140;
+  --text: #e8ecf4;
+  --text-muted: #9aa3b5;
+  --accent: #5b8cff;
+  --toolbar-height: 44px;
+  font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button.active {
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.editor-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: var(--toolbar-height);
+  padding: 0 0.85rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.toolbar-brand {
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.toolbar-meta {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.toolbar-sep {
+  margin: 0 0.35rem;
+}
+
+.toolbar-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.4rem;
+}
+
+.editor-dock-host {
+  flex: 1;
+  min-height: 0;
+}
+
+.editor-dockview {
+  height: 100%;
+  width: 100%;
+}
+
+.panel {
+  height: 100%;
+  padding: 0.75rem;
+  background: var(--bg-panel);
+  overflow: auto;
+}
+
+.panel-hint {
+  margin: 0 0 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.panel-empty {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.panel-scene {
+  padding: 0;
+}
+
+.scene-viewport-placeholder {
+  display: grid;
+  place-content: center;
+  height: 100%;
+  text-align: center;
+  background:
+    linear-gradient(180deg, #12151c 0%, #0e1016 100%),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 15px,
+      rgba(255, 255, 255, 0.02) 15px,
+      rgba(255, 255, 255, 0.02) 16px
+    );
+}
+
+.hierarchy-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.bottom-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.bottom-tabs {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.bottom-body {
+  padding: 0.75rem;
+  flex: 1;
+}
