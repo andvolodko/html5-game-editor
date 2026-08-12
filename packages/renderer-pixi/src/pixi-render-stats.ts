@@ -11,14 +11,14 @@ interface BatchLikeInstruction {
 }
 
 /**
- * Sample draw-call / triangle estimates from Pixi's last instruction set.
+ * Sample draw-call / triangle / display-object estimates from Pixi's stage.
  * Best-effort — instruction layout can change across Pixi versions.
  */
 export function samplePixiRenderStats(
   app: Application | undefined,
 ): SceneRenderStats {
   if (!app) {
-    return { drawCalls: 0, triangles: 0, canvas: 0 };
+    return { drawCalls: 0, triangles: 0, canvas: 0, displayObjects: 0 };
   }
 
   let drawCalls = 0;
@@ -39,7 +39,29 @@ export function samplePixiRenderStats(
     drawCalls,
     triangles,
     canvas: DEFAULT_CANVAS_COUNT,
+    displayObjects: countDisplayObjects(app.stage),
   };
+}
+
+/** Counts every Container in the subtree, including the root. */
+export function countDisplayObjects(root: Container): number {
+  let count = 0;
+  const stack: Container[] = [root];
+  while (stack.length > 0) {
+    const node = stack.pop();
+    if (node === undefined) {
+      continue;
+    }
+    count += 1;
+    const children = node.children;
+    for (let i = 0; i < children.length; i += 1) {
+      const child = children[i];
+      if (child) {
+        stack.push(child);
+      }
+    }
+  }
+  return count;
 }
 
 function collectInstructionStats(

@@ -933,6 +933,12 @@ button.active {
   border: 1px solid var(--border);
 }
 
+.asset-row-icon.audio {
+  background: #2a3140;
+  border: 1px solid #6a9e78;
+  border-radius: 50%;
+}
+
 .asset-row-icon.spine {
   background: #2a3140;
   border: 1px solid var(--accent);

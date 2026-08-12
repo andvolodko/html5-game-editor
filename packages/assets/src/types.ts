@@ -4,7 +4,7 @@ export const ASSET_SCHEMA_VERSION = 1 as const;
  * Persisted asset kinds. Only kinds with importers/metadata are included.
  * Extend this union when a new importer ships — do not stub empty kinds.
  */
-export type AssetType = "texture" | "spine";
+export type AssetType = "texture" | "spine" | "audio";
 
 export interface TextureAssetMetadata {
   kind: "texture";
@@ -25,7 +25,15 @@ export interface SpineAssetMetadata {
   animations: string[];
 }
 
-export type AssetMetadata = TextureAssetMetadata | SpineAssetMetadata;
+export interface AudioAssetMetadata {
+  kind: "audio";
+  mimeType: string;
+}
+
+export type AssetMetadata =
+  | TextureAssetMetadata
+  | SpineAssetMetadata
+  | AudioAssetMetadata;
 
 /**
  * Stable asset identity. Scenes must reference `id`, never raw filesystem paths.

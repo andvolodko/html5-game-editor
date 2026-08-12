@@ -9,6 +9,7 @@ import { AssetDatabaseStore } from "./services/asset-database-store.js";
 import { AssetImporterRegistry } from "./services/asset-importer.js";
 import { TextureAssetImporter } from "./services/texture-asset-importer.js";
 import { SpineAssetImporter } from "./services/spine-asset-importer.js";
+import { AudioAssetImporter } from "./services/audio-asset-importer.js";
 import { AssetImportService } from "./services/asset-import-service.js";
 import { AssetFolderService } from "./services/asset-folder-service.js";
 import { AssetMutationService } from "./services/asset-mutation-service.js";
@@ -39,6 +40,7 @@ const assetDatabaseStore = new AssetDatabaseStore(projectService);
 
 const importerRegistry = new AssetImporterRegistry();
 importerRegistry.register(new TextureAssetImporter());
+importerRegistry.register(new AudioAssetImporter());
 importerRegistry.registerBundle(new SpineAssetImporter());
 
 const assetImportService = new AssetImportService(

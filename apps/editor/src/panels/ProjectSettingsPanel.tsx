@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import type { SceneListEntry } from "@game-editor/editor-core";
+import {
+  DEFAULT_PROJECT_BACKGROUND,
+  normalizeProjectBackgroundHex,
+} from "@game-editor/project";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
 import { buildStartSceneSelectOptions } from "./fields/start-scene-select-options";
@@ -17,6 +21,9 @@ export function ProjectSettingsPanel() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [widthDraft, setWidthDraft] = useState("");
   const [heightDraft, setHeightDraft] = useState("");
+  const [backgroundDraft, setBackgroundDraft] = useState(
+    DEFAULT_PROJECT_BACKGROUND,
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -51,10 +58,12 @@ export function ProjectSettingsPanel() {
     if (!project) {
       setWidthDraft("");
       setHeightDraft("");
+      setBackgroundDraft(DEFAULT_PROJECT_BACKGROUND);
       return;
     }
     setWidthDraft(String(project.resolution.width));
     setHeightDraft(String(project.resolution.height));
+    setBackgroundDraft(project.background);
   }, [project, projectRevision]);
 
   const options = buildStartSceneSelectOptions(
@@ -164,6 +173,31 @@ export function ProjectSettingsPanel() {
                 if (event.key === "Enter") {
                   event.currentTarget.blur();
                 }
+              }}
+            />
+          </label>
+          <label>
+            Background
+            <input
+              type="color"
+              value={backgroundDraft}
+              disabled={busy}
+              onChange={(event) => {
+                const next = normalizeProjectBackgroundHex(event.target.value);
+                if (!next || !project) {
+                  return;
+                }
+                setBackgroundDraft(next);
+                if (next === project.background) {
+                  return;
+                }
+                setSaveError(null);
+                void editor.project.setBackground(next).catch((error: unknown) => {
+                  setBackgroundDraft(project.background);
+                  setSaveError(
+                    error instanceof Error ? error.message : "Save failed",
+                  );
+                });
               }}
             />
           </label>

@@ -105,6 +105,13 @@ function isPropertyDefinition(
         typeof value.default === "string" &&
         (value.source === "scenes" || value.source === "busEvents")
       );
+    case "asset":
+      return (
+        typeof value.default === "string" &&
+        (value.assetType === "texture" ||
+          value.assetType === "spine" ||
+          value.assetType === "audio")
+      );
     default:
       return false;
   }

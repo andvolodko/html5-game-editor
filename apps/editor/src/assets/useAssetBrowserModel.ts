@@ -380,6 +380,9 @@ export function useAssetBrowserModel(options?: {
   };
 
   const contentUrl = (asset: AssetRecord) => {
+    if (asset.metadata.kind === "audio") {
+      return undefined;
+    }
     if (asset.metadata.kind === "spine") {
       const page = asset.metadata.pagePaths[0];
       if (!page) {

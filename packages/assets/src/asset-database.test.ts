@@ -91,7 +91,7 @@ describe("AssetDatabase", () => {
         type: "texture",
         name: "x",
         path: "assets/x.png",
-        metadata: { kind: "audio" },
+        metadata: { kind: "audio", mimeType: "audio/mpeg" },
       }),
     ).toThrow();
   });

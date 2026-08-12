@@ -1,5 +1,4 @@
 import {
-  defineComponent,
   registerSharedComponents,
   buildComponentCatalog,
   type ComponentRegistry,
@@ -22,24 +21,9 @@ import {
   raptorComponent,
 } from "./raptor.js";
 
-/** Game-local demo: rotate / spin speed for UI nodes. */
-export const spinControllerComponent = defineComponent({
-  id: "example.SpinController",
-  displayName: "Spin Controller",
-  category: "UI",
-  categoryOrder: 20,
-  order: 10,
-  allowMultiple: false,
-  properties: {
-    speed: { kind: "number", default: 1, min: 0, step: 0.1 },
-    clockwise: { kind: "boolean", default: true },
-  },
-});
-
 /** Registers shared + example-game script components into the catalog. */
 export function registerGameComponents(registry: ComponentRegistry): void {
   registerSharedComponents(registry);
-  registry.register(spinControllerComponent);
   registry.register(loadingSceneComponent);
   registry.register(mainButtonComponent);
   registry.register(goSpineButtonComponent);

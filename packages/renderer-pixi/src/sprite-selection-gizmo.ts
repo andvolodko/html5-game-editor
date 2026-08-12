@@ -85,8 +85,11 @@ export class SpriteSelectionGizmo {
     this.root.eventMode = "passive";
     this.root.interactiveChildren = true;
     this.root.sortableChildren = true;
+    this.root.label = "gizmo";
     this.frame.eventMode = "none";
     this.stem.eventMode = "none";
+    this.frame.label = "gizmo:frame";
+    this.stem.label = "gizmo:stem";
     this.frame.zIndex = 0;
     this.stem.zIndex = 1;
     this.root.addChild(this.frame);
@@ -260,6 +263,7 @@ export class SpriteSelectionGizmo {
 
   private createSizeHandle(handle: SpriteSizeHandle): void {
     const gfx = new Graphics();
+    gfx.label = `gizmo:${handle}`;
     gfx.eventMode = "static";
     gfx.cursor = sizeHandleCursor(handle);
     gfx.zIndex = 2;
@@ -282,6 +286,7 @@ export class SpriteSelectionGizmo {
 
   private createScaleHandle(handle: SpriteScaleHandle): void {
     const gfx = new Graphics();
+    gfx.label = `gizmo:${handle}`;
     gfx.eventMode = "static";
     gfx.cursor = scaleHandleCursor(handle);
     gfx.zIndex = 2;
@@ -352,6 +357,7 @@ export class SpriteSelectionGizmo {
 
   private createRotateHandle(): void {
     const gfx = new Graphics();
+    gfx.label = "gizmo:rotate";
     gfx.eventMode = "static";
     gfx.cursor = "grab";
     gfx.zIndex = 3;
@@ -376,6 +382,7 @@ export class SpriteSelectionGizmo {
 
   private createAnchorHandle(): void {
     const gfx = new Graphics();
+    gfx.label = "gizmo:anchor";
     gfx.eventMode = "static";
     gfx.cursor = "move";
     gfx.zIndex = 4;
@@ -414,6 +421,7 @@ export class SpriteSelectionGizmo {
 
   private createFlipHandle(handle: "flipH" | "flipV"): void {
     const gfx = new Graphics();
+    gfx.label = `gizmo:${handle}`;
     gfx.eventMode = "static";
     gfx.cursor = "pointer";
     gfx.zIndex = 3;

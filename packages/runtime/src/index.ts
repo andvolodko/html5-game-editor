@@ -1,6 +1,7 @@
 export type { RuntimeRendererRegistration, GameRuntimeOptions } from "./game-runtime.js";
 export { GameRuntime } from "./game-runtime.js";
 export { ScriptHost } from "./script-host.js";
+export { createHtmlAudioPlayer } from "./html-audio-player.js";
 export { EventBus } from "@game-editor/core";
 export type {
   LoadedGameProject,

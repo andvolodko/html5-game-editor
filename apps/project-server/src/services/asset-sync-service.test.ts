@@ -12,6 +12,7 @@ import { AssetDatabaseStore } from "./asset-database-store.js";
 import { AssetImporterRegistry } from "./asset-importer.js";
 import { TextureAssetImporter } from "./texture-asset-importer.js";
 import { SpineAssetImporter } from "./spine-asset-importer.js";
+import { AudioAssetImporter } from "./audio-asset-importer.js";
 import { AssetSyncService } from "./asset-sync-service.js";
 
 function tinyPng(): Buffer {
@@ -58,6 +59,7 @@ describe("AssetSyncService", () => {
     store = new AssetDatabaseStore(project);
     const registry = new AssetImporterRegistry();
     registry.register(new TextureAssetImporter());
+    registry.register(new AudioAssetImporter());
     registry.registerBundle(new SpineAssetImporter());
     sync = new AssetSyncService(project, store, registry);
   });
@@ -95,6 +97,22 @@ describe("AssetSyncService", () => {
     expect(result.discovered[0]?.type).toBe("texture");
     expect(result.discovered[0]?.path).toBe("assets/wild.png");
     expect(result.database.assets).toHaveLength(1);
+  });
+
+  it("discovers a new audio file already on disk", async () => {
+    await writeFile(
+      path.join(root, "assets", "click.mp3"),
+      Buffer.from("RIFF....WAVEfmt "),
+    );
+
+    const result = await sync.reconcile();
+    expect(result.changed).toBe(true);
+    expect(result.discovered).toHaveLength(1);
+    expect(result.discovered[0]?.type).toBe("audio");
+    expect(result.discovered[0]?.path).toBe("assets/click.mp3");
+    if (result.discovered[0]?.metadata.kind === "audio") {
+      expect(result.discovered[0].metadata.mimeType).toBe("audio/mpeg");
+    }
   });
 
   it("discovers a spine bundle in place without relocating files", async () => {

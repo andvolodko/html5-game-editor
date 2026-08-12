@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  DEFAULT_PROJECT_BACKGROUND,
   DEFAULT_PROJECT_RESOLUTION,
   PROJECT_SCHEMA_VERSION,
   type ProjectData,
@@ -14,6 +15,7 @@ const sample: ProjectData = {
   renderers: ["pixi"],
   startScene: "main",
   resolution: { ...DEFAULT_PROJECT_RESOLUTION },
+  background: DEFAULT_PROJECT_BACKGROUND,
 };
 
 const sampleTwo: ProjectData = {
@@ -23,6 +25,7 @@ const sampleTwo: ProjectData = {
   renderers: ["pixi"],
   startScene: "main",
   resolution: { ...DEFAULT_PROJECT_RESOLUTION },
+  background: DEFAULT_PROJECT_BACKGROUND,
 };
 
 describe("ProjectManager", () => {
@@ -104,6 +107,31 @@ describe("ProjectManager", () => {
 
     saveProject.mockClear();
     await manager.setResolution(1920, 1080);
+    expect(saveProject).not.toHaveBeenCalled();
+  });
+
+  it("sets background via API and skips when unchanged", async () => {
+    const saveProject = vi.fn(async (project: ProjectData) => project);
+    const manager = new ProjectManager({
+      getProject: async () => sample,
+      saveProject,
+      listProjects: async () => ({
+        projects: [],
+        activeProjectId: null,
+      }),
+      openProject: async () => ({ projectId: "example-game", project: sample }),
+    });
+    await manager.refresh();
+
+    await manager.setBackground("#112233");
+    expect(saveProject).toHaveBeenCalledWith({
+      ...sample,
+      background: "#112233",
+    });
+    expect(manager.getProject()?.background).toBe("#112233");
+
+    saveProject.mockClear();
+    await manager.setBackground("#112233");
     expect(saveProject).not.toHaveBeenCalled();
   });
 

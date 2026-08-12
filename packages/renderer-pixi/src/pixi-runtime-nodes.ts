@@ -6,18 +6,30 @@ import type {
   Transform2DComponentData,
   Vec2,
 } from "@game-editor/scene";
+import { applyRuntimeDisplayLabels } from "./pixi-display-labels.js";
 import { SpriteSelectionGizmo } from "./sprite-selection-gizmo.js";
 import type { VisualBounds } from "./visuals/types.js";
 import { PLACEHOLDER_CORNER_RADIUS } from "./editor-chrome.js";
 
 export interface RuntimeNode {
+  /**
+   * When true, owns editor chrome (dedicated visualsRoot, placeholder,
+   * selection, gizmo) and always-present childrenRoot.
+   */
+  readonly editable: boolean;
   /** Transform root attached under parent `childrenRoot` (or world). */
   container: Container;
-  /** Visuals only (sprite / placeholder / selection) — never scene siblings. */
+  /**
+   * Parent for the leaf visual / editor chrome.
+   * Editor: dedicated container. Playback: same as `container` (no wrapper).
+   */
   visualsRoot: Container;
-  /** Scene-node children only — sibling index matches domain order. */
-  childrenRoot: Container;
-  placeholder: Graphics;
+  /**
+   * Scene-node children only — sibling index matches domain order.
+   * Playback: created lazily on first child attach.
+   */
+  childrenRoot: Container | undefined;
+  placeholder: Graphics | undefined;
   /** Active Pixi visual for the leaf component (not the transform container). */
   visual: Container | undefined;
   /** Discriminant of the last painted visual component. */
@@ -25,7 +37,7 @@ export interface RuntimeNode {
   /** Cached local AABB for hit testing / selection. */
   visualBounds: VisualBounds | undefined;
   supportsSpriteGizmo: boolean;
-  selection: Graphics;
+  selection: Graphics | undefined;
   gizmo: SpriteSelectionGizmo | undefined;
   /** Live size override while a gizmo resize is in progress. */
   sizePreview: { width: number; height: number } | undefined;
@@ -55,6 +67,10 @@ export class PixiRuntimeGraph {
   /** O(1) reverse lookup for scene-node containers. */
   private readonly containerToNodeId = new Map<Container, string>();
 
+  constructor() {
+    this.world.label = "world";
+  }
+
   get size(): number {
     return this.nodes.size;
   }
@@ -76,31 +92,34 @@ export class PixiRuntimeGraph {
     const container = new Container();
     // Container stays interactive for bubble/drag, but must NOT own a hitArea —
     // Pixi prunes the whole subtree outside hitArea, which blocked child sprites.
-    container.eventMode = editable ? "static" : "passive";
+    // Playback also uses static: visualsRoot aliases container for script clicks.
+    container.eventMode = "static";
     if (editable) {
       container.cursor = "grab";
     }
     container.interactiveChildren = true;
 
-    const visualsRoot = new Container();
-    // Editor: static for drag/gizmo. Playback: static so scripts can receive clicks.
-    visualsRoot.eventMode = "static";
-    if (editable) {
-      visualsRoot.cursor = "grab";
-    }
-    const childrenRoot = new Container();
-    childrenRoot.eventMode = "passive";
-    childrenRoot.interactiveChildren = true;
-    const placeholder = new Graphics();
-    const selection = new Graphics();
-    visualsRoot.addChild(placeholder);
-    visualsRoot.addChild(selection);
+    let visualsRoot: Container;
+    let childrenRoot: Container | undefined;
+    let placeholder: Graphics | undefined;
+    let selection: Graphics | undefined;
+    let gizmo: SpriteSelectionGizmo | undefined;
 
     const runtimeRef: { current: RuntimeNode | undefined } = {
       current: undefined,
     };
-    let gizmo: SpriteSelectionGizmo | undefined;
+
     if (editable) {
+      visualsRoot = new Container();
+      // Editor: static for drag/gizmo.
+      visualsRoot.eventMode = "static";
+      visualsRoot.cursor = "grab";
+      childrenRoot = this.createChildrenRootContainer();
+      placeholder = new Graphics();
+      selection = new Graphics();
+      visualsRoot.addChild(placeholder);
+      visualsRoot.addChild(selection);
+
       gizmo = new SpriteSelectionGizmo({
         onHandlePointerDown: (handle, event) => {
           const live = runtimeRef.current;
@@ -112,13 +131,22 @@ export class PixiRuntimeGraph {
       });
       gizmo.setVisible(false);
       visualsRoot.addChild(gizmo.root);
-    }
 
-    container.addChild(visualsRoot);
-    container.addChild(childrenRoot);
+      container.addChild(visualsRoot);
+      container.addChild(childrenRoot);
+    } else {
+      // Playback: no visuals/placeholder/selection wrappers — leaf visual is a
+      // direct child of the node container; childrenRoot is created lazily.
+      visualsRoot = container;
+      childrenRoot = undefined;
+      placeholder = undefined;
+      selection = undefined;
+      gizmo = undefined;
+    }
 
     this.attachToParent(container, node);
     const runtime: RuntimeNode = {
+      editable,
       container,
       visualsRoot,
       childrenRoot,
@@ -135,9 +163,34 @@ export class PixiRuntimeGraph {
       warnedMissingAsset: false,
     };
     runtimeRef.current = runtime;
+    applyRuntimeDisplayLabels(runtime);
     this.nodes.set(node.id, runtime);
     this.containerToNodeId.set(container, node.id);
     return runtime;
+  }
+
+  /** Refresh Pixi labels after a domain rename (or any node data swap). */
+  syncDisplayLabels(nodeId: string): void {
+    const runtime = this.nodes.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    applyRuntimeDisplayLabels(runtime);
+  }
+
+  /**
+   * Ensure a children host exists (playback creates it on first child).
+   * Editor nodes always have one from create().
+   */
+  ensureChildrenRoot(runtime: RuntimeNode): Container {
+    if (runtime.childrenRoot) {
+      return runtime.childrenRoot;
+    }
+    const childrenRoot = this.createChildrenRootContainer();
+    runtime.container.addChild(childrenRoot);
+    runtime.childrenRoot = childrenRoot;
+    applyRuntimeDisplayLabels(runtime);
+    return childrenRoot;
   }
 
   destroyNode(nodeId: string): number {
@@ -193,7 +246,7 @@ export class PixiRuntimeGraph {
     }
     const parentContainer =
       parentId !== undefined
-        ? this.nodes.get(parentId)?.childrenRoot
+        ? this.ensureChildrenRootForId(parentId)
         : this.world;
     if (!parentContainer) {
       throw new Error(`PixiSceneRenderer: unknown parent ${parentId}`);
@@ -228,6 +281,10 @@ export class PixiRuntimeGraph {
     height: number,
     tint: number,
   ): void {
+    if (!runtime.placeholder) {
+      // Playback: no editor placeholders.
+      return;
+    }
     if (runtime.visual) {
       runtime.visual.visible = false;
     }
@@ -249,18 +306,42 @@ export class PixiRuntimeGraph {
 
   /** Attach a node container under its scene parent (or world root). */
   private attachToParent(container: Container, node: SceneNodeData): void {
-    const parentRuntime = node.parentId
-      ? this.nodes.get(node.parentId)
-      : undefined;
-    const parentContainer = parentRuntime?.childrenRoot ?? this.world;
-    parentContainer.addChild(container);
+    if (!node.parentId) {
+      this.world.addChild(container);
+      return;
+    }
+    const parentRuntime = this.nodes.get(node.parentId);
+    if (!parentRuntime) {
+      this.world.addChild(container);
+      return;
+    }
+    this.ensureChildrenRoot(parentRuntime).addChild(container);
+  }
+
+  private ensureChildrenRootForId(parentId: string): Container | undefined {
+    const parent = this.nodes.get(parentId);
+    if (!parent) {
+      return undefined;
+    }
+    return this.ensureChildrenRoot(parent);
+  }
+
+  private createChildrenRootContainer(): Container {
+    const childrenRoot = new Container();
+    childrenRoot.eventMode = "passive";
+    childrenRoot.interactiveChildren = true;
+    return childrenRoot;
   }
 
   private collectSubtreeIds(runtime: RuntimeNode): string[] {
     const ids: string[] = [];
     const walk = (node: RuntimeNode) => {
       ids.push(node.node.id);
-      for (const child of node.childrenRoot.children) {
+      const children = node.childrenRoot?.children;
+      if (!children) {
+        return;
+      }
+      for (const child of children) {
         if (!(child instanceof Container)) {
           continue;
         }

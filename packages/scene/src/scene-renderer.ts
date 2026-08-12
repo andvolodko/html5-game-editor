@@ -5,6 +5,8 @@ export interface SceneRenderStats {
   drawCalls: number;
   triangles: number;
   canvas: number;
+  /** Total Pixi (or equivalent) display objects in the live scene graph. */
+  displayObjects: number;
 }
 
 /**

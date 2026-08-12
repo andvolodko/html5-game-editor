@@ -6,9 +6,14 @@ import {
   installSceneFlowRuntime,
   type ComponentDefinition,
 } from "@game-editor/game-components";
+import { projectBackgroundToPixiColor } from "@game-editor/project";
 import { PixiSceneRenderer } from "@game-editor/renderer-pixi";
 import type { SceneData } from "@game-editor/scene";
-import { GameRuntime, GameScreenHost } from "@game-editor/runtime";
+import {
+  createHtmlAudioPlayer,
+  GameRuntime,
+  GameScreenHost,
+} from "@game-editor/runtime";
 import { installActiveGameRuntime } from "../components/install-active-game-runtime";
 
 export interface GamePreviewStartOptions {
@@ -17,6 +22,8 @@ export interface GamePreviewStartOptions {
   assetResolver: AssetResolver;
   /** Design resolution from project.json — drives letterboxing + buffer size. */
   resolution: ProjectResolution;
+  /** CSS `#RRGGBB` clear / letterbox color from project.json. */
+  background: string;
   /** Session script catalog from the open project (optional). */
   components?: ComponentRegistry;
   /** Active game id — used to restore game-local script `create` factories. */
@@ -53,12 +60,14 @@ export class GamePreviewSession {
 
     const screen = new GameScreenHost(options.canvasParent, options.resolution);
     const design = screen.getResolution();
+    options.canvasParent.style.background = options.background;
 
     const renderer = new PixiSceneRenderer({
       canvasParent: screen.frame,
       assetResolver: options.assetResolver,
       editable: false,
       designResolution: design,
+      background: projectBackgroundToPixiColor(options.background),
     });
     await renderer.whenReady();
     if (token !== this.startToken) {
@@ -94,6 +103,11 @@ export class GamePreviewSession {
           runtime.resize(design.width, design.height);
           runtime.render();
         },
+        resolveAssetUrl: (assetId) =>
+          options.assetResolver.resolveUrl(assetId),
+        playAudio: createHtmlAudioPlayer((assetId) =>
+          options.assetResolver.resolveUrl(assetId),
+        ),
       },
     });
     runtime.registerRenderer({
@@ -102,7 +116,8 @@ export class GamePreviewSession {
       layer: { id: "main", renderer: "pixi", order: 0 },
     });
     renderer.setPointerHandlers({
-      onNodeClick: (nodeId) => runtime.emitNodeClick(nodeId),
+      onNodePointerEvent: (nodeId, event) =>
+        runtime.emitNodePointerEvent(nodeId, event),
     });
     runtime.loadScene(options.scene);
     runtime.resize(design.width, design.height);

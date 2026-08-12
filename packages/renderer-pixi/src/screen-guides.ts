@@ -120,7 +120,9 @@ export class ScreenGuidesOverlay {
     this.root.eventMode = "none";
     this.root.label = "screen-guides";
     this.graphics.eventMode = "none";
+    this.graphics.label = "screen-guides:graphics";
     this.labels.eventMode = "none";
+    this.labels.label = "screen-guides:labels";
     this.root.addChild(this.graphics, this.labels);
     this.redraw();
   }
@@ -211,6 +213,7 @@ export class ScreenGuidesOverlay {
           fill: color,
         },
       });
+      label.label = `screen-guides:${preset.id}`;
       label.alpha = this.style.labelAlpha;
       // Keep label size/padding constant on screen while the frame stays world-space.
       label.scale.set(inv);

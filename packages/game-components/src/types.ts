@@ -2,14 +2,31 @@ import type { EventBus } from "@game-editor/core";
 
 /**
  * Property field kinds for Script components (inspector + defaults).
- * Asset references intentionally deferred.
  */
 export type ComponentPropertyKind =
   | "number"
   | "string"
   | "boolean"
   | "enum"
-  | "dynamicEnum";
+  | "dynamicEnum"
+  | "asset";
+
+/** Asset catalogue kinds selectable from Script inspector fields. */
+export type ComponentAssetType = "texture" | "spine" | "audio";
+
+/**
+ * Playback pointer events forwarded from the Pixi host (no PIXI types here).
+ * `pointertap` is press+release without drag (same as `onNodeClick`).
+ */
+export const NODE_POINTER_EVENTS = [
+  "pointerdown",
+  "pointerup",
+  "pointertap",
+  "pointerover",
+  "pointerout",
+] as const;
+
+export type NodePointerEventName = (typeof NODE_POINTER_EVENTS)[number];
 
 export interface ComponentPropertyNumber {
   kind: "number";
@@ -48,12 +65,20 @@ export interface ComponentPropertyDynamicEnum {
   source: DynamicEnumSource;
 }
 
+/** Catalogue-backed asset id picker; empty string means unset. */
+export interface ComponentPropertyAsset {
+  kind: "asset";
+  assetType: ComponentAssetType;
+  default: string;
+}
+
 export type ComponentPropertyDefinition =
   | ComponentPropertyNumber
   | ComponentPropertyString
   | ComponentPropertyBoolean
   | ComponentPropertyEnum
-  | ComponentPropertyDynamicEnum;
+  | ComponentPropertyDynamicEnum
+  | ComponentPropertyAsset;
 
 /**
  * Runtime instance constructed for a Script component.
@@ -91,6 +116,7 @@ export interface ScriptPerformanceStats {
   gameLogicMs: number;
   rendererMs: number;
   canvas: number;
+  displayObjects: number;
 }
 
 /** Services provided by GameRuntime / preview to script `create` factories. */
@@ -101,8 +127,22 @@ export interface ScriptRuntimeServices {
   /**
    * Subscribe to a pointer click on a scene node (playback / preview).
    * Host must forward renderer hits via `GameRuntime.emitNodeClick`.
+   * Prefer `onNodePointerEvent(..., "pointertap", …)` for new scripts.
    */
   onNodeClick?: (nodeId: string, handler: () => void) => () => void;
+  /**
+   * Subscribe to a playback pointer event on a scene node.
+   * Host must forward via `GameRuntime.emitNodePointerEvent`.
+   */
+  onNodePointerEvent?: (
+    nodeId: string,
+    event: NodePointerEventName,
+    handler: () => void,
+  ) => () => void;
+  /** Resolve a catalogue assetId to a fetchable URL (audio, textures, …). */
+  resolveAssetUrl?: (assetId: string) => string | undefined;
+  /** Play an audio catalogue asset by id (host owns HTMLAudioElement / decoder). */
+  playAudio?: (assetId: string) => void;
   /** Read the host node's Transform2D (undefined if missing). */
   getTransform2D?: (nodeId: string) => ScriptTransform2D | undefined;
   /**

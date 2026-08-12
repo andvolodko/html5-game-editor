@@ -7,11 +7,13 @@ import {
 import {
   GameRuntime,
   GameScreenHost,
+  createHtmlAudioPlayer,
   resolveGameProject,
   sceneModulesById,
   type LoadedGameProject,
 } from "@game-editor/runtime";
 import { parseSceneData, type SceneData } from "@game-editor/scene";
+import { projectBackgroundToPixiColor } from "@game-editor/project";
 import projectJson from "../project.json";
 import assetsJson from "../.project/assets.json";
 import {
@@ -33,7 +35,6 @@ const root = app;
 const viewport = document.createElement("div");
 viewport.style.position = "fixed";
 viewport.style.inset = "0";
-viewport.style.background = "#0b0d12";
 root.appendChild(viewport);
 
 const bus = new EventBus();
@@ -71,7 +72,15 @@ installExampleGameRuntime(components);
 
 session.runtime = new GameRuntime({
   components,
-  services: { bus, changeScene },
+  services: {
+    bus,
+    changeScene,
+    resolveAssetUrl: (assetId) =>
+      session.loaded?.assetResolver.resolveUrl(assetId),
+    playAudio: createHtmlAudioPlayer(
+      (assetId) => session.loaded?.assetResolver.resolveUrl(assetId),
+    ),
+  },
 });
 
 async function boot(): Promise<void> {
@@ -82,6 +91,8 @@ async function boot(): Promise<void> {
   });
 
   const design = session.loaded.project.resolution;
+  const background = session.loaded.project.background;
+  viewport.style.background = background;
   const screen = new GameScreenHost(viewport, design);
   session.screen = screen;
 
@@ -90,6 +101,7 @@ async function boot(): Promise<void> {
     assetResolver: session.loaded.assetResolver,
     editable: false,
     designResolution: design,
+    background: projectBackgroundToPixiColor(background),
   });
   await renderer.whenReady();
 
@@ -104,7 +116,8 @@ async function boot(): Promise<void> {
     layer: { id: "main", renderer: "pixi", order: 0 },
   });
   renderer.setPointerHandlers({
-    onNodeClick: (nodeId) => runtime.emitNodeClick(nodeId),
+    onNodePointerEvent: (nodeId, event) =>
+      runtime.emitNodePointerEvent(nodeId, event),
   });
   runtime.loadScene(session.loaded.scene);
   runtime.resize(design.width, design.height);

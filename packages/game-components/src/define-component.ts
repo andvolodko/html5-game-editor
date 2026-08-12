@@ -34,6 +34,8 @@ function defaultValueForProperty(field: ComponentPropertyDefinition): unknown {
       return field.default;
     case "dynamicEnum":
       return field.default;
+    case "asset":
+      return field.default;
     default: {
       const _exhaustive: never = field;
       return _exhaustive;

@@ -12,7 +12,7 @@ export type {
   PixiGizmoResizeResult,
   PixiGizmoAnchorResult,
   PixiSyncStats,
-} from "./pixi-scene-renderer.js";
+} from "./pixi-scene-renderer-types.js";
 export { clientPointToWorld } from "./viewport-math.js";
 export {
   PixelGridOverlay,

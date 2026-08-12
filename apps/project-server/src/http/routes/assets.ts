@@ -126,7 +126,7 @@ export const handleAssetContentRoute: RouteHandler = async (ctx) => {
   const absolute = ctx.deps.projectService.resolveProjectPath(record.path);
   const fileStat = await stat(absolute);
   const mime =
-    record.metadata.kind === "texture"
+    record.metadata.kind === "texture" || record.metadata.kind === "audio"
       ? record.metadata.mimeType
       : record.metadata.kind === "spine"
         ? mimeTypeForSpineSkeleton(record.metadata.skeletonFormat)

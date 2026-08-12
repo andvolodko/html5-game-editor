@@ -112,6 +112,15 @@
           "properties": {
             "sceneName": "spine"
           }
+        },
+        {
+          "type": "Script",
+          "id": "comp_61a0c261-f763-4419-8089-f267a718b27c",
+          "scriptId": "shared.AudioClick",
+          "properties": {
+            "audioAssetId": "asset_011b4367-80e0-4f48-b16e-8e92467567e3",
+            "mouseEvent": "pointertap"
+          }
         }
       ],
       "children": []

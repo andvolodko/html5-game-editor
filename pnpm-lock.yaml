@@ -47,6 +47,9 @@ importers:
       '@game-editor/game-components':
         specifier: workspace:*
         version: link:../../packages/game-components
+      '@game-editor/project':
+        specifier: workspace:*
+        version: link:../../packages/project
       '@game-editor/renderer-pixi':
         specifier: workspace:*
         version: link:../../packages/renderer-pixi
@@ -139,6 +142,9 @@ importers:
       '@game-editor/game-components':
         specifier: workspace:*
         version: link:../../packages/game-components
+      '@game-editor/project':
+        specifier: workspace:*
+        version: link:../../packages/project
       '@game-editor/renderer-pixi':
         specifier: workspace:*
         version: link:../../packages/renderer-pixi
@@ -161,6 +167,9 @@ importers:
       '@game-editor/game-components':
         specifier: workspace:*
         version: link:../../packages/game-components
+      '@game-editor/project':
+        specifier: workspace:*
+        version: link:../../packages/project
       '@game-editor/renderer-pixi':
         specifier: workspace:*
         version: link:../../packages/renderer-pixi

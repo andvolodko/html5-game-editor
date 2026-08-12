@@ -5,6 +5,7 @@ import type {
 } from "@game-editor/game-components";
 import type { ScriptComponentData } from "@game-editor/scene";
 import {
+  AssetSelectField,
   BooleanField,
   EnumField,
   NumberField,
@@ -122,6 +123,18 @@ function ScriptPropertyField({
           value={value}
           dynamicOptions={dynamicOptions}
           onCommit={onCommit}
+        />
+      );
+    }
+    case "asset": {
+      const selected =
+        typeof value === "string" && value.length > 0 ? value : undefined;
+      return (
+        <AssetSelectField
+          label={label}
+          value={selected}
+          kind={field.assetType}
+          onCommit={(next) => onCommit(next ?? "")}
         />
       );
     }

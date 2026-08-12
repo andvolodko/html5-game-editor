@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { ASSET_SCHEMA_VERSION, type AssetDatabaseData, type AssetRecord } from "./types.js";
 
-export const assetTypeSchema = z.enum(["texture", "spine"]);
+export const assetTypeSchema = z.enum(["texture", "spine", "audio"]);
 
 export const textureAssetMetadataSchema = z.object({
   kind: z.literal("texture"),
@@ -19,9 +19,15 @@ export const spineAssetMetadataSchema = z.object({
   animations: z.array(z.string().min(1)),
 });
 
+export const audioAssetMetadataSchema = z.object({
+  kind: z.literal("audio"),
+  mimeType: z.string().min(1),
+});
+
 export const assetMetadataSchema = z.discriminatedUnion("kind", [
   textureAssetMetadataSchema,
   spineAssetMetadataSchema,
+  audioAssetMetadataSchema,
 ]);
 
 const assetRecordObjectSchema = z.object({

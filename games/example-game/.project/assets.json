@@ -2,6 +2,16 @@
   "version": 1,
   "assets": [
     {
+      "id": "asset_011b4367-80e0-4f48-b16e-8e92467567e3",
+      "type": "audio",
+      "name": "ui_button_simple_click_07",
+      "path": "assets/audio/ui_button_simple_click_07.wav",
+      "metadata": {
+        "kind": "audio",
+        "mimeType": "audio/wav"
+      }
+    },
+    {
       "id": "asset_03a7df2b-9f52-447f-8d6f-9b58f3bb3485",
       "type": "spine",
       "name": "raptor",
@@ -35,6 +45,16 @@
         "width": 502,
         "height": 449,
         "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
+      "type": "audio",
+      "name": "ui_button_simple_click_01",
+      "path": "assets/audio/ui_button_simple_click_01.wav",
+      "metadata": {
+        "kind": "audio",
+        "mimeType": "audio/wav"
       }
     },
     {

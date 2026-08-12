@@ -1,12 +1,15 @@
 export type {
   ComponentPropertyKind,
+  ComponentAssetType,
   ComponentPropertyNumber,
   ComponentPropertyString,
   ComponentPropertyBoolean,
   ComponentPropertyEnum,
   ComponentPropertyDynamicEnum,
+  ComponentPropertyAsset,
   DynamicEnumSource,
   ComponentPropertyDefinition,
+  NodePointerEventName,
   ScriptInstance,
   ScriptCreateContext,
   ScriptRuntimeServices,
@@ -18,6 +21,7 @@ export type {
   DefineComponentInput,
   BusEventDefinition,
 } from "./types.js";
+export { NODE_POINTER_EVENTS } from "./types.js";
 export {
   defineComponent,
   defaultPropertiesFromDefinition,
@@ -33,6 +37,10 @@ export {
   PerformanceMeterBehaviour,
   formatPerformanceMeterText,
 } from "./shared/performance-meter.js";
+export {
+  audioClickComponent,
+  AudioClickBehaviour,
+} from "./shared/audio-click.js";
 export { installSceneFlowRuntime } from "./shared/scene-flow-runtime.js";
 export type {
   ComponentCatalogEntry,

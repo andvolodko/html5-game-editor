@@ -9,5 +9,6 @@
   "resolution": {
     "width": 1280,
     "height": 720
-  }
+  },
+  "background": "#1c2a4a"
 }

@@ -193,6 +193,35 @@ export class ProjectManager {
     }
   }
 
+  async setBackground(background: string): Promise<ProjectData> {
+    if (!this.api) {
+      throw new Error("Project API is not configured");
+    }
+    const current = this.project ?? (await this.refresh());
+    if (current.background.toLowerCase() === background.trim().toLowerCase()) {
+      return current;
+    }
+    this.status = "saving";
+    this.error = undefined;
+    this.emit();
+    try {
+      const saved = await this.api.saveProject({
+        ...current,
+        background,
+      });
+      this.project = saved;
+      this.status = "idle";
+      this.revision += 1;
+      this.emit();
+      return saved;
+    } catch (error) {
+      this.status = "error";
+      this.error = error instanceof Error ? error.message : "Failed to save project";
+      this.emit();
+      throw error;
+    }
+  }
+
   private emit(): void {
     for (const listener of this.listeners) {
       listener();

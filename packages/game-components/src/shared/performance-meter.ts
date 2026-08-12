@@ -21,6 +21,7 @@ const EMPTY_STATS: ScriptPerformanceStats = {
   gameLogicMs: 0,
   rendererMs: 0,
   canvas: 0,
+  displayObjects: 0,
 };
 
 type Props = {
@@ -57,6 +58,7 @@ export function formatPerformanceMeterText(
     formatRow("Framerate (FPS)", formatFixed(stats.fps, TIME_DECIMAL_PLACES)),
     formatRow("Draw call", String(Math.round(stats.drawCalls))),
     formatRow("Triangle", String(Math.round(stats.triangles))),
+    formatRow("Display Objects", String(Math.round(stats.displayObjects))),
     formatRow("Game Logic (ms)", formatFixed(stats.gameLogicMs, TIME_DECIMAL_PLACES)),
     formatRow("Renderer (ms)", formatFixed(stats.rendererMs, TIME_DECIMAL_PLACES)),
     formatRow("Canvas", String(Math.round(stats.canvas))),
@@ -107,6 +109,7 @@ export class PerformanceMeterBehaviour implements ScriptInstance {
       fps: this.smoothedFps,
       drawCalls: hostStats.drawCalls,
       triangles: hostStats.triangles,
+      displayObjects: hostStats.displayObjects,
       gameLogicMs,
       rendererMs:
         hostStats.rendererMs > 0

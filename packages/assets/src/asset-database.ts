@@ -192,6 +192,9 @@ function assetMetadataEquivalent(
       stringArraysEqual(left.animations, right.animations)
     );
   }
+  if (left.kind === "audio" && right.kind === "audio") {
+    return left.mimeType === right.mimeType;
+  }
   return false;
 }
 

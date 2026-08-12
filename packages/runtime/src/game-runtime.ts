@@ -1,6 +1,7 @@
 import { EventBus, type RendererKind, type RenderLayer } from "@game-editor/core";
 import type {
   ComponentRegistry,
+  NodePointerEventName,
   ScriptPerformanceStats,
   ScriptRuntimeServices,
   ScriptTransform2D,
@@ -24,7 +25,15 @@ const EMPTY_RENDER_STATS: SceneRenderStats = {
   drawCalls: 0,
   triangles: 0,
   canvas: 0,
+  displayObjects: 0,
 };
+
+function pointerSubscriptionKey(
+  nodeId: string,
+  event: NodePointerEventName,
+): string {
+  return `${nodeId}\0${event}`;
+}
 
 export interface RuntimeRendererRegistration {
   kind: RendererKind;
@@ -56,6 +65,7 @@ export class GameRuntime {
   private readonly scriptHost: ScriptHost;
   private readonly bus: EventBus;
   private readonly nodeClickHandlers = new Map<string, Set<() => void>>();
+  private readonly nodePointerHandlers = new Map<string, Set<() => void>>();
   private changeSceneHandler:
     | ((sceneId: string) => void | Promise<void>)
     | undefined;
@@ -70,16 +80,20 @@ export class GameRuntime {
     gameLogicMs: 0,
     rendererMs: 0,
     canvas: 0,
+    displayObjects: 0,
   };
 
   constructor(options: GameRuntimeOptions = {}) {
     this.bus = options.services?.bus ?? new EventBus();
     this.changeSceneHandler = options.services?.changeScene;
     const externalOnNodeClick = options.services?.onNodeClick;
+    const externalOnNodePointerEvent = options.services?.onNodePointerEvent;
     const externalGetTransform2D = options.services?.getTransform2D;
     const externalSetTransform2D = options.services?.setTransform2D;
     const externalSetText = options.services?.setText;
     const externalGetPerformanceStats = options.services?.getPerformanceStats;
+    const externalResolveAssetUrl = options.services?.resolveAssetUrl;
+    const externalPlayAudio = options.services?.playAudio;
     const services: ScriptRuntimeServices = {
       bus: this.bus,
       changeScene: (sceneId) => {
@@ -95,6 +109,14 @@ export class GameRuntime {
         }
         return this.subscribeNodeClick(nodeId, handler);
       },
+      onNodePointerEvent: (nodeId, event, handler) => {
+        if (externalOnNodePointerEvent) {
+          return externalOnNodePointerEvent(nodeId, event, handler);
+        }
+        return this.subscribeNodePointerEvent(nodeId, event, handler);
+      },
+      resolveAssetUrl: externalResolveAssetUrl,
+      playAudio: externalPlayAudio,
       getTransform2D: (nodeId) => {
         if (externalGetTransform2D) {
           return externalGetTransform2D(nodeId);
@@ -140,6 +162,24 @@ export class GameRuntime {
     }
     for (const handler of [...set]) {
       handler();
+    }
+  }
+
+  /**
+   * Forward a renderer pointer event to scripts subscribed via `onNodePointerEvent`.
+   * Also fans `pointertap` into legacy `onNodeClick` subscribers.
+   */
+  emitNodePointerEvent(nodeId: string, event: NodePointerEventName): void {
+    const set = this.nodePointerHandlers.get(
+      pointerSubscriptionKey(nodeId, event),
+    );
+    if (set) {
+      for (const handler of [...set]) {
+        handler();
+      }
+    }
+    if (event === "pointertap") {
+      this.emitNodeClick(nodeId);
     }
   }
 
@@ -229,6 +269,7 @@ export class GameRuntime {
       gameLogicMs,
       rendererMs,
       canvas: renderStats.canvas,
+      displayObjects: renderStats.displayObjects,
     };
   }
 
@@ -243,6 +284,7 @@ export class GameRuntime {
         drawCalls: merged.drawCalls + sample.drawCalls,
         triangles: merged.triangles + sample.triangles,
         canvas: merged.canvas + sample.canvas,
+        displayObjects: merged.displayObjects + sample.displayObjects,
       };
     }
     return merged;
@@ -262,6 +304,26 @@ export class GameRuntime {
       set?.delete(handler);
       if (set && set.size === 0) {
         this.nodeClickHandlers.delete(nodeId);
+      }
+    };
+  }
+
+  private subscribeNodePointerEvent(
+    nodeId: string,
+    event: NodePointerEventName,
+    handler: () => void,
+  ): () => void {
+    const key = pointerSubscriptionKey(nodeId, event);
+    let set = this.nodePointerHandlers.get(key);
+    if (!set) {
+      set = new Set();
+      this.nodePointerHandlers.set(key, set);
+    }
+    set.add(handler);
+    return () => {
+      set?.delete(handler);
+      if (set && set.size === 0) {
+        this.nodePointerHandlers.delete(key);
       }
     };
   }

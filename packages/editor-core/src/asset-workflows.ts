@@ -1,4 +1,4 @@
-import { isSpineImportFile, isSupportedTextureFile } from "@game-editor/assets";
+import { isSpineImportFile, isSupportedAudioFile, isSupportedTextureFile } from "@game-editor/assets";
 import type { Vec2 } from "@game-editor/scene";
 import { isScenesFolderOrDescendant } from "./asset-browser-model.js";
 import type { Editor } from "./editor.js";
@@ -28,13 +28,17 @@ export async function importDroppedFiles(
   }
 
   const supported = files.filter(
-    (file) => isSupportedTextureFile(file) || isSpineImportFile(file),
+    (file) =>
+      isSupportedTextureFile(file) ||
+      isSupportedAudioFile(file) ||
+      isSpineImportFile(file),
   );
   if (supported.length === 0) {
     return {
       importedCount: 0,
       errors: [],
-      message: "No supported files (png/jpg/webp or Spine json/skel/atlas)",
+      message:
+        "No supported files (png/jpg/webp, mp3/ogg/wav, or Spine json/skel/atlas)",
     };
   }
 
@@ -64,6 +68,9 @@ export function dropAssetOntoScene(
   const asset = editor.assets.get(assetId);
   if (asset?.type === "spine") {
     return editor.createSpineFromAsset(assetId, position);
+  }
+  if (asset?.type === "audio") {
+    throw new Error("Audio assets cannot be dropped onto the scene yet");
   }
   return editor.createSpriteFromAsset(assetId, position);
 }

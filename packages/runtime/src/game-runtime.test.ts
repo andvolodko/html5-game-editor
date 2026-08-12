@@ -196,6 +196,59 @@ describe("GameRuntime.loadScene", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
+  it("forwards emitNodePointerEvent to onNodePointerEvent subscribers", () => {
+    const onDown = vi.fn();
+    const onTap = vi.fn();
+    const onLegacyClick = vi.fn();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.Pointer",
+        displayName: "Pointer",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => {
+          const offs = [
+            ctx.services.onNodePointerEvent?.(ctx.nodeId, "pointerdown", onDown),
+            ctx.services.onNodePointerEvent?.(ctx.nodeId, "pointertap", onTap),
+            ctx.services.onNodeClick?.(ctx.nodeId, onLegacyClick),
+          ];
+          return {
+            destroy() {
+              for (const off of offs) {
+                off?.();
+              }
+            },
+          };
+        },
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: createMockRenderer(),
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+
+    const node = createSpriteNode("Btn", { x: 0, y: 0 });
+    node.components.push(createScriptComponent("test.Pointer"));
+    const scene = createEmptyScene("Pointers");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    runtime.emitNodePointerEvent(node.id, "pointerdown");
+    expect(onDown).toHaveBeenCalledTimes(1);
+    expect(onTap).not.toHaveBeenCalled();
+    expect(onLegacyClick).not.toHaveBeenCalled();
+
+    runtime.emitNodePointerEvent(node.id, "pointertap");
+    expect(onTap).toHaveBeenCalledTimes(1);
+    expect(onLegacyClick).toHaveBeenCalledTimes(1);
+  });
+
   it("exposes getTransform2D / setTransform2D and syncs renderers", () => {
     const renderer = createMockRenderer();
     const registry = new ComponentRegistry();

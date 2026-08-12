@@ -1,5 +1,6 @@
 import { PixiSceneRenderer } from "@game-editor/renderer-pixi";
 import { ComponentRegistry } from "@game-editor/game-components";
+import { projectBackgroundToPixiColor } from "@game-editor/project";
 import {
   GameRuntime,
   GameScreenHost,
@@ -24,7 +25,6 @@ const root = app;
 const viewport = document.createElement("div");
 viewport.style.position = "fixed";
 viewport.style.inset = "0";
-viewport.style.background = "#0b0d12";
 root.appendChild(viewport);
 
 const components = new ComponentRegistry();
@@ -39,6 +39,8 @@ async function boot(): Promise<void> {
   });
 
   const design = loaded.project.resolution;
+  const background = loaded.project.background;
+  viewport.style.background = background;
   const screen = new GameScreenHost(viewport, design);
 
   const renderer = new PixiSceneRenderer({
@@ -46,6 +48,7 @@ async function boot(): Promise<void> {
     assetResolver: loaded.assetResolver,
     editable: false,
     designResolution: design,
+    background: projectBackgroundToPixiColor(background),
   });
   await renderer.whenReady();
 

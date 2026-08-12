@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  DEFAULT_PROJECT_BACKGROUND,
   DEFAULT_PROJECT_RESOLUTION,
   DEFAULT_START_SCENE,
+  normalizeProjectBackgroundHex,
   parseProjectData,
   PROJECT_SCHEMA_VERSION,
+  projectBackgroundToPixiColor,
   serializeProjectData,
   type ProjectData,
 } from "./index.js";
@@ -15,6 +18,7 @@ const valid: ProjectData = {
   renderers: ["pixi"],
   startScene: "main",
   resolution: { width: 1280, height: 720 },
+  background: DEFAULT_PROJECT_BACKGROUND,
 };
 
 describe("project schema", () => {
@@ -32,6 +36,18 @@ describe("project schema", () => {
     const { resolution: _ignored, ...withoutResolution } = valid;
     const parsed = parseProjectData(withoutResolution);
     expect(parsed.resolution).toEqual(DEFAULT_PROJECT_RESOLUTION);
+  });
+
+  it("defaults missing background to #0b0d12", () => {
+    const { background: _ignored, ...withoutBackground } = valid;
+    const parsed = parseProjectData(withoutBackground);
+    expect(parsed.background).toBe(DEFAULT_PROJECT_BACKGROUND);
+  });
+
+  it("normalizes background hex to lowercase", () => {
+    expect(parseProjectData({ ...valid, background: "#0B0D12" }).background).toBe(
+      "#0b0d12",
+    );
   });
 
   it("rejects empty name and invalid startScene", () => {
@@ -57,9 +73,25 @@ describe("project schema", () => {
     ).toThrow();
   });
 
+  it("rejects invalid background colors", () => {
+    expect(() =>
+      parseProjectData({ ...valid, background: "red" }),
+    ).toThrow();
+    expect(() =>
+      parseProjectData({ ...valid, background: "#fff" }),
+    ).toThrow();
+  });
+
   it("round-trips through serialize", () => {
     const json = serializeProjectData(valid);
     expect(json.endsWith("\n")).toBe(true);
     expect(parseProjectData(JSON.parse(json) as unknown)).toEqual(valid);
+  });
+});
+
+describe("project background helpers", () => {
+  it("normalizes and converts to pixi color", () => {
+    expect(normalizeProjectBackgroundHex(" #0B0D12 ")).toBe("#0b0d12");
+    expect(projectBackgroundToPixiColor("#0b0d12")).toBe(0x0b0d12);
   });
 });

@@ -140,6 +140,15 @@
           "properties": {
             "sceneName": "main"
           }
+        },
+        {
+          "type": "Script",
+          "id": "comp_5153ef1d-3933-4a7e-87de-0299f67e2c8d",
+          "scriptId": "shared.AudioClick",
+          "properties": {
+            "audioAssetId": "asset_011b4367-80e0-4f48-b16e-8e92467567e3",
+            "mouseEvent": "pointertap"
+          }
         }
       ],
       "children": []

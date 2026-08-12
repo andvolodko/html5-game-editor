@@ -52,6 +52,7 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
         scene: snapshot,
         assetResolver: editor.assets,
         resolution: project.resolution,
+        background: project.background,
         components: editor.components,
         projectId: editor.project.getActiveProjectId(),
         loadSceneById: async (sceneId) => editor.loadSceneData(sceneId),

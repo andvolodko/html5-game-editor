@@ -12,6 +12,12 @@ export const DEFAULT_PROJECT_RESOLUTION: ProjectResolution = {
   height: 720,
 };
 
+/**
+ * Default clear / letterbox color (CSS `#RRGGBB`).
+ * Used for the game host background and Pixi Application clear color.
+ */
+export const DEFAULT_PROJECT_BACKGROUND = "#0b0d12";
+
 /** Design resolution in world/CSS-independent pixels. */
 export interface ProjectResolution {
   width: number;
@@ -29,6 +35,8 @@ export interface ProjectData {
   renderers: RendererKind[];
   startScene: string;
   resolution: ProjectResolution;
+  /** CSS `#RRGGBB` clear / letterbox color. */
+  background: string;
 }
 
 /**

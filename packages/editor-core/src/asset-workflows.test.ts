@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { createEmptyScene, getSpine, getSprite } from "@game-editor/scene";
 import {
+  createAudioAssetRecord,
   createSpineAssetRecord,
   createTextureAssetRecord,
   type AssetDatabaseData,
@@ -66,6 +67,21 @@ describe("asset workflows", () => {
     expect(spine?.playing).toBe(true);
     editor.undo();
     expect(editor.getScene().nodes).toHaveLength(0);
+  });
+
+  it("dropAssetOntoScene rejects audio assets", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    editor.assets.getDatabase().add(
+      createAudioAssetRecord({
+        id: "asset_sfx",
+        name: "click",
+        path: "assets/click.mp3",
+        mimeType: "audio/mpeg",
+      }),
+    );
+    expect(() =>
+      dropAssetOntoScene(editor, "asset_sfx", { x: 0, y: 0 }),
+    ).toThrow(/Audio assets cannot be dropped/);
   });
 
   it("importDroppedFiles filters unsupported files and reports message", async () => {

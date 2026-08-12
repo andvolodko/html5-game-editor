@@ -2,6 +2,7 @@ export type {
   AssetType,
   TextureAssetMetadata,
   SpineAssetMetadata,
+  AudioAssetMetadata,
   AssetMetadata,
   AssetRecord,
   AssetDatabaseData,
@@ -11,6 +12,7 @@ export {
   assetTypeSchema,
   textureAssetMetadataSchema,
   spineAssetMetadataSchema,
+  audioAssetMetadataSchema,
   assetMetadataSchema,
   assetRecordSchema,
   assetDatabaseSchema,
@@ -23,6 +25,7 @@ export {
   createEmptyAssetDatabase,
   createTextureAssetRecord,
   createSpineAssetRecord,
+  createAudioAssetRecord,
   normalizeProjectRelativePath,
   humanizeAssetNodeName,
 } from "./factories.js";
@@ -44,6 +47,13 @@ export {
   textureFormatFromMimeType,
 } from "./texture-extensions.js";
 export type { TextureFileExtension } from "./texture-extensions.js";
+export {
+  AUDIO_FILE_EXTENSIONS,
+  isSupportedAudioExtension,
+  mimeTypeForAudioFileName,
+  isSupportedAudioFile,
+} from "./audio-extensions.js";
+export type { AudioFileExtension } from "./audio-extensions.js";
 export {
   SPINE_ATLAS_EXTENSION,
   SPINE_JSON_EXTENSION,

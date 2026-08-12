@@ -28,13 +28,16 @@ describe("ComponentRegistry", () => {
 
     expect(registry.has("shared.ChangeScene")).toBe(true);
     expect(registry.has("shared.PerformanceMeter")).toBe(true);
+    expect(registry.has("shared.AudioClick")).toBe(true);
     expect(registry.list().map((d) => d.id)).toEqual([
       "shared.ChangeScene",
+      "shared.AudioClick",
       "example.Spin",
       "shared.PerformanceMeter",
     ]);
     expect(registry.listMenuGroups().map((g) => g.category)).toEqual([
       "Scene",
+      "Audio",
       "UI",
       "Debug",
     ]);
@@ -59,6 +62,7 @@ describe("ComponentRegistry", () => {
         b: { kind: "boolean", default: true },
         e: { kind: "enum", default: "a", options: ["a", "b"] },
         d: { kind: "dynamicEnum", default: "main", source: "scenes" },
+        a: { kind: "asset", assetType: "audio", default: "" },
       },
     });
     expect(defaultPropertiesFromDefinition(def)).toEqual({
@@ -67,6 +71,7 @@ describe("ComponentRegistry", () => {
       b: true,
       e: "a",
       d: "main",
+      a: "",
     });
   });
 
@@ -81,6 +86,7 @@ describe("ComponentRegistry", () => {
     applyComponentCatalog(registry, parsed);
     expect(registry.has("shared.ChangeScene")).toBe(true);
     expect(registry.has("shared.PerformanceMeter")).toBe(true);
+    expect(registry.has("shared.AudioClick")).toBe(true);
     expect(parsed.busEvents).toEqual([{ id: "game.start", label: "Start" }]);
   });
 });

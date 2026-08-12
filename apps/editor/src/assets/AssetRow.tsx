@@ -68,7 +68,9 @@ function AssetRowComponent({
             className={
               asset.type === "spine"
                 ? "asset-row-icon spine"
-                : "asset-row-icon texture"
+                : asset.type === "audio"
+                  ? "asset-row-icon audio"
+                  : "asset-row-icon texture"
             }
             aria-hidden
           />

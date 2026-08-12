@@ -17,6 +17,7 @@
     "@game-editor/core": "workspace:*",
     "@game-editor/editor-core": "workspace:*",
     "@game-editor/game-components": "workspace:*",
+    "@game-editor/project": "workspace:*",
     "@game-editor/renderer-pixi": "workspace:*",
     "@game-editor/runtime": "workspace:*",
     "@game-editor/scene": "workspace:*",

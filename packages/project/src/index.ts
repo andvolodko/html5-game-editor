@@ -7,6 +7,7 @@ export {
   PROJECT_SCHEMA_VERSION,
   DEFAULT_START_SCENE,
   DEFAULT_PROJECT_RESOLUTION,
+  DEFAULT_PROJECT_BACKGROUND,
 } from "./types.js";
 export {
   parseProjectData,
@@ -17,6 +18,12 @@ export {
   rendererKindSchema,
   projectDataSchema,
   projectResolutionSchema,
+  projectBackgroundSchema,
 } from "./schema.js";
+export {
+  PROJECT_BACKGROUND_HEX_PATTERN,
+  normalizeProjectBackgroundHex,
+  projectBackgroundToPixiColor,
+} from "./project-background.js";
 export type { FittedRect } from "./fit-contain-rect.js";
 export { fitContainRect } from "./fit-contain-rect.js";

@@ -3,6 +3,7 @@ import {
   ASSET_SCHEMA_VERSION,
   type AssetDatabaseData,
   type AssetRecord,
+  type AudioAssetMetadata,
   type SpineAssetMetadata,
   type TextureAssetMetadata,
 } from "./types.js";
@@ -60,6 +61,26 @@ export function createSpineAssetRecord(input: {
   return {
     id: input.id ?? createId("asset"),
     type: "spine",
+    name: input.name,
+    path: normalizeProjectRelativePath(input.path),
+    metadata,
+  };
+}
+
+export function createAudioAssetRecord(input: {
+  name: string;
+  path: string;
+  mimeType: string;
+  id?: string;
+}): AssetRecord {
+  const metadata: AudioAssetMetadata = {
+    kind: "audio",
+    mimeType: input.mimeType,
+  };
+
+  return {
+    id: input.id ?? createId("asset"),
+    type: "audio",
     name: input.name,
     path: normalizeProjectRelativePath(input.path),
     metadata,
