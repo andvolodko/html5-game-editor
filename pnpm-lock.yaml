@@ -38,9 +38,15 @@ importers:
       '@game-editor/commands':
         specifier: workspace:*
         version: link:../../packages/commands
+      '@game-editor/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@game-editor/editor-core':
         specifier: workspace:*
         version: link:../../packages/editor-core
+      '@game-editor/game-components':
+        specifier: workspace:*
+        version: link:../../packages/game-components
       '@game-editor/renderer-pixi':
         specifier: workspace:*
         version: link:../../packages/renderer-pixi
@@ -90,6 +96,9 @@ importers:
       '@game-editor/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@game-editor/game-components':
+        specifier: workspace:*
+        version: link:../../packages/game-components
       '@game-editor/project':
         specifier: workspace:*
         version: link:../../packages/project
@@ -124,6 +133,12 @@ importers:
 
   games/example-game:
     dependencies:
+      '@game-editor/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@game-editor/game-components':
+        specifier: workspace:*
+        version: link:../../packages/game-components
       '@game-editor/renderer-pixi':
         specifier: workspace:*
         version: link:../../packages/renderer-pixi
@@ -143,6 +158,9 @@ importers:
 
   games/example-game-2:
     dependencies:
+      '@game-editor/game-components':
+        specifier: workspace:*
+        version: link:../../packages/game-components
       '@game-editor/renderer-pixi':
         specifier: workspace:*
         version: link:../../packages/renderer-pixi
@@ -201,6 +219,9 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@22.20.1)(tsx@4.23.12)
 
   packages/editor-core:
     dependencies:
@@ -213,9 +234,31 @@ importers:
       '@game-editor/core':
         specifier: workspace:*
         version: link:../core
+      '@game-editor/game-components':
+        specifier: workspace:*
+        version: link:../game-components
       '@game-editor/project':
         specifier: workspace:*
         version: link:../project
+      '@game-editor/scene':
+        specifier: workspace:*
+        version: link:../scene
+      '@game-editor/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@22.20.1)(tsx@4.23.12)
+
+  packages/game-components:
+    dependencies:
+      '@game-editor/core':
+        specifier: workspace:*
+        version: link:../core
       '@game-editor/scene':
         specifier: workspace:*
         version: link:../scene
@@ -298,6 +341,9 @@ importers:
       '@game-editor/core':
         specifier: workspace:*
         version: link:../core
+      '@game-editor/game-components':
+        specifier: workspace:*
+        version: link:../game-components
       '@game-editor/project':
         specifier: workspace:*
         version: link:../project

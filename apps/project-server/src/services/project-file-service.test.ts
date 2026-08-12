@@ -18,6 +18,7 @@ async function writeProjectJson(
     displayName: project.displayName,
     renderers: project.renderers ?? ["pixi"],
     startScene: project.startScene ?? "main",
+    resolution: project.resolution ?? { width: 1280, height: 720 },
   };
   await writeFile(
     path.join(root, "project.json"),

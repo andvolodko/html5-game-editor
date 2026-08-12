@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { PROJECT_SCHEMA_VERSION, type ProjectData } from "@game-editor/project";
+import {
+  DEFAULT_PROJECT_RESOLUTION,
+  PROJECT_SCHEMA_VERSION,
+  type ProjectData,
+} from "@game-editor/project";
 import { createFetchProjectApiClient } from "./project-api-client.js";
 import { ProjectManager } from "./project-manager.js";
 
@@ -9,6 +13,7 @@ const sample: ProjectData = {
   displayName: "Example Game",
   renderers: ["pixi"],
   startScene: "main",
+  resolution: { ...DEFAULT_PROJECT_RESOLUTION },
 };
 
 const sampleTwo: ProjectData = {
@@ -17,6 +22,7 @@ const sampleTwo: ProjectData = {
   displayName: "Example Game 2",
   renderers: ["pixi"],
   startScene: "main",
+  resolution: { ...DEFAULT_PROJECT_RESOLUTION },
 };
 
 describe("ProjectManager", () => {
@@ -70,6 +76,34 @@ describe("ProjectManager", () => {
     });
     await manager.refresh();
     await manager.setStartScene("main");
+    expect(saveProject).not.toHaveBeenCalled();
+  });
+
+  it("sets resolution via API and skips when unchanged", async () => {
+    const saveProject = vi.fn(async (project: ProjectData) => project);
+    const manager = new ProjectManager({
+      getProject: async () => sample,
+      saveProject,
+      listProjects: async () => ({
+        projects: [],
+        activeProjectId: null,
+      }),
+      openProject: async () => ({ projectId: "example-game", project: sample }),
+    });
+    await manager.refresh();
+
+    await manager.setResolution(1920, 1080);
+    expect(saveProject).toHaveBeenCalledWith({
+      ...sample,
+      resolution: { width: 1920, height: 1080 },
+    });
+    expect(manager.getProject()?.resolution).toEqual({
+      width: 1920,
+      height: 1080,
+    });
+
+    saveProject.mockClear();
+    await manager.setResolution(1920, 1080);
     expect(saveProject).not.toHaveBeenCalled();
   });
 

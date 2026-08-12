@@ -4,6 +4,8 @@ import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
 import { buildStartSceneSelectOptions } from "./fields/start-scene-select-options";
 
+const RESOLUTION_MIN = 1;
+
 export function ProjectSettingsPanel() {
   const editor = useEditor();
   const project = useEditorState((ed) => ed.project.getProject());
@@ -13,6 +15,8 @@ export function ProjectSettingsPanel() {
   const [scenes, setScenes] = useState<SceneListEntry[]>([]);
   const [scenesError, setScenesError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [widthDraft, setWidthDraft] = useState("");
+  const [heightDraft, setHeightDraft] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -43,11 +47,52 @@ export function ProjectSettingsPanel() {
     };
   }, [editor, projectRevision]);
 
+  useEffect(() => {
+    if (!project) {
+      setWidthDraft("");
+      setHeightDraft("");
+      return;
+    }
+    setWidthDraft(String(project.resolution.width));
+    setHeightDraft(String(project.resolution.height));
+  }, [project, projectRevision]);
+
   const options = buildStartSceneSelectOptions(
     scenes,
     project?.startScene,
   );
   const busy = status === "loading" || status === "saving";
+
+  const commitResolution = (): void => {
+    if (!project) {
+      return;
+    }
+    const width = Number.parseInt(widthDraft, 10);
+    const height = Number.parseInt(heightDraft, 10);
+    if (
+      !Number.isFinite(width) ||
+      !Number.isFinite(height) ||
+      width < RESOLUTION_MIN ||
+      height < RESOLUTION_MIN
+    ) {
+      setWidthDraft(String(project.resolution.width));
+      setHeightDraft(String(project.resolution.height));
+      setSaveError("Resolution width and height must be positive integers");
+      return;
+    }
+    if (
+      width === project.resolution.width &&
+      height === project.resolution.height
+    ) {
+      return;
+    }
+    setSaveError(null);
+    void editor.project.setResolution(width, height).catch((error: unknown) => {
+      setWidthDraft(String(project.resolution.width));
+      setHeightDraft(String(project.resolution.height));
+      setSaveError(error instanceof Error ? error.message : "Save failed");
+    });
+  };
 
   return (
     <div className="panel panel-project-settings">
@@ -83,6 +128,44 @@ export function ProjectSettingsPanel() {
                 </option>
               ))}
             </select>
+          </label>
+          <label>
+            Resolution Width
+            <input
+              type="number"
+              min={RESOLUTION_MIN}
+              step={1}
+              value={widthDraft}
+              disabled={busy}
+              onChange={(event) => {
+                setWidthDraft(event.target.value);
+              }}
+              onBlur={commitResolution}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.currentTarget.blur();
+                }
+              }}
+            />
+          </label>
+          <label>
+            Resolution Height
+            <input
+              type="number"
+              min={RESOLUTION_MIN}
+              step={1}
+              value={heightDraft}
+              disabled={busy}
+              onChange={(event) => {
+                setHeightDraft(event.target.value);
+              }}
+              onBlur={commitResolution}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.currentTarget.blur();
+                }
+              }}
+            />
           </label>
         </div>
       ) : status === "loading" ? (

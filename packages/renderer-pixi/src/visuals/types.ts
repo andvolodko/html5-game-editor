@@ -43,7 +43,7 @@ export interface VisualPaintResult {
   visualType: string;
   /** Local AABB for hit testing / selection outline. */
   bounds?: VisualBounds;
-  /** True when the visual is a Pixi Sprite suitable for size gizmo. */
+  /** Legacy painter flag; selection gizmo no longer depends on it. */
   supportsSpriteGizmo?: boolean;
 }
 

@@ -6,6 +6,18 @@ export const PROJECT_SCHEMA_VERSION = 1 as const;
 /** Default start scene file id when missing from older project.json files. */
 export const DEFAULT_START_SCENE = "main";
 
+/** Default design resolution when missing from older project.json files. */
+export const DEFAULT_PROJECT_RESOLUTION: ProjectResolution = {
+  width: 1280,
+  height: 720,
+};
+
+/** Design resolution in world/CSS-independent pixels. */
+export interface ProjectResolution {
+  width: number;
+  height: number;
+}
+
 /**
  * Root project manifest (`project.json`).
  * `startScene` is a scene file id (basename under assets/scenes/), not an asset id.
@@ -16,6 +28,7 @@ export interface ProjectData {
   displayName: string;
   renderers: RendererKind[];
   startScene: string;
+  resolution: ProjectResolution;
 }
 
 /**

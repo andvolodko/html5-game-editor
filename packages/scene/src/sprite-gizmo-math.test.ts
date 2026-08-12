@@ -8,9 +8,11 @@ import {
   normalizeRotationDegrees,
   rotationFromHandleDrag,
   sizeFromHandleDrag,
+  scaleFromAxisDrag,
   spriteGizmoHitOutsets,
   SPRITE_GIZMO_HANDLE_HIT_EXTENT,
   SPRITE_GIZMO_MIN_SIZE,
+  SPRITE_GIZMO_MIN_SCALE,
   SPRITE_GIZMO_ROTATE_HIT_EXTENT,
   SPRITE_GIZMO_ROTATE_OFFSET,
 } from "./sprite-gizmo-math.js";
@@ -83,9 +85,29 @@ describe("sprite-gizmo-math", () => {
   it("places the six size handles, rotation stem, and flip tools", () => {
     expect(gizmoHandleLocalPosition("nw", 100, 40)).toEqual({ x: -50, y: -20 });
     expect(gizmoHandleLocalPosition("e", 100, 40)).toEqual({ x: 50, y: 0 });
+    expect(gizmoHandleLocalPosition("scaleX", 100, 40)).toEqual({ x: 50, y: 0 });
+    expect(gizmoHandleLocalPosition("scaleY", 100, 40)).toEqual({ x: 0, y: 20 });
     expect(gizmoHandleLocalPosition("rotate", 100, 40, 28)).toEqual({ x: 0, y: -48 });
     expect(gizmoHandleLocalPosition("flipH", 100, 40)).toEqual({ x: -40, y: 44 });
     expect(gizmoHandleLocalPosition("flipV", 100, 40)).toEqual({ x: -12, y: 44 });
+  });
+
+  it("scales from parent-space axis distances and clamps magnitude", () => {
+    expect(
+      scaleFromAxisDrag("scaleX", 100, 50, { x: 1, y: 1 }),
+    ).toEqual({ x: 2, y: 1 });
+    expect(
+      scaleFromAxisDrag("scaleY", 80, 40, { x: 1, y: 2 }),
+    ).toEqual({ x: 1, y: 4 });
+    expect(
+      scaleFromAxisDrag("scaleX", 100, 50, { x: -1, y: 1 }),
+    ).toEqual({ x: -2, y: 1 });
+    expect(
+      scaleFromAxisDrag("scaleX", 1, 50, { x: 1, y: 1 }).x,
+    ).toBe(SPRITE_GIZMO_MIN_SCALE);
+    expect(
+      scaleFromAxisDrag("scaleX", 100, 50, { x: 1, y: 1 }, { uniform: true }),
+    ).toEqual({ x: 2, y: 2 });
   });
 
   it("maps anchor UV ↔ gizmo local and compensates position", () => {

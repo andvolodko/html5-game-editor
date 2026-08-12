@@ -477,6 +477,7 @@ describe("EditorViewportController", () => {
       updateNode: (node: SceneNodeData) => {
         updated.push(node.id);
       },
+      syncTransform: vi.fn(),
       destroyNode: (nodeId: string) => {
         destroyed.push(nodeId);
       },

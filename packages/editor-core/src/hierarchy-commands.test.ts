@@ -194,6 +194,7 @@ describe("hierarchy CRUD commands", () => {
     const renderer: SceneRenderer = {
       createNode: vi.fn(),
       updateNode,
+      syncTransform: vi.fn(),
       destroyNode: vi.fn(),
       reparentNode: vi.fn(),
       clear: vi.fn(),
@@ -222,6 +223,7 @@ describe("incremental viewport sync", () => {
         }
       },
       updateNode: vi.fn(),
+      syncTransform: vi.fn(),
       destroyNode: (nodeId: string) => {
         instances.delete(nodeId);
       },

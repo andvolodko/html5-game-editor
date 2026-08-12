@@ -2,6 +2,7 @@
  * Pure math for the sprite selection gizmo (testable, renderer-agnostic).
  *
  * Six size handles: four corners + left/right midpoints.
+ * Scale arrows (X/Y) when the visual has no editable width/height.
  * Rotation is a separate stem handle above the top edge.
  * Anchor is a draggable pivot inside the bounds (0–1 UV).
  * Flip H/V are click tools below the bottom edge.
@@ -10,6 +11,9 @@
 import type { Vec2 } from "./types.js";
 
 export const SPRITE_GIZMO_MIN_SIZE = 8;
+
+/** Minimum |scale| magnitude when dragging scale arrows. */
+export const SPRITE_GIZMO_MIN_SCALE = 0.05;
 
 /** Distance from top edge to the rotate handle center. */
 export const SPRITE_GIZMO_ROTATE_OFFSET = 28;
@@ -69,8 +73,12 @@ export function spriteGizmoHitOutsets(cameraScale = 1): {
 
 export type SpriteSizeHandle = "nw" | "ne" | "sw" | "se" | "w" | "e";
 
+/** Axis scale arrows when the visual has no editable width/height. */
+export type SpriteScaleHandle = "scaleX" | "scaleY";
+
 export type SpriteGizmoHandle =
   | SpriteSizeHandle
+  | SpriteScaleHandle
   | "rotate"
   | "anchor"
   | "flipH"
@@ -80,6 +88,12 @@ export function isSpriteSizeHandle(
   handle: SpriteGizmoHandle,
 ): handle is SpriteSizeHandle {
   return (SPRITE_SIZE_HANDLES as readonly string[]).includes(handle);
+}
+
+export function isSpriteScaleHandle(
+  handle: SpriteGizmoHandle,
+): handle is SpriteScaleHandle {
+  return (SPRITE_SCALE_HANDLES as readonly string[]).includes(handle);
 }
 
 export function isSpriteFlipHandle(
@@ -100,6 +114,47 @@ export function sizeHandleCursor(handle: SpriteSizeHandle): string {
     case "e":
       return "ew-resize";
   }
+}
+
+export function scaleHandleCursor(handle: SpriteScaleHandle): string {
+  return handle === "scaleX" ? "ew-resize" : "ns-resize";
+}
+
+/**
+ * Scale Transform2D from an axis arrow using parent-space axis distances
+ * (avoids feedback when live container.scale changes during the drag).
+ * Preserves flip sign. Shift = uniform.
+ */
+export function scaleFromAxisDrag(
+  handle: SpriteScaleHandle,
+  currentAxis: number,
+  startAxis: number,
+  startScale: Vec2,
+  options?: { uniform?: boolean },
+): Vec2 {
+  if (Math.abs(startAxis) < Number.EPSILON) {
+    return { x: startScale.x, y: startScale.y };
+  }
+  const ratio = currentAxis / startAxis;
+  const applyUniform = options?.uniform === true;
+
+  const nextX =
+    applyUniform || handle === "scaleX"
+      ? clampScaleAxis(startScale.x, ratio)
+      : startScale.x;
+  const nextY =
+    applyUniform || handle === "scaleY"
+      ? clampScaleAxis(startScale.y, ratio)
+      : startScale.y;
+
+  return { x: nextX, y: nextY };
+}
+
+function clampScaleAxis(start: number, ratio: number): number {
+  const sign = start < 0 ? -1 : 1;
+  const base = Math.abs(start) > Number.EPSILON ? Math.abs(start) : 1;
+  const magnitude = Math.max(SPRITE_GIZMO_MIN_SCALE, Math.abs(base * ratio));
+  return sign * magnitude;
 }
 
 /**
@@ -377,6 +432,10 @@ export function gizmoHandleLocalPosition(
       return { x: -hx, y: 0 };
     case "e":
       return { x: hx, y: 0 };
+    case "scaleX":
+      return { x: hx, y: 0 };
+    case "scaleY":
+      return { x: 0, y: hy };
     case "rotate":
       return { x: 0, y: -hy - rotateOffset };
     case "anchor":
@@ -399,4 +458,9 @@ export const SPRITE_SIZE_HANDLES: readonly SpriteSizeHandle[] = [
   "se",
   "w",
   "e",
+] as const;
+
+export const SPRITE_SCALE_HANDLES: readonly SpriteScaleHandle[] = [
+  "scaleX",
+  "scaleY",
 ] as const;

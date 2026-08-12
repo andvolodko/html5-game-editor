@@ -25,6 +25,7 @@ import {
   handleSceneItemRoute,
   handleScenesCollectionRoute,
 } from "./routes/scenes.js";
+import { handleComponentsCatalogRoute } from "./routes/components.js";
 
 export type { RouterDeps } from "./router-deps.js";
 
@@ -46,6 +47,7 @@ const ROUTE_HANDLERS: readonly RouteHandler[] = [
   handleAssetDeleteRoute,
   handleScenesCollectionRoute,
   handleSceneItemRoute,
+  handleComponentsCatalogRoute,
 ];
 
 export function createRouter(deps: RouterDeps) {

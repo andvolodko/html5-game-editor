@@ -18,3 +18,6 @@ export { DeleteNodeCommand } from "./delete-node-command.js";
 export { DeleteNodesCommand } from "./delete-nodes-command.js";
 export { createDeleteSelectionCommand } from "./create-delete-selection-command.js";
 export { DuplicateNodeCommand } from "./duplicate-node-command.js";
+export { AddScriptComponentCommand } from "./add-script-component-command.js";
+export { RemoveComponentCommand } from "./remove-component-command.js";
+export { SetScriptPropertiesCommand } from "./set-script-properties-command.js";

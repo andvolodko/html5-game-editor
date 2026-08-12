@@ -75,8 +75,9 @@ export function isAssetsPanelKeyTarget(eventTarget: EventTarget | null): boolean
   if (!("closest" in eventTarget) || typeof eventTarget.closest !== "function") {
     return false;
   }
-  const closest = eventTarget.closest as (selector: string) => unknown;
-  return closest('[data-editor-panel="assets"]') != null;
+  // Call as a method so DOM Element.closest keeps its receiver (`this`).
+  const el = eventTarget as { closest(selector: string): unknown };
+  return el.closest('[data-editor-panel="assets"]') != null;
 }
 
 /**

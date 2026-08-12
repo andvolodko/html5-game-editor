@@ -9,6 +9,11 @@ import type { SceneNodeData } from "./types.js";
 export interface SceneRenderer {
   createNode(node: SceneNodeData): void;
   updateNode(node: SceneNodeData): void;
+  /**
+   * Apply Transform2D only — do not rebuild visuals.
+   * Used by gameplay scripts that move/flip nodes every frame.
+   */
+  syncTransform(node: SceneNodeData): void;
   destroyNode(nodeId: string): void;
   /**
    * Move an existing runtime object under a new parent (or root) at index.

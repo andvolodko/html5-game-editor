@@ -9,6 +9,7 @@ import { useEditorState } from "../hooks/useEditorState";
 import { useEditorLayoutControls } from "../layout/layout-context";
 import { OpenProjectDialog } from "../project/OpenProjectDialog";
 import { useUnsavedChangesGuard } from "../unsaved/useUnsavedChangesGuard";
+import { syncEditorComponentCatalog } from "../components/sync-editor-component-catalog";
 
 type MenuId = "file" | "edit" | "node";
 
@@ -160,6 +161,7 @@ export function Toolbar() {
           const proceeded = await runGuarded(async () => {
             setProjectPickerBusy(true);
             await editor.openProject(projectId);
+            await syncEditorComponentCatalog(editor);
           });
           if (proceeded) {
             setProjectPickerOpen(false);

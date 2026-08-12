@@ -24,6 +24,9 @@ export {
   DuplicateNodeCommand,
   RenameNodeCommand,
   SetSceneNameCommand,
+  AddScriptComponentCommand,
+  RemoveComponentCommand,
+  SetScriptPropertiesCommand,
   createDeleteSelectionCommand,
 } from "./commands/index.js";
 export type {
@@ -47,6 +50,28 @@ export type {
   NodeTypeDefinition,
   NodeTypeCategoryGroup,
 } from "./node-types/index.js";
+export {
+  ComponentRegistry,
+  defaultComponentRegistry,
+  defineComponent,
+  defaultPropertiesFromDefinition,
+  registerSharedComponents,
+  installSceneFlowRuntime,
+  changeSceneComponent,
+} from "@game-editor/game-components";
+export type {
+  ComponentDefinition,
+  ComponentCategoryGroup,
+  ComponentPropertyDefinition,
+  ComponentPropertyDynamicEnum,
+  DynamicEnumSource,
+  BusEventDefinition,
+  ScriptInstance,
+  ScriptCreateContext,
+  ScriptRuntimeServices,
+  ScriptTransform2D,
+  ScriptTransform2DPatch,
+} from "@game-editor/game-components";
 
 export {
   sizeFromHandleDrag,
@@ -96,7 +121,20 @@ export type {
   ProjectListResult,
   OpenProjectResult,
 } from "./project-api-client.js";
-export type { ProjectListEntry } from "@game-editor/project";
+export {
+  createFetchComponentCatalogApiClient,
+} from "./component-catalog-api-client.js";
+export type { ComponentCatalogApiClient } from "./component-catalog-api-client.js";
+export type { ProjectListEntry, ProjectData, ProjectResolution } from "@game-editor/project";
+export {
+  applyComponentCatalog,
+  buildComponentCatalog,
+  parseComponentCatalogData,
+} from "@game-editor/game-components";
+export type {
+  ComponentCatalogData,
+  ComponentCatalogEntry,
+} from "@game-editor/game-components";
 export {
   importDroppedFiles,
   dropAssetOntoScene,

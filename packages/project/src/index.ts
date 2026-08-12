@@ -1,7 +1,12 @@
-export type { ProjectData, ProjectListEntry } from "./types.js";
+export type {
+  ProjectData,
+  ProjectListEntry,
+  ProjectResolution,
+} from "./types.js";
 export {
   PROJECT_SCHEMA_VERSION,
   DEFAULT_START_SCENE,
+  DEFAULT_PROJECT_RESOLUTION,
 } from "./types.js";
 export {
   parseProjectData,
@@ -11,4 +16,7 @@ export {
   PROJECT_ID_PATTERN,
   rendererKindSchema,
   projectDataSchema,
+  projectResolutionSchema,
 } from "./schema.js";
+export type { FittedRect } from "./fit-contain-rect.js";
+export { fitContainRect } from "./fit-contain-rect.js";

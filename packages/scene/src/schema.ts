@@ -219,6 +219,25 @@ export const spineComponentSchema = z.object({
   playing: z.boolean(),
 });
 
+/** JSON-compatible property bag for Script components (no functions / undefined). */
+export const scriptPropertyValueSchema: z.ZodType<unknown> = z.lazy(() =>
+  z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.null(),
+    z.array(scriptPropertyValueSchema),
+    z.record(z.string(), scriptPropertyValueSchema),
+  ]),
+);
+
+export const scriptComponentSchema = z.object({
+  type: z.literal("Script"),
+  id: z.string().min(1),
+  scriptId: z.string().min(1),
+  properties: z.record(z.string(), scriptPropertyValueSchema),
+});
+
 export const componentSchema = z.discriminatedUnion("type", [
   transform2DComponentSchema,
   transform3DComponentSchema,
@@ -236,6 +255,7 @@ export const componentSchema = z.discriminatedUnion("type", [
   perspectiveMeshComponentSchema,
   animatedSpriteComponentSchema,
   spineComponentSchema,
+  scriptComponentSchema,
 ]);
 
 export const sceneNodeSchema: z.ZodType<SceneNodeData> = z.lazy(() =>

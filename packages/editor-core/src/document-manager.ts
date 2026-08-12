@@ -8,8 +8,10 @@ import {
   insertNodeInScene,
   moveNodeInScene,
   detachNodeFromScene,
+  type ComponentData,
   type SceneData,
   type SceneNodeData,
+  type ScriptComponentData,
   type Transform2DComponentData,
   type VisualComponentData,
 } from "@game-editor/scene";
@@ -177,6 +179,85 @@ export class DocumentManager {
       kind: "update",
       nodeId,
       reason: "visual",
+    });
+  }
+
+  /** Append or insert a component on a node (Script add-component flow). */
+  addComponent(
+    nodeId: string,
+    component: ComponentData,
+    index?: number,
+  ): void {
+    const node = findNodeById(this.scene, nodeId);
+    if (!node) {
+      throw new Error(`DocumentManager: unknown node ${nodeId}`);
+    }
+    if (node.components.some((c) => c.id === component.id)) {
+      throw new Error(
+        `DocumentManager: duplicate component id ${component.id} on ${nodeId}`,
+      );
+    }
+    const clone = structuredClone(component);
+    if (index === undefined) {
+      node.components.push(clone);
+    } else {
+      const clamped = Math.max(0, Math.min(index, node.components.length));
+      node.components.splice(clamped, 0, clone);
+    }
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "metadata",
+    });
+  }
+
+  /**
+   * Remove a Script component by id. Transform / visual components are not
+   * removable through this API.
+   */
+  removeComponent(nodeId: string, componentId: string): void {
+    const node = findNodeById(this.scene, nodeId);
+    if (!node) {
+      throw new Error(`DocumentManager: unknown node ${nodeId}`);
+    }
+    const index = node.components.findIndex((c) => c.id === componentId);
+    const component = index >= 0 ? node.components[index] : undefined;
+    if (!component || component.type !== "Script") {
+      throw new Error(
+        `DocumentManager: node ${nodeId} missing Script component ${componentId}`,
+      );
+    }
+    node.components.splice(index, 1);
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "metadata",
+    });
+  }
+
+  /** Replace a Script component in-place (same id / scriptId). */
+  applyScriptComponent(nodeId: string, values: ScriptComponentData): void {
+    const node = findNodeById(this.scene, nodeId);
+    if (!node) {
+      throw new Error(`DocumentManager: unknown node ${nodeId}`);
+    }
+    const index = node.components.findIndex((c) => c.id === values.id);
+    const current = index >= 0 ? node.components[index] : undefined;
+    if (!current || current.type !== "Script") {
+      throw new Error(
+        `DocumentManager: node ${nodeId} missing Script component ${values.id}`,
+      );
+    }
+    if (current.scriptId !== values.scriptId) {
+      throw new Error(
+        `DocumentManager: scriptId mismatch on ${nodeId}/${values.id}`,
+      );
+    }
+    node.components[index] = structuredClone(values);
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "metadata",
     });
   }
 

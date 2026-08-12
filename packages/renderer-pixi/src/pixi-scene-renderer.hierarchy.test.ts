@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   createContainerNode,
+  createGraphicsComponent,
+  createNineSliceSpriteComponent,
+  createNodeWithVisual,
   createSpriteNode,
+  createTextComponent,
   createTransform2D,
   spriteGizmoHitOutsets,
 } from "@game-editor/scene";
@@ -148,7 +152,7 @@ describe("PixiSceneRenderer incremental hierarchy", () => {
       { width: 100, height: 40 },
     );
     renderer.createNode(node);
-    // createNode paints visuals asynchronously; wait for supportsSpriteGizmo.
+    // createNode paints visuals asynchronously; wait for bounds/gizmo.
     await new Promise((resolve) => setTimeout(resolve, 0));
     renderer.setSelectedNodeIds([node.id]);
 
@@ -164,5 +168,38 @@ describe("PixiSceneRenderer incremental hierarchy", () => {
     expect(gizmo.position.x).toBeCloseTo(50, 5);
     expect(gizmo.position.y).toBeCloseTo(0, 5);
     expect(renderer.getRuntimeContainer(node.id)!.position.x).toBeCloseTo(-50, 5);
+  });
+
+  it("shows selection gizmo for non-sprite Pixi leaf visuals", async () => {
+    const host = { appendChild() {} } as unknown as HTMLElement;
+    const renderer = new PixiSceneRenderer({
+      canvasParent: host,
+      headless: true,
+    });
+    await renderer.whenReady();
+
+    const text = createNodeWithVisual(
+      "Label",
+      { x: 0, y: 0 },
+      createTextComponent({ text: "Hi" }),
+    );
+    const nine = createNodeWithVisual(
+      "Panel",
+      { x: 10, y: 0 },
+      createNineSliceSpriteComponent({ width: 80, height: 40 }),
+    );
+    const graphics = createNodeWithVisual(
+      "Shape",
+      { x: 20, y: 0 },
+      createGraphicsComponent(),
+    );
+
+    for (const node of [text, nine, graphics]) {
+      renderer.createNode(node);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      renderer.setSelectedNodeIds([node.id]);
+      const gizmo = renderer.getRuntimeGizmoRoot(node.id);
+      expect(gizmo?.visible).toBe(true);
+    }
   });
 });

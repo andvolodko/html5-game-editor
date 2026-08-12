@@ -13,6 +13,7 @@ import { AssetImportService } from "./services/asset-import-service.js";
 import { AssetFolderService } from "./services/asset-folder-service.js";
 import { AssetMutationService } from "./services/asset-mutation-service.js";
 import { AssetSyncService } from "./services/asset-sync-service.js";
+import { ComponentCatalogService } from "./services/component-catalog-service.js";
 import { createRouter } from "./http/router.js";
 import { sendNoContent } from "./http/responses.js";
 import { DEFAULT_PROJECT_SERVER_PORT } from "@game-editor/shared";
@@ -56,6 +57,7 @@ const assetSyncService = new AssetSyncService(
   assetDatabaseStore,
   importerRegistry,
 );
+const componentCatalogService = new ComponentCatalogService(projectService);
 
 const router = createRouter({
   projectService,
@@ -67,6 +69,7 @@ const router = createRouter({
   assetMutationService,
   assetSyncService,
   projectCatalogService,
+  componentCatalogService,
 });
 
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {

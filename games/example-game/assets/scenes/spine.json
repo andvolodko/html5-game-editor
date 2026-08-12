@@ -38,13 +38,13 @@
           "type": "Transform2D",
           "id": "comp_ee5d828c-453c-4fa5-b37d-2d0761632072",
           "position": {
-            "x": 1583.164669953099,
-            "y": 1054.6181297537123
+            "x": 1240,
+            "y": 710
           },
-          "rotation": 0,
+          "rotation": 179.84298989679917,
           "scale": {
-            "x": 1,
-            "y": 1
+            "x": 0.20299021805627784,
+            "y": -0.19796550230830678
           }
         },
         {
@@ -53,9 +53,9 @@
           "assetId": "asset_b3d41acd-42c8-406e-946f-6e15d28e2c77",
           "skin": "default",
           "animation": "idle",
-          "loop": false,
+          "loop": true,
           "timeScale": 1,
-          "playing": false
+          "playing": true
         }
       ],
       "children": []
@@ -68,8 +68,47 @@
           "type": "Transform2D",
           "id": "comp_cb7daae4-7be0-41d6-a164-d3ff6f86c11e",
           "position": {
-            "x": 796.2747518559424,
-            "y": 1197.4102717654714
+            "x": 50,
+            "y": 720
+          },
+          "rotation": 0.42371073266910386,
+          "scale": {
+            "x": 0.2671806455837629,
+            "y": 0.2329279739368373
+          }
+        },
+        {
+          "type": "Spine",
+          "id": "comp_1dffae9a-cc62-4960-a099-d0f2f7a1120c",
+          "assetId": "asset_03a7df2b-9f52-447f-8d6f-9b58f3bb3485",
+          "animation": "walk",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_cd5abd48-f7a7-4aa0-a811-b056b113dae7",
+          "scriptId": "example.Raptor",
+          "properties": {
+            "speed": 222,
+            "range": 1200,
+            "enabled": true
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_9f79111f-a0af-48f6-bddf-102257dcabda",
+      "name": "Text",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_f36b75e7-7f99-4c9a-84af-1e584c9390ae",
+          "position": {
+            "x": 1130,
+            "y": 40
           },
           "rotation": 0,
           "scale": {
@@ -78,13 +117,29 @@
           }
         },
         {
-          "type": "Spine",
-          "id": "comp_1dffae9a-cc62-4960-a099-d0f2f7a1120c",
-          "assetId": "asset_03a7df2b-9f52-447f-8d6f-9b58f3bb3485",
-          "animation": "jump",
-          "loop": false,
-          "timeScale": 1,
-          "playing": false
+          "type": "Text",
+          "id": "comp_d511efdf-fb43-4b1f-9960-dfce656d3226",
+          "text": "Go to main scene",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 32,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fill": 16777215,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_01afe403-b03b-4787-83d5-e65e5ac62171",
+          "scriptId": "example.GoSpineButton",
+          "properties": {
+            "sceneName": "main"
+          }
         }
       ],
       "children": []

@@ -2,15 +2,21 @@ import type { Application, Container } from "pixi.js";
 import type { FederatedPointerEvent } from "pixi.js";
 import {
   anchorFromGizmoLocal,
-  getSprite,
   getTransform2D,
   getVisualAnchorOrDefault,
+  getVisualComponent,
+  getVisualDisplaySize,
   isSpriteFlipHandle,
+  isSpriteScaleHandle,
   isSpriteSizeHandle,
   positionDeltaForAnchorChange,
   rotationFromHandleDrag,
+  scaleFromAxisDrag,
   sizeFromHandleDrag,
+  visualComponentSupportsAnchor,
+  visualComponentSupportsDisplaySize,
   type SpriteGizmoHandle,
+  type SpriteScaleHandle,
   type Vec2,
 } from "@game-editor/scene";
 import { MOUSE_BUTTON_MIDDLE } from "@game-editor/shared";
@@ -34,8 +40,11 @@ interface GizmoDragState {
   /** Anchor drag: parent-space position at pointer-down. */
   startPosition?: Vec2;
   startScale?: Vec2;
+  currentScale?: Vec2;
   currentAnchor?: Vec2;
   currentPosition?: Vec2;
+  /** Parent-space axis distance at pointer-down (scale arrows). */
+  startScaleAxis?: number;
 }
 
 export interface GizmoDragHost {
@@ -44,6 +53,7 @@ export interface GizmoDragHost {
   getRuntime(nodeId: string): RuntimeNode | undefined;
   previewSpriteSize(nodeId: string, width: number, height: number): void;
   previewNodeRotation(nodeId: string, rotationDegrees: number): void;
+  previewNodeScale(nodeId: string, scale: Vec2): void;
   previewSpriteAnchor(nodeId: string, anchor: Vec2, position: Vec2): void;
   paintVisuals(runtime: RuntimeNode): Promise<void>;
   paintSelection(runtime: RuntimeNode): void;
@@ -51,6 +61,7 @@ export interface GizmoDragHost {
   onNodePointerDown?(nodeId: string, world: Vec2): void;
   onGizmoResizeEnd?(nodeId: string, size: { width: number; height: number }): void;
   onGizmoRotateEnd?(nodeId: string, rotation: number): void;
+  onGizmoScaleEnd?(nodeId: string, scale: Vec2): void;
   onGizmoAnchorEnd?(
     nodeId: string,
     result: { anchor: Vec2; position: Vec2 },
@@ -59,7 +70,7 @@ export interface GizmoDragHost {
 }
 
 /**
- * Sprite gizmo resize/rotate/anchor drag + flip click.
+ * Selection gizmo resize/scale/rotate/anchor drag + flip click for Pixi leaf visuals.
  * Visual chrome lives in SpriteSelectionGizmo.
  */
 export class PixiGizmoDragController {
@@ -86,9 +97,9 @@ export class PixiGizmoDragController {
     if (event.button === MOUSE_BUTTON_MIDDLE) {
       return;
     }
-    const sprite = getSprite(runtime.node);
+    const visual = getVisualComponent(runtime.node);
     const transform = getTransform2D(runtime.node);
-    if (!sprite || !transform) {
+    if (!visual || !transform) {
       return;
     }
 
@@ -110,15 +121,31 @@ export class PixiGizmoDragController {
       return;
     }
 
-    const startWidth = runtime.sizePreview?.width ?? sprite.width;
-    const startHeight = runtime.sizePreview?.height ?? sprite.height;
+    const displaySize = getVisualDisplaySize(visual);
+    const startWidth =
+      runtime.sizePreview?.width ??
+      displaySize?.width ??
+      runtime.visualBounds?.width ??
+      0;
+    const startHeight =
+      runtime.sizePreview?.height ??
+      displaySize?.height ??
+      runtime.visualBounds?.height ??
+      0;
+    if (startWidth <= 0 || startHeight <= 0) {
+      return;
+    }
+
     const bounds = runtime.visualBounds;
     const visualCenter = bounds
       ? { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 }
       : { x: 0, y: 0 };
 
     if (handle === "anchor") {
-      const startAnchor = getVisualAnchorOrDefault(sprite);
+      if (!visualComponentSupportsAnchor(visual)) {
+        return;
+      }
+      const startAnchor = getVisualAnchorOrDefault(visual);
       const startPosition = { ...transform.position };
       const startScale = { ...transform.scale };
       this.gizmoDrag = {
@@ -227,16 +254,33 @@ export class PixiGizmoDragController {
       return;
     }
 
+    if (isSpriteSizeHandle(handle) && !visualComponentSupportsDisplaySize(visual)) {
+      return;
+    }
+    if (isSpriteScaleHandle(handle) && visualComponentSupportsDisplaySize(visual)) {
+      return;
+    }
+
     const local = event.getLocalPosition(runtime.visualsRoot);
-    // Rotation must be measured in parent space so live preview rotation does
-    // not feed back into the pointer→local mapping.
+    // Rotation / scale must be measured in parent space so live preview
+    // transform does not feed back into the pointer→local mapping.
     const parentSpace = runtime.container.parent ?? host.world;
     const parentPoint = event.getLocalPosition(parentSpace);
     const startRotationLocal = {
       x: parentPoint.x - runtime.container.position.x,
       y: parentPoint.y - runtime.container.position.y,
     };
-    const startAnchor = getVisualAnchorOrDefault(sprite);
+    const startAnchor = getVisualAnchorOrDefault(visual);
+    const startScale = { ...transform.scale };
+    const startScaleAxis = isSpriteScaleHandle(handle)
+      ? parentAxisDistance(
+          handle,
+          parentPoint.x - runtime.container.position.x,
+          parentPoint.y - runtime.container.position.y,
+          runtime.container.rotation,
+        )
+      : undefined;
+
     this.gizmoDrag = {
       nodeId: runtime.node.id,
       pointerId: event.pointerId,
@@ -252,6 +296,9 @@ export class PixiGizmoDragController {
       currentHeight: startHeight,
       currentRotation: transform.rotation,
       startAnchor,
+      startScale,
+      currentScale: { ...startScale },
+      startScaleAxis,
     };
 
     const onMove = (moveEvent: FederatedPointerEvent) => {
@@ -265,10 +312,12 @@ export class PixiGizmoDragController {
       }
       if (isSpriteSizeHandle(drag.handle)) {
         const point = moveEvent.getLocalPosition(live.visualsRoot);
-        const liveSprite = getSprite(live.node);
+        const liveVisual = getVisualComponent(live.node);
         const anchor =
           drag.startAnchor ??
-          (liveSprite ? getVisualAnchorOrDefault(liveSprite) : { x: 0.5, y: 0.5 });
+          (liveVisual
+            ? getVisualAnchorOrDefault(liveVisual)
+            : { x: 0.5, y: 0.5 });
         const size = sizeFromHandleDrag(
           drag.handle,
           point.x,
@@ -280,6 +329,25 @@ export class PixiGizmoDragController {
         drag.currentWidth = size.width;
         drag.currentHeight = size.height;
         host.previewSpriteSize(drag.nodeId, size.width, size.height);
+      } else if (isSpriteScaleHandle(drag.handle) && drag.startScale) {
+        const parent = live.container.parent ?? host.world;
+        const point = moveEvent.getLocalPosition(parent);
+        const currentAxis = parentAxisDistance(
+          drag.handle,
+          point.x - live.container.position.x,
+          point.y - live.container.position.y,
+          (drag.startRotation * Math.PI) / 180,
+        );
+        const startAxis = drag.startScaleAxis ?? 0;
+        const scale = scaleFromAxisDrag(
+          drag.handle,
+          currentAxis,
+          startAxis,
+          drag.startScale,
+          { uniform: moveEvent.shiftKey },
+        );
+        drag.currentScale = scale;
+        host.previewNodeScale(drag.nodeId, scale);
       } else {
         const parent = live.container.parent ?? host.world;
         const point = moveEvent.getLocalPosition(parent);
@@ -321,6 +389,18 @@ export class PixiGizmoDragController {
           void host.paintVisuals(live);
           host.paintSelection(live);
         }
+      } else if (isSpriteScaleHandle(drag.handle)) {
+        const start = drag.startScale;
+        const current = drag.currentScale;
+        if (
+          start &&
+          current &&
+          (current.x !== start.x || current.y !== start.y)
+        ) {
+          host.onGizmoScaleEnd?.(drag.nodeId, current);
+        } else if (live) {
+          host.paint(live);
+        }
       } else if (drag.currentRotation !== drag.startRotation) {
         host.onGizmoRotateEnd?.(drag.nodeId, drag.currentRotation);
       } else if (live) {
@@ -338,4 +418,18 @@ export class PixiGizmoDragController {
     app.stage.on("pointerup", onUp);
     app.stage.on("pointerupoutside", onUp);
   }
+}
+
+/** Project parent-space offset into the container's local X/Y (includes scale). */
+function parentAxisDistance(
+  handle: SpriteScaleHandle,
+  parentDx: number,
+  parentDy: number,
+  rotationRadians: number,
+): number {
+  const c = Math.cos(rotationRadians);
+  const s = Math.sin(rotationRadians);
+  const localX = parentDx * c + parentDy * s;
+  const localY = -parentDx * s + parentDy * c;
+  return handle === "scaleX" ? localX : localY;
 }

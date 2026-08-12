@@ -40,6 +40,8 @@ export type {
 
   SpineComponentData,
 
+  ScriptComponentData,
+
   VisualComponentData,
 
   LeafVisualComponentType,
@@ -63,6 +65,10 @@ export {
   DEFAULT_VISUAL_ANCHOR,
 
   visualComponentSupportsAnchor,
+
+  visualComponentSupportsDisplaySize,
+
+  getVisualDisplaySize,
 
   getVisualAnchorOrDefault,
 
@@ -109,6 +115,10 @@ export {
   animatedSpriteComponentSchema,
 
   spineComponentSchema,
+
+  scriptPropertyValueSchema,
+
+  scriptComponentSchema,
 
   componentSchema,
 
@@ -162,6 +172,8 @@ export {
 
   createSpineComponent,
 
+  createScriptComponent,
+
   createSpriteNode,
 
   createNodeWithVisual,
@@ -205,6 +217,10 @@ export {
   getAnimatedSprite,
 
   getSpine,
+
+  getScriptComponents,
+
+  findScript,
 
   flattenNodes,
 
@@ -290,7 +306,11 @@ export {
 
   sizeHandleCursor,
 
+  scaleHandleCursor,
+
   isSpriteSizeHandle,
+
+  isSpriteScaleHandle,
 
   isSpriteFlipHandle,
 
@@ -298,9 +318,15 @@ export {
 
   normalizeRotationDegrees,
 
+  scaleFromAxisDrag,
+
   SPRITE_SIZE_HANDLES,
 
+  SPRITE_SCALE_HANDLES,
+
   SPRITE_GIZMO_MIN_SIZE,
+
+  SPRITE_GIZMO_MIN_SCALE,
 
   SPRITE_GIZMO_ROTATE_OFFSET,
 
@@ -325,6 +351,8 @@ export type {
   SpriteGizmoHandle,
 
   SpriteSizeHandle,
+
+  SpriteScaleHandle,
 
 } from "./sprite-gizmo-math.js";
 

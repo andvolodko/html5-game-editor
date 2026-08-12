@@ -5,5 +5,9 @@
   "renderers": [
     "pixi"
   ],
-  "startScene": "main"
+  "startScene": "main",
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  }
 }

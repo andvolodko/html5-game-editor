@@ -19,6 +19,16 @@
             "x": 1,
             "y": 1
           }
+        },
+        {
+          "type": "Script",
+          "id": "comp_5605ec41-37a1-443d-a8c2-a963db614a77",
+          "scriptId": "example.LoadingScene",
+          "properties": {
+            "completeEvent": "loading.complete",
+            "nextScene": "main",
+            "minDisplayMs": 500
+          }
         }
       ],
       "children": [
@@ -31,8 +41,8 @@
               "type": "Transform2D",
               "id": "comp_7eae4af3-82e4-4ae5-9f63-e957fcbd12f8",
               "position": {
-                "x": 1010,
-                "y": 600
+                "x": 640,
+                "y": 380
               },
               "rotation": 0,
               "scale": {

@@ -5,6 +5,7 @@ import {
   gizmoHandleLocalPosition,
   gizmoLocalFromAnchor,
   sizeHandleCursor,
+  scaleHandleCursor,
   SPRITE_GIZMO_ANCHOR_HIT_EXTENT,
   SPRITE_GIZMO_HANDLE_HIT_EXTENT,
   SPRITE_GIZMO_ROTATE_HIT_EXTENT,
@@ -13,8 +14,10 @@ import {
   SPRITE_GIZMO_FLIP_GAP,
   SPRITE_GIZMO_FLIP_INSET,
   SPRITE_SIZE_HANDLES,
+  SPRITE_SCALE_HANDLES,
   type SpriteGizmoHandle,
   type SpriteSizeHandle,
+  type SpriteScaleHandle,
   type Vec2,
 } from "@game-editor/scene";
 import {
@@ -32,11 +35,22 @@ import { viewportChromeInvScale } from "./viewport-camera.js";
 const HANDLE_SIZE = 10;
 const ROTATE_RADIUS = 6;
 const TOOL_SIZE = 20;
+const SCALE_ARROW_HALF = 10;
 
 export interface SpriteGizmoLayoutState {
   anchor: Vec2;
   flipX: boolean;
   flipY: boolean;
+}
+
+/** Which interactive tools are available for the current visual type. */
+export interface SpriteGizmoFeatures {
+  /** Corner/edge resize handles. Default true. */
+  size?: boolean;
+  /** Axis scale arrows when size is unavailable. Default false. */
+  scale?: boolean;
+  /** Draggable pivot. Default true. */
+  anchor?: boolean;
 }
 
 export interface SpriteGizmoPointerHandlers {
@@ -47,8 +61,8 @@ export interface SpriteGizmoPointerHandlers {
 }
 
 /**
- * Professional 2D selection chrome: bounds frame, size dots, rotation stem,
- * draggable anchor pivot, and flip H/V tools.
+ * Professional 2D selection chrome: bounds frame, size dots or scale arrows,
+ * rotation stem, draggable anchor pivot, and flip H/V tools.
  * Lives in local sprite space (center origin).
  */
 export class SpriteSelectionGizmo {
@@ -61,6 +75,9 @@ export class SpriteSelectionGizmo {
   private anchor: Vec2 = { x: 0.5, y: 0.5 };
   private flipX = false;
   private flipY = false;
+  private showSize = true;
+  private showScale = false;
+  private showAnchor = true;
 
   constructor(private readonly handlers: SpriteGizmoPointerHandlers) {
     // Passive root: only handles are hit targets (avoids competing with
@@ -78,6 +95,9 @@ export class SpriteSelectionGizmo {
     for (const handle of SPRITE_SIZE_HANDLES) {
       this.createSizeHandle(handle);
     }
+    for (const handle of SPRITE_SCALE_HANDLES) {
+      this.createScaleHandle(handle);
+    }
     this.createRotateHandle();
     this.createAnchorHandle();
     this.createFlipHandle("flipH");
@@ -89,6 +109,7 @@ export class SpriteSelectionGizmo {
     height: number,
     state?: SpriteGizmoLayoutState,
     cameraScale = 1,
+    features?: SpriteGizmoFeatures,
   ): void {
     this.width = width;
     this.height = height;
@@ -97,6 +118,9 @@ export class SpriteSelectionGizmo {
       this.flipX = state.flipX;
       this.flipY = state.flipY;
     }
+    this.showSize = features?.size !== false;
+    this.showScale = features?.scale === true;
+    this.showAnchor = features?.anchor !== false;
     const inv = viewportChromeInvScale(cameraScale);
     const rotateOffset = SPRITE_GIZMO_ROTATE_OFFSET * inv;
     const flipOffset = SPRITE_GIZMO_FLIP_OFFSET * inv;
@@ -117,8 +141,29 @@ export class SpriteSelectionGizmo {
         flipInset,
       );
       if (gfx) {
+        gfx.visible = this.showSize;
+        gfx.eventMode = this.showSize ? "static" : "none";
         gfx.position.set(pos.x, pos.y);
         gfx.scale.set(inv);
+      }
+    }
+    for (const handle of SPRITE_SCALE_HANDLES) {
+      const gfx = this.handles.get(handle);
+      const pos = gizmoHandleLocalPosition(
+        handle,
+        width,
+        height,
+        rotateOffset,
+        flipOffset,
+        flipGap,
+        flipInset,
+      );
+      if (gfx) {
+        gfx.visible = this.showScale;
+        gfx.eventMode = this.showScale ? "static" : "none";
+        gfx.position.set(pos.x, pos.y);
+        gfx.scale.set(inv);
+        this.redrawScaleHandle(handle);
       }
     }
     const rotate = this.handles.get("rotate");
@@ -138,6 +183,8 @@ export class SpriteSelectionGizmo {
 
     const anchorGfx = this.handles.get("anchor");
     if (anchorGfx) {
+      anchorGfx.visible = this.showAnchor;
+      anchorGfx.eventMode = this.showAnchor ? "static" : "none";
       const pos = gizmoLocalFromAnchor(this.anchor, width, height);
       anchorGfx.position.set(pos.x, pos.y);
       anchorGfx.scale.set(inv);
@@ -231,6 +278,76 @@ export class SpriteSelectionGizmo {
     });
     this.handles.set(handle, gfx);
     this.root.addChild(gfx);
+  }
+
+  private createScaleHandle(handle: SpriteScaleHandle): void {
+    const gfx = new Graphics();
+    gfx.eventMode = "static";
+    gfx.cursor = scaleHandleCursor(handle);
+    gfx.zIndex = 2;
+    gfx.visible = false;
+    const extent = SPRITE_GIZMO_HANDLE_HIT_EXTENT;
+    gfx.hitArea = {
+      contains: (x: number, y: number) =>
+        Math.abs(x) <= extent && Math.abs(y) <= extent,
+    };
+    gfx.on("pointerdown", (event: FederatedPointerEvent) => {
+      event.stopPropagation();
+      this.handlers.onHandlePointerDown(handle, event);
+    });
+    this.handles.set(handle, gfx);
+    this.root.addChild(gfx);
+    this.redrawScaleHandle(handle);
+  }
+
+  private redrawScaleHandle(handle: SpriteScaleHandle): void {
+    const gfx = this.handles.get(handle);
+    if (!gfx) {
+      return;
+    }
+    const half = SCALE_ARROW_HALF;
+    gfx.clear();
+    gfx.roundRect(-half, -half, half * 2, half * 2, 3);
+    gfx.fill({ color: EDITOR_CHROME_FILL });
+    gfx.stroke({
+      width: EDITOR_SELECTION_STROKE_WIDTH,
+      color: EDITOR_ACCENT_COLOR,
+    });
+    if (handle === "scaleX") {
+      // Left / right arrow heads.
+      gfx.moveTo(-7, 0);
+      gfx.lineTo(-2, -4);
+      gfx.lineTo(-2, 4);
+      gfx.closePath();
+      gfx.moveTo(7, 0);
+      gfx.lineTo(2, -4);
+      gfx.lineTo(2, 4);
+      gfx.closePath();
+      gfx.fill({ color: EDITOR_ACCENT_COLOR });
+      gfx.moveTo(-2, 0);
+      gfx.lineTo(2, 0);
+      gfx.stroke({
+        width: EDITOR_SELECTION_STROKE_WIDTH,
+        color: EDITOR_ACCENT_COLOR,
+      });
+    } else {
+      // Up / down arrow heads.
+      gfx.moveTo(0, -7);
+      gfx.lineTo(-4, -2);
+      gfx.lineTo(4, -2);
+      gfx.closePath();
+      gfx.moveTo(0, 7);
+      gfx.lineTo(-4, 2);
+      gfx.lineTo(4, 2);
+      gfx.closePath();
+      gfx.fill({ color: EDITOR_ACCENT_COLOR });
+      gfx.moveTo(0, -2);
+      gfx.lineTo(0, 2);
+      gfx.stroke({
+        width: EDITOR_SELECTION_STROKE_WIDTH,
+        color: EDITOR_ACCENT_COLOR,
+      });
+    }
   }
 
   private createRotateHandle(): void {

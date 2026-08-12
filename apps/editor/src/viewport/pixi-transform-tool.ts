@@ -30,13 +30,16 @@ export function bindPixiTransformTool(
       editor.setTransform2D(nodeId, { position: { x: end.x, y: end.y } });
     },
     onGizmoResizeEnd: (nodeId, size) => {
-      editor.setSpriteSize(nodeId, {
+      editor.setVisualComponent(nodeId, {
         width: size.width,
         height: size.height,
       });
     },
     onGizmoRotateEnd: (nodeId, rotation) => {
       editor.setTransform2D(nodeId, { rotation });
+    },
+    onGizmoScaleEnd: (nodeId, scale) => {
+      editor.setTransform2D(nodeId, { scale });
     },
     onGizmoAnchorEnd: (nodeId, result) => {
       editor.execute(

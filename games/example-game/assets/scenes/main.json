@@ -33,6 +33,88 @@
         }
       ],
       "children": []
+    },
+    {
+      "id": "node_cd392462-a1f1-40b5-a394-e718cbb95fca",
+      "name": "2222 Copy",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_a2c6bb20-471c-4f55-b901-cb95067d62fe",
+          "position": {
+            "x": 540,
+            "y": 150
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Sprite",
+          "id": "comp_6f7c0666-4db7-4b83-a492-34bd42445ede",
+          "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+          "width": 214.6000430114389,
+          "height": 55.59998404296286,
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_d0f6221c-748a-44cf-ac42-a7c9d0f0f705",
+          "scriptId": "example.MainButton",
+          "properties": {}
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_e3e6ad91-f460-413a-8b0c-a7d5f3b4a0c7",
+      "name": "Text",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_670b7d74-95a5-48c2-be9b-8b14ead5345a",
+          "position": {
+            "x": 660,
+            "y": 320
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_ac18ced5-71cf-4cb9-9c7a-39398bc78267",
+          "text": "Go to Spine scene",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 32,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fill": 16777215,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_743e2135-f2e7-4919-904f-346ae1aee077",
+          "scriptId": "example.GoSpineButton",
+          "properties": {
+            "sceneName": "spine"
+          }
+        }
+      ],
+      "children": []
     }
   ]
 }

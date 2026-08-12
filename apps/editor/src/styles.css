@@ -348,10 +348,17 @@ button.active {
   overflow: hidden;
 }
 
-.preview-viewport canvas {
+.preview-viewport .game-screen-frame {
   position: absolute;
-  left: 0;
-  top: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.preview-viewport .game-screen-frame canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
@@ -1072,6 +1079,79 @@ button.active {
 .inspector-section h3 {
   margin: 0 0 0.5rem;
   font-size: 0.9rem;
+}
+
+.inspector-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.inspector-section-header h3 {
+  margin: 0;
+}
+
+.inspector-remove-btn {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.45rem;
+}
+
+.add-component {
+  position: relative;
+  margin-top: 0.75rem;
+}
+
+.add-component-btn {
+  width: 100%;
+}
+
+.add-component-popover {
+  margin-top: 0.4rem;
+  border: 1px solid var(--border);
+  background: var(--panel-bg, #12151c);
+  padding: 0.4rem;
+  display: grid;
+  gap: 0.4rem;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.add-component-search {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.add-component-group-title {
+  margin: 0.35rem 0 0.2rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.add-component-item {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+  padding: 0.35rem 0.4rem;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.add-component-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.add-component-id {
+  color: var(--text-muted);
+  opacity: 0.85;
 }
 
 .inspector-asset-thumb {

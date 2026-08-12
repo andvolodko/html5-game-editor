@@ -7,6 +7,7 @@ import type { AssetImportService } from "../services/asset-import-service.js";
 import type { AssetFolderService } from "../services/asset-folder-service.js";
 import type { AssetMutationService } from "../services/asset-mutation-service.js";
 import type { AssetSyncService } from "../services/asset-sync-service.js";
+import type { ComponentCatalogService } from "../services/component-catalog-service.js";
 
 export interface RouterDeps {
   projectService: ProjectService;
@@ -20,4 +21,6 @@ export interface RouterDeps {
   assetSyncService: AssetSyncService;
   /** Optional: list/switch games under the games workspace. */
   projectCatalogService?: ProjectCatalogService;
+  /** Optional: script component catalog for the active project. */
+  componentCatalogService?: ComponentCatalogService;
 }

@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/main.ts",
+    "./components": "./src/components/index.ts"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -p tsconfig.json --noEmit && vite build",
@@ -11,6 +15,8 @@
     "lint": "eslint src --max-warnings=0"
   },
   "dependencies": {
+    "@game-editor/core": "workspace:*",
+    "@game-editor/game-components": "workspace:*",
     "@game-editor/renderer-pixi": "workspace:*",
     "@game-editor/runtime": "workspace:*",
     "@game-editor/scene": "workspace:*"

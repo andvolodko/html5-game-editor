@@ -26,3 +26,4 @@ export {
   createPerspectiveMeshComponent,
 } from "./factories/mesh.js";
 export { createSpineComponent } from "./factories/spine.js";
+export { createScriptComponent } from "./factories/script.js";

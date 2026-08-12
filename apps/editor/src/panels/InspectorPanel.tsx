@@ -17,6 +17,7 @@ import {
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
 import { VisualComponentInspector } from "./VisualComponentInspector";
+import { ScriptComponentsInspector } from "./ScriptComponentsInspector";
 
 interface TransformDraft {
   x: string;
@@ -406,6 +407,8 @@ export function InspectorPanel() {
       ) : (
         <VisualComponentInspector editor={editor} node={node} />
       )}
+
+      <ScriptComponentsInspector node={node} />
     </div>
   );
 }

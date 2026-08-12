@@ -14,6 +14,7 @@
   "dependencies": {
     "@game-editor/assets": "workspace:*",
     "@game-editor/core": "workspace:*",
+    "@game-editor/game-components": "workspace:*",
     "@game-editor/project": "workspace:*",
     "@game-editor/scene": "workspace:*",
     "@game-editor/shared": "workspace:*",

@@ -1,11 +1,14 @@
 import { PixiSceneRenderer } from "@game-editor/renderer-pixi";
+import { ComponentRegistry } from "@game-editor/game-components";
 import {
   GameRuntime,
+  GameScreenHost,
   resolveGameProject,
   sceneModulesById,
 } from "@game-editor/runtime";
 import projectJson from "../project.json";
 import assetsJson from "../.project/assets.json";
+import { registerGameComponents } from "./components/index.js";
 
 const sceneModules = import.meta.glob("../assets/scenes/*.json", {
   eager: true,
@@ -24,7 +27,9 @@ viewport.style.inset = "0";
 viewport.style.background = "#0b0d12";
 root.appendChild(viewport);
 
-const runtime = new GameRuntime();
+const components = new ComponentRegistry();
+registerGameComponents(components);
+const runtime = new GameRuntime({ components });
 
 async function boot(): Promise<void> {
   const loaded = resolveGameProject({
@@ -33,10 +38,14 @@ async function boot(): Promise<void> {
     scenes: sceneModulesById(sceneModules),
   });
 
+  const design = loaded.project.resolution;
+  const screen = new GameScreenHost(viewport, design);
+
   const renderer = new PixiSceneRenderer({
-    canvasParent: viewport,
+    canvasParent: screen.frame,
     assetResolver: loaded.assetResolver,
     editable: false,
+    designResolution: design,
   });
   await renderer.whenReady();
 
@@ -46,7 +55,7 @@ async function boot(): Promise<void> {
     layer: { id: "main", renderer: "pixi", order: 0 },
   });
   runtime.loadScene(loaded.scene);
-  runtime.resize(viewport.clientWidth, viewport.clientHeight);
+  runtime.resize(design.width, design.height);
   runtime.render();
 
   document.title = loaded.project.displayName;

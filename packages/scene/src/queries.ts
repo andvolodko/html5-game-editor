@@ -34,6 +34,8 @@ import type {
 
   TilingSpriteComponentData,
 
+  ScriptComponentData,
+
   Transform2DComponentData,
 
   VisualComponentData,
@@ -148,6 +150,28 @@ export function getComponentByType<T extends ComponentData["type"]>(
 
   );
 
+}
+
+
+
+/** All Script component instances on a node (order preserved). */
+export function getScriptComponents(
+  node: SceneNodeData,
+): ScriptComponentData[] {
+  return node.components.filter(
+    (component): component is ScriptComponentData =>
+      component.type === "Script",
+  );
+}
+
+/** First Script with the given registry scriptId, if any. */
+export function findScript(
+  node: SceneNodeData,
+  scriptId: string,
+): ScriptComponentData | undefined {
+  return getScriptComponents(node).find(
+    (component) => component.scriptId === scriptId,
+  );
 }
 
 

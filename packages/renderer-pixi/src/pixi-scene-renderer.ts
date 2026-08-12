@@ -4,12 +4,14 @@ import type { FederatedPointerEvent } from "pixi.js";
 import type { AssetResolver } from "@game-editor/assets";
 import {
   DEFAULT_SPRITE_SIZE,
-  getSprite,
   getTransform2D,
   getVisualComponent,
   getVisualAnchorOrDefault,
+  getVisualDisplaySize,
   spriteGizmoHitOutsets,
   visualCenterFromAnchor,
+  visualComponentSupportsAnchor,
+  visualComponentSupportsDisplaySize,
   DEFAULT_VISUAL_ANCHOR,
   type SceneNodeData,
   type SceneRenderer,
@@ -30,11 +32,13 @@ import {
 } from "./pixi-runtime-nodes.js";
 import { PixiTextureCache } from "./pixi-texture-cache.js";
 import { PixiNodeDragController } from "./pixi-node-drag.js";
+import { PixiNodeClickController } from "./pixi-node-click.js";
 import {
   PixiGizmoDragController,
   type GizmoDragHost,
 } from "./pixi-gizmo-drag.js";
 import type { NodeDragHost } from "./pixi-node-drag.js";
+import type { NodeClickHost } from "./pixi-node-click.js";
 import {
   defaultVisualBounds,
   provisionalVisualBounds,
@@ -87,6 +91,12 @@ export interface PixiSceneRendererOptions {
    * editor preview camera pan/wheel zoom. Use for game runtime / preview.
    */
   editable?: boolean;
+  /**
+   * Fixed design resolution buffer. Canvas CSS fills `canvasParent` while
+   * the backbuffer stays at this size (preview / runtime letterboxing).
+   * Omit for the Scene editor, which tracks the host via resizeTo.
+   */
+  designResolution?: { width: number; height: number };
 }
 
 export interface PixiGizmoResizeResult {
@@ -104,8 +114,11 @@ export interface PixiPointerHandlers {
   onNodePointerDown?: (nodeId: string, world: Vec2) => void;
   onNodePointerMove?: (nodeId: string, world: Vec2) => void;
   onNodePointerUp?: (nodeId: string, start: Vec2, end: Vec2) => void;
+  /** Playback / preview: press+release without drag on a node. */
+  onNodeClick?: (nodeId: string) => void;
   onGizmoResizeEnd?: (nodeId: string, size: PixiGizmoResizeResult) => void;
   onGizmoRotateEnd?: (nodeId: string, rotation: number) => void;
+  onGizmoScaleEnd?: (nodeId: string, scale: Vec2) => void;
   onGizmoAnchorEnd?: (nodeId: string, result: PixiGizmoAnchorResult) => void;
   onGizmoFlip?: (nodeId: string, axis: "x" | "y") => void;
 }
@@ -139,6 +152,7 @@ export class PixiSceneRenderer implements SceneRenderer {
   private readonly graph = new PixiRuntimeGraph();
   private readonly textureCache = new PixiTextureCache();
   private readonly nodeDrag = new PixiNodeDragController();
+  private readonly nodeClick = new PixiNodeClickController();
   private readonly gizmoDragController = new PixiGizmoDragController();
   private assetResolver: AssetResolver | undefined;
   private pointerHandlers: PixiPointerHandlers | undefined;
@@ -153,12 +167,16 @@ export class PixiSceneRenderer implements SceneRenderer {
   private readonly pixelGrid: PixelGridOverlay | undefined;
   private readonly screenGuides: ScreenGuidesOverlay | undefined;
   private readonly editable: boolean;
+  private readonly designResolution:
+    | { width: number; height: number }
+    | undefined;
   private readonly camera = new ViewportCameraController();
   /** When set, node-move drags quantize to this world-space cell size. */
   private snapGridSize: number | undefined;
   /**
    * Pixi's ResizePlugin only listens to window `resize`. Dock panel splits
    * change the host without firing that, so we observe the parent ourselves.
+   * Unused when `designResolution` is set (buffer size is fixed).
    */
   private parentResizeObserver: ResizeObserver | undefined;
   private syncStats: PixiSyncStats = {
@@ -181,6 +199,12 @@ export class PixiSceneRenderer implements SceneRenderer {
     this.screenGuides =
       options.screenGuides === true ? new ScreenGuidesOverlay() : undefined;
     this.editable = options.editable !== false;
+    this.designResolution = options.designResolution
+      ? {
+          width: Math.max(1, Math.floor(options.designResolution.width)),
+          height: Math.max(1, Math.floor(options.designResolution.height)),
+        }
+      : undefined;
     this.assetResolver =
       options.assetResolver ??
       (options.resolveAssetUrl
@@ -336,15 +360,26 @@ export class PixiSceneRenderer implements SceneRenderer {
 
   private async init(): Promise<void> {
     const app = new Application();
+    const design = this.designResolution;
     await app.init({
       background: this.background,
       antialias: true,
       autoDensity: true,
       resolution: window.devicePixelRatio || 1,
-      resizeTo: this.canvasParent,
+      ...(design
+        ? { width: design.width, height: design.height }
+        : { resizeTo: this.canvasParent }),
     });
     this.app = app;
+    // PixiJS DevTools bridge (browser extension detects this global).
+    (globalThis as { __PIXI_APP__?: Application }).__PIXI_APP__ = app;
     this.canvasParent.appendChild(app.canvas);
+    if (design) {
+      // Stretch the fixed design buffer across the letterboxed parent.
+      app.canvas.style.width = "100%";
+      app.canvas.style.height = "100%";
+      app.canvas.style.display = "block";
+    }
     if (this.pixelGrid) {
       this.camera.root.addChild(this.pixelGrid.root);
     }
@@ -370,11 +405,13 @@ export class PixiSceneRenderer implements SceneRenderer {
     app.renderer.on("resize", () => {
       this.syncViewportSize();
     });
-    // Keep buffer CSS-pixel size in sync with the host (no CSS bitmap stretch).
-    this.parentResizeObserver = new ResizeObserver(() => {
-      app.queueResize();
-    });
-    this.parentResizeObserver.observe(this.canvasParent);
+    if (!design) {
+      // Keep buffer CSS-pixel size in sync with the host (no CSS bitmap stretch).
+      this.parentResizeObserver = new ResizeObserver(() => {
+        app.queueResize();
+      });
+      this.parentResizeObserver.observe(this.canvasParent);
+    }
     this.syncViewportSize();
     this.ready = true;
   }
@@ -386,9 +423,19 @@ export class PixiSceneRenderer implements SceneRenderer {
     this.clear();
     this.pointerHandlers = undefined;
     this.camera.detach();
-    this.invalidateAllTextures();
-    this.app?.destroy(true, { children: true });
+    // Drop local cache entries only — URL refcounts in PixiTextureCache keep
+    // shared Assets textures alive for any other live renderer (Scene vs Preview).
+    this.textureCache.evictAll();
+    const destroyedApp = this.app;
+    // First arg is rendererDestroyOptions. Boolean `true` means
+    // releaseGlobalResources and clears Pixi's shared TexturePool —
+    // which breaks any other live Application (Scene + Preview).
+    this.app?.destroy({ removeView: true }, { children: true });
     this.app = undefined;
+    const globals = globalThis as { __PIXI_APP__?: Application };
+    if (globals.__PIXI_APP__ === destroyedApp) {
+      globals.__PIXI_APP__ = undefined;
+    }
     this.ready = false;
   }
 
@@ -405,6 +452,8 @@ export class PixiSceneRenderer implements SceneRenderer {
     });
     if (this.editable) {
       this.nodeDrag.attach(runtime, this.asNodeDragHost());
+    } else {
+      this.nodeClick.attach(runtime, this.asNodeClickHost());
     }
     this.paint(runtime);
     this.syncStats.created += 1;
@@ -430,6 +479,15 @@ export class PixiSceneRenderer implements SceneRenderer {
     this.paint(runtime);
   }
 
+  syncTransform(node: SceneNodeData): void {
+    const runtime = this.graph.get(node.id);
+    if (!runtime) {
+      throw new Error(`PixiSceneRenderer: unknown node ${node.id}`);
+    }
+    runtime.node = node;
+    this.graph.applyTransform(runtime.container, getTransform2D(node));
+  }
+
   destroyNode(nodeId: string): void {
     const destroyed = this.graph.destroyNode(nodeId);
     this.syncStats.destroyed += destroyed;
@@ -440,6 +498,17 @@ export class PixiSceneRenderer implements SceneRenderer {
   }
 
   resize(width: number, height: number): void {
+    const design = this.designResolution;
+    if (design) {
+      this.width = design.width;
+      this.height = design.height;
+      const app = this.app;
+      if (app && (app.screen.width !== design.width || app.screen.height !== design.height)) {
+        app.renderer.resize(design.width, design.height);
+      }
+      this.redrawEditorOverlays();
+      return;
+    }
     this.width = width;
     this.height = height;
     this.redrawEditorOverlays();
@@ -523,10 +592,10 @@ export class PixiSceneRenderer implements SceneRenderer {
       return;
     }
     runtime.sizePreview = { width, height };
-    const sprite = getSprite(runtime.node);
+    const visual = getVisualComponent(runtime.node);
     const anchor =
       runtime.anchorPreview ??
-      (sprite ? getVisualAnchorOrDefault(sprite) : DEFAULT_VISUAL_ANCHOR);
+      (visual ? getVisualAnchorOrDefault(visual) : DEFAULT_VISUAL_ANCHOR);
     runtime.visualBounds = {
       x: -anchor.x * width,
       y: -anchor.y * height,
@@ -556,6 +625,14 @@ export class PixiSceneRenderer implements SceneRenderer {
     runtime.container.rotation = (rotationDegrees * Math.PI) / 180;
   }
 
+  previewNodeScale(nodeId: string, scale: Vec2): void {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    runtime.container.scale.set(scale.x, scale.y);
+  }
+
   previewSpriteAnchor(nodeId: string, anchor: Vec2, position: Vec2): void {
     const runtime = this.graph.get(nodeId);
     if (!runtime) {
@@ -563,11 +640,18 @@ export class PixiSceneRenderer implements SceneRenderer {
     }
     runtime.container.position.set(position.x, position.y);
     runtime.anchorPreview = { ...anchor };
-    const sprite = getSprite(runtime.node);
+    const visual = getVisualComponent(runtime.node);
+    const displaySize = visual ? getVisualDisplaySize(visual) : undefined;
     const width =
-      runtime.sizePreview?.width ?? sprite?.width ?? DEFAULT_SPRITE_SIZE;
+      runtime.sizePreview?.width ??
+      displaySize?.width ??
+      runtime.visualBounds?.width ??
+      DEFAULT_SPRITE_SIZE;
     const height =
-      runtime.sizePreview?.height ?? sprite?.height ?? DEFAULT_SPRITE_SIZE;
+      runtime.sizePreview?.height ??
+      displaySize?.height ??
+      runtime.visualBounds?.height ??
+      DEFAULT_SPRITE_SIZE;
     // Keep bounds + leaf pivot in sync before async paint finishes; otherwise
     // paintSelection would frame the old center and the texture would jump.
     runtime.visualBounds = {
@@ -620,21 +704,25 @@ export class PixiSceneRenderer implements SceneRenderer {
       return;
     }
 
-    // Apply live size / anchor previews for Sprite gizmo drags.
+    // Apply live size / anchor previews for selection-gizmo drags.
     let data = visualData;
-    if (visualData.type === "Sprite" && getSprite(runtime.node)) {
-      if (runtime.sizePreview || runtime.anchorPreview) {
+    if (runtime.sizePreview || runtime.anchorPreview) {
+      const sizePatch =
+        runtime.sizePreview && visualComponentSupportsDisplaySize(visualData)
+          ? {
+              width: runtime.sizePreview.width,
+              height: runtime.sizePreview.height,
+            }
+          : {};
+      const anchorPatch =
+        runtime.anchorPreview && visualComponentSupportsAnchor(visualData)
+          ? { anchor: { ...runtime.anchorPreview } }
+          : {};
+      if (Object.keys(sizePatch).length > 0 || Object.keys(anchorPatch).length > 0) {
         data = {
           ...visualData,
-          ...(runtime.sizePreview
-            ? {
-                width: runtime.sizePreview.width,
-                height: runtime.sizePreview.height,
-              }
-            : {}),
-          ...(runtime.anchorPreview
-            ? { anchor: { ...runtime.anchorPreview } }
-            : {}),
+          ...sizePatch,
+          ...anchorPatch,
         };
       }
     }
@@ -719,7 +807,7 @@ export class PixiSceneRenderer implements SceneRenderer {
       return;
     }
     const selected = this.selectedNodeIds.has(runtime.node.id);
-    const sprite = getSprite(runtime.node);
+    const visual = getVisualComponent(runtime.node);
     const cameraScale = this.camera.getState().scale;
     const inv = viewportChromeInvScale(cameraScale);
     runtime.selection.clear();
@@ -728,28 +816,47 @@ export class PixiSceneRenderer implements SceneRenderer {
       return;
     }
 
-    if (sprite && runtime.supportsSpriteGizmo && runtime.gizmo) {
+    // Full selection gizmo (rotate / flip / optional size+anchor) for every
+    // Pixi leaf visual with known bounds — not Sprite-only.
+    if (visual && runtime.gizmo && runtime.visualBounds) {
+      const displaySize = getVisualDisplaySize(visual);
       const width =
         runtime.sizePreview?.width ??
-        runtime.visualBounds?.width ??
-        sprite.width ??
+        runtime.visualBounds.width ??
+        displaySize?.width ??
         DEFAULT_SPRITE_SIZE;
       const height =
         runtime.sizePreview?.height ??
-        runtime.visualBounds?.height ??
-        sprite.height ??
+        runtime.visualBounds.height ??
+        displaySize?.height ??
         DEFAULT_SPRITE_SIZE;
       const transform = getTransform2D(runtime.node);
       const flipX = (transform?.scale.x ?? 1) < 0;
       const flipY = (transform?.scale.y ?? 1) < 0;
+      const supportsAnchor = visualComponentSupportsAnchor(visual);
       const anchor =
-        runtime.anchorPreview ?? getVisualAnchorOrDefault(sprite);
-      // Always derive center from live size+anchor. visualBounds lags behind
-      // async paintVisuals and would leave the gizmo offset after anchor edits.
-      const center = visualCenterFromAnchor(anchor, width, height);
+        runtime.anchorPreview ?? getVisualAnchorOrDefault(visual);
+      // Anchor-based visuals: derive center from size+anchor (preview-safe).
+      // Others: use live AABB center so mesh/graphics chrome stays aligned.
+      const center = supportsAnchor
+        ? visualCenterFromAnchor(anchor, width, height)
+        : {
+            x: runtime.visualBounds.x + runtime.visualBounds.width / 2,
+            y: runtime.visualBounds.y + runtime.visualBounds.height / 2,
+          };
       runtime.gizmo.root.position.set(center.x, center.y);
       runtime.gizmo.setVisible(true);
-      runtime.gizmo.layout(width, height, { anchor, flipX, flipY }, cameraScale);
+      runtime.gizmo.layout(
+        width,
+        height,
+        { anchor, flipX, flipY },
+        cameraScale,
+        {
+          size: visualComponentSupportsDisplaySize(visual),
+          scale: !visualComponentSupportsDisplaySize(visual),
+          anchor: supportsAnchor,
+        },
+      );
       return;
     }
 
@@ -846,6 +953,13 @@ export class PixiSceneRenderer implements SceneRenderer {
     };
   }
 
+  private asNodeClickHost(): NodeClickHost {
+    return {
+      getApp: () => this.app,
+      onNodeClick: (nodeId) => this.pointerHandlers?.onNodeClick?.(nodeId),
+    };
+  }
+
   private asGizmoHost(): GizmoDragHost {
     return {
       getApp: () => this.app,
@@ -855,6 +969,7 @@ export class PixiSceneRenderer implements SceneRenderer {
         this.previewSpriteSize(nodeId, width, height),
       previewNodeRotation: (nodeId, rotation) =>
         this.previewNodeRotation(nodeId, rotation),
+      previewNodeScale: (nodeId, scale) => this.previewNodeScale(nodeId, scale),
       previewSpriteAnchor: (nodeId, anchor, position) =>
         this.previewSpriteAnchor(nodeId, anchor, position),
       paintVisuals: (runtime) => this.paintVisuals(runtime),
@@ -866,6 +981,8 @@ export class PixiSceneRenderer implements SceneRenderer {
         this.pointerHandlers?.onGizmoResizeEnd?.(nodeId, size),
       onGizmoRotateEnd: (nodeId, rotation) =>
         this.pointerHandlers?.onGizmoRotateEnd?.(nodeId, rotation),
+      onGizmoScaleEnd: (nodeId, scale) =>
+        this.pointerHandlers?.onGizmoScaleEnd?.(nodeId, scale),
       onGizmoAnchorEnd: (nodeId, result) =>
         this.pointerHandlers?.onGizmoAnchorEnd?.(nodeId, result),
       onGizmoFlip: (nodeId, axis) =>

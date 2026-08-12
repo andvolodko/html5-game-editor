@@ -5,5 +5,9 @@
   "renderers": [
     "pixi"
   ],
-  "startScene": "loading"
+  "startScene": "loading",
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  }
 }

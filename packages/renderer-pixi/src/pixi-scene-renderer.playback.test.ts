@@ -24,7 +24,8 @@ describe("PixiSceneRenderer playback mode", () => {
     expect(renderer.getRuntimeGizmoRoot(node.id)).toBeUndefined();
     expect(container.eventMode).toBe("passive");
     expect(container.cursor).not.toBe("grab");
-    expect(visuals.eventMode).toBe("passive");
+    // Playback keeps visuals hittable so script components can receive clicks.
+    expect(visuals.eventMode).toBe("static");
     expect(visuals.cursor).not.toBe("grab");
 
     renderer.setSelectedNodeIds([node.id]);

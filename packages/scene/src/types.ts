@@ -106,6 +106,10 @@ export {
 
   visualComponentSupportsAnchor,
 
+  visualComponentSupportsDisplaySize,
+
+  getVisualDisplaySize,
+
   getVisualAnchorOrDefault,
 
 } from "./visual-components.js";
@@ -114,15 +118,23 @@ export {
 
 import type { VisualComponentData } from "./visual-components.js";
 
-
+/**
+ * User/script component instance. `scriptId` is a stable registry id
+ * (e.g. `shared.Health`), never a filesystem path.
+ * Unknown scriptIds still deserialize; missing definitions warn in the editor.
+ */
+export interface ScriptComponentData {
+  type: "Script";
+  id: string;
+  scriptId: string;
+  properties: Record<string, unknown>;
+}
 
 export type ComponentData =
-
   | Transform2DComponentData
-
   | Transform3DComponentData
-
-  | VisualComponentData;
+  | VisualComponentData
+  | ScriptComponentData;
 
 
 

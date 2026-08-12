@@ -267,6 +267,54 @@ export function visualComponentSupportsAnchor(
   return ANCHOR_VISUAL_TYPES.has(visual.type);
 }
 
+/**
+ * Leaf visuals whose display size is a top-level `width`/`height` (gizmo resize
+ * + inspector size fields). Graphics shape size and text metrics are excluded.
+ */
+const DISPLAY_SIZE_VISUAL_TYPES = new Set<LeafVisualComponentType>([
+  "Sprite",
+  "NineSliceSprite",
+  "TilingSprite",
+  "MeshPlane",
+  "PerspectiveMesh",
+  "AnimatedSprite",
+]);
+
+/** Whether gizmo/inspector can patch top-level width/height on this visual. */
+export function visualComponentSupportsDisplaySize(
+  visual: VisualComponentData,
+): boolean {
+  return DISPLAY_SIZE_VISUAL_TYPES.has(visual.type);
+}
+
+/**
+ * Resolved display size when the visual stores width/height.
+ * AnimatedSprite may omit size until set — returns undefined then.
+ */
+export function getVisualDisplaySize(
+  visual: VisualComponentData,
+): { width: number; height: number } | undefined {
+  if (!visualComponentSupportsDisplaySize(visual)) {
+    return undefined;
+  }
+  if (visual.type === "AnimatedSprite") {
+    if (visual.width === undefined || visual.height === undefined) {
+      return undefined;
+    }
+    return { width: visual.width, height: visual.height };
+  }
+  if (
+    visual.type === "Sprite" ||
+    visual.type === "NineSliceSprite" ||
+    visual.type === "TilingSprite" ||
+    visual.type === "MeshPlane" ||
+    visual.type === "PerspectiveMesh"
+  ) {
+    return { width: visual.width, height: visual.height };
+  }
+  return undefined;
+}
+
 /** Resolved anchor for paint/UI (defaults to center when omitted). */
 export function getVisualAnchorOrDefault(visual: VisualComponentData): Vec2 {
   if (!visualComponentSupportsAnchor(visual)) {

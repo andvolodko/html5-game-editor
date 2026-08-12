@@ -7,6 +7,40 @@ interface CachedTexture {
 }
 
 /**
+ * Scene + Preview each own a PixiTextureCache, but Pixi `Assets` is process-wide.
+ * Refcount URLs so one renderer’s destroy/evict does not unload textures another
+ * still paints (Stop preview must not blank the Scene panel).
+ */
+const urlRetainCounts = new Map<string, number>();
+
+function retainUrl(url: string): void {
+  urlRetainCounts.set(url, (urlRetainCounts.get(url) ?? 0) + 1);
+}
+
+/**
+ * Drop one retain. When the last retainer releases, unload from Assets (or
+ * destroy the texture if it was never registered there).
+ */
+function releaseUrl(url: string, texture: Texture): void {
+  const current = urlRetainCounts.get(url) ?? 0;
+  if (current <= 1) {
+    urlRetainCounts.delete(url);
+    if (Assets.cache.has(url)) {
+      void Assets.unload(url);
+      return;
+    }
+    texture.destroy(true);
+    return;
+  }
+  urlRetainCounts.set(url, current - 1);
+}
+
+/** Test-only: reset cross-cache retain counts between cases. */
+export function resetPixiTextureUrlRetainsForTests(): void {
+  urlRetainCounts.clear();
+}
+
+/**
  * Pixi Assets-backed texture cache keyed by assetId.
  * Tracks URL so revision/content changes invalidate.
  */
@@ -28,6 +62,7 @@ export class PixiTextureCache {
       parser: "texture",
       format,
     })) as Texture;
+    retainUrl(url);
     this.cache.set(assetId, { texture, url });
     return texture;
   }
@@ -37,8 +72,8 @@ export class PixiTextureCache {
   }
 
   /**
-   * Drop our cache entry and unload from Pixi Assets so a later load of the
-   * same (or new) URL does not revive a destroyed Texture.
+   * Drop our cache entry. Unloads from Pixi Assets only when no other
+   * PixiTextureCache instance still retains the same URL.
    */
   evict(assetId: string): boolean {
     const cached = this.cache.get(assetId);
@@ -46,11 +81,7 @@ export class PixiTextureCache {
       return false;
     }
     this.cache.delete(assetId);
-    if (Assets.cache.has(cached.url)) {
-      void Assets.unload(cached.url);
-      return true;
-    }
-    cached.texture.destroy(true);
+    releaseUrl(cached.url, cached.texture);
     return true;
   }
 

@@ -4,6 +4,12 @@ import {
   CompositeCommand,
   type Command,
 } from "@game-editor/commands";
+import { ComponentRegistry } from "@game-editor/game-components";
+import {
+  applyComponentCatalog,
+  installSceneFlowRuntime,
+  type BusEventDefinition,
+} from "@game-editor/game-components";
 import {
   createEmptyScene,
   findNodeById,
@@ -24,6 +30,9 @@ import {
   SetTransform2DCommand,
   SetSpriteSizeCommand,
   SetVisualComponentCommand,
+  AddScriptComponentCommand,
+  RemoveComponentCommand,
+  SetScriptPropertiesCommand,
   createDeleteSelectionCommand,
   type CreateSpriteOptions,
   type CreateNodeOptions,
@@ -51,6 +60,7 @@ import {
   ProjectManager,
 } from "./project-manager.js";
 import type { ProjectApiClient } from "./project-api-client.js";
+import type { ComponentCatalogApiClient } from "./component-catalog-api-client.js";
 import { bindEditorHotkeys } from "./editor-hotkeys.js";
 import {
   allocateSceneDocumentId,
@@ -76,6 +86,7 @@ export interface EditorOptions {
   sceneApi?: SceneApiClient;
   assetApi?: AssetApiClient;
   projectApi?: ProjectApiClient;
+  componentCatalogApi?: ComponentCatalogApiClient;
 }
 
 /**
@@ -89,9 +100,14 @@ export class Editor {
   readonly viewport: EditorViewportController;
   readonly assets: AssetManager;
   readonly project: ProjectManager;
+  /** Session catalog of Add Component script definitions for the open project. */
+  readonly components: ComponentRegistry;
+  /** Bus event ids for dynamicEnum source `busEvents` (set when loading game catalog). */
+  private busEvents: readonly BusEventDefinition[] = [];
 
   private sceneFileId: string;
   private sceneApi: SceneApiClient | undefined;
+  private componentCatalogApi: ComponentCatalogApiClient | undefined;
   private readonly listeners = new Set<Listener>();
   private readonly renameBus = new RenameRequestBus();
   private readonly unsubscribers: Array<() => void> = [];
@@ -107,8 +123,10 @@ export class Editor {
     this.viewport = new EditorViewportController(this.document);
     this.assets = new AssetManager(options.assetApi);
     this.project = new ProjectManager(options.projectApi);
+    this.components = new ComponentRegistry();
     this.sceneFileId = options.sceneFileId ?? "main";
     this.sceneApi = options.sceneApi;
+    this.componentCatalogApi = options.componentCatalogApi;
 
     this.unsubscribers.push(
       this.document.subscribe((event) => {
@@ -142,6 +160,10 @@ export class Editor {
 
   setProjectApi(client: ProjectApiClient): void {
     this.project.setApi(client);
+  }
+
+  setComponentCatalogApi(client: ComponentCatalogApiClient): void {
+    this.componentCatalogApi = client;
   }
 
   setScene(scene: SceneData): void {
@@ -365,6 +387,93 @@ export class Editor {
     this.execute(new SetVisualComponentCommand(this.document, nodeId, patch));
   }
 
+  /**
+   * Replace the session script catalog (clear + register). Used when opening a project.
+   * Not undoable.
+   */
+  replaceComponentCatalog(
+    register: (registry: ComponentRegistry) => void,
+  ): void {
+    this.components.clear();
+    this.busEvents = [];
+    register(this.components);
+    this.emit();
+  }
+
+  /**
+   * Async catalog load (clear, await register, emit). Prefer this when importing
+   * game component barrels dynamically.
+   */
+  async loadComponentCatalog(
+    register: (registry: ComponentRegistry) => void | Promise<void>,
+  ): Promise<void> {
+    this.components.clear();
+    this.busEvents = [];
+    await register(this.components);
+    this.emit();
+  }
+
+  /**
+   * Fetch script catalog for the server's active project root and apply it.
+   * Not undoable. Missing API or empty project barrel → empty catalog.
+   */
+  async refreshComponentCatalog(): Promise<void> {
+    this.components.clear();
+    this.busEvents = [];
+    if (this.componentCatalogApi) {
+      const catalog = await this.componentCatalogApi.getCatalog();
+      applyComponentCatalog(this.components, catalog);
+      installSceneFlowRuntime(this.components);
+      this.busEvents = catalog.busEvents.map((event) => ({ ...event }));
+    }
+    this.emit();
+  }
+
+  /** Replace bus event options used by `dynamicEnum` fields with `source: "busEvents"`. */
+  setBusEvents(events: readonly BusEventDefinition[]): void {
+    this.busEvents = events.map((event) => ({ ...event }));
+    this.emit();
+  }
+
+  getBusEvents(): readonly BusEventDefinition[] {
+    return this.busEvents;
+  }
+
+  /** Add a registered Script component to a node (one undo step). */
+  addScriptComponent(nodeId: string, scriptId: string): string {
+    const command = new AddScriptComponentCommand(
+      this.document,
+      nodeId,
+      scriptId,
+      this.components,
+    );
+    this.execute(command);
+    return command.addedComponentId;
+  }
+
+  /** Remove a Script component by instance id (one undo step). */
+  removeComponent(nodeId: string, componentId: string): void {
+    this.execute(
+      new RemoveComponentCommand(this.document, nodeId, componentId),
+    );
+  }
+
+  /** Patch Script.properties (one undo step). */
+  setScriptProperties(
+    nodeId: string,
+    componentId: string,
+    propertiesPatch: Record<string, unknown>,
+  ): void {
+    this.execute(
+      new SetScriptPropertiesCommand(
+        this.document,
+        nodeId,
+        componentId,
+        propertiesPatch,
+      ),
+    );
+  }
+
   selectNodes(nodeIds: readonly string[]): void {
     this.selection.setSelection(nodeIds);
   }
@@ -412,6 +521,17 @@ export class Editor {
 
   async loadScene(sceneFileId = this.sceneFileId): Promise<void> {
     return loadSceneDocument(this.persistenceHost(), sceneFileId);
+  }
+
+  /**
+   * Load scene JSON without replacing the editor document.
+   * Used by preview Change Scene / Loading Scene navigation.
+   */
+  async loadSceneData(sceneFileId: string): Promise<SceneData> {
+    if (!this.sceneApi) {
+      throw new Error("Scene API is not configured");
+    }
+    return this.sceneApi.loadScene(sceneFileId);
   }
 
   async listScenes(): Promise<SceneListEntry[]> {

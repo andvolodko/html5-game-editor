@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   collectReferencedAssetIds,
   createEmptyScene,
+  createScriptComponent,
   createSpriteNode,
   parseSceneData,
   SCENE_SCHEMA_VERSION,
@@ -87,5 +88,58 @@ describe("scene schema", () => {
       createSpriteNode("B", { x: 0, y: 0 }, { assetId: "asset_a" }),
     );
     expect(collectReferencedAssetIds(scene)).toEqual(["asset_a", "asset_b"]);
+  });
+
+  it("round-trips Script components with unknown scriptId", () => {
+    const scene = createEmptyScene("Scripts");
+    const node = createSpriteNode("Hero", { x: 0, y: 0 });
+    node.components.push(
+      createScriptComponent("example.UnknownYet", {
+        speed: 2.5,
+        label: "go",
+        enabled: true,
+        nested: { a: 1 },
+      }),
+    );
+    scene.nodes.push(node);
+
+    const parsed = parseSceneData(JSON.parse(JSON.stringify(scene)) as unknown);
+    const script = parsed.nodes[0]?.components.find((c) => c.type === "Script");
+    expect(script).toEqual({
+      type: "Script",
+      id: expect.any(String),
+      scriptId: "example.UnknownYet",
+      properties: {
+        speed: 2.5,
+        label: "go",
+        enabled: true,
+        nested: { a: 1 },
+      },
+    });
+  });
+
+  it("rejects Script components with empty scriptId", () => {
+    expect(() =>
+      parseSceneData({
+        id: "scene_1",
+        name: "Bad",
+        version: SCENE_SCHEMA_VERSION,
+        nodes: [
+          {
+            id: "node_1",
+            name: "N",
+            components: [
+              {
+                type: "Script",
+                id: "comp_1",
+                scriptId: "",
+                properties: {},
+              },
+            ],
+            children: [],
+          },
+        ],
+      }),
+    ).toThrow();
   });
 });

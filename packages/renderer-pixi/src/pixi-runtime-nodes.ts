@@ -83,8 +83,8 @@ export class PixiRuntimeGraph {
     container.interactiveChildren = true;
 
     const visualsRoot = new Container();
-    // Hit target for this node's own visuals/gizmo (not scene children).
-    visualsRoot.eventMode = editable ? "static" : "passive";
+    // Editor: static for drag/gizmo. Playback: static so scripts can receive clicks.
+    visualsRoot.eventMode = "static";
     if (editable) {
       visualsRoot.cursor = "grab";
     }

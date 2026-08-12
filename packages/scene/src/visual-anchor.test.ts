@@ -3,9 +3,13 @@ import {
   createSpriteComponent,
   createTextComponent,
   createNineSliceSpriteComponent,
+  createTilingSpriteComponent,
+  createGraphicsComponent,
   DEFAULT_VISUAL_ANCHOR,
   getVisualAnchorOrDefault,
+  getVisualDisplaySize,
   visualComponentSupportsAnchor,
+  visualComponentSupportsDisplaySize,
 } from "./index.js";
 
 describe("visual anchor helpers", () => {
@@ -15,6 +19,27 @@ describe("visual anchor helpers", () => {
     expect(
       visualComponentSupportsAnchor(createNineSliceSpriteComponent()),
     ).toBe(false);
+  });
+
+  it("reports which leaf visuals support display size", () => {
+    expect(visualComponentSupportsDisplaySize(createSpriteComponent())).toBe(
+      true,
+    );
+    expect(
+      visualComponentSupportsDisplaySize(createNineSliceSpriteComponent()),
+    ).toBe(true);
+    expect(
+      visualComponentSupportsDisplaySize(createTilingSpriteComponent()),
+    ).toBe(true);
+    expect(visualComponentSupportsDisplaySize(createTextComponent())).toBe(
+      false,
+    );
+    expect(visualComponentSupportsDisplaySize(createGraphicsComponent())).toBe(
+      false,
+    );
+    expect(getVisualDisplaySize(createSpriteComponent({ width: 64, height: 32 }))).toEqual(
+      { width: 64, height: 32 },
+    );
   });
 
   it("defaults omitted anchor to center", () => {

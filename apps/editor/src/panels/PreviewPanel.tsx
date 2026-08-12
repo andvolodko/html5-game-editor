@@ -37,6 +37,12 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
     if (!host) {
       return;
     }
+    const project = editor.project.getProject();
+    if (!project) {
+      setStatus("error");
+      setError("Project settings are not loaded");
+      return;
+    }
     setError(null);
     setStatus("starting");
     const snapshot = structuredClone(editor.getScene());
@@ -45,6 +51,10 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
         canvasParent: host,
         scene: snapshot,
         assetResolver: editor.assets,
+        resolution: project.resolution,
+        components: editor.components,
+        projectId: editor.project.getActiveProjectId(),
+        loadSceneById: async (sceneId) => editor.loadSceneData(sceneId),
       })
       .then(() => {
         if (sessionRef.current.isRunning) {

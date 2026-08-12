@@ -25,6 +25,10 @@ export class ThreeSceneRenderer implements SceneRenderer {
     this.nodes.set(node.id, { parentId: node.parentId });
   }
 
+  syncTransform(node: SceneNodeData): void {
+    this.updateNode(node);
+  }
+
   destroyNode(nodeId: string): void {
     if (!this.nodes.has(nodeId)) {
       return;
