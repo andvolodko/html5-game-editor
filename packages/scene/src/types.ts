@@ -68,6 +68,20 @@ export type {
 
   TextStyleData,
 
+  TextAlign,
+
+  TextFontWeight,
+
+  TextFontStyle,
+
+  TextFontVariant,
+
+  TextWhiteSpace,
+
+  TextBaseline,
+
+  TextStrokeJoin,
+
   TextComponentData,
 
   BitmapTextComponentData,
@@ -117,6 +131,20 @@ export {
   getVisualDisplaySize,
 
   getVisualAnchorOrDefault,
+
+  TEXT_ALIGN_OPTIONS,
+
+  TEXT_FONT_WEIGHT_OPTIONS,
+
+  TEXT_FONT_STYLE_OPTIONS,
+
+  TEXT_FONT_VARIANT_OPTIONS,
+
+  TEXT_WHITE_SPACE_OPTIONS,
+
+  TEXT_BASELINE_OPTIONS,
+
+  TEXT_STROKE_JOIN_OPTIONS,
 
 } from "./visual-components.js";
 

@@ -30,10 +30,12 @@ describe("ComponentRegistry", () => {
     expect(registry.has("shared.LoadAllSceneAssets")).toBe(true);
     expect(registry.has("shared.PerformanceMeter")).toBe(true);
     expect(registry.has("shared.AudioClick")).toBe(true);
+    expect(registry.has("shared.BackgroundAudio")).toBe(true);
     expect(registry.list().map((d) => d.id)).toEqual([
       "shared.ChangeScene",
       "shared.LoadAllSceneAssets",
       "shared.AudioClick",
+      "shared.BackgroundAudio",
       "example.Spin",
       "shared.PerformanceMeter",
     ]);
@@ -64,6 +66,7 @@ describe("ComponentRegistry", () => {
         b: { kind: "boolean", default: true },
         e: { kind: "enum", default: "a", options: ["a", "b"] },
         d: { kind: "dynamicEnum", default: "main", source: "scenes" },
+        g: { kind: "dynamicEnum", default: "", source: "gltfAnimations" },
         a: { kind: "asset", assetType: "audio", default: "" },
       },
     });
@@ -73,6 +76,7 @@ describe("ComponentRegistry", () => {
       b: true,
       e: "a",
       d: "main",
+      g: "",
       a: "",
     });
   });
@@ -90,6 +94,65 @@ describe("ComponentRegistry", () => {
     expect(registry.has("shared.LoadAllSceneAssets")).toBe(true);
     expect(registry.has("shared.PerformanceMeter")).toBe(true);
     expect(registry.has("shared.AudioClick")).toBe(true);
+    expect(registry.has("shared.BackgroundAudio")).toBe(true);
     expect(parsed.busEvents).toEqual([{ id: "game.start", label: "Start" }]);
+  });
+
+  it("parses gltfAnimations dynamicEnum fields", () => {
+    const catalog = buildComponentCatalog((registry) => {
+      registry.register(
+        defineComponent({
+          id: "t.Anim",
+          displayName: "Anim",
+          category: "Test",
+          categoryOrder: 0,
+          order: 0,
+          properties: {
+            walkAnimation: {
+              kind: "dynamicEnum",
+              default: "npcsanta_action_1",
+              source: "gltfAnimations",
+            },
+          },
+        }),
+      );
+    });
+    const parsed = parseComponentCatalogData(
+      JSON.parse(JSON.stringify(catalog)) as unknown,
+    );
+    expect(parsed.components[0]?.properties.walkAnimation).toEqual({
+      kind: "dynamicEnum",
+      default: "npcsanta_action_1",
+      source: "gltfAnimations",
+    });
+  });
+
+  it("parses gltf asset picker fields", () => {
+    const catalog = buildComponentCatalog((registry) => {
+      registry.register(
+        defineComponent({
+          id: "t.Stone",
+          displayName: "Stone",
+          category: "Test",
+          categoryOrder: 0,
+          order: 0,
+          properties: {
+            stoneAssetId: {
+              kind: "asset",
+              assetType: "gltf",
+              default: "asset_stone",
+            },
+          },
+        }),
+      );
+    });
+    const parsed = parseComponentCatalogData(
+      JSON.parse(JSON.stringify(catalog)) as unknown,
+    );
+    expect(parsed.components[0]?.properties.stoneAssetId).toEqual({
+      kind: "asset",
+      assetType: "gltf",
+      default: "asset_stone",
+    });
   });
 });

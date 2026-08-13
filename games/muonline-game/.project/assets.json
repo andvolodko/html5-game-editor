@@ -1,0 +1,188 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+      "type": "gltf",
+      "name": "Object13",
+      "path": "assets/floor/Object13.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": []
+      }
+    },
+    {
+      "id": "asset_3d0615e3-3edd-4ddd-bf05-15f97bc5e95c",
+      "type": "gltf",
+      "name": "Model_Npc_Catapult_Att",
+      "path": "assets/Model_Npc_Catapult_Att.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": [
+          "Model_Npc_Catapult_Att_action_0",
+          "Model_Npc_Catapult_Att_action_1"
+        ]
+      }
+    },
+    {
+      "id": "asset_492ba4a1-8465-4b0b-b2c8-5b9f3230d609",
+      "type": "gltf",
+      "name": "Monster15",
+      "path": "assets/Monster15.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": [
+          "Monster15_action_0",
+          "Monster15_action_1",
+          "Monster15_action_2",
+          "Monster15_action_3",
+          "Monster15_action_4",
+          "Monster15_action_5",
+          "Monster15_action_6"
+        ]
+      }
+    },
+    {
+      "id": "asset_60760a18-b5b7-4216-80fb-75e4081577fb",
+      "type": "audio",
+      "name": "cursedtemplewait",
+      "path": "assets/audio/cursedtemplewait.ogg",
+      "metadata": {
+        "kind": "audio",
+        "mimeType": "audio/ogg"
+      }
+    },
+    {
+      "id": "asset_9b2f14d4-75d2-4acd-9535-eb34befa9295",
+      "type": "gltf",
+      "name": "Model_Npc_Catapult_Def",
+      "path": "assets/Model_Npc_Catapult_Def.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": [
+          "Model_Npc_Catapult_Def_action_0",
+          "Model_Npc_Catapult_Def_action_1"
+        ]
+      }
+    },
+    {
+      "id": "asset_9f23b88c-705a-4d6b-adc9-ef62ffdc8b46",
+      "type": "gltf",
+      "name": "Monster14",
+      "path": "assets/Monster14.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": [
+          "Monster14_action_0",
+          "Monster14_action_1",
+          "Monster14_action_2",
+          "Monster14_action_3",
+          "Monster14_action_4",
+          "Monster14_action_5",
+          "Monster14_action_6"
+        ]
+      }
+    },
+    {
+      "id": "asset_a692f3c7-4dd1-48d1-b340-1b231dcb0012",
+      "type": "gltf",
+      "name": "Monster07",
+      "path": "assets/Monster07.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": [
+          "Monster07_action_0",
+          "Monster07_action_1",
+          "Monster07_action_2",
+          "Monster07_action_3",
+          "Monster07_action_4",
+          "Monster07_action_5",
+          "Monster07_action_6"
+        ]
+      }
+    },
+    {
+      "id": "asset_a7fb944e-85e8-46bb-abb8-daae286545b0",
+      "type": "gltf",
+      "name": "npcsanta",
+      "path": "assets/npcsanta.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": [
+          "npcsanta_action_0",
+          "npcsanta_action_1",
+          "npcsanta_action_2",
+          "npcsanta_action_3",
+          "npcsanta_action_4",
+          "npcsanta_action_5"
+        ]
+      }
+    },
+    {
+      "id": "asset_ccd9132d-aada-4112-b168-c0827b0ca53c",
+      "type": "gltf",
+      "name": "Stone01",
+      "path": "assets/Stone01.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": []
+      }
+    },
+    {
+      "id": "asset_d65b0de6-1197-4536-a8ac-3fbd9a6424c8",
+      "type": "gltf",
+      "name": "Monster13",
+      "path": "assets/Monster13.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": [
+          "Monster13_action_0",
+          "Monster13_action_1",
+          "Monster13_action_2",
+          "Monster13_action_3",
+          "Monster13_action_4",
+          "Monster13_action_5",
+          "Monster13_action_6"
+        ]
+      }
+    },
+    {
+      "id": "asset_dc8458ea-381b-4f63-a53a-ef1087074b9d",
+      "type": "gltf",
+      "name": "Monster20",
+      "path": "assets/Monster20.glb",
+      "metadata": {
+        "kind": "gltf",
+        "mimeType": "model/gltf-binary",
+        "format": "glb",
+        "animations": [
+          "Monster20_action_0",
+          "Monster20_action_1",
+          "Monster20_action_2",
+          "Monster20_action_3",
+          "Monster20_action_4",
+          "Monster20_action_5",
+          "Monster20_action_6"
+        ]
+      }
+    }
+  ]
+}

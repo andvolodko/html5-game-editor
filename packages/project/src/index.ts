@@ -33,3 +33,9 @@ export {
   GAME_ENTRY_MODULE_SRC,
   DEFAULT_GAME_INDEX_TITLE,
 } from "./game-shell.js";
+export {
+  STANDALONE_GAMES_SEGMENT,
+  normalizePublicBaseUrl,
+  standaloneGameBaseUrl,
+  standaloneGamesIndexUrl,
+} from "./pages-urls.js";

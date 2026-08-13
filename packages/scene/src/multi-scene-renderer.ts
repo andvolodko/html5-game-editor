@@ -1,5 +1,9 @@
 import type { SceneNodeData } from "./types.js";
-import type { SceneRenderer } from "./scene-renderer.js";
+import {
+  addSceneRenderStats,
+  EMPTY_SCENE_RENDER_STATS,
+  type SceneRenderer,
+} from "./scene-renderer.js";
 
 export interface MultiSceneRendererSlot {
   renderer: SceneRenderer;
@@ -88,20 +92,24 @@ export class MultiSceneRenderer implements SceneRenderer {
   }
 
   getRenderStats() {
-    let drawCalls = 0;
-    let triangles = 0;
-    let canvas = 0;
-    let displayObjects = 0;
+    let merged = EMPTY_SCENE_RENDER_STATS;
     for (const slot of this.slots) {
       const sample = slot.renderer.getRenderStats?.();
       if (!sample) {
         continue;
       }
-      drawCalls += sample.drawCalls;
-      triangles += sample.triangles;
-      canvas += sample.canvas;
-      displayObjects += sample.displayObjects;
+      merged = addSceneRenderStats(merged, sample);
     }
-    return { drawCalls, triangles, canvas, displayObjects };
+    return merged;
+  }
+
+  getBoneWorldTransform(nodeId: string, boneName: string) {
+    for (const slot of this.slots) {
+      const transform = slot.renderer.getBoneWorldTransform?.(nodeId, boneName);
+      if (transform) {
+        return transform;
+      }
+    }
+    return undefined;
   }
 }

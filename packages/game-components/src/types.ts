@@ -12,7 +12,14 @@ export type ComponentPropertyKind =
   | "asset";
 
 /** Asset catalogue kinds selectable from Script inspector fields. */
-export type ComponentAssetType = "texture" | "spine" | "audio" | "gltf";
+export const COMPONENT_ASSET_TYPES = [
+  "texture",
+  "spine",
+  "audio",
+  "gltf",
+] as const;
+
+export type ComponentAssetType = (typeof COMPONENT_ASSET_TYPES)[number];
 
 /**
  * Playback pointer events forwarded from the Pixi host (no PIXI types here).
@@ -56,8 +63,9 @@ export interface ComponentPropertyEnum {
  * Enum whose options are resolved at inspector time (not baked into the definition).
  * - scenes: project scene file ids
  * - busEvents: game-exported bus event ids
+ * - gltfAnimations: clip names on the host node's Model3D glTF asset
  */
-export type DynamicEnumSource = "scenes" | "busEvents";
+export type DynamicEnumSource = "scenes" | "busEvents" | "gltfAnimations";
 
 export interface ComponentPropertyDynamicEnum {
   kind: "dynamicEnum";
@@ -104,9 +112,49 @@ export interface ScriptTransform2DPatch {
   scale?: { x: number; y: number };
 }
 
+/** Read-only 3D transform snapshot for script behaviours (no component id). */
+export interface ScriptTransform3D {
+  position: { x: number; y: number; z: number };
+  rotation: { x: number; y: number; z: number };
+  scale: { x: number; y: number; z: number };
+}
+
+/** Partial patch applied by `setTransform3D` (merges into the live Transform3D). */
+export interface ScriptTransform3DPatch {
+  position?: { x: number; y: number; z: number };
+  rotation?: { x: number; y: number; z: number };
+  scale?: { x: number; y: number; z: number };
+}
+
+/** Live Model3D playback fields for scripts (no THREE objects). */
+export interface ScriptModel3DPlayback {
+  assetId?: string;
+  animation?: string;
+  loop: boolean;
+  timeScale: number;
+  playing: boolean;
+}
+
+/** Partial patch applied by `setModel3DPlayback`. */
+export interface ScriptModel3DPlaybackPatch {
+  animation?: string;
+  loop?: boolean;
+  timeScale?: number;
+  playing?: boolean;
+}
+
+/** Per-renderer GPU / graph counters (Pixi or Three). */
+export interface ScriptRendererDrawStats {
+  drawCalls: number;
+  triangles: number;
+  canvas: number;
+  displayObjects: number;
+}
+
 /**
  * Frame / renderer metrics for overlays such as Performance Meter.
  * Host fills timing; draw/triangle/canvas may come from the active renderer.
+ * `pixi` / `three` are set when that renderer is registered.
  */
 export interface ScriptPerformanceStats {
   frameTimeMs: number;
@@ -117,6 +165,25 @@ export interface ScriptPerformanceStats {
   rendererMs: number;
   canvas: number;
   displayObjects: number;
+  pixi?: ScriptRendererDrawStats;
+  three?: ScriptRendererDrawStats;
+}
+
+/** Options for `playAudio` (SFX one-shot vs looping BGM). */
+export interface PlayAudioOptions {
+  loop?: boolean;
+  /** Linear gain in 0–1. */
+  volume?: number;
+}
+
+/** Runtime-only Model3D spawn (not persisted to scene files). */
+export interface ScriptSpawnModel3DOptions {
+  assetId: string;
+  name?: string;
+  parentId?: string;
+  position: { x: number; y: number; z: number };
+  rotation?: { x: number; y: number; z: number };
+  scale?: { x: number; y: number; z: number };
 }
 
 /** Services provided by GameRuntime / preview to script `create` factories. */
@@ -155,7 +222,9 @@ export interface ScriptRuntimeServices {
     signal?: AbortSignal,
   ) => Promise<void>;
   /** Play an audio catalogue asset by id (host owns HTMLAudioElement / decoder). */
-  playAudio?: (assetId: string) => void;
+  playAudio?: (assetId: string, options?: PlayAudioOptions) => void;
+  /** Stop looping audio started via `playAudio`. Omit `assetId` to stop all. */
+  stopAudio?: (assetId?: string) => void;
   /** Read the host node's Transform2D (undefined if missing). */
   getTransform2D?: (nodeId: string) => ScriptTransform2D | undefined;
   /**
@@ -163,6 +232,33 @@ export interface ScriptRuntimeServices {
    * Runtime-only; does not write scene files.
    */
   setTransform2D?: (nodeId: string, patch: ScriptTransform2DPatch) => void;
+  /** Read the host node's Transform3D (undefined if missing). */
+  getTransform3D?: (nodeId: string) => ScriptTransform3D | undefined;
+  /**
+   * Patch Transform3D on a node and sync registered renderers.
+   * Runtime-only; does not write scene files.
+   */
+  setTransform3D?: (nodeId: string, patch: ScriptTransform3DPatch) => void;
+  /** Read Model3D playback on a node (undefined if missing). */
+  getModel3DPlayback?: (nodeId: string) => ScriptModel3DPlayback | undefined;
+  /**
+   * Patch Model3D clip / loop / playing and sync registered renderers.
+   * Runtime-only; does not write scene files.
+   */
+  setModel3DPlayback?: (
+    nodeId: string,
+    patch: ScriptModel3DPlaybackPatch,
+  ) => void;
+  /** Clip names on the node's current glTF asset (empty until the host has loaded it). */
+  listModel3DAnimations?: (nodeId: string) => readonly string[];
+  /**
+   * Authored clip length in seconds (before `timeScale`).
+   * Undefined when the host has not loaded the asset.
+   */
+  getModel3DAnimationDuration?: (
+    nodeId: string,
+    animation?: string,
+  ) => number | undefined;
   /**
    * Set Text / HTMLText / BitmapText content on a node and sync renderers.
    * Runtime-only; does not write scene files.
@@ -170,6 +266,24 @@ export interface ScriptRuntimeServices {
   setText?: (nodeId: string, text: string) => void;
   /** Latest frame performance snapshot (undefined when host has none yet). */
   getPerformanceStats?: () => ScriptPerformanceStats | undefined;
+  /**
+   * World-space pose of a named glTF bone on a Model3D node.
+   * Undefined until the host has loaded the skinned mesh.
+   */
+  getModel3DBoneWorldTransform?: (
+    nodeId: string,
+    boneName: string,
+  ) => ScriptTransform3D | undefined;
+  /**
+   * Insert a Model3D node into the live scene and sync renderers.
+   * Runtime-only; does not write scene files. Returns the new node id.
+   */
+  spawnModel3D?: (options: ScriptSpawnModel3DOptions) => string | undefined;
+  /**
+   * Remove a node previously created by `spawnModel3D`.
+   * No-op for authored scene nodes.
+   */
+  destroyNode?: (nodeId: string) => void;
 }
 
 export interface ScriptCreateContext {

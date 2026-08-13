@@ -52,6 +52,38 @@ describe("resolveGameProject", () => {
     );
   });
 
+  it("prefixes static asset URLs with the Vite public base", () => {
+    const scene = createEmptyScene("Main");
+    const db = createEmptyAssetDatabase();
+    db.assets.push(
+      createTextureAssetRecord({
+        id: "asset_hero",
+        name: "hero",
+        path: "assets/ui/hero.png",
+        width: 32,
+        height: 32,
+        mimeType: "image/png",
+      }),
+    );
+
+    const loaded = resolveGameProject({
+      project: {
+        name: "demo",
+        version: 1,
+        displayName: "Demo",
+        renderers: ["pixi"],
+        startScene: "main",
+      },
+      assets: JSON.parse(serializeAssetDatabase(db)),
+      scenes: { main: JSON.parse(JSON.stringify(scene)) },
+      baseUrl: "/html5-game-editor/games/example-game/",
+    });
+
+    expect(loaded.assetResolver.resolveUrl("asset_hero")).toBe(
+      "/html5-game-editor/games/example-game/assets/ui/hero.png",
+    );
+  });
+
   it("throws when start scene is missing", () => {
     expect(() =>
       resolveGameProject({

@@ -39,6 +39,7 @@ async function boot(): Promise<void> {
     project: projectJson,
     assets: assetsJson,
     scenes: sceneModulesById(sceneModules),
+    baseUrl: import.meta.env.BASE_URL,
   });
 
   const design = loaded.project.resolution;

@@ -180,4 +180,73 @@ describe("scene schema", () => {
       playing: true,
     });
   });
+
+  it("fills Text style defaults for older JSON", () => {
+    const parsed = parseSceneData({
+      id: "scene_1",
+      name: "Text",
+      version: SCENE_SCHEMA_VERSION,
+      nodes: [
+        {
+          id: "node_1",
+          name: "Label",
+          components: [
+            {
+              type: "Transform2D",
+              id: "comp_t",
+              position: { x: 0, y: 0 },
+              rotation: 0,
+              scale: { x: 1, y: 1 },
+            },
+            {
+              type: "Text",
+              id: "comp_text",
+              text: "Hello",
+              style: {
+                fontFamily: "Arial",
+                fontSize: 24,
+                fontWeight: "bold",
+                fontStyle: "italic",
+                fill: 0xff0000,
+                align: "center",
+                letterSpacing: 2,
+                lineHeight: 28,
+                wordWrap: true,
+                wordWrapWidth: 200,
+              },
+            },
+          ],
+          children: [],
+        },
+      ],
+    });
+    const text = parsed.nodes[0]?.components.find((c) => c.type === "Text");
+    expect(text).toMatchObject({
+      type: "Text",
+      text: "Hello",
+      style: {
+        fontFamily: "Arial",
+        fontSize: 24,
+        fontWeight: "bold",
+        fontStyle: "italic",
+        fill: 0xff0000,
+        fillAlpha: 1,
+        align: "center",
+        letterSpacing: 2,
+        lineHeight: 28,
+        wordWrap: true,
+        wordWrapWidth: 200,
+        breakWords: false,
+        whiteSpace: "pre",
+        fontVariant: "normal",
+        leading: 0,
+        trim: false,
+        textBaseline: "alphabetic",
+        strokeJoin: "miter",
+        padding: 0,
+        strokeWidth: 0,
+        dropShadow: false,
+      },
+    });
+  });
 });

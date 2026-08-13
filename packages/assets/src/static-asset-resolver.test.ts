@@ -27,6 +27,27 @@ describe("createStaticAssetResolver", () => {
     expect(resolver.resolveUrl("missing")).toBeUndefined();
   });
 
+  it("prefixes project paths with a subdirectory public base", () => {
+    const database = new AssetDatabase();
+    database.add(
+      createTextureAssetRecord({
+        id: "asset_hero",
+        name: "hero",
+        path: "assets/ui/hero.png",
+        width: 64,
+        height: 64,
+        mimeType: "image/png",
+      }),
+    );
+    const resolver = createStaticAssetResolver(database, {
+      baseUrl: "/html5-game-editor/games/example-game/",
+    });
+
+    expect(resolver.resolveUrl("asset_hero")).toBe(
+      "/html5-game-editor/games/example-game/assets/ui/hero.png",
+    );
+  });
+
   it("resolves spine skeleton, atlas, and page URLs", () => {
     const database = new AssetDatabase();
     database.add(

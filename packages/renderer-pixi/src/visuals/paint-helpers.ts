@@ -3,7 +3,6 @@ import {
   DEFAULT_MESH_FALLBACK_SIZE,
   DEFAULT_MESH_PLANE_SIZE,
   DEFAULT_MESH_ROPE_BOUNDS_PAD_Y,
-  type TextStyleData,
   type VisualComponentData,
 } from "@game-editor/scene";
 import type {
@@ -139,21 +138,6 @@ export async function resolveTexture(
     });
     return { texture: undefined, missing: true };
   }
-}
-
-export function toTextStyleOptions(style: TextStyleData): Record<string, unknown> {
-  return {
-    fontFamily: style.fontFamily,
-    fontSize: style.fontSize,
-    fontWeight: style.fontWeight,
-    fontStyle: style.fontStyle,
-    fill: style.fill,
-    align: style.align,
-    letterSpacing: style.letterSpacing,
-    ...(style.lineHeight > 0 ? { lineHeight: style.lineHeight } : {}),
-    wordWrap: style.wordWrap,
-    wordWrapWidth: style.wordWrapWidth,
-  };
 }
 
 export function missingTextureResult(

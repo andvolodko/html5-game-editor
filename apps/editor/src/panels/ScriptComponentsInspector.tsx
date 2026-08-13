@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   findScript,
+  getModel3D,
   getScriptComponents,
   type SceneNodeData,
 } from "@game-editor/scene";
@@ -45,9 +46,19 @@ export function ScriptComponentsInspector({
     return editor.getBusEvents();
   }, [editor, catalogRevision]);
 
+  const gltfAnimations = useMemo(() => {
+    void catalogRevision;
+    const model = getModel3D(node);
+    const asset = model?.assetId ? editor.assets.get(model.assetId) : undefined;
+    if (asset?.metadata.kind !== "gltf") {
+      return [];
+    }
+    return asset.metadata.animations;
+  }, [editor, node, catalogRevision]);
+
   const dynamicOptions = useMemo(
-    () => ({ scenes: sceneIds, busEvents }),
-    [sceneIds, busEvents],
+    () => ({ scenes: sceneIds, busEvents, gltfAnimations }),
+    [sceneIds, busEvents, gltfAnimations],
   );
 
   const addableGroups = useMemo(() => {

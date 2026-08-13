@@ -1,0 +1,2928 @@
+{
+  "id": "scene_4a735ac4-b487-4c3b-802a-c8c8449ebb65",
+  "name": "Main",
+  "version": 1,
+  "renderer": "hybrid",
+  "nodes": [
+    {
+      "id": "node_fff085eb-3807-424f-ab14-7ec6d585063e",
+      "name": "Perspective Camera",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_b016e850-8ab4-4a0e-8bab-47cc51ba9ba7",
+          "position": {
+            "x": 0.1533418348622475,
+            "y": 29.956825984057815,
+            "z": 29.92467256195115
+          },
+          "rotation": {
+            "x": -0.7447188684234581,
+            "y": -0.06133911640554849,
+            "z": 0.013836910947771574
+          },
+          "scale": {
+            "x": 0.2,
+            "y": 0.2,
+            "z": 0.2
+          }
+        },
+        {
+          "type": "PerspectiveCamera",
+          "id": "comp_c2aaee47-8596-4b14-a53b-f84ead403799",
+          "fov": 50,
+          "near": 0.1,
+          "far": 2000,
+          "active": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_c8e01a24-9b3d-4f17-a6e2-5d4c7b8a9012",
+          "scriptId": "muonline.BattlefieldCamera",
+          "properties": {
+            "lookAtX": 0,
+            "lookAtY": 6,
+            "lookAtZ": 0,
+            "radius": 32,
+            "height": 30,
+            "speed": 0.055
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_c6b5c0a6-606b-44bb-8ea7-9173ede8487a",
+      "name": "Ambient Light",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_ef04a3b2-3986-416c-9e62-0bed6f6f3312",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "AmbientLight",
+          "id": "comp_aa8470b3-c740-49ae-a6c4-15485aa95b9e",
+          "color": 16777215,
+          "intensity": 0.45
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_b9864b75-b895-4f81-9b8f-cf5647cd1411",
+      "name": "Directional Light",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_7bbebc1e-4916-4427-b337-d388e6f1713e",
+          "position": {
+            "x": -17.90695143882174,
+            "y": 18.438710465736662,
+            "z": 3.8129519942812777
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "DirectionalLight",
+          "id": "comp_01e37a8f-b54d-46c0-9bb6-7dc88a262ad8",
+          "color": 16777215,
+          "intensity": 2
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_4013774b-bd98-4b7b-a8dd-d47ea6d333c1",
+      "name": "Model_Npc_Catapult_Att",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_99a68856-806d-4053-949a-afcf04b472a3",
+          "position": {
+            "x": 23.877784762855633,
+            "y": 5.749032101130084,
+            "z": -10.151284535623446
+          },
+          "rotation": {
+            "x": -1.5691155450831327,
+            "y": -0.03805152102629598,
+            "z": -1.5266431290648244
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_e402d480-dadd-428f-9f61-408fc7cde29e",
+          "assetId": "asset_3d0615e3-3edd-4ddd-bf05-15f97bc5e95c",
+          "animation": "Model_Npc_Catapult_Att_action_0",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_7b4342a3-83d3-4198-a470-3d29c4f533b7",
+          "scriptId": "muonline.CatapultThrow",
+          "properties": {
+            "stoneAssetId": "asset_ccd9132d-aada-4112-b168-c0827b0ca53c",
+            "stoneScale": 10,
+            "attachBone": "bone_12_Bone02",
+            "throwAnimation": "Model_Npc_Catapult_Att_action_1",
+            "fireAtSeconds": 0.05
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_7414cf5d-8034-48a1-96f0-4b15963a5815",
+      "name": "Model_Npc_Catapult_Att Copy",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_1011911b-7b99-4470-9be1-6040a204f586",
+          "position": {
+            "x": 26.607688161611453,
+            "y": 6.216033383149274,
+            "z": -2.601063291935068
+          },
+          "rotation": {
+            "x": -1.5691155450831327,
+            "y": -0.03805152102629598,
+            "z": -1.5266431290648244
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_10456192-b697-404e-92b0-83b906220cc5",
+          "assetId": "asset_3d0615e3-3edd-4ddd-bf05-15f97bc5e95c",
+          "animation": "Model_Npc_Catapult_Att_action_0",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_5c0e8d86-9006-4937-8e21-3937b07f1567",
+          "scriptId": "muonline.CatapultThrow",
+          "properties": {
+            "stoneAssetId": "asset_ccd9132d-aada-4112-b168-c0827b0ca53c",
+            "stoneScale": 10,
+            "attachBone": "bone_12_Bone02",
+            "throwAnimation": "Model_Npc_Catapult_Att_action_1",
+            "fireAtSeconds": 0.05
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_068fc9c7-3413-4042-ad90-189ee934898b",
+      "name": "Model_Npc_Catapult_Att Copy Copy",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_6347ee6b-6dc5-4320-9b5d-418046b4edec",
+          "position": {
+            "x": 23.877784762855633,
+            "y": 5.770030761711148,
+            "z": 5.452822946041227
+          },
+          "rotation": {
+            "x": -1.5691155450831327,
+            "y": -0.03805152102629598,
+            "z": -1.5266431290648244
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_ea528d03-3a85-4d54-acb3-901d232d2a24",
+          "assetId": "asset_3d0615e3-3edd-4ddd-bf05-15f97bc5e95c",
+          "animation": "Model_Npc_Catapult_Att_action_0",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_80438f71-7c80-44a1-9ff4-477d0fe2ce7a",
+          "scriptId": "muonline.CatapultThrow",
+          "properties": {
+            "stoneAssetId": "asset_ccd9132d-aada-4112-b168-c0827b0ca53c",
+            "stoneScale": 10,
+            "attachBone": "bone_12_Bone02",
+            "throwAnimation": "Model_Npc_Catapult_Att_action_1",
+            "fireAtSeconds": 0.05
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_bab5deb8-fea4-4361-9f3d-efbdd511cc3a",
+      "name": "Model_Npc_Catapult_Def",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_d5a166fb-ae6b-447c-a8a9-0c0666c7ea8a",
+          "position": {
+            "x": -22.026354395337016,
+            "y": 5.68725517867632,
+            "z": -8.686799508930317
+          },
+          "rotation": {
+            "x": -1.576997276807898,
+            "y": 0.05504754417583608,
+            "z": 1.6830282408180455
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_b4aea604-1f51-406e-99c0-2a7f1b63f488",
+          "assetId": "asset_9b2f14d4-75d2-4acd-9535-eb34befa9295",
+          "animation": "Model_Npc_Catapult_Def_action_0",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_cb7c6960-d8df-4c51-9dc1-2d73293158f9",
+          "scriptId": "muonline.CatapultThrow",
+          "properties": {
+            "stoneAssetId": "asset_ccd9132d-aada-4112-b168-c0827b0ca53c",
+            "stoneScale": 10,
+            "attachBone": "bone_13_Bone02",
+            "throwAnimation": "Model_Npc_Catapult_Def_action_1",
+            "fireAtSeconds": 0.05
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_18027673-dbe2-47bf-8551-b24b8384f308",
+      "name": "Model_Npc_Catapult_Def Copy",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_de0e774f-d739-4f46-a173-bb1a664a18c4",
+          "position": {
+            "x": -21.205168139950622,
+            "y": 5.825988144356932,
+            "z": -0.09562491864515543
+          },
+          "rotation": {
+            "x": -1.576997276807898,
+            "y": 0.05504754417583608,
+            "z": 1.6830282408180455
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_b730c227-cc62-46e6-be13-e18e9de616e7",
+          "assetId": "asset_9b2f14d4-75d2-4acd-9535-eb34befa9295",
+          "animation": "Model_Npc_Catapult_Def_action_0",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_f15bb656-2e47-422f-b76e-f10f0fa561e4",
+          "scriptId": "muonline.CatapultThrow",
+          "properties": {
+            "stoneAssetId": "asset_ccd9132d-aada-4112-b168-c0827b0ca53c",
+            "stoneScale": 10,
+            "attachBone": "bone_13_Bone02",
+            "throwAnimation": "Model_Npc_Catapult_Def_action_1",
+            "fireAtSeconds": 0.05
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_b9cc347a-640d-4829-8a89-3b37a7f1b17c",
+      "name": "Model_Npc_Catapult_Def Copy Copy",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_23584a4b-2e4c-48d6-bbea-b44949bf9465",
+          "position": {
+            "x": -20.65283370675034,
+            "y": 5.7557068503363364,
+            "z": 8.452845044897565
+          },
+          "rotation": {
+            "x": -1.576997276807898,
+            "y": 0.05504754417583608,
+            "z": 1.6830282408180455
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_13b5bb5f-21d3-4408-801e-563f58e6a9ab",
+          "assetId": "asset_9b2f14d4-75d2-4acd-9535-eb34befa9295",
+          "animation": "Model_Npc_Catapult_Def_action_0",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_e52b8fab-7949-4a40-9866-a0e6629dacdd",
+          "scriptId": "muonline.CatapultThrow",
+          "properties": {
+            "stoneAssetId": "asset_ccd9132d-aada-4112-b168-c0827b0ca53c",
+            "stoneScale": 10,
+            "attachBone": "bone_13_Bone02",
+            "throwAnimation": "Model_Npc_Catapult_Def_action_1",
+            "fireAtSeconds": 0.05
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_d73e3084-f3cb-43ec-8364-3570b7f3edc3",
+      "name": "Monster07",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_c334dd19-d0ef-42a5-87c3-df5049b0a6b5",
+          "position": {
+            "x": 9.81273208185896,
+            "y": 5.699348839417345,
+            "z": 3.516515177890806
+          },
+          "rotation": {
+            "x": -1.4869349680612638,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1.5,
+            "y": 1.5,
+            "z": 1.5
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_377f919f-7c23-46f3-b0b0-d94d3a525f2b",
+          "assetId": "asset_a692f3c7-4dd1-48d1-b340-1b231dcb0012",
+          "animation": "Monster07_action_2",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_56430bcb-8b6c-4d94-94c9-a0eea54e06fa",
+          "scriptId": "muonline.MonsterAi",
+          "properties": {
+            "idleAnimation": "Monster07_action_0",
+            "walkAnimation": "Monster07_action_2",
+            "attackAnimation": "Monster07_action_4",
+            "receiveKickAnimation": "Monster07_action_5",
+            "dieAnimation": "Monster07_action_6"
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_12eb48a7-f81b-49e7-985c-ece611970075",
+      "name": "Monster13",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_c9d1d8e0-65cd-43e5-9d85-87e494587fbc",
+          "position": {
+            "x": 5.432888785437924,
+            "y": 5.6966229181509505,
+            "z": -9.368914729300084
+          },
+          "rotation": {
+            "x": -1.4869349680612638,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 2,
+            "y": 2,
+            "z": 2
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_7ff00fd1-dab3-42da-9674-bc62f33acb15",
+          "assetId": "asset_d65b0de6-1197-4536-a8ac-3fbd9a6424c8",
+          "animation": "Monster13_action_0",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_7d6b92e7-757b-4181-9e11-dea3286afac7",
+          "scriptId": "muonline.MonsterAi",
+          "properties": {
+            "idleAnimation": "Monster13_action_0",
+            "walkAnimation": "Monster13_action_2",
+            "attackAnimation": "Monster13_action_4",
+            "receiveKickAnimation": "Monster13_action_5",
+            "dieAnimation": "Monster13_action_6"
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_8069e518-626e-4d0d-985d-8bfaeba1a1c6",
+      "name": "Monster14",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_2f51eef1-f419-449f-9060-c673cecaf5bd",
+          "position": {
+            "x": -3.695101954130184,
+            "y": 5.643005463917872,
+            "z": -9.544781701292568
+          },
+          "rotation": {
+            "x": -1.5336752604407295,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 2,
+            "y": 2,
+            "z": 2
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_bdee31c7-2ef4-47fb-9e0c-f2d02dadb945",
+          "assetId": "asset_9f23b88c-705a-4d6b-adc9-ef62ffdc8b46",
+          "animation": "Monster14_action_0",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_5dde503b-c1e6-40aa-9ba9-2a2f49e9da0b",
+          "scriptId": "muonline.MonsterAi",
+          "properties": {
+            "idleAnimation": "Monster14_action_0",
+            "walkAnimation": "Monster14_action_2",
+            "attackAnimation": "Monster14_action_3",
+            "receiveKickAnimation": "Monster14_action_5",
+            "dieAnimation": "Monster14_action_6"
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_926630b5-f0e6-4085-b27f-f95ab339a834",
+      "name": "Monster15",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_375f1d9e-4b4b-4ce8-80df-03bcd03878be",
+          "position": {
+            "x": -8.446591776515962,
+            "y": 6.040478229752198,
+            "z": -0.5718902102937434
+          },
+          "rotation": {
+            "x": -1.5584004654218209,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 2,
+            "y": 2,
+            "z": 2
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_6ff2e19c-614f-4793-af49-5529047cfe00",
+          "assetId": "asset_492ba4a1-8465-4b0b-b2c8-5b9f3230d609",
+          "animation": "Monster15_action_0",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_055d421a-41cb-48a9-8f51-6b4ab09e1bd2",
+          "scriptId": "muonline.MonsterAi",
+          "properties": {
+            "idleAnimation": "Monster15_action_0",
+            "walkAnimation": "Monster15_action_2",
+            "attackAnimation": "Monster15_action_3",
+            "receiveKickAnimation": "Monster15_action_5",
+            "dieAnimation": "Monster15_action_6"
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_7fddfc64-9acf-45d5-93d7-0c7600c18850",
+      "name": "Monster20",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_a3c1b1b7-0d3c-4aec-8c09-342c323adf43",
+          "position": {
+            "x": 0.7561305760467798,
+            "y": 5.7669275483979625,
+            "z": 8.763788287963298
+          },
+          "rotation": {
+            "x": -1.4805589310247473,
+            "y": -0.09763996815647458,
+            "z": -0.018548516971947926
+          },
+          "scale": {
+            "x": 2,
+            "y": 2,
+            "z": 2
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_815370bb-0edd-4d84-92ec-03230ff02744",
+          "assetId": "asset_dc8458ea-381b-4f63-a53a-ef1087074b9d",
+          "animation": "Monster20_action_0",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_4ba560d7-68fa-4d49-8f14-281969746d48",
+          "scriptId": "muonline.MonsterAi",
+          "properties": {
+            "idleAnimation": "Monster20_action_0",
+            "walkAnimation": "Monster20_action_2",
+            "attackAnimation": "Monster20_action_3",
+            "receiveKickAnimation": "Monster20_action_5",
+            "dieAnimation": "Monster20_action_6"
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_2c099276-13fa-4918-a465-caaeb99c1fb6",
+      "name": "Npcsanta",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_439ef0aa-9732-4d70-bdfc-0208d64a1972",
+          "position": {
+            "x": 10.316915876976413,
+            "y": 5.700129802990303,
+            "z": -9.945054030415767
+          },
+          "rotation": {
+            "x": -1.7450034393601617,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 2,
+            "y": 2,
+            "z": 2
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_e47a502a-ae92-47eb-add0-98cd4ef55e5a",
+          "assetId": "asset_a7fb944e-85e8-46bb-abb8-daae286545b0",
+          "animation": "npcsanta_action_1",
+          "loop": true,
+          "timeScale": 0.6,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_cd0148a5-4ffd-4f6a-a38e-c310382cb107",
+          "scriptId": "muonline.SantaWander",
+          "properties": {}
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_59823784-0540-4407-b023-3c49d27b6807",
+      "name": "floor",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_a020087e-0fff-4c7b-9b0c-69c3b3ce48f2",
+          "position": {
+            "x": -5.481402111286463,
+            "y": 0,
+            "z": -10.832175186088477
+          },
+          "rotation": {
+            "x": 0.1570994089610848,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_a8fed016-a8af-4066-857e-18d4b3f19c51",
+          "name": "Object13",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_e470295a-7ad2-4dba-950d-15b8f18ec467",
+              "position": {
+                "x": -3.371724235810106,
+                "y": 5.780867500000468,
+                "z": 0
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_12e1bcdd-03de-450b-84fe-3b9d9fdabd74",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_402bf42b-cacf-47c2-901b-c73d2d4c7880",
+          "name": "Object13 Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_d383e774-90ef-4018-8d5d-2f4f42885722",
+              "position": {
+                "x": 1.313452954583889,
+                "y": 5.780867500000468,
+                "z": 0
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_47993d91-05df-477a-a2ad-e2251f44e852",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_273d1f26-2187-494f-9b49-659413bb86bf",
+          "name": "Object13 Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_16341029-8e47-433e-b01e-98a5edd85326",
+              "position": {
+                "x": 6.0461346270486,
+                "y": 5.780867500000468,
+                "z": 0
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_c37b87f0-7185-4544-817e-33752eba72da",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_82dc49e0-d6a0-4929-8024-440f452df71c",
+          "name": "Object13 Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_693e5217-5497-4e80-a5e2-d3f026f5789e",
+              "position": {
+                "x": 10.866059727829832,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_2e994291-d645-4266-9c14-937606a1f625",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_66b16686-1adb-4ddd-ab57-96ac891f9f74",
+          "name": "Object13 Copy Copy Copy Copy 3",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_73cb9a00-cc46-4b1f-bccf-97822bf6aaea",
+              "position": {
+                "x": 6.1298623675579655,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_8be8e971-25e9-48df-b558-63924ea7861c",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_f2f808e7-0697-4cbf-ac2d-4d51ec231fbc",
+          "name": "Object13 Copy Copy Copy Copy 3 Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_5261bd22-064a-42b6-8527-0972a90dea0c",
+              "position": {
+                "x": 1.4707766727683111,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_d880b559-93ae-4073-bab0-121b7f4d9f46",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_9173ae2d-2134-4af5-9ea0-8ace01234d9d",
+          "name": "Object13 Copy Copy Copy Copy 3 Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_fa8c8d01-bcc2-4d76-a408-3ca9be033b63",
+              "position": {
+                "x": -3.187136378777371,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_d03303da-01a5-4b75-87d2-f3cd9cd377eb",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_36142a4c-60a1-4b58-8649-75be9a03649d",
+          "name": "Object13 Copy Copy Copy Copy 2",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_0b73b6b2-fa13-421b-af95-49ca68b602ac",
+              "position": {
+                "x": 10.866059727829832,
+                "y": 5.780867500000468,
+                "z": 0
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_a6fb24d4-d7de-464b-8105-81ce8b0cfa8b",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_40fd3c87-e108-4ac8-9ed6-714b17316a49",
+          "name": "Object13 Copy Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_047d3796-00d7-42a1-955c-2fff1424fa2a",
+              "position": {
+                "x": 15.496222724808469,
+                "y": 5.780867500000468,
+                "z": -0.06800885858192629
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_7387325b-2fa5-4c05-9d6b-ea147ebc8468",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_9350169a-9c01-4972-8e87-538bcb5265b1",
+          "name": "Object13 Copy Copy Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_4ca51139-b4a9-4577-aa26-baecce28e428",
+              "position": {
+                "x": 15.496222724808469,
+                "y": 6.565209229170449,
+                "z": 4.653383119652248
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_426deac1-cf32-4549-96c8-f44c7b417d3c",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_ced31251-8510-4f9d-aeae-bcc86eda2e39",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_cb3ead46-7bc0-4d45-bf6b-66009d5b01dc",
+              "position": {
+                "x": 15.496222724808469,
+                "y": 7.360432493117946,
+                "z": 9.089275726174712
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_79a751a4-adfe-44e1-87b2-1e31384661d6",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_c6990c76-fe70-46f9-81c9-6ec0a1740aec",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_4d34144b-2dcf-4cc4-8c51-685bcbdc17d6",
+              "position": {
+                "x": 15.496222724808469,
+                "y": 8.105938598111244,
+                "z": 13.767289785705344
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_ed0131bb-5896-4c3b-8334-026cd5608da1",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_5448b7f5-fc3d-4930-8ff7-be95a1ff3e42",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_b0ecaead-366c-4bb2-95df-3e391792da04",
+              "position": {
+                "x": 15.496222724808469,
+                "y": 8.81150658055404,
+                "z": 18.399971110042785
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_07a6d642-cf14-4f50-8e66-eca18b9d62c3",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_32557d18-a18e-4c7f-bba5-830f9d4ba506",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_92340c7e-dbbc-4cef-9773-d8d1e5125621",
+              "position": {
+                "x": 10.848156323761039,
+                "y": 8.81150658055404,
+                "z": 18.34230942705888
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_f2aee07a-e3e9-4689-b194-72bf1c0d5c31",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_310936bd-8437-4ca1-8d48-4c28ca3e532c",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_dc70332e-929f-43d5-9205-77ca42723e11",
+              "position": {
+                "x": 6.341690889873648,
+                "y": 8.81150658055404,
+                "z": 18.34230942705888
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_7f7eecc7-0670-4df8-870d-945ce86f4d2b",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_9b2b2f30-c7eb-4c63-a586-29ff3a305ff8",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2 Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_0a03b19c-6ae6-4fc1-a58e-4e5e50633e16",
+              "position": {
+                "x": 1.6227667804329773,
+                "y": 8.81150658055404,
+                "z": 18.34230942705888
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_3c7471f5-2bb4-4fe9-bcde-f23abb1c023a",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_5cec7a7d-90c9-488c-bbea-67964662efd1",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2 Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_15c51c3a-1e29-41f3-9a95-7727d5c086f1",
+              "position": {
+                "x": -3.230283915801283,
+                "y": 8.81150658055404,
+                "z": 18.34230942705888
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_6afd4466-bfce-44f7-884d-28782f1177f1",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_4d92f569-a91e-438f-9d96-26954ffab025",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_940eedab-ca04-4f15-9d68-8206b6622f88",
+              "position": {
+                "x": 10.848156323761039,
+                "y": 8.23586380179803,
+                "z": 13.703092711422741
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_fcc1aa64-3beb-4d32-afed-452506472f04",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_f3df2555-c472-41fe-94a7-343a7722cfa7",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_6083ff00-b815-4a39-8da1-8c782a7de70b",
+              "position": {
+                "x": 6.265676753899119,
+                "y": 8.23586380179803,
+                "z": 13.703092711422741
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_511ef92e-a65e-49ce-bc77-8afac0a374c3",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_d26071c2-e163-4113-83bc-b48384eefe15",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2 Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_d0fa0d69-119e-4b31-8c65-f15d098d9430",
+              "position": {
+                "x": 1.5581093305712654,
+                "y": 8.23586380179803,
+                "z": 13.703092711422741
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_fc26a7fb-e988-4ab4-a7e1-400f7d3fe7ae",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_688f9c4e-845f-4d0b-b71c-51500a4ddd90",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2 Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_88756cdb-b94f-4829-9cb1-0ffacb8a6883",
+              "position": {
+                "x": -3.2138809166530082,
+                "y": 8.23586380179803,
+                "z": 13.703092711422741
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_e03cd977-f3bf-4f2e-9cb5-31c9b64b6cca",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_93205cca-8b9d-4d0f-9541-13fb0dde0f80",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_e8e679a4-3268-445a-bca5-29227b2a409d",
+              "position": {
+                "x": 10.848156323761039,
+                "y": 7.591891575382078,
+                "z": 9.086368443580412
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_ddad8dfc-d673-4e92-a939-0dab3258d0d5",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_7e417bb4-6c2c-46de-8727-77fe8cf142d5",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_a1b326eb-8cd4-46a2-9703-a4aed16a3933",
+              "position": {
+                "x": 6.1720842277578924,
+                "y": 7.591891575382078,
+                "z": 9.086368443580412
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_6f8e1af6-2309-4e34-9427-933d6faf893a",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_efc5acb4-51c5-42b1-907f-e40c4f8c302d",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_a3cac89e-dfb7-4ab0-8126-401fa982d34a",
+              "position": {
+                "x": 1.5974155897204128,
+                "y": 7.591891575382078,
+                "z": 9.086368443580412
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_c6387361-1cc5-44d9-b095-b83fa153fc25",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_82142021-6bfb-498b-823e-cc111c8801ce",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_59823784-0540-4407-b023-3c49d27b6807",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_6f3a560b-51d3-48b4-8435-67435b7b973e",
+              "position": {
+                "x": -3.080891506463658,
+                "y": 7.591891575382078,
+                "z": 9.086368443580412
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_89b4d478-de05-4c3a-b927-28a6f6a4069b",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+      "name": "floor Copy",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_07714702-f1e8-4465-8fc4-f4c79ebf3621",
+          "position": {
+            "x": -34.127315943653514,
+            "y": 0,
+            "z": -10.832175186088477
+          },
+          "rotation": {
+            "x": 0.1570994089610848,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_ad2879f9-a10f-41d6-828a-9d92e606adcb",
+          "name": "Object13 Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_3fbf7cc1-ea32-4573-b802-29a9e6192e2c",
+              "position": {
+                "x": 1.313452954583889,
+                "y": 5.780867500000468,
+                "z": 0
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_f42279af-5d3b-4f71-9042-26e851ce185b",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_4ab54bc4-0e37-4891-a44a-6cfb5f61c5e5",
+          "name": "Object13 Copy Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_9fe95f2b-ee5a-48a1-b11e-5acedb3c3398",
+              "position": {
+                "x": 6.0461346270486,
+                "y": 5.780867500000468,
+                "z": 0
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_c62dab09-49b8-4592-8168-4bb8e1f73c0c",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_237114bb-d5d0-425d-b640-65b94c4078f5",
+          "name": "Object13 Copy Copy Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_9c6feafe-3dfe-4a9c-90b3-1b5104c001a7",
+              "position": {
+                "x": 10.866059727829832,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_12af3335-3908-41f2-bfd1-7253aba5a3b5",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_23f67c46-58a9-4822-b7d5-954a61cfd805",
+          "name": "Object13 Copy Copy Copy Copy 3",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_6167d6f3-cba9-49a5-a656-4654d6a8300d",
+              "position": {
+                "x": 6.1298623675579655,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_1d0351b7-007e-4349-ae6a-a1609d92f3d0",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_a5bdc343-6a05-4f07-b12c-1a67bdc02134",
+          "name": "Object13 Copy Copy Copy Copy 3 Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_9f92ee9a-0d4a-4a40-96fd-1c862a9c191c",
+              "position": {
+                "x": 1.4707766727683111,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_6bc73a28-dbd2-475a-9ac4-24a810b3c001",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_db06f8d1-16d0-42b3-8900-468390cf68a0",
+          "name": "Object13 Copy Copy Copy Copy 3 Copy Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_5d1d3bbd-bc33-42c7-afc2-f7aef5650ab2",
+              "position": {
+                "x": -3.187136378777371,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_876d2ef6-22fa-4d82-b797-fa59d740de61",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_c2c2d170-bc74-49c1-a278-12cb6494a5f0",
+          "name": "Object13 Copy Copy Copy Copy 2",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_ae07f6e9-7b51-4fb9-9296-40fa0e04ba20",
+              "position": {
+                "x": 10.866059727829832,
+                "y": 5.780867500000468,
+                "z": 0
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_0be5e196-2416-468d-80c3-1a07fe4050e6",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_c68773b4-7a2c-43ac-96d6-d1f67b20ca0e",
+          "name": "Object13 Copy Copy Copy Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_48d3be6e-400a-46c8-b8cc-c2d0b3d153fe",
+              "position": {
+                "x": 15.496222724808469,
+                "y": 5.780867500000468,
+                "z": -0.06800885858192629
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_fc266dad-61c4-44ee-8fc1-916ce9082364",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_c38ed805-b301-4c9a-9afe-5e5200d1a27e",
+          "name": "Object13 Copy Copy Copy Copy Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_9ed424b2-91c2-4ca1-b375-0e3c2caf7725",
+              "position": {
+                "x": 15.496222724808469,
+                "y": 6.565209229170449,
+                "z": 4.653383119652248
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_2f5aef6f-5dd2-465e-8fa3-c4984aae1ec2",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_1d91e132-619c-46e7-af9a-29345a70a696",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_c6271568-9f39-4dc1-8bb3-7e0806497f83",
+              "position": {
+                "x": 15.496222724808469,
+                "y": 7.360432493117946,
+                "z": 9.089275726174712
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_4c62fa9a-723c-4e03-9a37-94e64fae7e42",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_ccad3d74-d9ad-4fa3-80b5-9a9ae5a212f9",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_46bdde3a-3a9d-44af-a24a-e7c3d93373ee",
+              "position": {
+                "x": 15.496222724808469,
+                "y": 8.81150658055404,
+                "z": 18.399971110042785
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_9bdf7a5b-6aba-4c90-b1b8-f342bdd38561",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_3c4bbfea-7d21-4bbf-a2ff-f72d97683826",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_a53b1f65-dd3f-45e9-b212-13afe9045536",
+              "position": {
+                "x": 10.848156323761039,
+                "y": 8.81150658055404,
+                "z": 18.34230942705888
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_72c22772-29fe-4769-b84d-19dfbe0cb486",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_269d4c6b-b99a-4dbc-8c57-25c391300a65",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_fadc035a-d916-42c2-b830-107120e2fa0f",
+              "position": {
+                "x": 6.341690889873648,
+                "y": 8.81150658055404,
+                "z": 18.34230942705888
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_b9de0359-cd94-449d-826b-b164c9b6cb00",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_6057eb33-e4d3-4fdf-bec6-cbf90b3d40fb",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_7723584c-77b6-4ca3-adb3-7b052d60ae16",
+              "position": {
+                "x": 10.848156323761039,
+                "y": 8.23586380179803,
+                "z": 13.703092711422741
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_890ac9d1-76d3-4664-a227-c2afc580af3b",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_8cd71987-0819-4bd3-af2c-c65d6a85883d",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_3cef24c3-6e82-4fee-93d4-ecafcf0b71be",
+              "position": {
+                "x": 6.265676753899119,
+                "y": 8.23586380179803,
+                "z": 13.703092711422741
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_79403748-da51-4853-a79f-b7ee3a108f34",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_28d47d5b-4ef9-4407-9671-d70cde54aafd",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2 Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_831dbffa-ab9f-4b3c-b94e-670babeab09f",
+              "position": {
+                "x": 1.5581093305712654,
+                "y": 8.23586380179803,
+                "z": 13.703092711422741
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_58e39c90-2d1d-4715-8033-79b4edb5cb0b",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_579050e2-c4c1-49c3-bf8e-45443303521b",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_33a395f6-2d47-4984-840c-b3ab21047b85",
+              "position": {
+                "x": 10.848156323761039,
+                "y": 7.591891575382078,
+                "z": 9.086368443580412
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_ebfcc4df-bc6e-4217-8a51-63fa5e96d793",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_69cbc7b6-3508-46ab-ab59-b3fce0a1a515",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_62448c81-e2e5-4965-bfcd-5c6df8e8c377",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_057110bc-750d-4ba8-bece-412c53eb4fe0",
+              "position": {
+                "x": 6.1720842277578924,
+                "y": 7.591891575382078,
+                "z": 9.086368443580412
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_2f3ea6a9-b72d-44fe-a256-3ed55c84faef",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "node_17524173-9107-4610-9875-ddf2289e71e3",
+      "name": "floor Copy Copy",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_2f943265-6849-4586-aeb8-3cf7ac98ab3f",
+          "position": {
+            "x": 23.721872447995878,
+            "y": 0,
+            "z": -10.832175186088477
+          },
+          "rotation": {
+            "x": 0.1570994089610848,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_13767064-dbfc-4522-af19-4eeecf89ed50",
+          "name": "Object13",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_a516f9ac-be4a-477a-bb27-eb19aa493bf8",
+              "position": {
+                "x": -3.371724235810106,
+                "y": 5.780867500000468,
+                "z": 0
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_5dbabd42-eba6-48bc-be53-578b4ae7b538",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_8f3a2d80-8fe4-4237-bb4b-7bd7ed8e3234",
+          "name": "Object13 Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_48b8eb34-1603-44dd-8367-f3b777723c58",
+              "position": {
+                "x": 1.313452954583889,
+                "y": 5.780867500000468,
+                "z": 0
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_ff49c2dc-3a4d-44ae-a73b-21ee6aca89fc",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_1fe45dde-1a92-4b1c-8b18-ff6b89d1f5b2",
+          "name": "Object13 Copy Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_61daaaa0-58f1-49fe-b020-9a83418c253b",
+              "position": {
+                "x": 6.0461346270486,
+                "y": 5.780867500000468,
+                "z": 0
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_63493934-9cd8-49f2-bf61-24b5386af802",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_36c4aa05-8934-46a2-8b46-d7c3db33fa9c",
+          "name": "Object13 Copy Copy Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_e9d880f0-e132-492c-a73f-a9696e40fdf9",
+              "position": {
+                "x": 10.866059727829832,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_9772c561-f99e-4d42-8eb8-75ac6b33bbf3",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_8121db13-fe44-48d4-8f2a-f9bd4819b168",
+          "name": "Object13 Copy Copy Copy Copy 3",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_78977619-b745-43a3-971f-9fc443838f18",
+              "position": {
+                "x": 6.1298623675579655,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_6b807ae9-53df-4b21-970e-cabc16cc8d16",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_d69e7898-aeaf-412e-b660-8f8f11aa00d9",
+          "name": "Object13 Copy Copy Copy Copy 3 Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_2db2ffca-aa27-4da5-b976-707f96a7911d",
+              "position": {
+                "x": 1.4707766727683111,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_01779e18-c7ce-4b06-8234-7a4fc14679c8",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_fbb4befd-f791-4826-8400-667c73276dc4",
+          "name": "Object13 Copy Copy Copy Copy 3 Copy Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_e35bb8dd-cfbd-48a4-9b46-5f496f07b485",
+              "position": {
+                "x": -3.187136378777371,
+                "y": 6.629432331771598,
+                "z": 4.707980324763163
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_f33ab3e0-7ea8-40fe-b0c5-0d7ef729066a",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_0dd32614-bede-4f3c-a75c-1b328d89eb8e",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_91649aab-abf6-46a7-bc1b-2e46ef0f7d33",
+              "position": {
+                "x": 6.341690889873648,
+                "y": 8.81150658055404,
+                "z": 18.34230942705888
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_977968c5-8529-40b4-8b4d-c29285e624d1",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_716f6900-b86f-405e-a182-80ff13e96aa7",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2 Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_412d4cfd-a641-4ca9-b923-f58b7d25b27b",
+              "position": {
+                "x": 1.6227667804329773,
+                "y": 8.81150658055404,
+                "z": 18.34230942705888
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_aa979b6d-16a8-4ead-8890-2604cfcf75fc",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_f26df8a4-f1ca-4c4b-9287-5662a3e6a816",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2 Copy Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_c4a8f6a3-6c65-4055-8261-32a51fa72db5",
+              "position": {
+                "x": -3.230283915801283,
+                "y": 8.81150658055404,
+                "z": 18.34230942705888
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_bb13de0b-9745-4827-8ca1-1e72129da699",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_fc426893-a7d2-4570-9bd4-82bd78899f4c",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_6fbf2101-3b8b-4700-9433-44987735c185",
+              "position": {
+                "x": 10.848156323761039,
+                "y": 8.23586380179803,
+                "z": 13.703092711422741
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_5f766bf1-fdd3-4c53-96c2-772698e2a09b",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_7010d79a-353a-4332-bef7-8a7a57faf3e3",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_c9c79cbe-b14d-4278-9e55-0af01869531f",
+              "position": {
+                "x": 6.265676753899119,
+                "y": 8.23586380179803,
+                "z": 13.703092711422741
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_86171453-05d5-4aae-8264-56757e412766",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_4878a5ab-5e58-4b90-abc5-caa5e540441f",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2 Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_d8a70dcc-adf2-4779-9519-0a568cd04da5",
+              "position": {
+                "x": 1.5581093305712654,
+                "y": 8.23586380179803,
+                "z": 13.703092711422741
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_e177ff1e-693d-4697-b0b3-b397f43f5923",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_776de652-6e5c-41be-93d0-ad22e85fdd00",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy 2 Copy Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_775eb500-5b66-4143-9d06-5f20e9e891ac",
+              "position": {
+                "x": -3.2138809166530082,
+                "y": 8.23586380179803,
+                "z": 13.703092711422741
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_c1a90e85-7ca5-4710-94ba-c30ce6c717f2",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_338b5a6b-aad6-4ab8-94c5-0e9779aafeb1",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_5b55464a-83dd-4893-bbcc-4a026a9e185f",
+              "position": {
+                "x": 6.1720842277578924,
+                "y": 7.591891575382078,
+                "z": 9.086368443580412
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_bb555ddd-493d-4051-9a76-28c18bd15d78",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_3c35c441-ba3c-46fa-8761-c9c1735c8314",
+          "name": "Object13 Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy Copy",
+          "parentId": "node_17524173-9107-4610-9875-ddf2289e71e3",
+          "components": [
+            {
+              "type": "Transform3D",
+              "id": "comp_a0670c5a-f054-4947-bc3c-2daa06d2f4fd",
+              "position": {
+                "x": 1.5974155897204128,
+                "y": 7.591891575382078,
+                "z": 9.086368443580412
+              },
+              "rotation": {
+                "x": -1.7351358390009077,
+                "y": 0,
+                "z": 0
+              },
+              "scale": {
+                "x": 4,
+                "y": 4,
+                "z": 4
+              }
+            },
+            {
+              "type": "Model3D",
+              "id": "comp_8ad2f815-f415-4df8-a2d9-1ee595a7d329",
+              "assetId": "asset_0362c139-fc50-4972-91d9-511fb483926e",
+              "loop": true,
+              "timeScale": 1,
+              "playing": true
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "node_e8c41b72-6a09-4d3f-9b5e-1f2a7c8d4e90",
+      "name": "audio",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_1a9b0c3d-4e5f-6789-ab01-23456789cdef",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_2b0c1d4e-5f60-789a-bc12-3456789def01",
+          "scriptId": "shared.BackgroundAudio",
+          "properties": {
+            "audioAssetId": "asset_60760a18-b5b7-4216-80fb-75e4081577fb",
+            "volume": 0.25
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_f41929bf-4c71-40fe-8f35-83895777d3a1",
+      "name": "Stats",
+      "layer": "foreground",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_ba43700b-2d64-45a7-9374-e49a0aade6c0",
+          "position": {
+            "x": 20,
+            "y": 20
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_eb80a0ee-7924-46c0-9261-e36f9797afdb",
+          "text": "Stats",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 16,
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 327424,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_57f9bd0a-1d17-47f1-8eb8-d4957809857d",
+          "scriptId": "shared.PerformanceMeter",
+          "properties": {
+            "enabled": true,
+            "refreshIntervalMs": 250
+          }
+        }
+      ],
+      "children": []
+    }
+  ]
+}

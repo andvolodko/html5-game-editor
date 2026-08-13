@@ -1,12 +1,37 @@
-import type { SceneNodeData } from "./types.js";
+import type { SceneNodeData, Vec3 } from "./types.js";
 
 /** Optional GPU / canvas counters sampled after a frame (performance overlays). */
 export interface SceneRenderStats {
   drawCalls: number;
   triangles: number;
   canvas: number;
-  /** Total Pixi (or equivalent) display objects in the live scene graph. */
+  /** Live scene-graph objects (Pixi Containers or Three Object3Ds). */
   displayObjects: number;
+}
+
+export const EMPTY_SCENE_RENDER_STATS: SceneRenderStats = {
+  drawCalls: 0,
+  triangles: 0,
+  canvas: 0,
+  displayObjects: 0,
+};
+
+/** World-space bone pose for scripts (no renderer objects). */
+export interface BoneWorldTransform {
+  position: Vec3;
+  rotation: Vec3;
+}
+
+export function addSceneRenderStats(
+  a: SceneRenderStats,
+  b: SceneRenderStats,
+): SceneRenderStats {
+  return {
+    drawCalls: a.drawCalls + b.drawCalls,
+    triangles: a.triangles + b.triangles,
+    canvas: a.canvas + b.canvas,
+    displayObjects: a.displayObjects + b.displayObjects,
+  };
 }
 
 /**
@@ -44,4 +69,12 @@ export interface SceneRenderer {
   render(): void;
   /** Optional draw-call / triangle / canvas sample for performance meters. */
   getRenderStats?(): SceneRenderStats;
+  /**
+   * World-space pose of a named glTF bone on a Model3D node.
+   * Three.js only; undefined when the bone or node is missing.
+   */
+  getBoneWorldTransform?(
+    nodeId: string,
+    boneName: string,
+  ): BoneWorldTransform | undefined;
 }

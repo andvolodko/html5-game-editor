@@ -1,0 +1,14 @@
+{
+  "name": "muonline-game",
+  "version": 1,
+  "displayName": "MU Online",
+  "renderers": [
+    "three"
+  ],
+  "startScene": "main",
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "background": "#0c1018"
+}

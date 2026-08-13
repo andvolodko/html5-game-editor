@@ -127,7 +127,6 @@ export function useSceneViewport(args: {
       viewportRef.current = null;
       void viewport?.destroy();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- remount via generation
   }, [editor, viewportGeneration]);
 
   useEffect(() => {

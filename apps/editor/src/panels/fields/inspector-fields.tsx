@@ -45,6 +45,38 @@ export function NumberField({
   );
 }
 
+export function TextAreaField({
+  label,
+  value,
+  onCommit,
+  rows = 3,
+}: {
+  label: string;
+  value: string;
+  onCommit: (value: string) => void;
+  rows?: number;
+}) {
+  const [draft, setDraft] = useState(value);
+  useEffect(() => setDraft(value), [value]);
+  const commit = () => {
+    if (draft === value) {
+      return;
+    }
+    onCommit(draft);
+  };
+  return (
+    <label>
+      {label}
+      <textarea
+        rows={rows}
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+      />
+    </label>
+  );
+}
+
 export function StringField({
   label,
   value,
@@ -136,21 +168,24 @@ export function BooleanField({
   );
 }
 
-export function EnumField({
+export function EnumField<T extends string>({
   label,
   value,
   options,
   onCommit,
 }: {
   label: string;
-  value: string;
-  options: readonly string[];
-  onCommit: (value: string) => void;
+  value: T;
+  options: readonly T[];
+  onCommit: (value: T) => void;
 }) {
   return (
     <label>
       {label}
-      <select value={value} onChange={(e) => onCommit(e.target.value)}>
+      <select
+        value={value}
+        onChange={(e) => onCommit(e.target.value as T)}
+      >
         {options.map((option) => (
           <option key={option} value={option}>
             {option}

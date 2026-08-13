@@ -11,6 +11,21 @@ export interface GameViteConfigOptions {
   port?: number;
   /** Override `<title>`; defaults to `project.json` `displayName`. */
   title?: string;
+  /**
+   * Public path for the built game. Defaults to `process.env.VITE_BASE`
+   * or `/` so GitHub Pages can host each game under `/games/<id>/`.
+   */
+  base?: string;
+}
+
+/** `vite.base` from `VITE_BASE`, or `/` for local / preview builds. */
+export function resolveGameViteBase(
+  envBase: string | undefined = process.env.VITE_BASE,
+): string {
+  if (envBase === undefined || envBase === "") {
+    return "/";
+  }
+  return envBase;
 }
 
 /**
@@ -25,6 +40,7 @@ export function defineGameViteConfig(
 ): UserConfig {
   const gameRoot = options.gameRoot ?? process.cwd();
   return defineConfig({
+    base: options.base ?? resolveGameViteBase(),
     ...(options.port === undefined ? {} : { server: { port: options.port } }),
     build: {
       outDir: "dist",

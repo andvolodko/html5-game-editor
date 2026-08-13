@@ -75,6 +75,9 @@ importers:
         specifier: ^19.1.1
         version: 19.2.8(react@19.2.8)
     devDependencies:
+      '@types/node':
+        specifier: ^22.17.0
+        version: 22.20.1
       '@types/react':
         specifier: ^19.1.9
         version: 19.2.18
@@ -179,6 +182,31 @@ importers:
       '@game-editor/renderer-pixi':
         specifier: workspace:*
         version: link:../../packages/renderer-pixi
+      '@game-editor/runtime':
+        specifier: workspace:*
+        version: link:../../packages/runtime
+      '@game-editor/scene':
+        specifier: workspace:*
+        version: link:../../packages/scene
+    devDependencies:
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vite:
+        specifier: ^7.0.6
+        version: 7.3.6(@types/node@22.20.1)(tsx@4.23.12)
+
+  games/muonline-game:
+    dependencies:
+      '@game-editor/game-components':
+        specifier: workspace:*
+        version: link:../../packages/game-components
+      '@game-editor/project':
+        specifier: workspace:*
+        version: link:../../packages/project
+      '@game-editor/renderer-three':
+        specifier: workspace:*
+        version: link:../../packages/renderer-three
       '@game-editor/runtime':
         specifier: workspace:*
         version: link:../../packages/runtime

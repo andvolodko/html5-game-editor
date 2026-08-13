@@ -1,5 +1,6 @@
 import type { ComponentRegistry } from "../registry.js";
 import { audioClickComponent } from "./audio-click.js";
+import { backgroundAudioComponent } from "./background-audio.js";
 import { changeSceneComponent } from "./change-scene.js";
 import { loadAllSceneAssetsComponent } from "./load-all-scene-assets.js";
 import { performanceMeterComponent } from "./performance-meter.js";
@@ -10,4 +11,5 @@ export function registerSharedComponents(registry: ComponentRegistry): void {
   registry.register(loadAllSceneAssetsComponent);
   registry.register(performanceMeterComponent);
   registry.register(audioClickComponent);
+  registry.register(backgroundAudioComponent);
 }

@@ -20,6 +20,20 @@ export type {
 
   TextStyleData,
 
+  TextAlign,
+
+  TextFontWeight,
+
+  TextFontStyle,
+
+  TextFontVariant,
+
+  TextWhiteSpace,
+
+  TextBaseline,
+
+  TextStrokeJoin,
+
   TextComponentData,
 
   BitmapTextComponentData,
@@ -90,6 +104,20 @@ export {
 
   getVisualAnchorOrDefault,
 
+  TEXT_ALIGN_OPTIONS,
+
+  TEXT_FONT_WEIGHT_OPTIONS,
+
+  TEXT_FONT_STYLE_OPTIONS,
+
+  TEXT_FONT_VARIANT_OPTIONS,
+
+  TEXT_WHITE_SPACE_OPTIONS,
+
+  TEXT_BASELINE_OPTIONS,
+
+  TEXT_STROKE_JOIN_OPTIONS,
+
 } from "./types.js";
 
 export {
@@ -158,7 +186,11 @@ export {
 
 } from "./schema.js";
 
-export type { SceneRenderer, SceneRenderStats } from "./scene-renderer.js";
+export type { SceneRenderer, SceneRenderStats, BoneWorldTransform } from "./scene-renderer.js";
+export {
+  EMPTY_SCENE_RENDER_STATS,
+  addSceneRenderStats,
+} from "./scene-renderer.js";
 
 export {
 
@@ -467,7 +499,16 @@ export {
   DEFAULT_TILING_SPRITE_SIZE,
   DEFAULT_TEXT_FONT_SIZE,
   DEFAULT_TEXT_FILL,
+  DEFAULT_TEXT_FILL_ALPHA,
   DEFAULT_TEXT_WORD_WRAP_WIDTH,
+  DEFAULT_TEXT_STROKE_COLOR,
+  DEFAULT_TEXT_STROKE_ALPHA,
+  DEFAULT_TEXT_PADDING,
+  DEFAULT_TEXT_MITER_LIMIT,
+  DEFAULT_TEXT_DROP_SHADOW_COLOR,
+  DEFAULT_TEXT_DROP_SHADOW_ALPHA,
+  DEFAULT_TEXT_DROP_SHADOW_DISTANCE,
+  DEFAULT_TEXT_DROP_SHADOW_ANGLE_DEGREES,
   DEFAULT_GRAPHICS_SIZE,
   DEFAULT_GRAPHICS_FILL_COLOR,
   DEFAULT_GRAPHICS_STROKE_COLOR,

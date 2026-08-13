@@ -1,7 +1,9 @@
-import type {
-  BusEventDefinition,
-  ComponentDefinition,
-  ComponentPropertyDefinition,
+import {
+  COMPONENT_ASSET_TYPES,
+  type BusEventDefinition,
+  type ComponentAssetType,
+  type ComponentDefinition,
+  type ComponentPropertyDefinition,
 } from "./types.js";
 import type { ComponentRegistry } from "./registry.js";
 import { defineComponent } from "./define-component.js";
@@ -81,6 +83,15 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function isComponentAssetType(value: unknown): value is ComponentAssetType {
+  for (const kind of COMPONENT_ASSET_TYPES) {
+    if (value === kind) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function isPropertyDefinition(
   value: unknown,
 ): value is ComponentPropertyDefinition {
@@ -103,14 +114,14 @@ function isPropertyDefinition(
     case "dynamicEnum":
       return (
         typeof value.default === "string" &&
-        (value.source === "scenes" || value.source === "busEvents")
+        (value.source === "scenes" ||
+          value.source === "busEvents" ||
+          value.source === "gltfAnimations")
       );
     case "asset":
       return (
         typeof value.default === "string" &&
-        (value.assetType === "texture" ||
-          value.assetType === "spine" ||
-          value.assetType === "audio")
+        isComponentAssetType(value.assetType)
       );
     default:
       return false;

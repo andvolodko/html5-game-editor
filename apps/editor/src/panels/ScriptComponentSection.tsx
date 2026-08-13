@@ -15,6 +15,7 @@ import {
 export interface DynamicEnumOptions {
   scenes: readonly string[];
   busEvents: readonly { id: string; label: string }[];
+  gltfAnimations: readonly string[];
 }
 
 interface ScriptComponentSectionProps {
@@ -203,6 +204,12 @@ function resolveDynamicEnumOptions(
       options = dynamicOptions.busEvents.map((event) => ({
         value: event.id,
         label: event.label,
+      }));
+      break;
+    case "gltfAnimations":
+      options = dynamicOptions.gltfAnimations.map((name) => ({
+        value: name,
+        label: name,
       }));
       break;
     default: {

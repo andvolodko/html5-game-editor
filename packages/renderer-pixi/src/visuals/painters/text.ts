@@ -7,8 +7,8 @@ import {
   destroyVisual,
   ensureChild,
   localBoundsOf,
-  toTextStyleOptions,
 } from "../paint-helpers.js";
+import { toTextStyleOptions } from "../to-text-style-options.js";
 import {
   PLACEHOLDER_UNASSIGNED_TINT,
   TEXT_FALLBACK_CHAR_WIDTH_EM,

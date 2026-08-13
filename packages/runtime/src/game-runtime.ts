@@ -4,30 +4,29 @@ import type {
   NodePointerEventName,
   ScriptPerformanceStats,
   ScriptRuntimeServices,
-  ScriptTransform2D,
-  ScriptTransform2DPatch,
 } from "@game-editor/game-components";
 import {
-  findNodeById,
+  addSceneRenderStats,
+  EMPTY_SCENE_RENDER_STATS,
   flattenNodes,
-  getBitmapText,
-  getHTMLText,
-  getText,
-  getTransform2D,
   type SceneData,
   type SceneNodeData,
   type SceneRenderStats,
   type SceneRenderer,
 } from "@game-editor/scene";
 import { ScriptHost } from "./script-host.js";
+import {
+  patchModel3DPlayback,
+  patchNodeText,
+  patchTransform2D,
+  patchTransform3D,
+  readModel3DPlayback,
+  readTransform2D,
+  readTransform3D,
+} from "./script-scene-io.js";
+import { destroyNodeInScene, spawnModel3DInScene } from "./script-scene-spawn.js";
 
 const MS_PER_SECOND = 1000;
-const EMPTY_RENDER_STATS: SceneRenderStats = {
-  drawCalls: 0,
-  triangles: 0,
-  canvas: 0,
-  displayObjects: 0,
-};
 
 function pointerSubscriptionKey(
   nodeId: string,
@@ -75,6 +74,7 @@ export class GameRuntime {
   private lastTickMs = 0;
   private lastRenderPassMs = 0;
   private lastFrameDt = 0;
+  private readonly spawnedNodeIds = new Set<string>();
   private performanceStats: ScriptPerformanceStats = {
     frameTimeMs: 0,
     fps: 0,
@@ -93,12 +93,24 @@ export class GameRuntime {
     const externalOnNodePointerEvent = options.services?.onNodePointerEvent;
     const externalGetTransform2D = options.services?.getTransform2D;
     const externalSetTransform2D = options.services?.setTransform2D;
+    const externalGetTransform3D = options.services?.getTransform3D;
+    const externalSetTransform3D = options.services?.setTransform3D;
+    const externalGetModel3DPlayback = options.services?.getModel3DPlayback;
+    const externalSetModel3DPlayback = options.services?.setModel3DPlayback;
+    const externalListModel3DAnimations = options.services?.listModel3DAnimations;
+    const externalGetModel3DAnimationDuration =
+      options.services?.getModel3DAnimationDuration;
     const externalSetText = options.services?.setText;
     const externalGetPerformanceStats = options.services?.getPerformanceStats;
     const externalResolveAssetUrl = options.services?.resolveAssetUrl;
     const externalListAllSceneAssetIds = options.services?.listAllSceneAssetIds;
     const externalPreloadSceneAsset = options.services?.preloadSceneAsset;
     const externalPlayAudio = options.services?.playAudio;
+    const externalStopAudio = options.services?.stopAudio;
+    const externalSpawnModel3D = options.services?.spawnModel3D;
+    const externalDestroyNode = options.services?.destroyNode;
+    const externalGetModel3DBoneWorldTransform =
+      options.services?.getModel3DBoneWorldTransform;
     const services: ScriptRuntimeServices = {
       bus: this.bus,
       changeScene: (sceneId) => {
@@ -124,11 +136,12 @@ export class GameRuntime {
       listAllSceneAssetIds: externalListAllSceneAssetIds,
       preloadSceneAsset: externalPreloadSceneAsset,
       playAudio: externalPlayAudio,
+      stopAudio: externalStopAudio,
       getTransform2D: (nodeId) => {
         if (externalGetTransform2D) {
           return externalGetTransform2D(nodeId);
         }
-        return this.readTransform2D(nodeId);
+        return readTransform2D(this.scene, nodeId);
       },
       setTransform2D: (nodeId, patch) => {
         if (externalSetTransform2D) {
@@ -136,6 +149,44 @@ export class GameRuntime {
           return;
         }
         this.writeTransform2D(nodeId, patch);
+      },
+      getTransform3D: (nodeId) => {
+        if (externalGetTransform3D) {
+          return externalGetTransform3D(nodeId);
+        }
+        return readTransform3D(this.scene, nodeId);
+      },
+      setTransform3D: (nodeId, patch) => {
+        if (externalSetTransform3D) {
+          externalSetTransform3D(nodeId, patch);
+          return;
+        }
+        this.writeTransform3D(nodeId, patch);
+      },
+      getModel3DPlayback: (nodeId) => {
+        if (externalGetModel3DPlayback) {
+          return externalGetModel3DPlayback(nodeId);
+        }
+        return readModel3DPlayback(this.scene, nodeId);
+      },
+      setModel3DPlayback: (nodeId, patch) => {
+        if (externalSetModel3DPlayback) {
+          externalSetModel3DPlayback(nodeId, patch);
+          return;
+        }
+        this.writeModel3DPlayback(nodeId, patch);
+      },
+      listModel3DAnimations: (nodeId) => {
+        return externalListModel3DAnimations?.(nodeId) ?? [];
+      },
+      getModel3DAnimationDuration: (nodeId, animation) => {
+        return externalGetModel3DAnimationDuration?.(nodeId, animation);
+      },
+      getModel3DBoneWorldTransform: (nodeId, boneName) => {
+        if (externalGetModel3DBoneWorldTransform) {
+          return externalGetModel3DBoneWorldTransform(nodeId, boneName);
+        }
+        return this.readBoneWorldTransform(nodeId, boneName);
       },
       setText: (nodeId, text) => {
         if (externalSetText) {
@@ -149,6 +200,19 @@ export class GameRuntime {
           return externalGetPerformanceStats();
         }
         return this.performanceStats;
+      },
+      spawnModel3D: (spawnOptions) => {
+        if (externalSpawnModel3D) {
+          return externalSpawnModel3D(spawnOptions);
+        }
+        return this.spawnModel3DNode(spawnOptions);
+      },
+      destroyNode: (nodeId) => {
+        if (externalDestroyNode) {
+          externalDestroyNode(nodeId);
+          return;
+        }
+        this.destroySpawnedNode(nodeId);
       },
     };
     this.scriptHost = new ScriptHost(options.components, services);
@@ -202,6 +266,7 @@ export class GameRuntime {
   }
 
   loadScene(scene: SceneData): void {
+    this.spawnedNodeIds.clear();
     this.scene = scene;
     const nodes = flattenNodes(scene);
     for (const registration of this.renderers.values()) {
@@ -223,6 +288,11 @@ export class GameRuntime {
   /** Number of live script instances attached after the last loadScene. */
   getScriptInstanceCount(): number {
     return this.scriptHost.getInstanceCount();
+  }
+
+  /** Tear down live scripts (stops looping audio, unsubscribes bus handlers). */
+  dispose(): void {
+    this.scriptHost.clear();
   }
 
   /**
@@ -274,30 +344,38 @@ export class GameRuntime {
     this.performanceStats = {
       frameTimeMs,
       fps,
-      drawCalls: renderStats.drawCalls,
-      triangles: renderStats.triangles,
+      drawCalls: renderStats.merged.drawCalls,
+      triangles: renderStats.merged.triangles,
       gameLogicMs,
       rendererMs,
-      canvas: renderStats.canvas,
-      displayObjects: renderStats.displayObjects,
+      canvas: renderStats.merged.canvas,
+      displayObjects: renderStats.merged.displayObjects,
+      pixi: renderStats.pixi,
+      three: renderStats.three,
     };
   }
 
-  private sampleRendererStats(): SceneRenderStats {
-    let merged: SceneRenderStats = { ...EMPTY_RENDER_STATS };
+  private sampleRendererStats(): {
+    merged: SceneRenderStats;
+    pixi?: SceneRenderStats;
+    three?: SceneRenderStats;
+  } {
+    let merged = EMPTY_SCENE_RENDER_STATS;
+    let pixi: SceneRenderStats | undefined;
+    let three: SceneRenderStats | undefined;
     for (const registration of this.renderers.values()) {
       const sample = registration.renderer.getRenderStats?.();
       if (!sample) {
         continue;
       }
-      merged = {
-        drawCalls: merged.drawCalls + sample.drawCalls,
-        triangles: merged.triangles + sample.triangles,
-        canvas: merged.canvas + sample.canvas,
-        displayObjects: merged.displayObjects + sample.displayObjects,
-      };
+      merged = addSceneRenderStats(merged, sample);
+      if (registration.kind === "pixi") {
+        pixi = pixi ? addSceneRenderStats(pixi, sample) : sample;
+      } else if (registration.kind === "three") {
+        three = three ? addSceneRenderStats(three, sample) : sample;
+      }
     }
-    return merged;
+    return { merged, pixi, three };
   }
 
   private subscribeNodeClick(
@@ -338,67 +416,121 @@ export class GameRuntime {
     };
   }
 
-  private readTransform2D(nodeId: string): ScriptTransform2D | undefined {
-    const scene = this.scene;
-    if (!scene) {
-      return undefined;
-    }
-    const node = findNodeById(scene, nodeId);
-    const transform = node ? getTransform2D(node) : undefined;
-    if (!transform) {
-      return undefined;
-    }
-    return {
-      position: { ...transform.position },
-      rotation: transform.rotation,
-      scale: { ...transform.scale },
-    };
-  }
-
   private writeTransform2D(
     nodeId: string,
-    patch: ScriptTransform2DPatch,
+    patch: Parameters<NonNullable<ScriptRuntimeServices["setTransform2D"]>>[1],
   ): void {
-    const scene = this.scene;
-    if (!scene) {
+    const node = patchTransform2D(this.scene, nodeId, patch);
+    if (!node) {
       return;
-    }
-    const node = findNodeById(scene, nodeId);
-    const transform = node ? getTransform2D(node) : undefined;
-    if (!node || !transform) {
-      return;
-    }
-    if (patch.position) {
-      transform.position = { ...patch.position };
-    }
-    if (patch.rotation !== undefined) {
-      transform.rotation = patch.rotation;
-    }
-    if (patch.scale) {
-      transform.scale = { ...patch.scale };
     }
     this.forOwningRenderers(node, (renderer) => {
       renderer.syncTransform(node);
     });
   }
 
-  private writeText(nodeId: string, text: string): void {
-    const scene = this.scene;
-    if (!scene) {
-      return;
-    }
-    const node = findNodeById(scene, nodeId);
+  private writeTransform3D(
+    nodeId: string,
+    patch: Parameters<NonNullable<ScriptRuntimeServices["setTransform3D"]>>[1],
+  ): void {
+    const node = patchTransform3D(this.scene, nodeId, patch);
     if (!node) {
       return;
     }
-    const textComp = getText(node) ?? getHTMLText(node) ?? getBitmapText(node);
-    if (!textComp) {
+    this.forOwningRenderers(node, (renderer) => {
+      renderer.syncTransform(node);
+    });
+  }
+
+  private writeModel3DPlayback(
+    nodeId: string,
+    patch: Parameters<
+      NonNullable<ScriptRuntimeServices["setModel3DPlayback"]>
+    >[1],
+  ): void {
+    const node = patchModel3DPlayback(this.scene, nodeId, patch);
+    if (!node) {
       return;
     }
-    textComp.text = text;
     this.forOwningRenderers(node, (renderer) => {
       renderer.updateNode(node);
     });
+  }
+
+  private writeText(nodeId: string, text: string): void {
+    const node = patchNodeText(this.scene, nodeId, text);
+    if (!node) {
+      return;
+    }
+    this.forOwningRenderers(node, (renderer) => {
+      renderer.updateNode(node);
+    });
+  }
+
+  private readBoneWorldTransform(
+    nodeId: string,
+    boneName: string,
+  ): ReturnType<
+    NonNullable<ScriptRuntimeServices["getModel3DBoneWorldTransform"]>
+  > {
+    for (const registration of this.renderers.values()) {
+      const transform = registration.renderer.getBoneWorldTransform?.(
+        nodeId,
+        boneName,
+      );
+      if (transform) {
+        return {
+          position: transform.position,
+          rotation: transform.rotation,
+          scale: { x: 1, y: 1, z: 1 },
+        };
+      }
+    }
+    return undefined;
+  }
+
+  private spawnModel3DNode(
+    options: Parameters<
+      NonNullable<ScriptRuntimeServices["spawnModel3D"]>
+    >[0],
+  ): string | undefined {
+    if (!this.scene) {
+      return undefined;
+    }
+    const node = spawnModel3DInScene(this.scene, options);
+    if (!node) {
+      return undefined;
+    }
+    this.spawnedNodeIds.add(node.id);
+    this.forAcceptingRenderers(node, (renderer) => {
+      renderer.createNode(node);
+    });
+    return node.id;
+  }
+
+  private destroySpawnedNode(nodeId: string): void {
+    if (!this.scene || !this.spawnedNodeIds.has(nodeId)) {
+      return;
+    }
+    const removed = destroyNodeInScene(this.scene, nodeId);
+    for (const node of removed) {
+      this.spawnedNodeIds.delete(node.id);
+      for (const registration of this.renderers.values()) {
+        registration.renderer.destroyNode(node.id);
+      }
+    }
+  }
+
+  private forAcceptingRenderers(
+    node: SceneNodeData,
+    fn: (renderer: SceneRenderer) => void,
+  ): void {
+    for (const registration of this.renderers.values()) {
+      if (registration.accepts && !registration.accepts(node)) {
+        continue;
+      }
+      fn(registration.renderer);
+    }
   }
 
   /**

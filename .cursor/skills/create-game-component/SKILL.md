@@ -140,6 +140,7 @@ export function installGameRuntime(registry: ComponentRegistry): void {
 | `enum` | Fixed string options |
 | `dynamicEnum` + `source: "scenes"` | Scene file ids |
 | `dynamicEnum` + `source: "busEvents"` | Game bus event catalog |
+| `dynamicEnum` + `source: "gltfAnimations"` | Clip names on the host node's Model3D glTF |
 
 ## Checklist
 

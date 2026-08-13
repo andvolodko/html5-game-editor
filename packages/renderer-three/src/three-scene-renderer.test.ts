@@ -92,4 +92,24 @@ describe("ThreeSceneRenderer", () => {
     renderer.resize(0, 900);
     expect(renderer.getSize()).toEqual({ width: 1600, height: 900 });
   });
+
+  it("samples Object3D count without inventing GPU stats in headless mode", () => {
+    const node = createNodeWithTransform3D(
+      "M",
+      { x: 0, y: 0, z: 0 },
+      createModel3DComponent(),
+    );
+    const renderer = new ThreeSceneRenderer({ headless: true });
+    const empty = renderer.getRenderStats();
+    expect(empty.drawCalls).toBe(0);
+    expect(empty.triangles).toBe(0);
+    expect(empty.canvas).toBe(0);
+    expect(empty.displayObjects).toBeGreaterThan(0);
+
+    renderer.createNode(node);
+    const withNode = renderer.getRenderStats();
+    expect(withNode.displayObjects).toBeGreaterThan(empty.displayObjects);
+    expect(withNode.drawCalls).toBe(0);
+    expect(withNode.triangles).toBe(0);
+  });
 });

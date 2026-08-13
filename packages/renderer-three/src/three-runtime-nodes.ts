@@ -1,4 +1,4 @@
-import type { AnimationMixer, Object3D } from "three";
+import type { AnimationClip, AnimationMixer, Object3D } from "three";
 import type { Model3DComponentData } from "@game-editor/scene";
 
 export interface Model3DPlaybackState {
@@ -23,6 +23,10 @@ export interface ThreeRuntimeEntry {
   mixer?: AnimationMixer;
   /** Last applied clip name (for restart detection). */
   animationName?: string;
+  /** Clip currently bound on the mixer (renderer-only). */
+  boundClip?: AnimationClip;
+  /** LoopOnce freeze time, skipping a trailing bind/loop-close key. */
+  oneShotHoldTime?: number;
 }
 
 export function snapshotModelPlayback(

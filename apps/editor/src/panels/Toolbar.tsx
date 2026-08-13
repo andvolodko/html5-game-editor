@@ -12,6 +12,8 @@ import { useEditorLayoutControls } from "../layout/layout-context";
 import { OpenProjectDialog } from "../project/OpenProjectDialog";
 import { useUnsavedChangesGuard } from "../unsaved/useUnsavedChangesGuard";
 import { syncEditorComponentCatalog } from "../components/sync-editor-component-catalog";
+import { isDemoMode } from "../demo/demo-mode";
+import { clearDemoPersistence } from "../demo/demo-store";
 
 type MenuId = "file" | "edit" | "node";
 
@@ -90,6 +92,7 @@ export function Toolbar() {
           ? "Saved"
           : "Unsaved";
 
+  const demo = isDemoMode();
   const closeMenus = () => setOpenMenu(null);
 
   const toggleMenu = (id: MenuId) => {
@@ -241,7 +244,14 @@ export function Toolbar() {
 
   return (
     <header className="toolbar">
-      <div className="toolbar-brand">HTML5 Game Editor</div>
+      <div className="toolbar-brand">
+        HTML5 Game Editor
+        {demo ? (
+          <span className="toolbar-demo-badge" title="Static demo — no project-server">
+            Demo
+          </span>
+        ) : null}
+      </div>
       <nav className="toolbar-menubar" ref={menusRef} aria-label="Editor menus">
         <ToolbarMenu
           id="file"
@@ -284,6 +294,17 @@ export function Toolbar() {
           >
             Reset Layout
           </MenuItem>
+          {demo ? (
+            <MenuItem
+              onClick={() => {
+                clearDemoPersistence(window.localStorage);
+                closeMenus();
+                window.location.reload();
+              }}
+            >
+              Reset Demo Data
+            </MenuItem>
+          ) : null}
         </ToolbarMenu>
 
         <ToolbarMenu

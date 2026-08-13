@@ -2,6 +2,9 @@ export type { RuntimeRendererRegistration, GameRuntimeOptions } from "./game-run
 export { GameRuntime } from "./game-runtime.js";
 export { ScriptHost } from "./script-host.js";
 export { createHtmlAudioPlayer } from "./html-audio-player.js";
+export type { HtmlAudioPlayerHandle } from "./html-audio-player.js";
+export { createGltfClipScriptLookups } from "./gltf-clip-script-lookups.js";
+export type { GltfClipLookupHost } from "./gltf-clip-script-lookups.js";
 export {
   collectSceneAssetIds,
   collectSceneAssetUrls,

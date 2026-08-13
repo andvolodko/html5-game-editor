@@ -29,6 +29,7 @@ import {
   type Object3D,
 } from "three";
 import { resolveActiveCamera } from "./three-active-camera.js";
+import { sampleThreeRenderStats } from "./three-render-stats.js";
 import {
   DEFAULT_THREE_BACKGROUND,
   EDITOR_CAMERA_FAR,
@@ -59,6 +60,7 @@ import {
   snapshotModelPlayback,
   ThreeRuntimeGraph,
 } from "./three-runtime-nodes.js";
+import { readBoneWorldTransform } from "./three-bone-world.js";
 import type {
   ThreePointerHandlers,
   ThreeSceneRendererOptions,
@@ -452,12 +454,16 @@ export class ThreeSceneRenderer implements SceneRenderer {
   }
 
   getRenderStats(): SceneRenderStats {
-    return {
-      drawCalls: this.graph.size,
-      triangles: 0,
-      canvas: this.renderer ? 1 : 0,
-      displayObjects: this.graph.size,
-    };
+    return sampleThreeRenderStats(this.renderer, this.rootScene);
+  }
+
+  /** World pose of a named glTF bone (scripts / projectiles). */
+  getBoneWorldTransform(nodeId: string, boneName: string) {
+    const object = this.graph.get(nodeId)?.object;
+    if (!object) {
+      return undefined;
+    }
+    return readBoneWorldTransform(object, boneName);
   }
 
   /** Test/diagnostics: runtime parent link (not domain data). */

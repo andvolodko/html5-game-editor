@@ -13,15 +13,22 @@ export type {
   ScriptInstance,
   ScriptCreateContext,
   ScriptRuntimeServices,
+  ScriptSpawnModel3DOptions,
+  PlayAudioOptions,
   ScriptTransform2D,
   ScriptTransform2DPatch,
+  ScriptTransform3D,
+  ScriptTransform3DPatch,
+  ScriptModel3DPlayback,
+  ScriptModel3DPlaybackPatch,
   ScriptPerformanceStats,
+  ScriptRendererDrawStats,
   ComponentDefinition,
   ComponentCategoryGroup,
   DefineComponentInput,
   BusEventDefinition,
 } from "./types.js";
-export { NODE_POINTER_EVENTS } from "./types.js";
+export { NODE_POINTER_EVENTS, COMPONENT_ASSET_TYPES } from "./types.js";
 export {
   defineComponent,
   defaultPropertiesFromDefinition,
@@ -46,6 +53,10 @@ export {
   audioClickComponent,
   AudioClickBehaviour,
 } from "./shared/audio-click.js";
+export {
+  backgroundAudioComponent,
+  BackgroundAudioBehaviour,
+} from "./shared/background-audio.js";
 export { installSceneFlowRuntime } from "./shared/scene-flow-runtime.js";
 export type {
   ComponentCatalogEntry,

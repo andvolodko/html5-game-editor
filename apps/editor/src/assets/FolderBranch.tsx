@@ -5,7 +5,7 @@ import {
 import { AssetRow } from "./AssetRow";
 import { InlineRename } from "./InlineRename";
 import { SceneRow } from "./SceneRow";
-import { useAssetBrowserModel } from "./useAssetBrowserModel";
+import type { useAssetBrowserModel } from "./useAssetBrowserModel";
 import { treeIndentPadding } from "../ui/tree-indent";
 
 export interface FolderBranchProps {

@@ -1,5 +1,15 @@
 import { z } from "zod";
 import { SCENE_SCHEMA_VERSION, type SceneData, type SceneNodeData } from "./types.js";
+import { withSceneParseDefaults } from "./scene-parse-defaults.js";
+import {
+  TEXT_ALIGN_OPTIONS,
+  TEXT_BASELINE_OPTIONS,
+  TEXT_FONT_STYLE_OPTIONS,
+  TEXT_FONT_VARIANT_OPTIONS,
+  TEXT_FONT_WEIGHT_OPTIONS,
+  TEXT_STROKE_JOIN_OPTIONS,
+  TEXT_WHITE_SPACE_OPTIONS,
+} from "./visual-components.js";
 
 export const vec2Schema = z.object({
   x: z.number(),
@@ -106,14 +116,33 @@ export const graphicsComponentSchema = z.object({
 export const textStyleSchema = z.object({
   fontFamily: z.string().min(1),
   fontSize: z.number().positive(),
-  fontWeight: z.string().min(1),
-  fontStyle: z.string().min(1),
+  fontWeight: z.enum(TEXT_FONT_WEIGHT_OPTIONS),
+  fontStyle: z.enum(TEXT_FONT_STYLE_OPTIONS),
+  fontVariant: z.enum(TEXT_FONT_VARIANT_OPTIONS),
   fill: z.number().int().nonnegative(),
-  align: z.enum(["left", "center", "right"]),
+  fillAlpha: z.number().min(0).max(1),
+  align: z.enum(TEXT_ALIGN_OPTIONS),
   letterSpacing: z.number(),
   lineHeight: z.number().nonnegative(),
+  leading: z.number(),
   wordWrap: z.boolean(),
   wordWrapWidth: z.number().positive(),
+  breakWords: z.boolean(),
+  whiteSpace: z.enum(TEXT_WHITE_SPACE_OPTIONS),
+  padding: z.number().nonnegative(),
+  trim: z.boolean(),
+  textBaseline: z.enum(TEXT_BASELINE_OPTIONS),
+  strokeColor: z.number().int().nonnegative(),
+  strokeAlpha: z.number().min(0).max(1),
+  strokeWidth: z.number().nonnegative(),
+  strokeJoin: z.enum(TEXT_STROKE_JOIN_OPTIONS),
+  miterLimit: z.number().positive(),
+  dropShadow: z.boolean(),
+  dropShadowColor: z.number().int().nonnegative(),
+  dropShadowAlpha: z.number().min(0).max(1),
+  dropShadowBlur: z.number().nonnegative(),
+  dropShadowDistance: z.number().nonnegative(),
+  dropShadowAngle: z.number(),
 });
 
 export const textComponentSchema = z.object({
@@ -315,59 +344,7 @@ export const sceneDataSchema: z.ZodType<SceneData> = z.object({
 });
 
 export function parseSceneData(input: unknown): SceneData {
-  return sceneDataSchema.parse(withModel3DPlaybackDefaults(input));
-}
-
-/**
- * Older Model3D entries may omit playback fields. Fill defaults before Zod
- * so the schema can keep loop/timeScale/playing required (matches TS types).
- */
-function withModel3DPlaybackDefaults(input: unknown): unknown {
-  if (!input || typeof input !== "object") {
-    return input;
-  }
-  const scene = input as { nodes?: unknown };
-  if (!Array.isArray(scene.nodes)) {
-    return input;
-  }
-  return {
-    ...scene,
-    nodes: scene.nodes.map((node) => patchModel3DNodeTree(node)),
-  };
-}
-
-function patchModel3DNodeTree(node: unknown): unknown {
-  if (!node || typeof node !== "object") {
-    return node;
-  }
-  const n = node as {
-    components?: unknown[];
-    children?: unknown[];
-  };
-  const components = Array.isArray(n.components)
-    ? n.components.map((comp) => {
-        if (!comp || typeof comp !== "object") {
-          return comp;
-        }
-        const c = comp as Record<string, unknown>;
-        if (c.type !== "Model3D") {
-          return comp;
-        }
-        return {
-          ...c,
-          loop: typeof c.loop === "boolean" ? c.loop : true,
-          timeScale:
-            typeof c.timeScale === "number" && c.timeScale > 0
-              ? c.timeScale
-              : 1,
-          playing: typeof c.playing === "boolean" ? c.playing : true,
-        };
-      })
-    : n.components;
-  const children = Array.isArray(n.children)
-    ? n.children.map((child) => patchModel3DNodeTree(child))
-    : n.children;
-  return { ...n, components, children };
+  return sceneDataSchema.parse(withSceneParseDefaults(input));
 }
 
 export function isCurrentSceneSchemaVersion(version: number): boolean {

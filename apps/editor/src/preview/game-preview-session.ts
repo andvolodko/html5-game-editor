@@ -18,9 +18,11 @@ import {
 } from "@game-editor/scene";
 import {
   collectSceneAssetIds,
+  createGltfClipScriptLookups,
   createHtmlAudioPlayer,
   GameRuntime,
   GameScreenHost,
+  type HtmlAudioPlayerHandle,
 } from "@game-editor/runtime";
 import { installActiveGameRuntime } from "../components/install-active-game-runtime";
 import {
@@ -62,6 +64,7 @@ export class GamePreviewSession {
   private startToken = 0;
   private rafId = 0;
   private lastFrameMs = 0;
+  private audioPlayer: HtmlAudioPlayerHandle | undefined;
 
   get isRunning(): boolean {
     return this.runtime !== undefined;
@@ -94,7 +97,12 @@ export class GamePreviewSession {
 
     const gltfCache = new ThreeGltfCache();
     gltfCache.setResolver(options.assetResolver);
+    const audioPlayer = createHtmlAudioPlayer((assetId) =>
+      options.assetResolver.resolveUrl(assetId),
+    );
+    this.audioPlayer = audioPlayer;
 
+    const runtimeRef: { current?: GameRuntime } = {};
     const runtime = new GameRuntime({
       components,
       services: {
@@ -129,11 +137,25 @@ export class GamePreviewSession {
           }
           await preloadPixiSceneAsset(options.assetResolver, assetId, signal);
         },
-        playAudio: createHtmlAudioPlayer((assetId) =>
-          options.assetResolver.resolveUrl(assetId),
+        playAudio: (assetId, playOptions) =>
+          audioPlayer.play(assetId, playOptions),
+        stopAudio: (assetId) => audioPlayer.stop(assetId),
+        ...createGltfClipScriptLookups(
+          () => runtimeRef.current?.getScene(),
+          {
+            listNames: (assetId) => gltfCache.listAnimationNames(assetId),
+            duration: (assetId, animation) => {
+              const clips = gltfCache.getClips(assetId);
+              const clip = animation
+                ? clips.find((entry) => entry.name === animation)
+                : clips[0];
+              return clip?.duration;
+            },
+          },
         ),
       },
     });
+    runtimeRef.current = runtime;
 
     const bundle = await mountPreviewRenderers({
       frame: screen.frame,
@@ -191,9 +213,12 @@ export class GamePreviewSession {
       cancelAnimationFrame(this.rafId);
       this.rafId = 0;
     }
+    this.runtime?.dispose();
+    this.runtime = undefined;
+    this.audioPlayer?.stop();
+    this.audioPlayer = undefined;
     this.bus?.clear();
     this.bus = undefined;
-    this.runtime = undefined;
     const bundle = this.bundle;
     this.bundle = undefined;
     if (bundle) {

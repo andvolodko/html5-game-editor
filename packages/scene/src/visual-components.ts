@@ -83,17 +83,79 @@ export interface GraphicsComponentData {
   strokeWidth: number;
 }
 
+export const TEXT_ALIGN_OPTIONS = ["left", "center", "right", "justify"] as const;
+export type TextAlign = (typeof TEXT_ALIGN_OPTIONS)[number];
+
+export const TEXT_FONT_WEIGHT_OPTIONS = [
+  "normal",
+  "bold",
+  "bolder",
+  "lighter",
+  "100",
+  "200",
+  "300",
+  "400",
+  "500",
+  "600",
+  "700",
+  "800",
+  "900",
+] as const;
+export type TextFontWeight = (typeof TEXT_FONT_WEIGHT_OPTIONS)[number];
+
+export const TEXT_FONT_STYLE_OPTIONS = ["normal", "italic", "oblique"] as const;
+export type TextFontStyle = (typeof TEXT_FONT_STYLE_OPTIONS)[number];
+
+export const TEXT_FONT_VARIANT_OPTIONS = ["normal", "small-caps"] as const;
+export type TextFontVariant = (typeof TEXT_FONT_VARIANT_OPTIONS)[number];
+
+export const TEXT_WHITE_SPACE_OPTIONS = ["normal", "pre", "pre-line"] as const;
+export type TextWhiteSpace = (typeof TEXT_WHITE_SPACE_OPTIONS)[number];
+
+export const TEXT_BASELINE_OPTIONS = [
+  "alphabetic",
+  "top",
+  "hanging",
+  "middle",
+  "ideographic",
+  "bottom",
+] as const;
+export type TextBaseline = (typeof TEXT_BASELINE_OPTIONS)[number];
+
+export const TEXT_STROKE_JOIN_OPTIONS = ["miter", "round", "bevel"] as const;
+export type TextStrokeJoin = (typeof TEXT_STROKE_JOIN_OPTIONS)[number];
+
 export interface TextStyleData {
   fontFamily: string;
   fontSize: number;
-  fontWeight: string;
-  fontStyle: string;
+  fontWeight: TextFontWeight;
+  fontStyle: TextFontStyle;
+  fontVariant: TextFontVariant;
   fill: number;
-  align: "left" | "center" | "right";
+  fillAlpha: number;
+  align: TextAlign;
   letterSpacing: number;
   lineHeight: number;
+  leading: number;
   wordWrap: boolean;
   wordWrapWidth: number;
+  breakWords: boolean;
+  whiteSpace: TextWhiteSpace;
+  padding: number;
+  trim: boolean;
+  textBaseline: TextBaseline;
+  strokeColor: number;
+  strokeAlpha: number;
+  strokeWidth: number;
+  strokeJoin: TextStrokeJoin;
+  miterLimit: number;
+  dropShadow: boolean;
+  dropShadowColor: number;
+  dropShadowAlpha: number;
+  dropShadowBlur: number;
+  dropShadowDistance: number;
+  /** Drop-shadow direction in degrees (engine-neutral; renderer converts to radians). */
+  dropShadowAngle: number;
 }
 
 export interface TextComponentData {

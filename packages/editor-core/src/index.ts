@@ -91,6 +91,7 @@ export type {
   ScriptTransform2D,
   ScriptTransform2DPatch,
   ScriptPerformanceStats,
+  ScriptRendererDrawStats,
 } from "@game-editor/game-components";
 
 export {

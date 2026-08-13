@@ -91,6 +91,10 @@ registerGameComponents(components);
 installSceneFlowRuntime(components);
 installExampleGameRuntime(components);
 
+const htmlAudio = createHtmlAudioPlayer(
+  (assetId) => session.loaded?.assetResolver.resolveUrl(assetId),
+);
+
 session.runtime = new GameRuntime({
   components,
   services: {
@@ -119,9 +123,8 @@ session.runtime = new GameRuntime({
       }
       await preloadPixiSceneAsset(resolver, assetId, signal);
     },
-    playAudio: createHtmlAudioPlayer(
-      (assetId) => session.loaded?.assetResolver.resolveUrl(assetId),
-    ),
+    playAudio: (assetId, options) => htmlAudio.play(assetId, options),
+    stopAudio: (assetId) => htmlAudio.stop(assetId),
   },
 });
 
@@ -130,6 +133,7 @@ async function boot(): Promise<void> {
     project: projectJson,
     assets: assetsJson,
     scenes: scenesById,
+    baseUrl: import.meta.env.BASE_URL,
   });
 
   const design = session.loaded.project.resolution;

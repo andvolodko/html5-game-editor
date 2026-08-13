@@ -9,6 +9,8 @@ import {
 import {
   createContainerNode,
   createEmptyScene,
+  createModel3DComponent,
+  createNodeWithTransform3D,
   createNodeWithVisual,
   createScriptComponent,
   createSpriteNode,
@@ -304,6 +306,90 @@ describe("GameRuntime.loadScene", () => {
     });
   });
 
+  it("exposes getTransform3D / setTransform3D and Model3D playback", () => {
+    const renderer = createMockRenderer();
+    const registry = new ComponentRegistry();
+    let seenZ = 0;
+    let seenClip = "";
+    registry.register(
+      defineComponent({
+        id: "test.Walker3D",
+        displayName: "Walker3D",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            const t = ctx.services.getTransform3D?.(ctx.nodeId);
+            if (!t || !ctx.services.setTransform3D) {
+              return;
+            }
+            seenZ = t.position.z + 2;
+            ctx.services.setTransform3D(ctx.nodeId, {
+              position: { x: t.position.x, y: t.position.y, z: seenZ },
+            });
+            ctx.services.setModel3DPlayback?.(ctx.nodeId, {
+              animation: "walk",
+              loop: true,
+            });
+            seenClip =
+              ctx.services.getModel3DPlayback?.(ctx.nodeId)?.animation ?? "";
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({
+      components: registry,
+      services: {
+        bus: new EventBus(),
+        changeScene: () => undefined,
+        listModel3DAnimations: () => ["idle", "walk"],
+        getModel3DAnimationDuration: () => 1.5,
+      },
+    });
+    runtime.registerRenderer({
+      kind: "three",
+      renderer,
+      layer: { id: "main", renderer: "three", order: 0 },
+    });
+
+    const node = createNodeWithTransform3D(
+      "Monster",
+      { x: 1, y: 2, z: 3 },
+      createModel3DComponent({
+        assetId: "asset_m",
+        animation: "idle",
+        timeScale: 0.6,
+      }),
+    );
+    node.components.push(createScriptComponent("test.Walker3D"));
+    const scene = createEmptyScene("Move3D", { renderer: "three" });
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    runtime.tick(1 / 60);
+    expect(seenZ).toBe(5);
+    expect(seenClip).toBe("walk");
+    expect(renderer.syncTransform).toHaveBeenCalled();
+    expect(renderer.updateNode).toHaveBeenCalled();
+    expect(runtime.getScene()?.nodes[0]?.components).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: "Transform3D",
+          position: { x: 1, y: 2, z: 5 },
+        }),
+        expect.objectContaining({
+          type: "Model3D",
+          animation: "walk",
+          loop: true,
+          timeScale: 0.6,
+        }),
+      ]),
+    );
+  });
+
   it("exposes setText and syncs Text nodes via updateNode", () => {
     const renderer = createMockRenderer();
     const registry = new ComponentRegistry();
@@ -414,5 +500,190 @@ describe("GameRuntime.loadScene", () => {
     expect(stats.fps).toBeCloseTo(60, 5);
     expect(stats.gameLogicMs).toBeGreaterThanOrEqual(0);
     expect(stats.rendererMs).toBeGreaterThanOrEqual(0);
+  });
+
+  it("keeps Pixi and Three render stats as separate slices", () => {
+    const pixi = createMockRenderer();
+    pixi.getRenderStats = vi.fn(() => ({
+      drawCalls: 4,
+      triangles: 5000,
+      canvas: 1,
+      displayObjects: 128,
+    }));
+    const three = createMockRenderer();
+    three.getRenderStats = vi.fn(() => ({
+      drawCalls: 8,
+      triangles: 15000,
+      canvas: 1,
+      displayObjects: 42,
+    }));
+    const runtime = new GameRuntime();
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: pixi,
+      layer: { id: "pixi", renderer: "pixi", order: 0 },
+    });
+    runtime.registerRenderer({
+      kind: "three",
+      renderer: three,
+      layer: { id: "three", renderer: "three", order: 100 },
+    });
+    runtime.tick(1 / 60);
+    runtime.render();
+    const stats = runtime.getPerformanceStats();
+    expect(stats.drawCalls).toBe(12);
+    expect(stats.triangles).toBe(20000);
+    expect(stats.canvas).toBe(2);
+    expect(stats.displayObjects).toBe(170);
+    expect(stats.pixi).toEqual({
+      drawCalls: 4,
+      triangles: 5000,
+      canvas: 1,
+      displayObjects: 128,
+    });
+    expect(stats.three).toEqual({
+      drawCalls: 8,
+      triangles: 15000,
+      canvas: 1,
+      displayObjects: 42,
+    });
+  });
+
+  it("spawnModel3D inserts a live Model3D and destroyNode removes it", () => {
+    const renderer = createMockRenderer();
+    const spawnedIds: string[] = [];
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.Spawner",
+        displayName: "Spawner",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            if (spawnedIds.length > 0) {
+              return;
+            }
+            const id = ctx.services.spawnModel3D?.({
+              assetId: "asset_stone",
+              name: "Stone",
+              position: { x: 4, y: 5, z: 6 },
+            });
+            if (id) {
+              spawnedIds.push(id);
+            }
+          },
+          destroy() {
+            const id = spawnedIds[0];
+            if (id) {
+              ctx.services.destroyNode?.(id);
+            }
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "three",
+      renderer,
+      layer: { id: "main", renderer: "three", order: 0 },
+    });
+    const host = createNodeWithTransform3D("Host", { x: 0, y: 0, z: 0 });
+    host.components.push(createScriptComponent("test.Spawner"));
+    const scene = createEmptyScene("Spawn", { renderer: "three" });
+    scene.nodes = [host];
+    runtime.loadScene(scene);
+
+    runtime.tick(1 / 60);
+    expect(spawnedIds).toHaveLength(1);
+    expect(runtime.getScene()?.nodes).toHaveLength(2);
+    expect(renderer.created.map((node) => node.name)).toEqual(["Host", "Stone"]);
+
+    runtime.dispose();
+    expect(renderer.destroyNode).toHaveBeenCalledWith(spawnedIds[0]);
+    expect(runtime.getScene()?.nodes).toHaveLength(1);
+  });
+
+  it("destroyNode ignores authored scene nodes", () => {
+    const renderer = createMockRenderer();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.Killer",
+        displayName: "Killer",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            ctx.services.destroyNode?.(ctx.nodeId);
+          },
+        }),
+      }),
+    );
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "three",
+      renderer,
+      layer: { id: "main", renderer: "three", order: 0 },
+    });
+    const host = createNodeWithTransform3D("Host", { x: 0, y: 0, z: 0 });
+    host.components.push(createScriptComponent("test.Killer"));
+    const scene = createEmptyScene("Authored", { renderer: "three" });
+    scene.nodes = [host];
+    runtime.loadScene(scene);
+    runtime.tick(1 / 60);
+    expect(runtime.getScene()?.nodes).toHaveLength(1);
+    expect(renderer.destroyNode).not.toHaveBeenCalled();
+  });
+
+  it("exposes getModel3DBoneWorldTransform from the Three renderer", () => {
+    const renderer = createMockRenderer();
+    renderer.getBoneWorldTransform = vi.fn(() => ({
+      position: { x: 3, y: 4, z: 5 },
+      rotation: { x: 0.1, y: 0.2, z: 0.3 },
+    }));
+    let seenY = 0;
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.BoneReader",
+        displayName: "Bone Reader",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            seenY =
+              ctx.services.getModel3DBoneWorldTransform?.(
+                ctx.nodeId,
+                "bone_12_Bone02",
+              )?.position.y ?? 0;
+          },
+        }),
+      }),
+    );
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "three",
+      renderer,
+      layer: { id: "main", renderer: "three", order: 0 },
+    });
+    const host = createNodeWithTransform3D("Catapult", { x: 0, y: 0, z: 0 });
+    host.components.push(createScriptComponent("test.BoneReader"));
+    const scene = createEmptyScene("Bones", { renderer: "three" });
+    scene.nodes = [host];
+    runtime.loadScene(scene);
+    runtime.tick(1 / 60);
+    expect(seenY).toBe(4);
+    expect(renderer.getBoneWorldTransform).toHaveBeenCalledWith(
+      host.id,
+      "bone_12_Bone02",
+    );
   });
 });

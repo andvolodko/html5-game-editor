@@ -6,6 +6,10 @@ PixiJS handles 2D. Three.js handles 3D. React is the editor shell. Games build i
 
 ![HTML5 Game Editor — PixiJS and Three.js scene viewport](docs/screenshots/html5-game-editor-pixijs-threejs-monorepo.png)
 
+**[Live demo](https://andvolodko.github.io/html5-game-editor/)** — static GitHub Pages build of the editor (all `games/*` projects, no project-server). Scene edits stay in this browser (`localStorage`). Asset import needs a local `pnpm dev`.
+
+Playable standalone builds of every game are on the same site: **[demo games](https://andvolodko.github.io/html5-game-editor/games/)** ([Example Game](https://andvolodko.github.io/html5-game-editor/games/example-game/), [Example Game 2](https://andvolodko.github.io/html5-game-editor/games/example-game-2/), [MU Online](https://andvolodko.github.io/html5-game-editor/games/muonline-game/)).
+
 > Status: active development. The foundation through hybrid rendering, assets, undo/redo, and playable example games is in place. Collaboration, prefabs, and advanced tooling are still ahead.
 
 ---
@@ -18,6 +22,7 @@ PixiJS handles 2D. Three.js handles 3D. React is the editor shell. Games build i
 - [Architecture](#architecture)
 - [Repository layout](#repository-layout)
 - [Getting started](#getting-started)
+- [Static demo (GitHub Pages)](#static-demo-github-pages)
 - [Daily commands](#daily-commands)
 - [Using the editor](#using-the-editor)
 - [Working with games](#working-with-games)
@@ -120,7 +125,8 @@ html5-game-editor/
 │   └── renderer-three/    # Three scene adapter
 ├── games/
 │   ├── example-game/      # Hybrid Pixi + Three demo (port 5174)
-│   └── example-game-2/    # Pixi-only demo (port 5175)
+│   ├── example-game-2/    # Pixi-only demo (port 5175)
+│   └── muonline-game/     # Three.js game (port 5176)
 ├── docs/screenshots/      # README captures
 ├── PROJECT.md             # Architecture spec and invariants
 └── pnpm-workspace.yaml
@@ -166,11 +172,38 @@ You can also switch games from **File → Open Project** in the editor toolbar.
 
 ---
 
+## Static demo (GitHub Pages)
+
+The hosted site is a **static Vite build**. It does not run `project-server`. The editor bundles every package under `games/` (scenes, `project.json`, asset catalogue) and serves files from `/demo/<project-id>/assets`. Switch games with **File → Open Project**.
+
+Each `games/<id>` package is also built as a standalone player and copied to `/games/<id>/`. New games are picked up automatically — no workflow edit.
+
+| Works in the demo | Needs local `pnpm dev` |
+| --- | --- |
+| Hierarchy, viewport, gizmos, inspector | Asset import / folder create |
+| Undo/redo, save scene (this browser) | Real filesystem persistence |
+| Asset browser, Preview, script components | |
+| Open any bundled `games/*` project | |
+| Play `/games/<id>/` without the editor | |
+
+```bash
+pnpm dev:demo          # editor only, no project-server
+pnpm build:demo        # editor snapshot in apps/editor/dist
+pnpm build:pages       # editor + every games/* player (GitHub Pages artifact)
+```
+
+Push to `master` deploys via GitHub Actions. In the repo: **Settings → Pages → Source: GitHub Actions**.
+
+---
+
 ## Daily commands
 
 | Command | Purpose |
 | --- | --- |
 | `pnpm dev` | Editor + project server |
+| `pnpm dev:demo` | Editor only (static snapshot of every `games/*` project) |
+| `pnpm build:demo` | Static editor snapshot (`apps/editor/dist`) |
+| `pnpm build:pages` | Editor + standalone `games/*` builds for GitHub Pages |
 | `pnpm test` | Vitest across workspaces |
 | `pnpm typecheck` | `tsc --noEmit` across workspaces |
 | `pnpm lint` | ESLint (`--max-warnings=0` in packages that define it) |
@@ -185,6 +218,7 @@ pnpm --filter @game-editor/project-server dev
 pnpm --filter @games/example-game dev
 pnpm --filter @games/example-game build
 pnpm --filter @games/example-game-2 dev
+pnpm --filter @games/muonline-game dev
 ```
 
 Game Vite configs import TypeScript from `@game-editor/project/vite`, so game scripts use `--configLoader runner`.
@@ -248,7 +282,7 @@ games/example-game/
 }
 ```
 
-To add a new game, copy `games/example-game-2` (Pixi-only) or `games/example-game` (hybrid), give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D.
+To add a new game, follow `.cursor/skills/create-game/SKILL.md` (or copy `games/example-game-2` for Pixi-only, `games/muonline-game` for Three-only, `games/example-game` for hybrid). Give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D. Keep Pixi out if the game is Three-only.
 
 ---
 
@@ -326,6 +360,7 @@ Do not mutate `PIXI.Sprite` or `THREE.Object3D` from React.
 | --- | --- |
 | [`PROJECT.md`](./PROJECT.md) | Vision, package boundaries, serialization, MVP phases, definition of done |
 | `.cursor/rules/` | Package-specific invariants (editor UI, commands, server security, TypeScript) |
+| `.cursor/skills/create-game/` | How to scaffold a new `games/<name>` package |
 | `.cursor/skills/create-game-component/` | How to add a Script component |
 | `.cursor/skills/implement-editor-feature/` | How to land an editor feature without breaking undo, persistence, or tests |
 

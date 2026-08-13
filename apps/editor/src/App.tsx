@@ -1,26 +1,11 @@
 import { useEffect, useMemo } from "react";
-import {
-  createFetchAssetApiClient,
-  createFetchComponentCatalogApiClient,
-  createFetchProjectApiClient,
-  createFetchSceneApiClient,
-  Editor,
-} from "@game-editor/editor-core";
 import { EditorShell } from "./layout/EditorShell";
 import { EditorContext } from "./editor-context";
 import { syncEditorComponentCatalog } from "./components/sync-editor-component-catalog";
+import { createEditor } from "./create-editor";
 
 export function App() {
-  const editor = useMemo(
-    () =>
-      new Editor({
-        sceneApi: createFetchSceneApiClient("/api"),
-        assetApi: createFetchAssetApiClient("/api"),
-        projectApi: createFetchProjectApiClient("/api"),
-        componentCatalogApi: createFetchComponentCatalogApiClient("/api"),
-      }),
-    [],
-  );
+  const editor = useMemo(() => createEditor(), []);
 
   // Load project manifest, assets, start scene, and script component catalog.
   useEffect(() => {

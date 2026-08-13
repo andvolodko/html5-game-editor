@@ -4,6 +4,7 @@ import type {
   ScriptCreateContext,
   ScriptInstance,
   ScriptPerformanceStats,
+  ScriptRendererDrawStats,
 } from "../types.js";
 
 const MS_PER_SECOND = 1000;
@@ -11,7 +12,8 @@ const DEFAULT_REFRESH_INTERVAL_MS = 250;
 const DEFAULT_ENABLED = true;
 const FPS_SMOOTHING = 0.15;
 const TIME_DECIMAL_PLACES = 2;
-const LABEL_COLUMN_WIDTH = 18;
+const MIN_LABEL_COLUMN_WIDTH = 18;
+const LABEL_VALUE_GAP = 1;
 
 const EMPTY_STATS: ScriptPerformanceStats = {
   frameTimeMs: 0,
@@ -44,25 +46,72 @@ function formatFixed(value: number, digits: number): string {
   return value.toFixed(digits);
 }
 
-function formatRow(label: string, value: string): string {
-  const paddedLabel = label.padEnd(LABEL_COLUMN_WIDTH, " ");
-  return `${paddedLabel}${value}`;
+type MeterRow = { label: string; value: string };
+
+function graphRows(
+  prefix: string,
+  slice: ScriptRendererDrawStats,
+): MeterRow[] {
+  const label = prefix.length > 0 ? `${prefix} ` : "";
+  return [
+    { label: `${label}Draw call`.trimStart(), value: String(Math.round(slice.drawCalls)) },
+    { label: `${label}Triangle`.trimStart(), value: String(Math.round(slice.triangles)) },
+    {
+      label: `${label}Display Objects`.trimStart(),
+      value: String(Math.round(slice.displayObjects)),
+    },
+  ];
+}
+
+function formatMeterRows(rows: readonly MeterRow[]): string {
+  let width = MIN_LABEL_COLUMN_WIDTH;
+  for (const row of rows) {
+    const needed = row.label.length + LABEL_VALUE_GAP;
+    if (needed > width) {
+      width = needed;
+    }
+  }
+  return rows
+    .map((row) => `${row.label.padEnd(width, " ")}${row.value}`)
+    .join("\n");
 }
 
 /** Builds the Cocos-style performance overlay string. */
 export function formatPerformanceMeterText(
   stats: ScriptPerformanceStats,
 ): string {
-  return [
-    formatRow("Frame time (ms)", formatFixed(stats.frameTimeMs, TIME_DECIMAL_PLACES)),
-    formatRow("Framerate (FPS)", formatFixed(stats.fps, TIME_DECIMAL_PLACES)),
-    formatRow("Draw call", String(Math.round(stats.drawCalls))),
-    formatRow("Triangle", String(Math.round(stats.triangles))),
-    formatRow("Display Objects", String(Math.round(stats.displayObjects))),
-    formatRow("Game Logic (ms)", formatFixed(stats.gameLogicMs, TIME_DECIMAL_PLACES)),
-    formatRow("Renderer (ms)", formatFixed(stats.rendererMs, TIME_DECIMAL_PLACES)),
-    formatRow("Canvas", String(Math.round(stats.canvas))),
-  ].join("\n");
+  const drawRows =
+    stats.pixi !== undefined || stats.three !== undefined
+      ? [
+          ...(stats.pixi ? graphRows("Pixi", stats.pixi) : []),
+          ...(stats.three ? graphRows("Three", stats.three) : []),
+        ]
+      : graphRows("", {
+          drawCalls: stats.drawCalls,
+          triangles: stats.triangles,
+          displayObjects: stats.displayObjects,
+          canvas: stats.canvas,
+        });
+  return formatMeterRows([
+    {
+      label: "Frame time (ms)",
+      value: formatFixed(stats.frameTimeMs, TIME_DECIMAL_PLACES),
+    },
+    {
+      label: "Framerate (FPS)",
+      value: formatFixed(stats.fps, TIME_DECIMAL_PLACES),
+    },
+    ...drawRows,
+    {
+      label: "Game Logic (ms)",
+      value: formatFixed(stats.gameLogicMs, TIME_DECIMAL_PLACES),
+    },
+    {
+      label: "Renderer (ms)",
+      value: formatFixed(stats.rendererMs, TIME_DECIMAL_PLACES),
+    },
+    { label: "Canvas", value: String(Math.round(stats.canvas)) },
+  ]);
 }
 
 /**
@@ -116,6 +165,8 @@ export class PerformanceMeterBehaviour implements ScriptInstance {
           ? hostStats.rendererMs
           : Math.max(0, frameTimeMs - gameLogicMs),
       canvas: hostStats.canvas,
+      pixi: hostStats.pixi,
+      three: hostStats.three,
     };
 
     const nextText = formatPerformanceMeterText(stats);
