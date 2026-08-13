@@ -17,7 +17,7 @@ Do **not** put large logic in a bare `create` closure. Do **not** store class in
 
 | Kind | Path | `id` prefix |
 |------|------|-------------|
-| Game-specific | `games/<name>/src/components/<kebab>.ts` | `<game>.PascalName` (e.g. `example.LoadingScene`) |
+| Game-specific | `games/<name>/src/components/<kebab>.ts` | `<game>.PascalName` (e.g. `editor-features-demo.LoadingScene`) |
 | Shared reusable | `packages/game-components/src/shared/<kebab>.ts` | `shared.PascalName` |
 
 Shared components must stay runtime-safe: no React, Pixi, Three, or editor-core.
@@ -155,6 +155,6 @@ export function installGameRuntime(registry: ComponentRegistry): void {
 ## References
 
 - Shared Change Scene: `packages/game-components/src/shared/change-scene.ts`
-- Game Loading Scene (emit + navigate): `games/example-game/src/components/loading-scene.ts`
+- Game Loading Scene (emit + navigate): `games/editor-features-demo/src/components/loading-scene.ts`
 - Types: `packages/game-components/src/types.ts` (`ScriptCreateContext`, `ScriptRuntimeServices`)
 - Catalog load: project-server `GET /components/catalog` + editor `installActiveGameRuntime`

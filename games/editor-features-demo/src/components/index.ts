@@ -3,9 +3,9 @@ import {
   buildComponentCatalog,
   type ComponentRegistry,
 } from "@game-editor/game-components";
-import { listExampleBusEvents } from "../events/bus-events.js";
+import { listGameBusEvents } from "../events/bus-events.js";
 import {
-  installExampleLoadingSceneRuntime,
+  installLoadingSceneRuntime,
   loadingSceneComponent,
 } from "./loading-scene.js";
 import {
@@ -21,7 +21,7 @@ import {
   raptorComponent,
 } from "./raptor.js";
 
-/** Registers shared + example-game script components into the catalog. */
+/** Registers shared + editor-features-demo script components into the catalog. */
 export function registerGameComponents(registry: ComponentRegistry): void {
   registerSharedComponents(registry);
   registry.register(loadingSceneComponent);
@@ -32,7 +32,7 @@ export function registerGameComponents(registry: ComponentRegistry): void {
 
 /** Bus events for Inspector dynamicEnum source `busEvents`. */
 export function listBusEvents() {
-  return listExampleBusEvents();
+  return listGameBusEvents();
 }
 
 /** Serializable inspector catalog for project-server (no runtime create). */
@@ -41,22 +41,22 @@ export function getComponentCatalog() {
 }
 
 /**
- * Re-attach example-game `create` factories after a metadata catalog load.
+ * Re-attach editor-features-demo `create` factories after a metadata catalog load.
  * Prefer the standard alias `installGameRuntime` for editor/preview discovery.
  */
-export function installExampleGameRuntime(registry: ComponentRegistry): void {
-  installExampleLoadingSceneRuntime(registry);
+export function installEditorFeaturesDemoRuntime(registry: ComponentRegistry): void {
+  installLoadingSceneRuntime(registry);
   installMainButtonRuntime(registry);
   installGoSpineButtonRuntime(registry);
   installRaptorRuntime(registry);
 }
 
 /** Standard hook discovered by the editor via import.meta.glob. */
-export const installGameRuntime = installExampleGameRuntime;
+export const installGameRuntime = installEditorFeaturesDemoRuntime;
 
 export {
   loadingSceneComponent,
-  installExampleLoadingSceneRuntime,
+  installLoadingSceneRuntime,
 } from "./loading-scene.js";
 export {
   mainButtonComponent,

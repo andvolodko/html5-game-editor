@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import type { SceneListEntry } from "@game-editor/editor-core";
+import {
+  uniquePanelErrorMessages,
+  type SceneListEntry,
+} from "@game-editor/editor-core";
 import {
   DEFAULT_PROJECT_BACKGROUND,
   normalizeProjectBackgroundHex,
@@ -207,9 +210,13 @@ export function ProjectSettingsPanel() {
       ) : (
         <p className="panel-empty">Project settings unavailable</p>
       )}
-      {projectError ? <p className="panel-error">{projectError}</p> : null}
-      {scenesError ? <p className="panel-error">{scenesError}</p> : null}
-      {saveError ? <p className="panel-error">{saveError}</p> : null}
+      {uniquePanelErrorMessages(projectError, scenesError, saveError).map(
+        (message) => (
+          <p key={message} className="panel-error">
+            {message}
+          </p>
+        ),
+      )}
     </div>
   );
 }

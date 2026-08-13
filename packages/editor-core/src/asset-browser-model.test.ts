@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { createTextureAssetRecord } from "@game-editor/assets";
+import {
+  createAudioAssetRecord,
+  createGltfAssetRecord,
+  createSpineAssetRecord,
+  createTextureAssetRecord,
+} from "@game-editor/assets";
 import {
   ASSETS_ROOT_FOLDER,
   SCENES_FOLDER,
@@ -10,6 +15,7 @@ import {
   listChildFolders,
   listFolderEntries,
   parentFolder,
+  resolveAssetBrowserPreviewUrl,
 } from "./asset-browser-model.js";
 
 describe("asset-browser-model", () => {
@@ -95,5 +101,65 @@ describe("asset-browser-model", () => {
       "main",
     ]);
     expect(filterScenesByQuery(scenes, "main").map((s) => s.id)).toEqual(["main"]);
+  });
+
+  it("uses raster URLs for textures and spine pages, not gltf or audio", () => {
+    const resolvers = {
+      contentUrl: (assetId: string) => `content/${assetId}`,
+      spinePartUrl: (assetId: string, pageBasename: string) =>
+        `spine/${assetId}/${pageBasename}`,
+    };
+    expect(
+      resolveAssetBrowserPreviewUrl(assets[0]!, resolvers),
+    ).toBe("content/asset_a");
+    expect(
+      resolveAssetBrowserPreviewUrl(
+        createSpineAssetRecord({
+          id: "asset_spine",
+          name: "hero",
+          path: "assets/hero.json",
+          skeletonFormat: "json",
+          atlasPath: "assets/hero.atlas",
+          pagePaths: ["assets/hero.png"],
+        }),
+        resolvers,
+      ),
+    ).toBe("spine/asset_spine/hero.png");
+    expect(
+      resolveAssetBrowserPreviewUrl(
+        createSpineAssetRecord({
+          id: "asset_spine_empty",
+          name: "empty",
+          path: "assets/empty.json",
+          skeletonFormat: "json",
+          atlasPath: "assets/empty.atlas",
+          pagePaths: [],
+        }),
+        resolvers,
+      ),
+    ).toBeUndefined();
+    expect(
+      resolveAssetBrowserPreviewUrl(
+        createGltfAssetRecord({
+          id: "asset_glb",
+          name: "Monster07",
+          path: "assets/Monster07.glb",
+          mimeType: "model/gltf-binary",
+          format: "glb",
+        }),
+        resolvers,
+      ),
+    ).toBeUndefined();
+    expect(
+      resolveAssetBrowserPreviewUrl(
+        createAudioAssetRecord({
+          id: "asset_wav",
+          name: "click",
+          path: "assets/click.wav",
+          mimeType: "audio/wav",
+        }),
+        resolvers,
+      ),
+    ).toBeUndefined();
   });
 });

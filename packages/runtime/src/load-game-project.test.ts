@@ -76,11 +76,11 @@ describe("resolveGameProject", () => {
       },
       assets: JSON.parse(serializeAssetDatabase(db)),
       scenes: { main: JSON.parse(JSON.stringify(scene)) },
-      baseUrl: "/html5-game-editor/games/example-game/",
+      baseUrl: "/html5-game-editor/games/editor-features-demo/",
     });
 
     expect(loaded.assetResolver.resolveUrl("asset_hero")).toBe(
-      "/html5-game-editor/games/example-game/assets/ui/hero.png",
+      "/html5-game-editor/games/editor-features-demo/assets/ui/hero.png",
     );
   });
 

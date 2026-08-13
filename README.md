@@ -8,9 +8,9 @@ PixiJS handles 2D. Three.js handles 3D. React is the editor shell. Games build i
 
 **[Live demo](https://andvolodko.github.io/html5-game-editor/)** — static GitHub Pages build of the editor (all `games/*` projects, no project-server). Scene edits stay in this browser (`localStorage`). Asset import needs a local `pnpm dev`.
 
-Playable standalone builds of every game are on the same site: **[demo games](https://andvolodko.github.io/html5-game-editor/games/)** ([Example Game](https://andvolodko.github.io/html5-game-editor/games/example-game/), [Example Game 2](https://andvolodko.github.io/html5-game-editor/games/example-game-2/), [MU Online](https://andvolodko.github.io/html5-game-editor/games/muonline-game/)).
+Playable standalone builds of every game are on the same site: **[demo games](https://andvolodko.github.io/html5-game-editor/games/)** ([Editor Features Demo](https://andvolodko.github.io/html5-game-editor/games/editor-features-demo/), [Example Game 2](https://andvolodko.github.io/html5-game-editor/games/example-game-2/), [MU Online](https://andvolodko.github.io/html5-game-editor/games/muonline-game/)).
 
-> Status: active development. The foundation through hybrid rendering, assets, undo/redo, and playable example games is in place. Collaboration, prefabs, and advanced tooling are still ahead.
+> Status: active development. The foundation through hybrid rendering, assets, undo/redo, and playable demo games is in place. Collaboration, prefabs, and advanced tooling are still ahead.
 
 ---
 
@@ -124,7 +124,7 @@ html5-game-editor/
 │   ├── renderer-pixi/     # Pixi scene adapter
 │   └── renderer-three/    # Three scene adapter
 ├── games/
-│   ├── example-game/      # Hybrid Pixi + Three demo (port 5174)
+│   ├── editor-features-demo/      # Hybrid Pixi + Three demo (port 5174)
 │   ├── example-game-2/    # Pixi-only demo (port 5175)
 │   └── muonline-game/     # Hybrid Three + Pixi HUD (port 5176)
 ├── docs/screenshots/      # README captures
@@ -156,7 +156,7 @@ That starts both the editor and the project server in parallel.
 | Project server | http://localhost:8787 |
 | Vite `/api` proxy | Editor → project server (path prefix stripped) |
 
-The server opens `games/example-game` by default. Override with:
+The server opens `games/editor-features-demo` by default. Override with:
 
 ```bash
 # Windows (PowerShell)
@@ -215,8 +215,8 @@ Per-package / per-game:
 pnpm --filter @game-editor/editor dev
 pnpm --filter @game-editor/project-server dev
 
-pnpm --filter @games/example-game dev
-pnpm --filter @games/example-game build
+pnpm --filter @games/editor-features-demo dev
+pnpm --filter @games/editor-features-demo build
 pnpm --filter @games/example-game-2 dev
 pnpm --filter @games/muonline-game dev
 ```
@@ -258,7 +258,7 @@ Meaningful edits go through commands so undo/redo stays consistent. Drag gesture
 Each game is a workspace package:
 
 ```text
-games/example-game/
+games/editor-features-demo/
 ├── project.json           # display name, resolution, start scene, renderers
 ├── .project/assets.json   # asset database (stable IDs)
 ├── assets/scenes/         # versioned scene JSON
@@ -272,9 +272,9 @@ games/example-game/
 
 ```json
 {
-  "name": "example-game",
+  "name": "editor-features-demo",
   "version": 1,
-  "displayName": "Example Game",
+  "displayName": "Editor Features Demo",
   "renderers": ["pixi", "three"],
   "startScene": "loading",
   "resolution": { "width": 1280, "height": 720 },
@@ -282,7 +282,7 @@ games/example-game/
 }
 ```
 
-To add a new game, follow `.cursor/skills/create-game/SKILL.md` (or copy `games/example-game-2` for Pixi-only, `games/example-game` / `games/muonline-game` for hybrid). Give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D. Keep Pixi out if the game never uses 2D.
+To add a new game, follow `.cursor/skills/create-game/SKILL.md` (or copy `games/example-game-2` for Pixi-only, `games/editor-features-demo` / `games/muonline-game` for hybrid). Give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D. Keep Pixi out if the game never uses 2D.
 
 ---
 

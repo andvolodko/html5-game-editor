@@ -8,8 +8,8 @@ describe("resolveGameViteBase", () => {
   });
 
   it("passes through a GitHub Pages subdirectory", () => {
-    expect(resolveGameViteBase("/html5-game-editor/games/example-game/")).toBe(
-      "/html5-game-editor/games/example-game/",
+    expect(resolveGameViteBase("/html5-game-editor/games/editor-features-demo/")).toBe(
+      "/html5-game-editor/games/editor-features-demo/",
     );
   });
 });

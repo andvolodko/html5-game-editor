@@ -22,10 +22,10 @@ import { ThreeGltfCache } from "@game-editor/renderer-three";
 import projectJson from "../project.json";
 import assetsJson from "../.project/assets.json";
 import {
-  installExampleGameRuntime,
+  installGameRuntime,
   registerGameComponents,
 } from "./components/index.js";
-import { mountExampleGameRenderers } from "./mount-renderers.js";
+import { mountEditorFeaturesDemoRenderers } from "./mount-renderers.js";
 
 const sceneModules = import.meta.glob("../assets/scenes/*.json", {
   eager: true,
@@ -73,7 +73,7 @@ async function changeScene(sceneId: string): Promise<void> {
   const design = loaded.project.resolution;
   const next = readScene(sceneId);
   await session.renderers?.destroy();
-  session.renderers = await mountExampleGameRenderers({
+  session.renderers = await mountEditorFeaturesDemoRenderers({
     frame: screen.frame,
     scene: next,
     assetResolver: loaded.assetResolver,
@@ -89,7 +89,7 @@ async function changeScene(sceneId: string): Promise<void> {
 
 registerGameComponents(components);
 installSceneFlowRuntime(components);
-installExampleGameRuntime(components);
+installGameRuntime(components);
 
 const htmlAudio = createHtmlAudioPlayer(
   (assetId) => session.loaded?.assetResolver.resolveUrl(assetId),
@@ -147,7 +147,7 @@ async function boot(): Promise<void> {
     throw new Error("GameRuntime missing");
   }
 
-  session.renderers = await mountExampleGameRenderers({
+  session.renderers = await mountEditorFeaturesDemoRenderers({
     frame: screen.frame,
     scene: session.loaded.scene,
     assetResolver: session.loaded.assetResolver,

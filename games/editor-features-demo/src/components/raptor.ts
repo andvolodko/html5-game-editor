@@ -87,7 +87,7 @@ const PROPERTIES: ComponentDefinition["properties"] = {
 };
 
 export const raptorComponent = defineComponent({
-  id: "example.Raptor",
+  id: "editor-features-demo.Raptor",
   displayName: "Raptor",
   category: "Gameplay",
   categoryOrder: 10,

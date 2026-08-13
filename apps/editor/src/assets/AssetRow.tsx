@@ -64,18 +64,7 @@ function AssetRowComponent({
         {previewUrl ? (
           <img src={previewUrl} alt="" draggable={false} />
         ) : (
-          <span
-            className={
-              asset.type === "spine"
-                ? "asset-row-icon spine"
-                : asset.type === "audio"
-                  ? "asset-row-icon audio"
-                  : asset.type === "gltf"
-                    ? "asset-row-icon gltf"
-                    : "asset-row-icon texture"
-            }
-            aria-hidden
-          />
+          <span className={assetRowIconClass(asset.type)} aria-hidden />
         )}
       </span>
       {renaming ? (
@@ -89,6 +78,19 @@ function AssetRowComponent({
       )}
     </div>
   );
+}
+
+function assetRowIconClass(type: AssetRecord["type"]): string {
+  if (type === "spine") {
+    return "asset-row-icon spine";
+  }
+  if (type === "audio") {
+    return "asset-row-icon audio";
+  }
+  if (type === "gltf") {
+    return "asset-row-icon gltf";
+  }
+  return "asset-row-icon texture";
 }
 
 function assetRowPropsEqual(

@@ -4,7 +4,7 @@ description: >-
   Scaffold a new independently buildable game under games/<name> (package.json,
   project.json, Vite, scenes, runtime boot). Use when adding a new game, game
   package, games/* project, Pixi-only / Three-only / hybrid game, or copying
-  example-game / example-game-2 / muonline-game.
+  editor-features-demo / example-game-2 / muonline-game.
 ---
 
 # Create Game
@@ -30,7 +30,7 @@ Pick **one** renderer profile:
 | --- | --- | --- | --- | --- |
 | Pixi-only | `games/example-game-2` | `["pixi"]` | omit or `"pixi"` | `renderer-pixi` — **no** `renderer-three` |
 | Three-only | `games/muonline-game` then drop Pixi / hybrid mount | `["three"]` | `"three"` | `renderer-three` — **no** `renderer-pixi` |
-| Hybrid | `games/example-game` or `games/muonline-game` (`src/mount-renderers.ts`) | `["pixi", "three"]` | `"hybrid"` when both 2D and 3D nodes exist | both renderers |
+| Hybrid | `games/editor-features-demo` or `games/muonline-game` (`src/mount-renderers.ts`) | `["pixi", "three"]` | `"hybrid"` when both 2D and 3D nodes exist | both renderers |
 
 Games that never use 3D must not depend on Three. Games that never use 2D must not depend on Pixi.
 
@@ -85,11 +85,11 @@ Use stable ids with prefixes (`scene_`, `node_`, `comp_`) plus `crypto.randomUUI
 
 **Three-only starter:** `renderer: "three"` plus PerspectiveCamera, AmbientLight, DirectionalLight (each with `Transform3D`). Do not add `Model3D` until a glTF asset exists. Copy the 3D nodes from `games/muonline-game/assets/scenes/main.json` and omit the Pixi HUD.
 
-Do **not** copy example-game Spine/glTF/audio trees unless the user asked for that demo content.
+Do **not** copy editor-features-demo Spine/glTF/audio trees unless the user asked for that demo content.
 
 ## 4. Boot and catalog
 
-Copy `main.ts` / `mount-renderers.ts` from the matching template, then rename functions (`mountExampleGameRenderers` → `mount<Game>Renderers`). Keep:
+Copy `main.ts` / `mount-renderers.ts` from the matching template, then rename functions (`mountEditorFeaturesDemoRenderers` → `mount<Game>Renderers`). Keep:
 
 - `import.meta.glob("../assets/scenes/*.json")` + `resolveGameProject({ …, baseUrl: import.meta.env.BASE_URL })` so GitHub Pages can host the game under `/games/<id>/`
 - `registerGameComponents` + `installSceneFlowRuntime`
@@ -115,7 +115,7 @@ These already glob every `games/<id>/`. **Do not** add the new id to editor/runt
 - project-server: `GAMES_ROOT` (default `games/`), `GET /projects`
 - GitHub Pages: `scripts/assemble-github-pages.mjs` (`pnpm build:pages`) copies every `games/<id>` with `project.json` to `/games/<id>/`
 
-Do **not** change the default `PROJECT_ROOT` (`games/example-game`) unless the user asks.
+Do **not** change the default `PROJECT_ROOT` (`games/editor-features-demo`) unless the user asks.
 
 Update `README.md` layout + port list + “add a new game” sentence so the new package is documented.
 

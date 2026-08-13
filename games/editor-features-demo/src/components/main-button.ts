@@ -36,7 +36,7 @@ export class MainButtonBehaviour implements ScriptInstance {
 }
 
 export const mainButtonComponent = defineComponent({
-  id: "example.MainButton",
+  id: "editor-features-demo.MainButton",
   displayName: "Main Button",
   category: "UI",
   categoryOrder: 20,

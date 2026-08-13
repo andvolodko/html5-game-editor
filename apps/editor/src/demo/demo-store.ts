@@ -13,7 +13,7 @@ import { SCENES_FOLDER, isValidSceneFileId } from "@game-editor/editor-core";
 export const DEMO_STORAGE_KEY = "html5-game-editor.demo.v1";
 export const DEMO_STORAGE_SCHEMA_VERSION = 2;
 export const DEMO_UNAVAILABLE_CODE = "DEMO_UNAVAILABLE";
-export const DEFAULT_DEMO_PROJECT_ID = "example-game";
+export const DEFAULT_DEMO_PROJECT_ID = "editor-features-demo";
 
 export interface DemoSnapshot {
   projectId: string;

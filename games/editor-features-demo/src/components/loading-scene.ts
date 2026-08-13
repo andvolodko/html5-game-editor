@@ -7,7 +7,7 @@ import {
 } from "@game-editor/game-components";
 
 /**
- * Example-game Loading Scene controller.
+ * Loading Scene controller.
  * After `minDisplayMs`, dispatches `completeEvent` (default `loading.complete`)
  * on the bus, then navigates to `nextScene`.
  */
@@ -63,7 +63,7 @@ const LOADING_SCENE_PROPERTIES: ComponentDefinition["properties"] = {
 };
 
 export const loadingSceneComponent = defineComponent({
-  id: "example.LoadingScene",
+  id: "editor-features-demo.LoadingScene",
   displayName: "Loading Scene",
   category: "Scene",
   categoryOrder: 5,
@@ -74,7 +74,7 @@ export const loadingSceneComponent = defineComponent({
 });
 
 /** Re-attach create after a metadata-only catalog load (editor / preview). */
-export function installExampleLoadingSceneRuntime(
+export function installLoadingSceneRuntime(
   registry: ComponentRegistry,
 ): void {
   const existing = registry.get(loadingSceneComponent.id);

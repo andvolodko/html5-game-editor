@@ -12,9 +12,9 @@ import {
 } from "./index.js";
 
 const valid: ProjectData = {
-  name: "example-game",
+  name: "editor-features-demo",
   version: PROJECT_SCHEMA_VERSION,
-  displayName: "Example Game",
+  displayName: "Editor Features Demo",
   renderers: ["pixi"],
   startScene: "main",
   resolution: { width: 1280, height: 720 },

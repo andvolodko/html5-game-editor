@@ -986,9 +986,27 @@ button.active {
 }
 
 .asset-row-icon.gltf {
-  background: #2a3140;
-  border: 1px solid #6a9e78;
-  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  background: transparent;
+  border: none;
+}
+
+.asset-row-icon.gltf::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #8eb4f0 0%, #3d6eb8 55%, #2a4a88 100%);
+  clip-path: polygon(50% 6%, 94% 28%, 94% 72%, 50% 94%, 6% 72%, 6% 28%);
+}
+
+.asset-row-icon.gltf::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 6%;
+  width: 1px;
+  height: 50%;
+  background: rgba(18, 28, 52, 0.55);
+  transform: translateX(-50%);
 }
 
 .asset-row-icon.spine {

@@ -172,6 +172,12 @@ export type {
   EditorFolderDragPayload,
 } from "./asset-workflows.js";
 export {
+  PROJECT_SERVER_OFFLINE_MESSAGE,
+  formatEditorApiError,
+  formatEditorApiErrorMessage,
+  uniquePanelErrorMessages,
+} from "./editor-api-error.js";
+export {
   ASSETS_ROOT_FOLDER,
   SCENES_FOLDER,
   isScenesFolder,
@@ -185,8 +191,12 @@ export {
   folderLabel,
   joinAssetFolder,
   isFolderOrDescendant,
+  resolveAssetBrowserPreviewUrl,
 } from "./asset-browser-model.js";
-export type { AssetBrowserEntry } from "./asset-browser-model.js";
+export type {
+  AssetBrowserEntry,
+  AssetBrowserPreviewResolvers,
+} from "./asset-browser-model.js";
 export {
   resolveHierarchyDrop,
   isNoOpMove,

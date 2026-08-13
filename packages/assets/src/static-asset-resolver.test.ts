@@ -40,11 +40,11 @@ describe("createStaticAssetResolver", () => {
       }),
     );
     const resolver = createStaticAssetResolver(database, {
-      baseUrl: "/html5-game-editor/games/example-game/",
+      baseUrl: "/html5-game-editor/games/editor-features-demo/",
     });
 
     expect(resolver.resolveUrl("asset_hero")).toBe(
-      "/html5-game-editor/games/example-game/assets/ui/hero.png",
+      "/html5-game-editor/games/editor-features-demo/assets/ui/hero.png",
     );
   });
 

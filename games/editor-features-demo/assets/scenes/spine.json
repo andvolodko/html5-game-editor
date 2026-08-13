@@ -89,7 +89,7 @@
         {
           "type": "Script",
           "id": "comp_cd5abd48-f7a7-4aa0-a811-b056b113dae7",
-          "scriptId": "example.Raptor",
+          "scriptId": "editor-features-demo.Raptor",
           "properties": {
             "speed": 222,
             "range": 1200,
@@ -136,7 +136,7 @@
         {
           "type": "Script",
           "id": "comp_01afe403-b03b-4787-83d5-e65e5ac62171",
-          "scriptId": "example.GoSpineButton",
+          "scriptId": "editor-features-demo.GoSpineButton",
           "properties": {
             "sceneName": "main"
           }

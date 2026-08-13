@@ -2,7 +2,6 @@ import type { ComponentRegistry } from "@game-editor/game-components";
 
 type GameComponentsModule = {
   installGameRuntime?: (registry: ComponentRegistry) => void;
-  installExampleGameRuntime?: (registry: ComponentRegistry) => void;
 };
 
 /**
@@ -38,6 +37,5 @@ export async function installActiveGameRuntime(
     return;
   }
   const mod = await loader();
-  const install = mod.installGameRuntime ?? mod.installExampleGameRuntime;
-  install?.(registry);
+  mod.installGameRuntime?.(registry);
 }

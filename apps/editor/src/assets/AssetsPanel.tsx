@@ -309,9 +309,11 @@ export function AssetsPanel() {
         </p>
       ) : null}
 
-      {model.error ? <p className="panel-error">{model.error}</p> : null}
-      {model.scenesError ? <p className="panel-error">{model.scenesError}</p> : null}
-      {model.folderMessage ? <p className="panel-error">{model.folderMessage}</p> : null}
+      {model.panelErrors.map((message) => (
+        <p key={message} className="panel-error">
+          {message}
+        </p>
+      ))}
       {importMessage ? <p className="panel-hint">{importMessage}</p> : null}
 
       <div

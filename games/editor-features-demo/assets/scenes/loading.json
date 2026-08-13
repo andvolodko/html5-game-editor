@@ -23,7 +23,7 @@
         {
           "type": "Script",
           "id": "comp_5605ec41-37a1-443d-a8c2-a963db614a77",
-          "scriptId": "example.LoadingScene",
+          "scriptId": "editor-features-demo.LoadingScene",
           "properties": {
             "completeEvent": "loading.complete",
             "nextScene": "main",

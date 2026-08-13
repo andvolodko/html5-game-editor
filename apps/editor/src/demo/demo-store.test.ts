@@ -38,7 +38,7 @@ function memoryStorage(initial?: Record<string, string>): DemoStorage {
   };
 }
 
-function fixtureSnapshot(projectId = "example-game"): DemoSnapshot {
+function fixtureSnapshot(projectId = "editor-features-demo"): DemoSnapshot {
   const texture = createTextureAssetRecord({
     name: "hero",
     path: "assets/ui/hero.png",
@@ -51,7 +51,7 @@ function fixtureSnapshot(projectId = "example-game"): DemoSnapshot {
     project: {
       name: projectId,
       version: 1,
-      displayName: projectId === "example-game" ? "Example Game" : "Example Game 2",
+      displayName: projectId === "editor-features-demo" ? "Editor Features Demo" : "Example Game 2",
       renderers: ["pixi"],
       startScene: START_SCENE_ID,
       resolution: { width: 1280, height: 720 },
@@ -75,7 +75,7 @@ describe("demo glob paths", () => {
     ).toBe("example-game-2");
     expect(
       sceneIdFromGlobPath(
-        "../../../../games/example-game/assets/scenes/loading.json",
+        "../../../../games/editor-features-demo/assets/scenes/loading.json",
       ),
     ).toBe("loading");
   });
@@ -131,14 +131,14 @@ describe("DemoProjectStore", () => {
   it("keeps scene edits isolated per project", () => {
     const storage = memoryStorage();
     const store = new DemoProjectStore(
-      [fixtureSnapshot("example-game"), fixtureSnapshot("example-game-2")],
+      [fixtureSnapshot("editor-features-demo"), fixtureSnapshot("example-game-2")],
       storage,
     );
     store.saveScene(START_SCENE_ID, createEmptyScene("Game 1 boot"));
     store.openProject("example-game-2");
     expect(store.loadScene(START_SCENE_ID).name).toBe("Boot");
     store.saveScene(START_SCENE_ID, createEmptyScene("Game 2 boot"));
-    store.openProject("example-game");
+    store.openProject("editor-features-demo");
     expect(store.loadScene(START_SCENE_ID).name).toBe("Game 1 boot");
   });
 });
@@ -149,12 +149,12 @@ describe("createDemoEditorClients", () => {
     const texture = snapshot.assets.assets[0]!;
     const clients = createDemoEditorClients([snapshot], {
       assetBaseUrl: "/html5-game-editor/demo/",
-      catalogs: { "example-game": { components: [], busEvents: [] } },
+      catalogs: { "editor-features-demo": { components: [], busEvents: [] } },
     });
     const listed = await clients.assetApi.listAssets();
     expect(listed.folders).toContain("assets/ui");
     expect(clients.assetApi.getAssetContentUrl(texture.id)).toBe(
-      "/html5-game-editor/demo/example-game/assets/ui/hero.png",
+      "/html5-game-editor/demo/editor-features-demo/assets/ui/hero.png",
     );
     await expect(clients.assetApi.importAssets([])).rejects.toMatchObject({
       code: DEMO_UNAVAILABLE_CODE,
@@ -162,19 +162,19 @@ describe("createDemoEditorClients", () => {
   });
 
   it("lists every bundled demo project and switches assets", async () => {
-    const first = fixtureSnapshot("example-game");
+    const first = fixtureSnapshot("editor-features-demo");
     const second = fixtureSnapshot("example-game-2");
     const clients = createDemoEditorClients([first, second], {
       assetBaseUrl: "/demo/",
       catalogs: {
-        "example-game": { components: [], busEvents: [] },
+        "editor-features-demo": { components: [], busEvents: [] },
         "example-game-2": { components: [], busEvents: [] },
       },
     });
     const listed = await clients.projectApi.listProjects();
-    expect(listed.activeProjectId).toBe("example-game");
+    expect(listed.activeProjectId).toBe("editor-features-demo");
     expect(listed.projects.map((project) => project.id)).toEqual([
-      "example-game",
+      "editor-features-demo",
       "example-game-2",
     ]);
     await clients.projectApi.openProject("example-game-2");

@@ -23,8 +23,8 @@ describe("pages URLs", () => {
 
   it("places each game under /games/<id>/", () => {
     expect(STANDALONE_GAMES_SEGMENT).toBe("games");
-    expect(standaloneGameBaseUrl("/", "example-game")).toBe(
-      "/games/example-game/",
+    expect(standaloneGameBaseUrl("/", "editor-features-demo")).toBe(
+      "/games/editor-features-demo/",
     );
     expect(
       standaloneGameBaseUrl("/html5-game-editor/", "muonline-game"),

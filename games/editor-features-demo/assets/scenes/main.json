@@ -65,7 +65,7 @@
         {
           "type": "Script",
           "id": "comp_d0f6221c-748a-44cf-ac42-a7c9d0f0f705",
-          "scriptId": "example.MainButton",
+          "scriptId": "editor-features-demo.MainButton",
           "properties": {}
         }
       ],
@@ -108,7 +108,7 @@
         {
           "type": "Script",
           "id": "comp_743e2135-f2e7-4919-904f-346ae1aee077",
-          "scriptId": "example.GoSpineButton",
+          "scriptId": "editor-features-demo.GoSpineButton",
           "properties": {
             "sceneName": "spine"
           }

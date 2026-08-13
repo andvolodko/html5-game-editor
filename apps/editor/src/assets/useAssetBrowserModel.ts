@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getFileBasename, type AssetRecord } from "@game-editor/assets";
+import type { AssetRecord } from "@game-editor/assets";
 import type { SceneListEntry } from "@game-editor/editor-core";
 import {
   ASSETS_ROOT_FOLDER,
@@ -12,6 +12,8 @@ import {
   isValidSceneFileId,
   joinAssetFolder,
   listFolderEntries,
+  resolveAssetBrowserPreviewUrl,
+  uniquePanelErrorMessages,
 } from "@game-editor/editor-core";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
@@ -379,22 +381,20 @@ export function useAssetBrowserModel(options?: {
     }
   };
 
-  const contentUrl = (asset: AssetRecord) => {
-    if (asset.metadata.kind === "audio") {
-      return undefined;
-    }
-    if (asset.metadata.kind === "spine") {
-      const page = asset.metadata.pagePaths[0];
-      if (!page) {
-        return undefined;
-      }
-      return editor.assets.resolveSpinePartUrl(asset.id, getFileBasename(page));
-    }
-    return editor.assets.getContentUrl(asset.id);
-  };
+  const contentUrl = (asset: AssetRecord) =>
+    resolveAssetBrowserPreviewUrl(asset, {
+      contentUrl: (assetId) => editor.assets.getContentUrl(assetId),
+      spinePartUrl: (assetId, pageBasename) =>
+        editor.assets.resolveSpinePartUrl(assetId, pageBasename),
+    });
 
   const entriesForFolder = (folderPath: string) =>
     listFolderEntries(assets, folderPath, knownFolders, scenes);
+
+  const panelErrors = useMemo(
+    () => uniquePanelErrorMessages(error, scenesError, folderMessage),
+    [error, scenesError, folderMessage],
+  );
 
   return {
     editor,
@@ -404,6 +404,7 @@ export function useAssetBrowserModel(options?: {
     searchScenes,
     scenes,
     scenesError,
+    panelErrors,
     activeSceneId,
     status,
     error,

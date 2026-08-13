@@ -1,4 +1,4 @@
-import type { AssetRecord } from "@game-editor/assets";
+import { getFileBasename, type AssetRecord } from "@game-editor/assets";
 
 export const ASSETS_ROOT_FOLDER = "assets";
 
@@ -164,4 +164,34 @@ export function joinAssetFolder(
 /** True when `candidate` is `folder` or a descendant of `folder`. */
 export function isFolderOrDescendant(folder: string, candidate: string): boolean {
   return folder === candidate || candidate.startsWith(`${folder}/`);
+}
+
+export interface AssetBrowserPreviewResolvers {
+  contentUrl: (assetId: string) => string | undefined;
+  spinePartUrl: (assetId: string, pageBasename: string) => string | undefined;
+}
+
+/**
+ * Raster thumbnail URL for the Asset Browser `<img>`.
+ * GLB/glTF and audio bytes are not images — loading them as `<img>` shows the
+ * browser broken-image icon instead of the type glyph.
+ */
+export function resolveAssetBrowserPreviewUrl(
+  asset: AssetRecord,
+  resolvers: AssetBrowserPreviewResolvers,
+): string | undefined {
+  switch (asset.metadata.kind) {
+    case "texture":
+      return resolvers.contentUrl(asset.id);
+    case "spine": {
+      const page = asset.metadata.pagePaths[0];
+      if (!page) {
+        return undefined;
+      }
+      return resolvers.spinePartUrl(asset.id, getFileBasename(page));
+    }
+    case "audio":
+    case "gltf":
+      return undefined;
+  }
 }

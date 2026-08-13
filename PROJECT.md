@@ -152,7 +152,7 @@ Recommended structure:
 │   └── shared/
 │
 ├── games/
-│   ├── example-game/
+│   ├── editor-features-demo/
 │   ├── game-two/
 │   └── game-three/
 │
@@ -1200,10 +1200,10 @@ Do not use stringly typed event payloads without compile-time types.
 
 Games use runtime packages without editor dependencies.
 
-Example game:
+Game package:
 
 ```text
-games/example-game/
+games/editor-features-demo/
 ├── src/
 ├── assets/
 │   └── scenes/
@@ -1231,13 +1231,13 @@ Each game owns its own Vite build.
 Example:
 
 ```bash
-pnpm --filter @games/example build
+pnpm --filter @games/editor-features-demo build
 ```
 
 Output:
 
 ```text
-games/example-game/dist/
+games/editor-features-demo/dist/
 ```
 
 Building one game must not bundle another game.

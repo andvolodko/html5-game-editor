@@ -1,7 +1,7 @@
 {
-  "name": "example-game",
+  "name": "editor-features-demo",
   "version": 1,
-  "displayName": "Example Game",
+  "displayName": "Editor Features Demo",
   "renderers": [
     "pixi",
     "three"

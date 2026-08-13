@@ -3,7 +3,7 @@ const GAME_FOLDER_PATTERN = /^[A-Za-z0-9._-]+$/;
 
 const GAMES_SEGMENT = "/games/";
 
-/** Reads `example-game` from a Vite glob key like `../../../../games/example-game/project.json`. */
+/** Reads `editor-features-demo` from a Vite glob key like `../../../../games/editor-features-demo/project.json`. */
 export function projectIdFromGlobPath(modulePath: string): string | undefined {
   const normalized = modulePath.replaceAll("\\", "/");
   const index = normalized.lastIndexOf(GAMES_SEGMENT);

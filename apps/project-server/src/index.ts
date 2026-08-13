@@ -25,7 +25,7 @@ const port = Number(process.env.PORT ?? DEFAULT_PROJECT_SERVER_PORT);
 const here = path.dirname(fileURLToPath(import.meta.url));
 const defaultGamesRoot = path.resolve(here, "../../../games");
 const gamesRoot = process.env.GAMES_ROOT ?? defaultGamesRoot;
-const defaultProjectRoot = path.join(gamesRoot, "example-game");
+const defaultProjectRoot = path.join(gamesRoot, "editor-features-demo");
 const projectRoot = process.env.PROJECT_ROOT ?? defaultProjectRoot;
 
 const projectService = new ProjectService(projectRoot);

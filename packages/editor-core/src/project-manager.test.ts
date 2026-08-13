@@ -9,9 +9,9 @@ import { createFetchProjectApiClient } from "./project-api-client.js";
 import { ProjectManager } from "./project-manager.js";
 
 const sample: ProjectData = {
-  name: "example-game",
+  name: "editor-features-demo",
   version: PROJECT_SCHEMA_VERSION,
-  displayName: "Example Game",
+  displayName: "Editor Features Demo",
   renderers: ["pixi"],
   startScene: "main",
   resolution: { ...DEFAULT_PROJECT_RESOLUTION },
@@ -35,16 +35,16 @@ describe("ProjectManager", () => {
     const listProjects = vi.fn(async () => ({
       projects: [
         {
-          id: "example-game",
+          id: "editor-features-demo",
           name: sample.name,
           displayName: sample.displayName,
           renderers: sample.renderers,
         },
       ],
-      activeProjectId: "example-game",
+      activeProjectId: "editor-features-demo",
     }));
     const openProject = vi.fn(async () => ({
-      projectId: "example-game",
+      projectId: "editor-features-demo",
       project: sample,
     }));
     const manager = new ProjectManager({
@@ -56,7 +56,7 @@ describe("ProjectManager", () => {
 
     await manager.refresh();
     expect(manager.getProject()?.startScene).toBe("main");
-    expect(manager.getActiveProjectId()).toBe("example-game");
+    expect(manager.getActiveProjectId()).toBe("editor-features-demo");
 
     await manager.setStartScene("intro");
     expect(saveProject).toHaveBeenCalledWith({
@@ -75,7 +75,7 @@ describe("ProjectManager", () => {
         projects: [],
         activeProjectId: null,
       }),
-      openProject: async () => ({ projectId: "example-game", project: sample }),
+      openProject: async () => ({ projectId: "editor-features-demo", project: sample }),
     });
     await manager.refresh();
     await manager.setStartScene("main");
@@ -91,7 +91,7 @@ describe("ProjectManager", () => {
         projects: [],
         activeProjectId: null,
       }),
-      openProject: async () => ({ projectId: "example-game", project: sample }),
+      openProject: async () => ({ projectId: "editor-features-demo", project: sample }),
     });
     await manager.refresh();
 
@@ -119,7 +119,7 @@ describe("ProjectManager", () => {
         projects: [],
         activeProjectId: null,
       }),
-      openProject: async () => ({ projectId: "example-game", project: sample }),
+      openProject: async () => ({ projectId: "editor-features-demo", project: sample }),
     });
     await manager.refresh();
 
@@ -145,7 +145,7 @@ describe("ProjectManager", () => {
       saveProject: async (project) => project,
       listProjects: async () => ({
         projects: [
-          { id: "example-game", name: sample.name, displayName: sample.displayName, renderers: sample.renderers },
+          { id: "editor-features-demo", name: sample.name, displayName: sample.displayName, renderers: sample.renderers },
           {
             id: "example-game-2",
             name: sampleTwo.name,
@@ -153,7 +153,7 @@ describe("ProjectManager", () => {
             renderers: sampleTwo.renderers,
           },
         ],
-        activeProjectId: "example-game",
+        activeProjectId: "editor-features-demo",
       }),
       openProject,
     });
@@ -188,13 +188,13 @@ describe("createFetchProjectApiClient", () => {
             ok: true,
             projects: [
               {
-                id: "example-game",
+                id: "editor-features-demo",
                 name: sample.name,
                 displayName: sample.displayName,
                 renderers: sample.renderers,
               },
             ],
-            activeProjectId: "example-game",
+            activeProjectId: "editor-features-demo",
           }),
           { status: 200, headers: { "content-type": "application/json" } },
         );
@@ -216,13 +216,13 @@ describe("createFetchProjectApiClient", () => {
     await expect(client.listProjects()).resolves.toEqual({
       projects: [
         {
-          id: "example-game",
+          id: "editor-features-demo",
           name: sample.name,
           displayName: sample.displayName,
           renderers: sample.renderers,
         },
       ],
-      activeProjectId: "example-game",
+      activeProjectId: "editor-features-demo",
     });
     await expect(client.openProject("example-game-2")).resolves.toEqual({
       projectId: "example-game-2",

@@ -60,7 +60,7 @@ const PROPERTIES: ComponentDefinition["properties"] = {
 };
 
 export const goSpineButtonComponent = defineComponent({
-  id: "example.GoSpineButton",
+  id: "editor-features-demo.GoSpineButton",
   displayName: "Go Spine Button",
   category: "UI",
   categoryOrder: 20,

@@ -18,10 +18,10 @@ export interface MountedGameRenderers {
 }
 
 /**
- * Registers Pixi / Three / hybrid stacks for the standalone example-game boot.
+ * Registers Pixi / Three / hybrid stacks for the standalone editor-features-demo boot.
  * Mirrors editor preview composition; Three is only constructed when needed.
  */
-export async function mountExampleGameRenderers(args: {
+export async function mountEditorFeaturesDemoRenderers(args: {
   frame: HTMLElement;
   scene: SceneData;
   assetResolver: LoadedGameProject["assetResolver"];
