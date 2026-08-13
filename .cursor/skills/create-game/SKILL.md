@@ -29,8 +29,8 @@ Pick **one** renderer profile:
 | Profile | Copy structure from | `project.json` `renderers` | Scene `renderer` | Dependencies |
 | --- | --- | --- | --- | --- |
 | Pixi-only | `games/example-game-2` | `["pixi"]` | omit or `"pixi"` | `renderer-pixi` — **no** `renderer-three` |
-| Three-only | `games/muonline-game` | `["three"]` | `"three"` | `renderer-three` — **no** `renderer-pixi` |
-| Hybrid | `games/example-game` (`src/mount-renderers.ts`) | `["pixi", "three"]` | `"hybrid"` when both 2D and 3D nodes exist | both renderers |
+| Three-only | `games/muonline-game` then drop Pixi / hybrid mount | `["three"]` | `"three"` | `renderer-three` — **no** `renderer-pixi` |
+| Hybrid | `games/example-game` or `games/muonline-game` (`src/mount-renderers.ts`) | `["pixi", "three"]` | `"hybrid"` when both 2D and 3D nodes exist | both renderers |
 
 Games that never use 3D must not depend on Three. Games that never use 2D must not depend on Pixi.
 
@@ -83,7 +83,7 @@ Use stable ids with prefixes (`scene_`, `node_`, `comp_`) plus `crypto.randomUUI
 
 **Pixi-only starter:** one `Transform2D` node is enough (optional Text). See `games/example-game-2/assets/scenes/main.json`.
 
-**Three-only starter:** `renderer: "three"` plus PerspectiveCamera, AmbientLight, DirectionalLight (each with `Transform3D`). Do not add `Model3D` until a glTF asset exists. See `games/muonline-game/assets/scenes/main.json`.
+**Three-only starter:** `renderer: "three"` plus PerspectiveCamera, AmbientLight, DirectionalLight (each with `Transform3D`). Do not add `Model3D` until a glTF asset exists. Copy the 3D nodes from `games/muonline-game/assets/scenes/main.json` and omit the Pixi HUD.
 
 Do **not** copy example-game Spine/glTF/audio trees unless the user asked for that demo content.
 

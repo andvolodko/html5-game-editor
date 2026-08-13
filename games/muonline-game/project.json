@@ -3,6 +3,7 @@
   "version": 1,
   "displayName": "MU Online",
   "renderers": [
+    "pixi",
     "three"
   ],
   "startScene": "main",

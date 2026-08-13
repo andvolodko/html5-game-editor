@@ -6,6 +6,7 @@ import {
   GAME_MOUNT_ELEMENT_ID,
   projectBackgroundToPixiColor,
 } from "@game-editor/project";
+import { preloadPixiSceneAsset } from "@game-editor/renderer-pixi";
 import { ThreeGltfCache } from "@game-editor/renderer-three";
 import {
   EventBus,
@@ -77,6 +78,7 @@ async function changeScene(sceneId: string): Promise<void> {
     frame: screen.frame,
     scene: next,
     assetResolver: loaded.assetResolver,
+    design,
     backgroundColor: projectBackgroundToPixiColor(loaded.project.background),
     runtime,
     gltfCache: session.gltfCache,
@@ -110,13 +112,17 @@ session.runtime = new GameRuntime({
       }
       return collectSceneAssetIds(Object.values(loaded.scenes));
     },
-    preloadSceneAsset: async (assetId) => {
+    preloadSceneAsset: async (assetId, signal) => {
       const resolver = session.loaded?.assetResolver;
-      if (!resolver?.resolveGltfUrls?.(assetId)) {
+      if (!resolver) {
         return;
       }
-      session.gltfCache.setResolver(resolver);
-      await session.gltfCache.ensureLoaded(assetId);
+      if (resolver.resolveGltfUrls?.(assetId)) {
+        session.gltfCache.setResolver(resolver);
+        await session.gltfCache.ensureLoaded(assetId);
+        return;
+      }
+      await preloadPixiSceneAsset(resolver, assetId, signal);
     },
     playAudio: (assetId, options) => htmlAudio.play(assetId, options),
     stopAudio: (assetId) => htmlAudio.stop(assetId),
@@ -159,6 +165,7 @@ async function boot(): Promise<void> {
     frame: screen.frame,
     scene: session.loaded.scene,
     assetResolver: session.loaded.assetResolver,
+    design,
     backgroundColor: projectBackgroundToPixiColor(background),
     runtime,
     gltfCache: session.gltfCache,

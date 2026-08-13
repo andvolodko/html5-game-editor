@@ -204,6 +204,9 @@ importers:
       '@game-editor/project':
         specifier: workspace:*
         version: link:../../packages/project
+      '@game-editor/renderer-pixi':
+        specifier: workspace:*
+        version: link:../../packages/renderer-pixi
       '@game-editor/renderer-three':
         specifier: workspace:*
         version: link:../../packages/renderer-three

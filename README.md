@@ -126,7 +126,7 @@ html5-game-editor/
 ├── games/
 │   ├── example-game/      # Hybrid Pixi + Three demo (port 5174)
 │   ├── example-game-2/    # Pixi-only demo (port 5175)
-│   └── muonline-game/     # Three.js game (port 5176)
+│   └── muonline-game/     # Hybrid Three + Pixi HUD (port 5176)
 ├── docs/screenshots/      # README captures
 ├── PROJECT.md             # Architecture spec and invariants
 └── pnpm-workspace.yaml
@@ -282,7 +282,7 @@ games/example-game/
 }
 ```
 
-To add a new game, follow `.cursor/skills/create-game/SKILL.md` (or copy `games/example-game-2` for Pixi-only, `games/muonline-game` for Three-only, `games/example-game` for hybrid). Give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D. Keep Pixi out if the game is Three-only.
+To add a new game, follow `.cursor/skills/create-game/SKILL.md` (or copy `games/example-game-2` for Pixi-only, `games/example-game` / `games/muonline-game` for hybrid). Give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D. Keep Pixi out if the game never uses 2D.
 
 ---
 
