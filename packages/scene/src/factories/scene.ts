@@ -63,6 +63,10 @@ export function createTransform2D(
     rotation: partial?.rotation ?? IDENTITY_ROTATION_2D,
     scale: partial?.scale ?? { ...IDENTITY_SCALE_2D },
     ...(partial?.anchor !== undefined ? { anchor: partial.anchor } : {}),
+    ...(partial?.skew !== undefined &&
+    (partial.skew.x !== 0 || partial.skew.y !== 0)
+      ? { skew: { ...partial.skew } }
+      : {}),
   };
 }
 

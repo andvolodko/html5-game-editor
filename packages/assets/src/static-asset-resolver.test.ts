@@ -5,6 +5,8 @@ import {
   createSpineAssetRecord,
   createTextureAssetRecord,
   createAsepriteAssetRecord,
+  createBitmapFontAssetRecord,
+  createWebFontAssetRecord,
 } from "./factories.js";
 import { createStaticAssetResolver } from "./static-asset-resolver.js";
 
@@ -129,6 +131,53 @@ describe("createStaticAssetResolver", () => {
     );
     expect(resolver.resolveUrl("asset_hero")).toBe(
       "/assets/characters/hero.aseprite",
+    );
+  });
+
+  it("resolves bitmap font descriptor and page URLs", () => {
+    const database = new AssetDatabase();
+    database.add(
+      createBitmapFontAssetRecord({
+        id: "asset_font",
+        name: "desyrel",
+        path: "assets/fonts/desyrel.xml",
+        fontFamily: "Desyrel",
+        pagePaths: ["assets/fonts/desyrel.png"],
+      }),
+    );
+    const resolver = createStaticAssetResolver(database, { baseUrl: "/" });
+
+    expect(resolver.resolveBitmapFontUrls?.("asset_font")).toEqual({
+      xmlUrl: "/assets/fonts/desyrel.xml",
+      fontFamily: "Desyrel",
+      pageUrls: { "desyrel.png": "/assets/fonts/desyrel.png" },
+    });
+    expect(resolver.resolveBitmapFontPartUrl?.("asset_font", "desyrel.png")).toBe(
+      "/assets/fonts/desyrel.png",
+    );
+  });
+
+  it("resolves webfont file URLs and CSS family", () => {
+    const database = new AssetDatabase();
+    database.add(
+      createWebFontAssetRecord({
+        id: "asset_webfont",
+        name: "ChaChicle",
+        path: "assets/fonts/webfonts/ChaChicle.ttf",
+        fontFamily: "ChaChicle",
+        mimeType: "font/ttf",
+        format: "ttf",
+      }),
+    );
+    const resolver = createStaticAssetResolver(database, { baseUrl: "/" });
+
+    expect(resolver.resolveWebFontUrls?.("asset_webfont")).toEqual({
+      url: "/assets/fonts/webfonts/ChaChicle.ttf",
+      fontFamily: "ChaChicle",
+      format: "ttf",
+    });
+    expect(resolver.resolveUrl("asset_webfont")).toBe(
+      "/assets/fonts/webfonts/ChaChicle.ttf",
     );
   });
 });

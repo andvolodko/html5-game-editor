@@ -23,7 +23,7 @@ import {
 export function createDefaultTextStyle(
   partial?: Partial<TextStyleData>,
 ): TextStyleData {
-  return {
+  const data: TextStyleData = {
     fontFamily: partial?.fontFamily ?? "Arial",
     fontSize: partial?.fontSize ?? DEFAULT_TEXT_FONT_SIZE,
     fontWeight: partial?.fontWeight ?? "normal",
@@ -56,10 +56,28 @@ export function createDefaultTextStyle(
     dropShadowAngle:
       partial?.dropShadowAngle ?? DEFAULT_TEXT_DROP_SHADOW_ANGLE_DEGREES,
   };
+  if (partial?.fontAssetId !== undefined && partial.fontAssetId.length > 0) {
+    data.fontAssetId = partial.fontAssetId;
+  }
+  return data;
 }
 
+type TextComponentInput = Partial<
+  Omit<TextComponentData, "type" | "id" | "style">
+> & {
+  id?: string;
+  style?: Partial<TextStyleData>;
+};
+
+type HTMLTextComponentInput = Partial<
+  Omit<HTMLTextComponentData, "type" | "id" | "style">
+> & {
+  id?: string;
+  style?: Partial<TextStyleData>;
+};
+
 export function createTextComponent(
-  partial?: Partial<Omit<TextComponentData, "type" | "id">> & { id?: string },
+  partial?: TextComponentInput,
 ): TextComponentData {
   const data: TextComponentData = {
     type: "Text",
@@ -86,6 +104,9 @@ export function createBitmapTextComponent(
     align: partial?.align ?? "left",
     letterSpacing: partial?.letterSpacing ?? 0,
   };
+  if (partial?.assetId !== undefined) {
+    data.assetId = partial.assetId;
+  }
   if (partial?.fontFamily !== undefined) {
     data.fontFamily = partial.fontFamily;
   }
@@ -99,9 +120,7 @@ export function createBitmapTextComponent(
 }
 
 export function createHTMLTextComponent(
-  partial?: Partial<Omit<HTMLTextComponentData, "type" | "id">> & {
-    id?: string;
-  },
+  partial?: HTMLTextComponentInput,
 ): HTMLTextComponentData {
   const data: HTMLTextComponentData = {
     type: "HTMLText",

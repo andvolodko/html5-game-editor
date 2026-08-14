@@ -2,8 +2,10 @@ import type { AssetDatabase } from "./asset-database.js";
 import type {
   AsepriteAssetUrls,
   AssetResolver,
+  BitmapFontAssetUrls,
   GltfAssetUrls,
   SpineAssetUrls,
+  WebFontAssetUrls,
 } from "./asset-resolver.js";
 import {
   getFileBasename,
@@ -12,6 +14,7 @@ import {
 import { resolveGltfPartRelativePath } from "./gltf-extensions.js";
 import { resolveSpinePartRelativePath } from "./spine-extensions.js";
 import { resolveAsepritePartRelativePath } from "./aseprite-extensions.js";
+import { resolveBitmapFontPartRelativePath } from "./bitmap-font-extensions.js";
 import { normalizeProjectRelativePath } from "./factories.js";
 
 export interface StaticAssetResolverOptions {
@@ -128,6 +131,43 @@ export function createStaticAssetResolver(
         tags: asset.metadata.tags.map((tag) => tag.name),
         frameDurations: asset.metadata.frameDurations,
         frameCount: asset.metadata.frameCount,
+      };
+    },
+
+    resolveBitmapFontPartUrl(assetId: string, part: string): string | undefined {
+      const asset = database.get(assetId);
+      if (!asset) {
+        return undefined;
+      }
+      const partPath = resolveBitmapFontPartRelativePath(asset, part);
+      return partPath === undefined ? undefined : toUrl(partPath);
+    },
+
+    resolveBitmapFontUrls(assetId: string): BitmapFontAssetUrls | undefined {
+      const asset = database.get(assetId);
+      if (!asset || asset.metadata.kind !== "font") {
+        return undefined;
+      }
+      const pageUrls: Record<string, string> = {};
+      for (const pagePath of asset.metadata.pagePaths) {
+        pageUrls[getFileBasename(pagePath)] = toUrl(pagePath);
+      }
+      return {
+        xmlUrl: toUrl(asset.path),
+        fontFamily: asset.metadata.fontFamily,
+        pageUrls,
+      };
+    },
+
+    resolveWebFontUrls(assetId: string): WebFontAssetUrls | undefined {
+      const asset = database.get(assetId);
+      if (!asset || asset.metadata.kind !== "webfont") {
+        return undefined;
+      }
+      return {
+        url: toUrl(asset.path),
+        fontFamily: asset.metadata.fontFamily,
+        format: asset.metadata.format,
       };
     },
   };

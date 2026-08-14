@@ -11,6 +11,8 @@ import { SpriteSelectionGizmo } from "./sprite-selection-gizmo.js";
 import type { VisualBounds } from "./visuals/types.js";
 import { PLACEHOLDER_CORNER_RADIUS } from "./editor-chrome.js";
 
+const DEGREES_TO_RADIANS = Math.PI / 180;
+
 export interface RuntimeNode {
   /**
    * When true, owns editor chrome (dedicated visualsRoot, placeholder,
@@ -293,11 +295,16 @@ export class PixiRuntimeGraph {
       container.position.set(0, 0);
       container.rotation = 0;
       container.scale.set(1, 1);
+      container.skew.set(0, 0);
       return;
     }
     container.position.set(transform.position.x, transform.position.y);
-    container.rotation = (transform.rotation * Math.PI) / 180;
+    container.rotation = transform.rotation * DEGREES_TO_RADIANS;
     container.scale.set(transform.scale.x, transform.scale.y);
+    container.skew.set(
+      (transform.skew?.x ?? 0) * DEGREES_TO_RADIANS,
+      (transform.skew?.y ?? 0) * DEGREES_TO_RADIANS,
+    );
   }
 
   showPlaceholder(

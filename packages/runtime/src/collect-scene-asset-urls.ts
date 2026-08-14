@@ -38,6 +38,15 @@ function addAssetUrls(
     return;
   }
 
+  const font = resolver.resolveBitmapFontUrls?.(assetId);
+  if (font) {
+    addUrl(urls, font.xmlUrl);
+    for (const pageUrl of Object.values(font.pageUrls)) {
+      addUrl(urls, pageUrl);
+    }
+    return;
+  }
+
   addUrl(urls, resolver.resolveUrl(assetId));
 }
 

@@ -17,30 +17,78 @@ import {
   TEXT_FALLBACK_CHAR_WIDTH_EM,
   TEXT_FALLBACK_LINE_HEIGHT_EM,
 } from "../../editor-chrome.js";
+import { loadBitmapFont } from "../../load-bitmap-font.js";
+
+function unassignedResult(
+  ctx: Parameters<PixiVisualPainter["paint"]>[0],
+  type: string,
+): VisualPaintResult {
+  destroyVisual(ctx.visual);
+  ctx.showPlaceholder(
+    BITMAP_TEXT_PLACEHOLDER_WIDTH,
+    BITMAP_TEXT_PLACEHOLDER_HEIGHT,
+    BITMAP_FONT_UNASSIGNED_TINT,
+  );
+  return {
+    visual: undefined,
+    visualType: type,
+    bounds: centeredBounds(
+      BITMAP_TEXT_PLACEHOLDER_WIDTH,
+      BITMAP_TEXT_PLACEHOLDER_HEIGHT,
+    ),
+  };
+}
+
+function missingResult(
+  ctx: Parameters<PixiVisualPainter["paint"]>[0],
+  type: string,
+): VisualPaintResult {
+  destroyVisual(ctx.visual);
+  ctx.showPlaceholder(
+    BITMAP_TEXT_PLACEHOLDER_WIDTH,
+    BITMAP_TEXT_PLACEHOLDER_HEIGHT,
+    PLACEHOLDER_MISSING_TINT,
+  );
+  return {
+    visual: undefined,
+    visualType: type,
+    bounds: centeredBounds(
+      BITMAP_TEXT_PLACEHOLDER_WIDTH,
+      BITMAP_TEXT_PLACEHOLDER_HEIGHT,
+    ),
+  };
+}
 
 export const bitmapTextPainter: PixiVisualPainter = {
   type: "BitmapText",
   async paint(ctx): Promise<VisualPaintResult> {
     const data = ctx.data as BitmapTextComponentData;
-    if (!data.fontFamily) {
-      destroyVisual(ctx.visual);
-      ctx.showPlaceholder(
-        BITMAP_TEXT_PLACEHOLDER_WIDTH,
-        BITMAP_TEXT_PLACEHOLDER_HEIGHT,
-        BITMAP_FONT_UNASSIGNED_TINT,
-      );
-      console.warn("[renderer] BitmapText has no fontFamily assigned", {
+    let fontFamily = data.fontFamily;
+    if (data.assetId) {
+      const urls = ctx.assetResolver?.resolveBitmapFontUrls?.(data.assetId);
+      if (!urls) {
+        ctx.warnMissingAsset(data.assetId);
+        return missingResult(ctx, data.type);
+      }
+      try {
+        fontFamily = await loadBitmapFont(data.assetId, urls);
+      } catch (error) {
+        console.warn("[renderer] BitmapText font load failed", {
+          category: "renderer",
+          nodeId: ctx.node.id,
+          assetId: data.assetId,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        ctx.warnMissingAsset(data.assetId);
+        return missingResult(ctx, data.type);
+      }
+    }
+    if (!fontFamily) {
+      console.warn("[renderer] BitmapText has no font assigned", {
         category: "renderer",
         nodeId: ctx.node.id,
       });
-      return {
-        visual: undefined,
-        visualType: data.type,
-        bounds: centeredBounds(
-          BITMAP_TEXT_PLACEHOLDER_WIDTH,
-          BITMAP_TEXT_PLACEHOLDER_HEIGHT,
-        ),
-      };
+      return unassignedResult(ctx, data.type);
     }
     try {
       ctx.hidePlaceholder();
@@ -53,7 +101,7 @@ export const bitmapTextPainter: PixiVisualPainter = {
         view = new BitmapText({
           text: data.text,
           style: {
-            fontFamily: data.fontFamily,
+            fontFamily,
             fontSize: data.fontSize,
             align: data.align,
             letterSpacing: data.letterSpacing,
@@ -62,7 +110,7 @@ export const bitmapTextPainter: PixiVisualPainter = {
         ensureChild(ctx.visualsRoot, view);
       } else {
         view.text = data.text;
-        view.style.fontFamily = data.fontFamily;
+        view.style.fontFamily = fontFamily;
         view.style.fontSize = data.fontSize;
         view.style.align = data.align;
         view.style.letterSpacing = data.letterSpacing;
@@ -92,23 +140,10 @@ export const bitmapTextPainter: PixiVisualPainter = {
       console.warn("[renderer] BitmapText paint failed", {
         category: "renderer",
         nodeId: ctx.node.id,
-        fontFamily: data.fontFamily,
+        fontFamily,
         error: error instanceof Error ? error.message : String(error),
       });
-      destroyVisual(ctx.visual);
-      ctx.showPlaceholder(
-        BITMAP_TEXT_PLACEHOLDER_WIDTH,
-        BITMAP_TEXT_PLACEHOLDER_HEIGHT,
-        PLACEHOLDER_MISSING_TINT,
-      );
-      return {
-        visual: undefined,
-        visualType: data.type,
-        bounds: centeredBounds(
-          BITMAP_TEXT_PLACEHOLDER_WIDTH,
-          BITMAP_TEXT_PLACEHOLDER_HEIGHT,
-        ),
-      };
+      return missingResult(ctx, data.type);
     }
   },
 };

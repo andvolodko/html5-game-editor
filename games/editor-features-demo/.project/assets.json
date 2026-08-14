@@ -1490,6 +1490,31 @@
       }
     },
     {
+      "id": "asset_36b9672a-21c3-49fa-93d3-6463d04f0489",
+      "type": "spine",
+      "name": "owl-pma",
+      "path": "assets/spine/owl/owl-pma.json",
+      "metadata": {
+        "kind": "spine",
+        "skeletonFormat": "json",
+        "atlasPath": "assets/spine/owl/owl-pma.atlas",
+        "pagePaths": [
+          "assets/spine/owl/owl-pma.png"
+        ],
+        "skins": [
+          "default"
+        ],
+        "animations": [
+          "blink",
+          "down",
+          "idle",
+          "left",
+          "right",
+          "up"
+        ]
+      }
+    },
+    {
       "id": "asset_382e1182-30e5-49d1-89cd-3cc36dce3efd",
       "type": "texture",
       "name": "Pawn_Interact Pickaxe",
@@ -1723,6 +1748,27 @@
         "width": 1536,
         "height": 192,
         "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_43adb08a-f953-4ede-8b72-2eef11e18d88",
+      "type": "spine",
+      "name": "stretchyman-pma",
+      "path": "assets/spine/stretchyman/stretchyman-pma.json",
+      "metadata": {
+        "kind": "spine",
+        "skeletonFormat": "json",
+        "atlasPath": "assets/spine/stretchyman/stretchyman-pma.atlas",
+        "pagePaths": [
+          "assets/spine/stretchyman/stretchyman-pma.png"
+        ],
+        "skins": [
+          "default"
+        ],
+        "animations": [
+          "idle",
+          "sneak"
+        ]
       }
     },
     {
@@ -2086,6 +2132,26 @@
         "sheetPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Lancer.png",
         "dataPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Lancer.json",
         "compileRevision": "1749688596000-94182"
+      }
+    },
+    {
+      "id": "asset_4ccd88f1-1a39-4f40-a572-c6b438c86e94",
+      "type": "spine",
+      "name": "coin-pma",
+      "path": "assets/spine/coin/coin-pma.json",
+      "metadata": {
+        "kind": "spine",
+        "skeletonFormat": "json",
+        "atlasPath": "assets/spine/coin/coin-pma.atlas",
+        "pagePaths": [
+          "assets/spine/coin/coin-pma.png"
+        ],
+        "skins": [
+          "default"
+        ],
+        "animations": [
+          "animation"
+        ]
       }
     },
     {
@@ -2821,6 +2887,64 @@
         "width": 64,
         "height": 64,
         "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_72cd6ade-5d01-41d6-84bf-736b98e35931",
+      "type": "spine",
+      "name": "mix-and-match",
+      "path": "assets/spine/maxandmatch/mix-and-match.json",
+      "metadata": {
+        "kind": "spine",
+        "skeletonFormat": "json",
+        "atlasPath": "assets/spine/maxandmatch/mix-and-match.atlas",
+        "pagePaths": [
+          "assets/spine/maxandmatch/mix-and-match.png"
+        ],
+        "skins": [
+          "default",
+          "skin-base",
+          "accessories/backpack",
+          "accessories/bag",
+          "accessories/cape-blue",
+          "accessories/cape-red",
+          "accessories/hat-pointy-blue-yellow",
+          "accessories/hat-red-yellow",
+          "accessories/scarf",
+          "clothes/dress-blue",
+          "clothes/dress-green",
+          "clothes/hoodie-blue-and-scarf",
+          "clothes/hoodie-orange",
+          "eyelids/girly",
+          "eyelids/semiclosed",
+          "eyes/eyes-blue",
+          "eyes/green",
+          "eyes/violet",
+          "eyes/yellow",
+          "full-skins/boy",
+          "full-skins/girl",
+          "full-skins/girl-blue-cape",
+          "full-skins/girl-spring-dress",
+          "hair/blue",
+          "hair/brown",
+          "hair/long-blue-with-scarf",
+          "hair/pink",
+          "hair/short-red",
+          "legs/boots-pink",
+          "legs/boots-red",
+          "legs/pants-green",
+          "legs/pants-jeans",
+          "nose/long",
+          "nose/short"
+        ],
+        "animations": [
+          "aware",
+          "blink",
+          "dance",
+          "dress-up",
+          "idle",
+          "walk"
+        ]
       }
     },
     {
@@ -3952,6 +4076,28 @@
       }
     },
     {
+      "id": "asset_acc04272-6168-43f9-bb3b-8f6f4b2bbe60",
+      "type": "spine",
+      "name": "goblins-pma",
+      "path": "assets/spine/goblins/goblins-pma.json",
+      "metadata": {
+        "kind": "spine",
+        "skeletonFormat": "json",
+        "atlasPath": "assets/spine/goblins/goblins-pma.atlas",
+        "pagePaths": [
+          "assets/spine/goblins/goblins-pma.png"
+        ],
+        "skins": [
+          "default",
+          "goblin",
+          "goblingirl"
+        ],
+        "animations": [
+          "walk"
+        ]
+      }
+    },
+    {
       "id": "asset_acf5b429-5d70-4a7c-9f3f-13fdc1d97786",
       "type": "texture",
       "name": "Lancer_Run",
@@ -4178,18 +4324,6 @@
         "width": 1152,
         "height": 192,
         "mimeType": "image/png"
-      }
-    },
-    {
-      "id": "asset_b8f604c4-25db-4cf1-bd5f-8fb354ee280f",
-      "type": "texture",
-      "name": "11",
-      "path": "assets/ui/11.webp",
-      "metadata": {
-        "kind": "texture",
-        "width": 1600,
-        "height": 1600,
-        "mimeType": "image/webp"
       }
     },
     {
@@ -4464,6 +4598,32 @@
         "width": 256,
         "height": 256,
         "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c621e490-bc86-4dbe-ad36-ec29964d4683",
+      "type": "spine",
+      "name": "celestial-circus",
+      "path": "assets/spine/circus/celestial-circus.json",
+      "metadata": {
+        "kind": "spine",
+        "skeletonFormat": "json",
+        "atlasPath": "assets/spine/circus/celestial-circus.atlas",
+        "pagePaths": [
+          "assets/spine/circus/celestial-circus.png"
+        ],
+        "skins": [
+          "default"
+        ],
+        "animations": [
+          "eyeblink",
+          "eyeblink-long",
+          "stars",
+          "swing",
+          "wind-idle",
+          "wing-flap",
+          "wings-and-feet"
+        ]
       }
     },
     {
@@ -5020,6 +5180,18 @@
       }
     },
     {
+      "id": "asset_d96c56ed-8783-426e-b09a-0a4ab716cd6e",
+      "type": "texture",
+      "name": "desyrel",
+      "path": "assets/fonts/bitmap-font-desyrel/desyrel.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 512,
+        "height": 512,
+        "mimeType": "image/png"
+      }
+    },
+    {
       "id": "asset_d98ddb0a-cff3-4313-a95a-42c4be188fa7",
       "type": "texture",
       "name": "Lancer_Up_Attack",
@@ -5455,6 +5627,19 @@
         "width": 64,
         "height": 64,
         "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_desyrel",
+      "type": "font",
+      "name": "desyrel",
+      "path": "assets/fonts/bitmap-font-desyrel/desyrel.xml",
+      "metadata": {
+        "kind": "font",
+        "fontFamily": "Desyrel",
+        "pagePaths": [
+          "assets/fonts/bitmap-font-desyrel/desyrel.png"
+        ]
       }
     },
     {
@@ -6203,6 +6388,27 @@
       }
     },
     {
+      "id": "asset_f7538262-ceb9-4191-b19c-d8547a02680a",
+      "type": "spine",
+      "name": "tank-pma",
+      "path": "assets/spine/tank/tank-pma.json",
+      "metadata": {
+        "kind": "spine",
+        "skeletonFormat": "json",
+        "atlasPath": "assets/spine/tank/tank-pma.atlas",
+        "pagePaths": [
+          "assets/spine/tank/tank-pma.png"
+        ],
+        "skins": [
+          "default"
+        ],
+        "animations": [
+          "drive",
+          "shoot"
+        ]
+      }
+    },
+    {
       "id": "asset_f887f8aa-b088-4824-9472-1c0db23ae256",
       "type": "texture",
       "name": "Pawn_Interact Knife",
@@ -6424,6 +6630,54 @@
         "width": 1152,
         "height": 192,
         "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_webfont_chachicle",
+      "type": "webfont",
+      "name": "ChaChicle",
+      "path": "assets/fonts/webfonts/ChaChicle.ttf",
+      "metadata": {
+        "kind": "webfont",
+        "fontFamily": "ChaChicle",
+        "mimeType": "font/ttf",
+        "format": "ttf"
+      }
+    },
+    {
+      "id": "asset_webfont_crosterian",
+      "type": "webfont",
+      "name": "Crosterian",
+      "path": "assets/fonts/webfonts/Crosterian.woff2",
+      "metadata": {
+        "kind": "webfont",
+        "fontFamily": "Crosterian",
+        "mimeType": "font/woff2",
+        "format": "woff2"
+      }
+    },
+    {
+      "id": "asset_webfont_dotrice",
+      "type": "webfont",
+      "name": "Dotrice-Regular",
+      "path": "assets/fonts/webfonts/Dotrice-Regular.woff",
+      "metadata": {
+        "kind": "webfont",
+        "fontFamily": "Dotrice Regular",
+        "mimeType": "font/woff",
+        "format": "woff"
+      }
+    },
+    {
+      "id": "asset_webfont_lineal",
+      "type": "webfont",
+      "name": "Lineal",
+      "path": "assets/fonts/webfonts/Lineal.otf",
+      "metadata": {
+        "kind": "webfont",
+        "fontFamily": "Lineal",
+        "mimeType": "font/otf",
+        "format": "otf"
       }
     }
   ]

@@ -1,0 +1,582 @@
+{
+  "id": "scene_pixi_text_examples",
+  "name": "Text",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "node_text_bg",
+      "name": "Background",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_text_bg_t",
+          "position": {
+            "x": 960,
+            "y": 540
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Graphics",
+          "id": "comp_text_bg_g",
+          "shape": {
+            "type": "rectangle",
+            "width": 1920,
+            "height": 1080
+          },
+          "fillColor": 1087931,
+          "fillAlpha": 1,
+          "strokeColor": 0,
+          "strokeAlpha": 0,
+          "strokeWidth": 0
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_text_basic",
+      "name": "Basic Text",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_text_basic_t",
+          "position": {
+            "x": 50,
+            "y": 100
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_text_basic",
+          "text": "Basic text in pixi",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 26,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 16777215,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_text_bitmap",
+      "name": "Bitmap Text",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_text_bitmap_t",
+          "position": {
+            "x": 50,
+            "y": 200
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "BitmapText",
+          "id": "comp_text_bitmap",
+          "text": "bitmap fonts are supported!\nWoo yay!",
+          "assetId": "asset_desyrel",
+          "fontSize": 55,
+          "align": "left",
+          "letterSpacing": 0,
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_text_rich",
+      "name": "Rich Text",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_text_rich_t",
+          "position": {
+            "x": 50,
+            "y": 400
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_text_rich",
+          "text": "Rich text with a lot of options and across multiple lines",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 36,
+            "fontWeight": "bold",
+            "fontStyle": "italic",
+            "fontVariant": "normal",
+            "fill": [
+              16777215,
+              65433
+            ],
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": true,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 4855888,
+            "strokeAlpha": 1,
+            "strokeWidth": 5,
+            "strokeJoin": "round",
+            "miterLimit": 10,
+            "dropShadow": true,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 4,
+            "dropShadowDistance": 6,
+            "dropShadowAngle": 30
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_text_skew",
+      "name": "Skew Text",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_text_skew_t",
+          "position": {
+            "x": 300,
+            "y": 680
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          },
+          "skew": {
+            "x": 37.2422,
+            "y": -17.1887
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_text_skew",
+          "text": "SKEW IS COOL",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 60,
+            "fontWeight": "lighter",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 16777215,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 17952,
+            "strokeAlpha": 1,
+            "strokeWidth": 12,
+            "strokeJoin": "round",
+            "miterLimit": 10,
+            "dropShadow": true,
+            "dropShadowColor": 1118481,
+            "dropShadowAlpha": 0.8,
+            "dropShadowBlur": 4,
+            "dropShadowDistance": 10,
+            "dropShadowAngle": 120.3213
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_text_webfont_chachicle",
+      "name": "ChaChicle",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_text_webfont_chachicle_t",
+          "position": {
+            "x": 720,
+            "y": 80
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_text_webfont_chachicle",
+          "text": "ChaChicle.ttf",
+          "style": {
+            "fontFamily": "ChaChicle",
+            "fontAssetId": "asset_webfont_chachicle",
+            "fontSize": 50,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 16777215,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_text_webfont_lineal",
+      "name": "Lineal",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_text_webfont_lineal_t",
+          "position": {
+            "x": 720,
+            "y": 230
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_text_webfont_lineal",
+          "text": "Lineal.otf",
+          "style": {
+            "fontFamily": "Lineal",
+            "fontAssetId": "asset_webfont_lineal",
+            "fontSize": 50,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 16777215,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_text_webfont_dotrice",
+      "name": "Dotrice Regular",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_text_webfont_dotrice_t",
+          "position": {
+            "x": 720,
+            "y": 380
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_text_webfont_dotrice",
+          "text": "Dotrice Regular.woff",
+          "style": {
+            "fontFamily": "Dotrice Regular",
+            "fontAssetId": "asset_webfont_dotrice",
+            "fontSize": 50,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 16777215,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_text_webfont_crosterian",
+      "name": "Crosterian",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_text_webfont_crosterian_t",
+          "position": {
+            "x": 720,
+            "y": 530
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_text_webfont_crosterian",
+          "text": "Crosterian.woff2",
+          "style": {
+            "fontFamily": "Crosterian",
+            "fontAssetId": "asset_webfont_crosterian",
+            "fontSize": 50,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 16777215,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_text_back",
+      "name": "Go to Main",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_text_back_t",
+          "position": {
+            "x": 24,
+            "y": 24
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_text_back",
+          "text": "Go to Main scene",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 24,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 16777215,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_text_back_go",
+          "scriptId": "editor-features-demo.GoSpineButton",
+          "properties": {
+            "sceneName": "main"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_text_back_audio",
+          "scriptId": "shared.AudioClick",
+          "properties": {
+            "audioAssetId": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
+            "mouseEvent": "pointertap"
+          }
+        }
+      ],
+      "children": []
+    }
+  ]
+}

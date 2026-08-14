@@ -77,9 +77,9 @@ Initial supported resources: PNG, JPG, WebP, spritesheets, Aseprite / LibreSprit
 | NineSliceSprite | Supported | |
 | TilingSprite | Supported | |
 | Graphics | Supported | MVP shapes: rect / rounded-rect / circle / ellipse / polygon |
-| Text | Supported | Common TextStyle subset |
-| BitmapText | Supported | Font assets not imported yet; unassigned font → placeholder |
-| HTMLText | Supported | |
+| Text | Supported | Common TextStyle subset, including linear fill gradients (`fill` color stops) and webfont `style.fontAssetId` |
+| BitmapText | Supported | AngelCode BMFont (`font` assetId); unassigned/missing → placeholder |
+| HTMLText | Supported | Same TextStyle subset as Text, including webfont `style.fontAssetId` |
 | Mesh | Supported | Default textured quad (no custom shader editor) |
 | MeshSimple | Supported | |
 | MeshRope | Supported | |
@@ -91,4 +91,4 @@ Initial supported resources: PNG, JPG, WebP, spritesheets, Aseprite / LibreSprit
 
 Node creation is driven by `NodeTypeRegistry` (`pixi.*` stable IDs). Menus and `CreateNodeCommand` share that registry. Leaf visuals cannot receive scene children (domain `canMoveNode` / create-parent policy).
 
-Future compatibility: particles / ParticleContainer (experimental), masks, filters, bitmap font asset importer, custom shaders, visual mesh vertex editor.
+Future compatibility: particles / ParticleContainer (experimental), masks, filters, custom shaders, visual mesh vertex editor.

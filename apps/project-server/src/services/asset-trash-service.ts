@@ -6,7 +6,7 @@ import {
   ownedAssetPaths,
   parseAssetRecord,
   parseDeletableAssetFolderPath,
-  spineBundleFolder,
+  ownedBundleFolder,
   type AssetRecord,
 } from "@game-editor/assets";
 import { DomainError, ValidationError } from "@game-editor/core";
@@ -61,7 +61,7 @@ export class AssetTrashService {
       JSON.stringify(record),
     );
 
-    const bundleFolder = spineBundleFolder(record);
+    const bundleFolder = ownedBundleFolder(record);
     if (bundleFolder) {
       await this.moveIntoTrash(bundleFolder, id);
       return;
@@ -81,7 +81,7 @@ export class AssetTrashService {
       throw new ValidationError(`Trash record id mismatch for ${id}`);
     }
 
-    const bundleFolder = spineBundleFolder(record);
+    const bundleFolder = ownedBundleFolder(record);
     if (bundleFolder) {
       await this.moveOutOfTrash(bundleFolder, id);
     } else {

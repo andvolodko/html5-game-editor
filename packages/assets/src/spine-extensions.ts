@@ -134,6 +134,9 @@ export function ownedAssetPaths(record: AssetRecord): string[] {
       ...record.metadata.pagePaths,
     ];
   }
+  if (record.metadata.kind === "font") {
+    return [record.path, ...record.metadata.pagePaths];
+  }
   if (record.metadata.kind === "gltf") {
     return ownedGltfPaths(record);
   }
@@ -160,6 +163,17 @@ export function relocateOwnedAssetPaths(
       metadata: {
         ...record.metadata,
         atlasPath: relocate(record.metadata.atlasPath),
+        pagePaths: record.metadata.pagePaths.map(relocate),
+      },
+    };
+  }
+
+  if (record.metadata.kind === "font") {
+    return {
+      ...record,
+      path: relocate(record.path),
+      metadata: {
+        ...record.metadata,
         pagePaths: record.metadata.pagePaths.map(relocate),
       },
     };
@@ -198,11 +212,23 @@ export function relocateOwnedAssetPaths(
   return { ...record, path: relocate(record.path) };
 }
 
+/** Shared parent folder of a multi-file spine/font bundle, or undefined. */
+export function ownedBundleFolder(record: AssetRecord): string | undefined {
+  if (record.metadata.kind !== "spine" && record.metadata.kind !== "font") {
+    return undefined;
+  }
+  return sharedOwnedFolder(record);
+}
+
 /** Shared parent folder of all owned files, or undefined when files are not a bundle dir. */
 export function spineBundleFolder(record: AssetRecord): string | undefined {
   if (record.metadata.kind !== "spine") {
     return undefined;
   }
+  return sharedOwnedFolder(record);
+}
+
+function sharedOwnedFolder(record: AssetRecord): string | undefined {
   const dirs = ownedAssetPaths(record).map((assetPath) => {
     const normalized = normalizePath(assetPath);
     const slash = normalized.lastIndexOf("/");

@@ -28,6 +28,7 @@ export const transform2DComponentSchema = z.object({
   position: vec2Schema,
   rotation: z.number(),
   scale: vec2Schema,
+  skew: vec2Schema.optional(),
   anchor: vec2Schema.optional(),
 });
 
@@ -115,11 +116,15 @@ export const graphicsComponentSchema = z.object({
 
 export const textStyleSchema = z.object({
   fontFamily: z.string().min(1),
+  fontAssetId: z.string().min(1).optional(),
   fontSize: z.number().positive(),
   fontWeight: z.enum(TEXT_FONT_WEIGHT_OPTIONS),
   fontStyle: z.enum(TEXT_FONT_STYLE_OPTIONS),
   fontVariant: z.enum(TEXT_FONT_VARIANT_OPTIONS),
-  fill: z.number().int().nonnegative(),
+  fill: z.union([
+    z.number().int().nonnegative(),
+    z.array(z.number().int().nonnegative()).min(1),
+  ]),
   fillAlpha: z.number().min(0).max(1),
   align: z.enum(TEXT_ALIGN_OPTIONS),
   letterSpacing: z.number(),
@@ -157,6 +162,7 @@ export const bitmapTextComponentSchema = z.object({
   type: z.literal("BitmapText"),
   id: z.string().min(1),
   text: z.string(),
+  assetId: z.string().min(1).optional(),
   fontFamily: z.string().min(1).optional(),
   fontSize: z.number().positive(),
   align: z.enum(["left", "center", "right"]),

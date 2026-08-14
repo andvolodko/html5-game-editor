@@ -1,11 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
-import { createEmptyScene, getModel3D, getSpine, getSprite, getAnimatedSprite, getTransform3D, findNodeById } from "@game-editor/scene";
+import { createEmptyScene, getModel3D, getSpine, getSprite, getAnimatedSprite, getBitmapText, getText, getTransform3D, findNodeById } from "@game-editor/scene";
 import {
   createAudioAssetRecord,
   createGltfAssetRecord,
   createSpineAssetRecord,
   createTextureAssetRecord,
   createAsepriteAssetRecord,
+  createBitmapFontAssetRecord,
+  createWebFontAssetRecord,
   type AssetDatabaseData,
 } from "@game-editor/assets";
 import {
@@ -67,6 +69,48 @@ describe("asset workflows", () => {
     const spine = node ? getSpine(node) : undefined;
     expect(spine?.assetId).toBe("asset_spine");
     expect(spine?.playing).toBe(true);
+    editor.undo();
+    expect(editor.getScene().nodes).toHaveLength(0);
+  });
+
+  it("dropAssetOntoScene creates a BitmapText node for font assets", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    editor.assets.getDatabase().add(
+      createBitmapFontAssetRecord({
+        id: "asset_font",
+        name: "desyrel",
+        path: "assets/fonts/desyrel.xml",
+        fontFamily: "Desyrel",
+        pagePaths: ["assets/fonts/desyrel.png"],
+      }),
+    );
+
+    const nodeId = dropAssetOntoScene(editor, "asset_font", { x: 50, y: 200 });
+    const node = editor.getScene().nodes.find((n) => n.id === nodeId);
+    const bitmap = node ? getBitmapText(node) : undefined;
+    expect(bitmap?.assetId).toBe("asset_font");
+    editor.undo();
+    expect(editor.getScene().nodes).toHaveLength(0);
+  });
+
+  it("dropAssetOntoScene creates a Text node for webfont assets", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    editor.assets.getDatabase().add(
+      createWebFontAssetRecord({
+        id: "asset_webfont",
+        name: "ChaChicle",
+        path: "assets/fonts/webfonts/ChaChicle.ttf",
+        fontFamily: "ChaChicle",
+        mimeType: "font/ttf",
+        format: "ttf",
+      }),
+    );
+
+    const nodeId = dropAssetOntoScene(editor, "asset_webfont", { x: 720, y: 80 });
+    const node = editor.getScene().nodes.find((n) => n.id === nodeId);
+    const text = node ? getText(node) : undefined;
+    expect(text?.style.fontAssetId).toBe("asset_webfont");
+    expect(text?.style.fontFamily).toBe("ChaChicle");
     editor.undo();
     expect(editor.getScene().nodes).toHaveLength(0);
   });

@@ -65,6 +65,16 @@ function remapOwnedToFolder(record: AssetRecord, toFolder: string): AssetRecord 
       },
     };
   }
+  if (record.metadata.kind === "font") {
+    return {
+      ...record,
+      path: remap(record.path),
+      metadata: {
+        ...record.metadata,
+        pagePaths: record.metadata.pagePaths.map(remap),
+      },
+    };
+  }
   if (record.metadata.kind === "gltf") {
     return {
       ...record,

@@ -4,6 +4,7 @@ import {
   DEFAULT_NINE_SLICE_HEIGHT,
   DEFAULT_NINE_SLICE_WIDTH,
   DEFAULT_SPRITE_SIZE,
+  DEFAULT_TEXT_FILL,
   DEFAULT_TILING_SPRITE_SIZE,
 } from "./defaults.js";
 
@@ -132,13 +133,18 @@ export type TextBaseline = (typeof TEXT_BASELINE_OPTIONS)[number];
 export const TEXT_STROKE_JOIN_OPTIONS = ["miter", "round", "bevel"] as const;
 export type TextStrokeJoin = (typeof TEXT_STROKE_JOIN_OPTIONS)[number];
 
+/** Solid RGB hex, or two-or-more stops for a linear fill gradient (Pixi `fill: number[]`). */
+export type TextStyleFill = number | number[];
+
 export interface TextStyleData {
   fontFamily: string;
+  /** Catalogue webfont asset. Unset → use `fontFamily` as a system/CSS family. */
+  fontAssetId?: string;
   fontSize: number;
   fontWeight: TextFontWeight;
   fontStyle: TextFontStyle;
   fontVariant: TextFontVariant;
-  fill: number;
+  fill: TextStyleFill;
   fillAlpha: number;
   align: TextAlign;
   letterSpacing: number;
@@ -165,6 +171,19 @@ export interface TextStyleData {
   dropShadowAngle: number;
 }
 
+/** Expand a solid fill or gradient into ordered RGB stops. */
+export function textStyleFillStops(fill: TextStyleFill): number[] {
+  return Array.isArray(fill) ? [...fill] : [fill];
+}
+
+/** Persist one stop as a number; two or more as a gradient array. */
+export function compactTextStyleFill(stops: readonly number[]): TextStyleFill {
+  if (stops.length <= 1) {
+    return stops[0] ?? DEFAULT_TEXT_FILL;
+  }
+  return [...stops];
+}
+
 export interface TextComponentData {
   type: "Text";
   id: string;
@@ -177,7 +196,9 @@ export interface BitmapTextComponentData {
   type: "BitmapText";
   id: string;
   text: string;
-  /** Bitmap font family name once a font asset exists; optional until assigned. */
+  /** Catalogue bitmap-font asset. Unassigned → placeholder. */
+  assetId?: string;
+  /** Legacy / override family name after the font asset is loaded. */
   fontFamily?: string;
   fontSize: number;
   align: "left" | "center" | "right";

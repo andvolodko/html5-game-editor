@@ -4,7 +4,7 @@ import { findParentNode } from "./hierarchy.js";
 
 /**
  * 2D affine matrix matching PixiJS Container local transforms
- * (position, rotation degrees, scale; no skew/pivot).
+ * (position, rotation degrees, scale, optional skew degrees).
  */
 export interface Aff2 {
   a: number;
@@ -23,24 +23,30 @@ export function aff2FromPose(
   position: Vec2,
   rotationDegrees: number,
   scale: Vec2,
+  skewDegrees: Vec2 = { x: 0, y: 0 },
 ): Aff2 {
   const rad = (rotationDegrees * Math.PI) / 180;
-  const cos = Math.cos(rad);
-  const sin = Math.sin(rad);
+  const skewX = (skewDegrees.x * Math.PI) / 180;
+  const skewY = (skewDegrees.y * Math.PI) / 180;
   const sx = scale.x;
   const sy = scale.y;
   return {
-    a: cos * sx,
-    b: sin * sx,
-    c: -sin * sy,
-    d: cos * sy,
+    a: Math.cos(rad + skewY) * sx,
+    b: Math.sin(rad + skewY) * sx,
+    c: -Math.sin(rad - skewX) * sy,
+    d: Math.cos(rad - skewX) * sy,
     tx: position.x,
     ty: position.y,
   };
 }
 
 export function aff2FromTransform2D(transform: Transform2DComponentData): Aff2 {
-  return aff2FromPose(transform.position, transform.rotation, transform.scale);
+  return aff2FromPose(
+    transform.position,
+    transform.rotation,
+    transform.scale,
+    transform.skew ?? { x: 0, y: 0 },
+  );
 }
 
 export function multiplyAff2(parent: Aff2, local: Aff2): Aff2 {

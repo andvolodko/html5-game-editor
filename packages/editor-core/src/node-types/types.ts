@@ -10,6 +10,8 @@ export interface NodeCreationContext {
   parentId?: string;
   /** Optional texture (or other) asset for types that accept one. */
   assetId?: string;
+  /** CSS family when creating Text from a webfont. */
+  fontFamily?: string;
 }
 
 export interface NodeTypeDefinition {

@@ -17,11 +17,24 @@ export function registerPixiTextTypes(registry: NodeTypeRegistry): void {
       order: 10,
       icon: "T",
       canHaveChildren: false,
+      supportedAssetTypes: ["webfont"],
       createDefaultNode: (ctx) =>
         createNodeWithVisual(
           ctx.name,
           ctx.position,
-          createTextComponent(),
+          createTextComponent(
+            ctx.assetId !== undefined
+              ? {
+                  style: {
+                    fontAssetId: ctx.assetId,
+                    ...(ctx.fontFamily !== undefined
+                      ? { fontFamily: ctx.fontFamily }
+                      : {}),
+                  },
+                  anchor: { x: 0, y: 0 },
+                }
+              : {},
+          ),
           ctx.parentId,
         ),
     }),
@@ -36,11 +49,14 @@ export function registerPixiTextTypes(registry: NodeTypeRegistry): void {
       order: 20,
       icon: "B",
       canHaveChildren: false,
+      supportedAssetTypes: ["font"],
       createDefaultNode: (ctx) =>
         createNodeWithVisual(
           ctx.name,
           ctx.position,
-          createBitmapTextComponent(),
+          createBitmapTextComponent(
+            ctx.assetId !== undefined ? { assetId: ctx.assetId } : {},
+          ),
           ctx.parentId,
         ),
     }),

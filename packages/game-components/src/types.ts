@@ -18,6 +18,8 @@ export const COMPONENT_ASSET_TYPES = [
   "audio",
   "gltf",
   "aseprite",
+  "font",
+  "webfont",
 ] as const;
 
 export type ComponentAssetType = (typeof COMPONENT_ASSET_TYPES)[number];
@@ -104,6 +106,7 @@ export interface ScriptTransform2D {
   position: { x: number; y: number };
   rotation: number;
   scale: { x: number; y: number };
+  skew: { x: number; y: number };
 }
 
 /** Partial patch applied by `setTransform2D` (merges into the live Transform2D). */
@@ -111,6 +114,7 @@ export interface ScriptTransform2DPatch {
   position?: { x: number; y: number };
   rotation?: number;
   scale?: { x: number; y: number };
+  skew?: { x: number; y: number };
 }
 
 /** Read-only 3D transform snapshot for script behaviours (no component id). */

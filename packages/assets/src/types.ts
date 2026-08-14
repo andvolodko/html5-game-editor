@@ -4,7 +4,14 @@ export const ASSET_SCHEMA_VERSION = 1 as const;
  * Persisted asset kinds. Only kinds with importers/metadata are included.
  * Extend this union when a new importer ships — do not stub empty kinds.
  */
-export type AssetType = "texture" | "spine" | "audio" | "gltf" | "aseprite";
+export type AssetType =
+  | "texture"
+  | "spine"
+  | "audio"
+  | "gltf"
+  | "aseprite"
+  | "font"
+  | "webfont";
 
 export interface TextureAssetMetadata {
   kind: "texture";
@@ -73,12 +80,30 @@ export interface AsepriteAssetMetadata {
   compileError?: string;
 }
 
+export interface BitmapFontAssetMetadata {
+  kind: "font";
+  /** Pixi BitmapText `fontFamily` after the descriptor is loaded (e.g. "Desyrel"). */
+  fontFamily: string;
+  /** Project-relative paths of BMFont page textures (not separate AssetRecords). */
+  pagePaths: string[];
+}
+
+export interface WebFontAssetMetadata {
+  kind: "webfont";
+  /** CSS / Pixi `fontFamily` after the file is loaded (e.g. "ChaChicle"). */
+  fontFamily: string;
+  mimeType: string;
+  format: "ttf" | "otf" | "woff" | "woff2";
+}
+
 export type AssetMetadata =
   | TextureAssetMetadata
   | SpineAssetMetadata
   | AudioAssetMetadata
   | GltfAssetMetadata
-  | AsepriteAssetMetadata;
+  | AsepriteAssetMetadata
+  | BitmapFontAssetMetadata
+  | WebFontAssetMetadata;
 
 /**
  * Stable asset identity. Scenes must reference `id`, never raw filesystem paths.

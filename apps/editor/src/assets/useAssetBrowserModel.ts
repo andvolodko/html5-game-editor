@@ -439,6 +439,8 @@ export function useAssetBrowserModel(options?: {
       contentUrl: (assetId) => editor.assets.getContentUrl(assetId),
       spinePartUrl: (assetId, pageBasename) =>
         editor.assets.resolveSpinePartUrl(assetId, pageBasename),
+      fontPartUrl: (assetId, pageBasename) =>
+        editor.assets.resolveBitmapFontPartUrl(assetId, pageBasename),
       asepritePartUrl: (assetId, partBasename) =>
         editor.assets.resolveAsepritePartUrl(assetId, partBasename),
     });

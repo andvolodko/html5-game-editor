@@ -263,6 +263,79 @@
       "children": []
     },
     {
+      "id": "node_13668062-90ec-4756-a8b0-50a7b524ff2b",
+      "name": "Text Copy",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_7167abb5-c85c-46b4-898b-062a5f3aa5aa",
+          "position": {
+            "x": 88,
+            "y": 367
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 0.6602311916798365,
+            "y": 0.7187581770247342
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_4f09b006-92df-4c3e-a267-8585bc8d6110",
+          "text": "Go to main scene",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 32,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 16777215,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_73279da1-083d-40d8-9139-e0e8ec021888",
+          "scriptId": "editor-features-demo.GoSpineButton",
+          "properties": {
+            "sceneName": "main"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_cd5f90ae-c219-41c6-9fc9-6f38a622e4e7",
+          "scriptId": "shared.AudioClick",
+          "properties": {
+            "audioAssetId": "asset_011b4367-80e0-4f48-b16e-8e92467567e3",
+            "mouseEvent": "pointertap"
+          }
+        }
+      ],
+      "children": []
+    },
+    {
       "id": "node_74a0cf5b-05dc-4f52-a1ac-88117fad2b9e",
       "name": "Button Spine",
       "layer": "foreground",

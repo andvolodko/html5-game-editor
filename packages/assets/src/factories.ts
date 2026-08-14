@@ -7,8 +7,10 @@ import {
   type AsepriteAssetMetadata,
   type AsepriteTagMetadata,
   type GltfAssetMetadata,
+  type BitmapFontAssetMetadata,
   type SpineAssetMetadata,
   type TextureAssetMetadata,
+  type WebFontAssetMetadata,
 } from "./types.js";
 import { generatedAsepriteOutputPaths } from "./aseprite-extensions.js";
 
@@ -117,6 +119,52 @@ export function createGltfAssetRecord(input: {
   return {
     id: input.id ?? createId("asset"),
     type: "gltf",
+    name: input.name,
+    path: normalizeProjectRelativePath(input.path),
+    metadata,
+  };
+}
+
+export function createBitmapFontAssetRecord(input: {
+  name: string;
+  path: string;
+  fontFamily: string;
+  pagePaths: string[];
+  id?: string;
+}): AssetRecord {
+  const metadata: BitmapFontAssetMetadata = {
+    kind: "font",
+    fontFamily: input.fontFamily,
+    pagePaths: input.pagePaths.map(normalizeProjectRelativePath),
+  };
+
+  return {
+    id: input.id ?? createId("asset"),
+    type: "font",
+    name: input.name,
+    path: normalizeProjectRelativePath(input.path),
+    metadata,
+  };
+}
+
+export function createWebFontAssetRecord(input: {
+  name: string;
+  path: string;
+  fontFamily: string;
+  mimeType: string;
+  format: WebFontAssetMetadata["format"];
+  id?: string;
+}): AssetRecord {
+  const metadata: WebFontAssetMetadata = {
+    kind: "webfont",
+    fontFamily: input.fontFamily,
+    mimeType: input.mimeType,
+    format: input.format,
+  };
+
+  return {
+    id: input.id ?? createId("asset"),
+    type: "webfont",
     name: input.name,
     path: normalizeProjectRelativePath(input.path),
     metadata,

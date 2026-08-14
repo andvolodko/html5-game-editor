@@ -158,6 +158,11 @@ export class DocumentManager {
     } else {
       delete transform.anchor;
     }
+    if (values.skew !== undefined) {
+      transform.skew = { ...values.skew };
+    } else {
+      delete transform.skew;
+    }
 
     this.afterContentMutation({
       kind: "update",

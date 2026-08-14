@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   AssetDatabase,
   createAsepriteAssetRecord,
+  createBitmapFontAssetRecord,
   createTextureAssetRecord,
+  createWebFontAssetRecord,
   humanizeAssetNodeName,
   parseAssetDatabase,
   parseAssetRecord,
@@ -158,6 +160,41 @@ describe("AssetDatabase", () => {
     const parsed = parseAssetRecord(record);
     expect(parsed.type).toBe("spine");
     expect(parsed.metadata.kind).toBe("spine");
+  });
+
+  it("round-trips a bitmap font asset record", () => {
+    const record = createBitmapFontAssetRecord({
+      id: "asset_font",
+      name: "desyrel",
+      path: "assets/fonts/desyrel.xml",
+      fontFamily: "Desyrel",
+      pagePaths: ["assets/fonts/desyrel.png"],
+    });
+    const parsed = parseAssetRecord(record);
+    expect(parsed.type).toBe("font");
+    expect(parsed.metadata.kind).toBe("font");
+    if (parsed.metadata.kind === "font") {
+      expect(parsed.metadata.fontFamily).toBe("Desyrel");
+      expect(parsed.metadata.pagePaths).toEqual(["assets/fonts/desyrel.png"]);
+    }
+  });
+
+  it("round-trips a webfont asset record", () => {
+    const record = createWebFontAssetRecord({
+      id: "asset_webfont",
+      name: "ChaChicle",
+      path: "assets/fonts/webfonts/ChaChicle.ttf",
+      fontFamily: "ChaChicle",
+      mimeType: "font/ttf",
+      format: "ttf",
+    });
+    const parsed = parseAssetRecord(record);
+    expect(parsed.type).toBe("webfont");
+    expect(parsed.metadata.kind).toBe("webfont");
+    if (parsed.metadata.kind === "webfont") {
+      expect(parsed.metadata.fontFamily).toBe("ChaChicle");
+      expect(parsed.metadata.format).toBe("ttf");
+    }
   });
 
   it("round-trips an aseprite asset record", () => {

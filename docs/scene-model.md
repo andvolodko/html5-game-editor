@@ -71,6 +71,7 @@ interface Transform2D {
   position: { x: number; y: number };
   rotation: number;
   scale: { x: number; y: number };
+  skew?: { x: number; y: number };
   anchor?: { x: number; y: number };
 }
 

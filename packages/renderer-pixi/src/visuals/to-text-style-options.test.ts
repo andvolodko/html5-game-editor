@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { FillGradient } from "pixi.js";
 import { createDefaultTextStyle } from "@game-editor/scene";
 import { toTextStyleOptions } from "./to-text-style-options.js";
 
@@ -72,5 +73,21 @@ describe("toTextStyleOptions", () => {
     expect(options.trim).toBe(true);
     expect(options.leading).toBe(6);
     expect(options.stroke).toMatchObject({ join: "round", miterLimit: 4 });
+  });
+
+  it("maps two-or-more fill stops to a vertical FillGradient", () => {
+    const options = toTextStyleOptions(
+      createDefaultTextStyle({
+        fill: [0xffffff, 0x00ff99],
+      }),
+    );
+
+    expect(options.fill).toBeInstanceOf(FillGradient);
+    const gradient = options.fill as FillGradient;
+    expect(gradient.type).toBe("linear");
+    expect(gradient.start).toEqual({ x: 0, y: 0 });
+    expect(gradient.end).toEqual({ x: 0, y: 1 });
+    expect(gradient.colorStops).toHaveLength(2);
+    gradient.destroy();
   });
 });

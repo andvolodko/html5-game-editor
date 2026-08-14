@@ -9,7 +9,9 @@ import { AssetDatabaseStore } from "./services/asset-database-store.js";
 import { AssetImporterRegistry } from "./services/asset-importer.js";
 import { TextureAssetImporter } from "./services/texture-asset-importer.js";
 import { SpineAssetImporter } from "./services/spine-asset-importer.js";
+import { BitmapFontAssetImporter } from "./services/bitmap-font-asset-importer.js";
 import { AudioAssetImporter } from "./services/audio-asset-importer.js";
+import { WebFontAssetImporter } from "./services/webfont-asset-importer.js";
 import { GltfAssetImporter } from "./services/gltf-asset-importer.js";
 import { GltfBundleImporter } from "./services/gltf-bundle-importer.js";
 import { AsepriteAssetImporter } from "./services/aseprite-asset-importer.js";
@@ -47,10 +49,12 @@ const assetDatabaseStore = new AssetDatabaseStore(projectService);
 const importerRegistry = new AssetImporterRegistry();
 importerRegistry.register(new TextureAssetImporter());
 importerRegistry.register(new AudioAssetImporter());
+importerRegistry.register(new WebFontAssetImporter());
 importerRegistry.register(new GltfAssetImporter());
 importerRegistry.register(new AsepriteAssetImporter());
 importerRegistry.registerBundle(new GltfBundleImporter());
 importerRegistry.registerBundle(new SpineAssetImporter());
+importerRegistry.registerBundle(new BitmapFontAssetImporter());
 
 const asepriteCompileService = new AsepriteCompileService(
   projectService,

@@ -1150,6 +1150,16 @@ button.active {
   border: 1px solid var(--accent);
 }
 
+.asset-row-icon.font {
+  background: #2a3140;
+  border: 1px solid #e8c36a;
+}
+
+.asset-row-icon.webfont {
+  background: #2a3140;
+  border: 1px solid #7ec8e3;
+}
+
 .asset-row-icon.aseprite {
   background: #2a3140;
   border: 1px solid #c9a227;
@@ -1411,6 +1421,12 @@ button.active {
 .inspector-remove-btn {
   font-size: 0.75rem;
   padding: 0.15rem 0.45rem;
+}
+
+.inspector-fill-stops-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
 }
 
 .add-component {

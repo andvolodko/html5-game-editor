@@ -1,4 +1,4 @@
-import { isSpineImportFile, isSupportedAsepriteFile, isSupportedAudioFile, isSupportedGltfFile, isSupportedTextureFile, isAsepriteAnimated } from "@game-editor/assets";
+import { isSpineImportFile, isBitmapFontImportFile, isSupportedAsepriteFile, isSupportedAudioFile, isSupportedGltfFile, isSupportedTextureFile, isSupportedWebFontFile, isAsepriteAnimated } from "@game-editor/assets";
 import type { Vec2 } from "@game-editor/scene";
 import { isScenesFolderOrDescendant } from "./asset-browser-model.js";
 import type { Editor } from "./editor.js";
@@ -33,14 +33,16 @@ export async function importDroppedFiles(
       isSupportedAudioFile(file) ||
       isSupportedGltfFile(file) ||
       isSupportedAsepriteFile(file) ||
-      isSpineImportFile(file),
+      isSpineImportFile(file) ||
+      isBitmapFontImportFile(file) ||
+      isSupportedWebFontFile(file),
   );
   if (supported.length === 0) {
     return {
       importedCount: 0,
       errors: [],
       message:
-        "No supported files (png/jpg/webp, mp3/ogg/wav, glb, .aseprite, or Spine json/skel/atlas)",
+        "No supported files (png/jpg/webp, mp3/ogg/wav, glb, .aseprite, Spine json/skel/atlas, bitmap font xml/fnt, or webfont ttf/otf/woff)",
     };
   }
 
@@ -70,6 +72,12 @@ export function dropAssetOntoScene(
   const asset = editor.assets.get(assetId);
   if (asset?.type === "spine") {
     return editor.createSpineFromAsset(assetId, position);
+  }
+  if (asset?.type === "font") {
+    return editor.createBitmapTextFromAsset(assetId, position);
+  }
+  if (asset?.type === "webfont") {
+    return editor.createTextFromAsset(assetId, position);
   }
   if (asset?.type === "aseprite") {
     if (asset.metadata.kind === "aseprite" && isAsepriteAnimated(asset.metadata)) {

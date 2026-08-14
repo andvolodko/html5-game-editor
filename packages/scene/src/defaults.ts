@@ -6,6 +6,8 @@ export const IDENTITY_POSITION_2D: Vec2 = { x: 0, y: 0 };
 export const IDENTITY_ROTATION_2D = 0;
 /** Identity Transform2D scale. */
 export const IDENTITY_SCALE_2D: Vec2 = { x: 1, y: 1 };
+/** Identity Transform2D skew in degrees (omitted on serialized transforms). */
+export const IDENTITY_SKEW_2D: Vec2 = { x: 0, y: 0 };
 
 /** Identity Transform3D position (reset / factory default). */
 export const IDENTITY_POSITION_3D: Vec3 = { x: 0, y: 0, z: 0 };

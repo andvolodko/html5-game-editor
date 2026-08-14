@@ -245,4 +245,27 @@ describe("PixiSceneRenderer visual painters", () => {
 
     await renderer.destroy();
   });
+
+  it("applies Transform2D skew to the Pixi container", async () => {
+    const renderer = makeRenderer();
+    await renderer.whenReady();
+    const node = createNodeWithVisual(
+      "Skew",
+      { x: 300, y: 480 },
+      createTextComponent({ text: "SKEW IS COOL" }),
+    );
+    const transform = node.components.find((c) => c.type === "Transform2D");
+    if (transform && transform.type === "Transform2D") {
+      transform.skew = { x: 37.2422, y: -17.1887 };
+    }
+    renderer.createNode(node);
+    await flushPaint();
+
+    const container = renderer.getRuntimeContainer(node.id);
+    const degreesToRadians = Math.PI / 180;
+    expect(container?.skew.x).toBeCloseTo(37.2422 * degreesToRadians, 4);
+    expect(container?.skew.y).toBeCloseTo(-17.1887 * degreesToRadians, 4);
+
+    await renderer.destroy();
+  });
 });

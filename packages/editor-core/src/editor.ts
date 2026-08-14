@@ -341,6 +341,33 @@ export class Editor {
     return command.createdNodeId;
   }
 
+  createBitmapTextFromAsset(assetId: string, position: Vec2): string {
+    const asset = this.assets.get(assetId);
+    return this.createNode({
+      typeId: "pixi.bitmap-text",
+      name: asset ? humanizeAssetNodeName(asset.name) : "Missing Bitmap Font",
+      position,
+      assetId,
+      resolveParent: false,
+    });
+  }
+
+  createTextFromAsset(assetId: string, position: Vec2): string {
+    const asset = this.assets.get(assetId);
+    const fontFamily =
+      asset?.metadata.kind === "webfont"
+        ? asset.metadata.fontFamily
+        : undefined;
+    return this.createNode({
+      typeId: "pixi.text",
+      name: asset ? humanizeAssetNodeName(asset.name) : "Missing Font",
+      position,
+      assetId,
+      ...(fontFamily !== undefined ? { fontFamily } : {}),
+      resolveParent: false,
+    });
+  }
+
   createModel3DFromAsset(assetId: string, position: Vec2): string {
     const asset = this.assets.get(assetId);
     const command = new CreateModel3DCommand(this.document, this.selection, {

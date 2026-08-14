@@ -5,7 +5,7 @@ import {
   ownedAssetPaths,
   parseDeletableAssetFolderPath,
   relocateOwnedAssetPaths,
-  spineBundleFolder,
+  ownedBundleFolder,
   withAsepriteSourcePath,
   type AssetDatabaseData,
   type AssetRecord,
@@ -100,8 +100,8 @@ export class AssetMutationService {
       throw new DomainError("ASSET_NOT_FOUND", `Asset not found: ${assetId}`);
     }
 
-    if (record.metadata.kind === "spine") {
-      const bundleFolder = spineBundleFolder(record);
+    if (record.metadata.kind === "spine" || record.metadata.kind === "font") {
+      const bundleFolder = ownedBundleFolder(record);
       if (bundleFolder) {
         const parent = path.posix.dirname(bundleFolder);
         const nextFolder = path.posix.join(parent, name);
@@ -186,8 +186,8 @@ export class AssetMutationService {
     const fileName = path.posix.basename(record.path);
     const currentDir = path.posix.dirname(record.path);
 
-    if (record.metadata.kind === "spine") {
-      const bundleFolder = spineBundleFolder(record);
+    if (record.metadata.kind === "spine" || record.metadata.kind === "font") {
+      const bundleFolder = ownedBundleFolder(record);
       if (bundleFolder) {
         const folderName = path.posix.basename(bundleFolder);
         if (path.posix.dirname(bundleFolder) === destination) {

@@ -52,6 +52,32 @@ describe("ResetNodeTransformCommand", () => {
     expect(undone?.scale).toEqual({ x: 2, y: 0.5 });
   });
 
+  it("resets Transform2D skew to identity and undoes", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const create = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "Sprite",
+      { x: 40, y: 80 },
+    );
+    editor.execute(create);
+    editor.setTransform2D(create.createdNodeId, {
+      skew: { x: 12, y: -8 },
+    });
+
+    expect(editor.resetNodeTransform(create.createdNodeId)).toBe(true);
+    const transform = getTransform2D(
+      findNodeById(editor.getScene(), create.createdNodeId)!,
+    );
+    expect(transform?.skew).toBeUndefined();
+
+    editor.undo();
+    expect(
+      getTransform2D(findNodeById(editor.getScene(), create.createdNodeId)!)
+        ?.skew,
+    ).toEqual({ x: 12, y: -8 });
+  });
+
   it("resets flipped scale and visual anchor to defaults and undoes", () => {
     const editor = new Editor({ scene: createEmptyScene("Test") });
     const create = new CreateSpriteCommand(

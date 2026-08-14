@@ -217,6 +217,19 @@ function assetMetadataEquivalent(
       numbersEqual(left.frameDurations, right.frameDurations)
     );
   }
+  if (left.kind === "font" && right.kind === "font") {
+    return (
+      left.fontFamily === right.fontFamily &&
+      stringArraysEqual(left.pagePaths, right.pagePaths)
+    );
+  }
+  if (left.kind === "webfont" && right.kind === "webfont") {
+    return (
+      left.fontFamily === right.fontFamily &&
+      left.mimeType === right.mimeType &&
+      left.format === right.format
+    );
+  }
   return false;
 }
 

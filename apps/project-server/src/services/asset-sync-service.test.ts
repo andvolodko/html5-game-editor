@@ -12,7 +12,9 @@ import { AssetDatabaseStore } from "./asset-database-store.js";
 import { AssetImporterRegistry } from "./asset-importer.js";
 import { TextureAssetImporter } from "./texture-asset-importer.js";
 import { SpineAssetImporter } from "./spine-asset-importer.js";
+import { BitmapFontAssetImporter } from "./bitmap-font-asset-importer.js";
 import { AudioAssetImporter } from "./audio-asset-importer.js";
+import { WebFontAssetImporter } from "./webfont-asset-importer.js";
 import { AssetSyncService } from "./asset-sync-service.js";
 
 function tinyPng(): Buffer {
@@ -60,7 +62,9 @@ describe("AssetSyncService", () => {
     const registry = new AssetImporterRegistry();
     registry.register(new TextureAssetImporter());
     registry.register(new AudioAssetImporter());
+    registry.register(new WebFontAssetImporter());
     registry.registerBundle(new SpineAssetImporter());
+    registry.registerBundle(new BitmapFontAssetImporter());
     sync = new AssetSyncService(project, store, registry);
   });
 

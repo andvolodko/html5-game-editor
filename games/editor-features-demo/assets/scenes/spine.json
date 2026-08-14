@@ -4,37 +4,6 @@
   "version": 1,
   "nodes": [
     {
-      "id": "node_0f888b5e-7603-4c2c-8c17-3012224857c5",
-      "name": "1",
-      "components": [
-        {
-          "type": "Transform2D",
-          "id": "comp_cffdb41d-0c71-46ef-ac3d-e5924f34de05",
-          "position": {
-            "x": 512,
-            "y": 128
-          },
-          "rotation": 0,
-          "scale": {
-            "x": 1,
-            "y": 1
-          }
-        },
-        {
-          "type": "Sprite",
-          "id": "comp_48f9da4a-3bcd-4aaf-b0dd-ab296e1a960a",
-          "assetId": "asset_b8f604c4-25db-4cf1-bd5f-8fb354ee280f",
-          "width": 367.3581574907264,
-          "height": 303.2549893790642,
-          "anchor": {
-            "x": 0,
-            "y": 0
-          }
-        }
-      ],
-      "children": []
-    },
-    {
       "id": "node_f6cf1db7-cbfb-4ca6-b63c-f79d46cf8f12",
       "name": "Spineboy",
       "components": [
@@ -42,8 +11,8 @@
           "type": "Transform2D",
           "id": "comp_ee5d828c-453c-4fa5-b37d-2d0761632072",
           "position": {
-            "x": 1240,
-            "y": 710
+            "x": 1051,
+            "y": 1076
           },
           "rotation": 179.84298989679917,
           "scale": {
@@ -72,8 +41,8 @@
           "type": "Transform2D",
           "id": "comp_cb7daae4-7be0-41d6-a164-d3ff6f86c11e",
           "position": {
-            "x": 50,
-            "y": 720
+            "x": 160,
+            "y": 1075
           },
           "rotation": 0.42371073266910386,
           "scale": {
@@ -241,6 +210,222 @@
             "enabled": true,
             "refreshIntervalMs": 250
           }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_a9b3ff50-1946-42a2-8d24-6e0cd078dfd1",
+      "name": "Tank-pma",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_87732309-5b32-4b0c-8037-2740ca2e9871",
+          "position": {
+            "x": 1781,
+            "y": 1045
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 0.1,
+            "y": 0.1
+          }
+        },
+        {
+          "type": "Spine",
+          "id": "comp_adfee9ec-0d96-4abc-90ae-da3191d3e11f",
+          "assetId": "asset_f7538262-ceb9-4191-b19c-d8547a02680a",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_bbb5d061-5334-410a-a205-763261a62f49",
+      "name": "Celestial-circus",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_36972a6a-e8d4-43a0-a167-bed0966c5e8c",
+          "position": {
+            "x": 187,
+            "y": 568
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 0.2,
+            "y": 0.2
+          }
+        },
+        {
+          "type": "Spine",
+          "id": "comp_96d333ff-5b60-4e66-9dc5-a6aafe7f575f",
+          "assetId": "asset_c621e490-bc86-4dbe-ad36-ec29964d4683",
+          "skin": "default",
+          "animation": "wind-idle",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_4492210a-7788-447c-a68f-1c79a68bf0c9",
+      "name": "Coin-pma",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_ee4682e6-2077-4ec6-866a-893ba51fd31e",
+          "position": {
+            "x": 510,
+            "y": 446
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "type": "Spine",
+          "id": "comp_45c5af87-a58a-41e2-9e5a-eea9d3755bd8",
+          "assetId": "asset_4ccd88f1-1a39-4f40-a572-c6b438c86e94",
+          "skin": "default",
+          "animation": "animation",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_2a4a4ebc-178e-48eb-a4ac-7f0feb9989e7",
+      "name": "Goblins-pma",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_00b1353d-ce9e-4bfd-8a02-05174035f9e3",
+          "position": {
+            "x": 540,
+            "y": 1078
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Spine",
+          "id": "comp_7229d42f-a099-4a4f-8747-933c0cfaeec9",
+          "assetId": "asset_acc04272-6168-43f9-bb3b-8f6f4b2bbe60",
+          "skin": "goblingirl",
+          "animation": "walk",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        },
+        {
+          "type": "Script",
+          "id": "comp_6d5c1a86-cc94-4368-9db2-654569ec3d5e",
+          "scriptId": "editor-features-demo.Raptor",
+          "properties": {
+            "speed": 120,
+            "range": 400,
+            "enabled": true
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_774c92a4-09f0-4519-8dd5-3e8789872efb",
+      "name": "Mix-and-match",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_019db1b8-fb1e-49df-bcd4-c9e150ec4625",
+          "position": {
+            "x": 780,
+            "y": 675
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "type": "Spine",
+          "id": "comp_692c9342-edfd-4af7-bf5e-e7da731c9713",
+          "assetId": "asset_72cd6ade-5d01-41d6-84bf-736b98e35931",
+          "skin": "full-skins/boy",
+          "animation": "dance",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_b15155e3-00b4-4ffc-9a7f-0fbf2a193968",
+      "name": "Owl-pma",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_fc3189bc-a6c8-4edd-a8ab-183e8b6ed0d0",
+          "position": {
+            "x": 1759,
+            "y": 330
+          },
+          "rotation": 0,
+          "scale": {
+            "x": -0.25,
+            "y": 0.25
+          }
+        },
+        {
+          "type": "Spine",
+          "id": "comp_ea30a40a-67d3-4c7d-bd72-37c282efb30a",
+          "assetId": "asset_36b9672a-21c3-49fa-93d3-6463d04f0489",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_52d838c5-6559-4d61-bb63-86609f4e9df5",
+      "name": "Stretchyman-pma",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_146567a1-feeb-4729-b9b5-834b8a7bff1f",
+          "position": {
+            "x": 162,
+            "y": 1078
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Spine",
+          "id": "comp_95ea9d04-5e4f-45bb-af9c-109e456bbd3b",
+          "assetId": "asset_43adb08a-f953-4ede-8b72-2eef11e18d88",
+          "skin": "default",
+          "animation": "sneak",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
         }
       ],
       "children": []

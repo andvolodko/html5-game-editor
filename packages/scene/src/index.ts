@@ -20,6 +20,8 @@ export type {
 
   TextStyleData,
 
+  TextStyleFill,
+
   TextAlign,
 
   TextFontWeight,
@@ -119,6 +121,10 @@ export {
   TEXT_BASELINE_OPTIONS,
 
   TEXT_STROKE_JOIN_OPTIONS,
+
+  textStyleFillStops,
+
+  compactTextStyleFill,
 
 } from "./types.js";
 
@@ -503,6 +509,7 @@ export {
   IDENTITY_POSITION_2D,
   IDENTITY_ROTATION_2D,
   IDENTITY_SCALE_2D,
+  IDENTITY_SKEW_2D,
   IDENTITY_POSITION_3D,
   IDENTITY_ROTATION_3D,
   IDENTITY_SCALE_3D,

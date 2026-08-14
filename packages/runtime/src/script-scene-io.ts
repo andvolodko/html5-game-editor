@@ -40,6 +40,7 @@ export function readTransform2D(
     position: { ...transform.position },
     rotation: transform.rotation,
     scale: { ...transform.scale },
+    skew: transform.skew ? { ...transform.skew } : { x: 0, y: 0 },
   };
 }
 
@@ -61,6 +62,13 @@ export function patchTransform2D(
   }
   if (patch.scale) {
     transform.scale = { ...patch.scale };
+  }
+  if (patch.skew) {
+    if (patch.skew.x === 0 && patch.skew.y === 0) {
+      delete transform.skew;
+    } else {
+      transform.skew = { ...patch.skew };
+    }
   }
   return node;
 }

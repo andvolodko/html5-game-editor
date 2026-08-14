@@ -6,9 +6,11 @@ import {
   createStaticAssetResolver,
   createTextureAssetRecord,
   createAsepriteAssetRecord,
+  createBitmapFontAssetRecord,
 } from "@game-editor/assets";
 import {
   createAnimatedSpriteComponent,
+  createBitmapTextComponent,
   createEmptyScene,
   createModel3DComponent,
   createNodeWithTransform3D,
@@ -140,5 +142,36 @@ describe("collectSceneAssetUrls", () => {
       "/.generated/assets/characters/hero.json",
       "/.generated/assets/characters/hero.png",
     ]);
+  });
+
+  it("expands bitmap font bundles to descriptor and page URLs", () => {
+    const database = new AssetDatabase();
+    database.add(
+      createBitmapFontAssetRecord({
+        id: "asset_font",
+        name: "desyrel",
+        path: "assets/fonts/desyrel.xml",
+        fontFamily: "Desyrel",
+        pagePaths: ["assets/fonts/desyrel.png"],
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+    const scene = createEmptyScene("Text");
+    scene.nodes.push(
+      createNodeWithVisual(
+        "Label",
+        { x: 50, y: 200 },
+        createBitmapTextComponent({
+          assetId: "asset_font",
+          text: "bitmap fonts are supported!",
+          fontSize: 55,
+        }),
+      ),
+    );
+    expect(collectSceneAssetUrls([scene], resolver)).toEqual([
+      "/assets/fonts/desyrel.png",
+      "/assets/fonts/desyrel.xml",
+    ]);
+    expect(collectSceneAssetIds([scene])).toEqual(["asset_font"]);
   });
 });

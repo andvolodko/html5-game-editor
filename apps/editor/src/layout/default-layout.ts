@@ -54,7 +54,7 @@ export function applyDefaultEditorLayout(api: DockviewApi): void {
     // No initialHeight: dockview distributes the left column equally with Hierarchy (50%).
   });
 
-  const consolePanel = api.addPanel({
+  api.addPanel({
     id: EDITOR_PANEL_IDS.console,
     component: EDITOR_PANEL_IDS.console,
     title: "Console",
@@ -66,6 +66,8 @@ export function applyDefaultEditorLayout(api: DockviewApi): void {
     id: EDITOR_PANEL_IDS.preview,
     component: EDITOR_PANEL_IDS.preview,
     title: "Preview",
-    position: { referencePanel: consolePanel, direction: "within" },
+    position: { referencePanel: scene, direction: "within" },
+    inactive: true,
   });
+  scene.api.setActive();
 }

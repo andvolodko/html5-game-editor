@@ -1,7 +1,15 @@
 import { z } from "zod";
 import { ASSET_SCHEMA_VERSION, type AssetDatabaseData, type AssetRecord } from "./types.js";
 
-export const assetTypeSchema = z.enum(["texture", "spine", "audio", "gltf", "aseprite"]);
+export const assetTypeSchema = z.enum([
+  "texture",
+  "spine",
+  "audio",
+  "gltf",
+  "aseprite",
+  "font",
+  "webfont",
+]);
 
 export const textureAssetMetadataSchema = z.object({
   kind: z.literal("texture"),
@@ -54,12 +62,27 @@ export const asepriteAssetMetadataSchema = z.object({
   compileError: z.string().min(1).optional(),
 });
 
+export const bitmapFontAssetMetadataSchema = z.object({
+  kind: z.literal("font"),
+  fontFamily: z.string().min(1),
+  pagePaths: z.array(z.string().min(1)).min(1),
+});
+
+export const webFontAssetMetadataSchema = z.object({
+  kind: z.literal("webfont"),
+  fontFamily: z.string().min(1),
+  mimeType: z.string().min(1),
+  format: z.enum(["ttf", "otf", "woff", "woff2"]),
+});
+
 export const assetMetadataSchema = z.discriminatedUnion("kind", [
   textureAssetMetadataSchema,
   spineAssetMetadataSchema,
   audioAssetMetadataSchema,
   gltfAssetMetadataSchema,
   asepriteAssetMetadataSchema,
+  bitmapFontAssetMetadataSchema,
+  webFontAssetMetadataSchema,
 ]);
 
 const assetRecordObjectSchema = z.object({

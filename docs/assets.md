@@ -20,7 +20,7 @@ interface AssetRecord {
 }
 ```
 
-Possible types: `texture`, `spritesheet`, `aseprite`, `model3d`, `audio`, `font`, `spine`, `environment`, `scene`, `prefab`.
+Possible types: `texture`, `spritesheet`, `aseprite`, `model3d`, `audio`, `font`, `webfont`, `spine`, `environment`, `scene`, `prefab`.
 
 `aseprite` records point at the source `.aseprite` / `.ase` path. Derived PNG/JSON live under `.generated/` and are not catalogue entries. Scenes must store the Aseprite `assetId` (and optional tag `animation`), never a generated filesystem path.
 
@@ -62,6 +62,8 @@ Examples:
 PNG/WebP          → Sprite component
 GLB/GLTF          → Model3D component
 .aseprite / .ase  → Sprite (one frame) or AnimatedSprite (tags / multiple frames)
+.xml / .fnt + pages → BitmapText component
+TTF/OTF/WOFF/WOFF2 → Text component (webfont)
 ```
 
 Drop coordinates must be converted from viewport coordinates into scene/world coordinates. Creating an object through drag-and-drop MUST use the command system so it can be undone.
@@ -91,7 +93,11 @@ interface AssetImporter {
 }
 ```
 
-Possible importers: `TextureImporter`, `ModelImporter`, `AudioImporter`, `FontImporter`, `SpineImporter`, `AsepriteAssetImporter`.
+Possible importers: `TextureImporter`, `ModelImporter`, `AudioImporter`, `BitmapFontAssetImporter`, `WebFontAssetImporter`, `SpineImporter`, `AsepriteAssetImporter`.
+
+Bitmap fonts are AngelCode BMFont bundles (`.xml` / `.fnt` plus page PNGs). The catalogue `path` is the descriptor; page textures are owned files, not separate records. Scenes store the font `assetId` on `BitmapText`. Editor content URLs have no file extension, so the Pixi renderer loads pages from allowlisted `/assets/:id/part/:name` URLs instead of resolving images relative to the XML.
+
+Webfonts are single TTF/OTF/WOFF/WOFF2 files (`webfont` catalogue type, distinct from bitmap `font`). The CSS family is taken from the file stem with original casing (`ChaChicle.ttf` → `ChaChicle`, `Dotrice-Regular.woff` → `Dotrice Regular`). Scenes store the webfont `assetId` on `Text` / `HTMLText` as `style.fontAssetId`. Editor content URLs have no extension, so the Pixi renderer loads with parser `web-font` and an explicit `family` instead of sniffing the filename.
 
 Shipping a game that uses the Spine runtime requires a Spine Editor license (Esoteric Software). The importer does not gate on that license.
 

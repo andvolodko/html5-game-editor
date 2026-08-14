@@ -1,10 +1,13 @@
 import {
   mimeTypeForAsepritePart,
+  mimeTypeForBitmapFontDescriptor,
+  mimeTypeForBitmapFontPart,
   mimeTypeForGltfPart,
   mimeTypeForSpinePart,
   mimeTypeForSpineSkeleton,
   parseDeletableAssetFolderPath,
   resolveAsepritePartRelativePath,
+  resolveBitmapFontPartRelativePath,
   resolveGltfPartRelativePath,
   resolveSpinePartRelativePath,
 } from "@game-editor/assets";
@@ -130,11 +133,14 @@ export const handleAssetContentRoute: RouteHandler = async (ctx) => {
   const mime =
     record.metadata.kind === "texture" ||
     record.metadata.kind === "audio" ||
-    record.metadata.kind === "gltf"
+    record.metadata.kind === "gltf" ||
+    record.metadata.kind === "webfont"
       ? record.metadata.mimeType
       : record.metadata.kind === "spine"
         ? mimeTypeForSpineSkeleton(record.metadata.skeletonFormat)
-        : "application/octet-stream";
+        : record.metadata.kind === "font"
+          ? mimeTypeForBitmapFontDescriptor(record.path)
+          : "application/octet-stream";
   await sendLocalFile(
     ctx.req,
     ctx.res,
@@ -164,6 +170,7 @@ export const handleAssetPartRoute: RouteHandler = async (ctx) => {
   }
   const relative =
     resolveSpinePartRelativePath(record, part) ??
+    resolveBitmapFontPartRelativePath(record, part) ??
     resolveGltfPartRelativePath(record, part) ??
     resolveAsepritePartRelativePath(record, part);
   if (!relative) {
@@ -174,9 +181,11 @@ export const handleAssetPartRoute: RouteHandler = async (ctx) => {
   const partMime =
     record.metadata.kind === "spine"
       ? mimeTypeForSpinePart(relative)
-      : record.metadata.kind === "aseprite"
-        ? mimeTypeForAsepritePart(relative)
-        : mimeTypeForGltfPart(relative);
+      : record.metadata.kind === "font"
+        ? mimeTypeForBitmapFontPart(relative)
+        : record.metadata.kind === "aseprite"
+          ? mimeTypeForAsepritePart(relative)
+          : mimeTypeForGltfPart(relative);
   await sendLocalFile(
     ctx.req,
     ctx.res,

@@ -52,6 +52,26 @@ export async function preloadPixiSceneAsset(
     return;
   }
 
+  const font = resolver.resolveBitmapFontUrls?.(assetId);
+  if (font) {
+    await downloadBody(font.xmlUrl, signal);
+    for (const pageUrl of Object.values(font.pageUrls)) {
+      throwIfAborted(signal);
+      await Assets.load(pageUrl);
+    }
+    return;
+  }
+
+  const webfont = resolver.resolveWebFontUrls?.(assetId);
+  if (webfont) {
+    await Assets.load({
+      src: webfont.url,
+      parser: "web-font",
+      data: { family: webfont.fontFamily },
+    });
+    return;
+  }
+
   const url = resolver.resolveUrl(assetId);
   if (!url) {
     return;

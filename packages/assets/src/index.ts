@@ -7,6 +7,8 @@ export type {
   AsepriteAssetMetadata,
   AsepriteTagMetadata,
   AsepriteTagDirection,
+  BitmapFontAssetMetadata,
+  WebFontAssetMetadata,
   AssetMetadata,
   AssetRecord,
   AssetDatabaseData,
@@ -20,6 +22,8 @@ export {
   gltfAssetMetadataSchema,
   asepriteAssetMetadataSchema,
   asepriteTagMetadataSchema,
+  bitmapFontAssetMetadataSchema,
+  webFontAssetMetadataSchema,
   assetMetadataSchema,
   assetRecordSchema,
   assetDatabaseSchema,
@@ -35,6 +39,8 @@ export {
   createAudioAssetRecord,
   createGltfAssetRecord,
   createAsepriteAssetRecord,
+  createBitmapFontAssetRecord,
+  createWebFontAssetRecord,
   normalizeProjectRelativePath,
   humanizeAssetNodeName,
 } from "./factories.js";
@@ -45,6 +51,8 @@ export type {
   SpineAssetUrls,
   GltfAssetUrls,
   AsepriteAssetUrls,
+  BitmapFontAssetUrls,
+  WebFontAssetUrls,
 } from "./asset-resolver.js";
 export { createAssetResolver } from "./asset-resolver.js";
 export type { StaticAssetResolverOptions } from "./static-asset-resolver.js";
@@ -103,6 +111,7 @@ export {
   ownedAssetPaths,
   relocateOwnedAssetPaths,
   spineBundleFolder,
+  ownedBundleFolder,
   resolveSpinePartRelativePath,
   mimeTypeForSpinePart,
   mimeTypeForSpineSkeleton,
@@ -124,6 +133,30 @@ export {
   asepriteCompileRevision,
 } from "./aseprite-extensions.js";
 export type { AsepriteFileExtension } from "./aseprite-extensions.js";
+export {
+  BITMAP_FONT_XML_EXTENSION,
+  BITMAP_FONT_FNT_EXTENSION,
+  isBitmapFontDescriptorExtension,
+  isBitmapFontImportFile,
+  isAllowedBitmapFontPartName,
+  parseBitmapFontDescriptor,
+  resolveBitmapFontPartRelativePath,
+  mimeTypeForBitmapFontDescriptor,
+  mimeTypeForBitmapFontPart,
+} from "./bitmap-font-extensions.js";
+export type { BitmapFontDescriptorMeta } from "./bitmap-font-extensions.js";
+export {
+  WEBFONT_FILE_EXTENSIONS,
+  isSupportedWebFontExtension,
+  webFontFormatFromFileName,
+  mimeTypeForWebFontFileName,
+  fontFamilyFromWebFontFileName,
+  isSupportedWebFontFile,
+} from "./webfont-extensions.js";
+export type {
+  WebFontFileExtension,
+  WebFontFormat,
+} from "./webfont-extensions.js";
 export {
   ASEPRITE_DEFAULT_FRAME_DURATION_MS,
   isAsepriteCliJson,

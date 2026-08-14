@@ -7,6 +7,8 @@ import {
   createTextureAssetRecord,
   createAudioAssetRecord,
   createAsepriteAssetRecord,
+  createBitmapFontAssetRecord,
+  createWebFontAssetRecord,
 } from "@game-editor/assets";
 
 const load = vi.fn(async () => undefined);
@@ -133,5 +135,54 @@ describe("preloadPixiSceneAsset", () => {
     expect(load).not.toHaveBeenCalled();
     expect(fetchMock).toHaveBeenCalled();
     expect(String(fetchMock.mock.calls[0]?.[0])).toBe("/assets/click.mp3");
+  });
+
+  it("fetches bitmap font XML and loads page textures", async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      arrayBuffer: async () => new ArrayBuffer(0),
+    }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const database = new AssetDatabase();
+    database.add(
+      createBitmapFontAssetRecord({
+        id: "asset_font",
+        name: "desyrel",
+        path: "assets/fonts/desyrel.xml",
+        fontFamily: "Desyrel",
+        pagePaths: ["assets/fonts/desyrel.png"],
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+
+    await preloadPixiSceneAsset(resolver, "asset_font");
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(String(fetchMock.mock.calls[0]?.[0])).toBe("/assets/fonts/desyrel.xml");
+    expect(load).toHaveBeenCalledWith("/assets/fonts/desyrel.png");
+  });
+
+  it("loads webfonts through Pixi Assets with the web-font parser", async () => {
+    const database = new AssetDatabase();
+    database.add(
+      createWebFontAssetRecord({
+        id: "asset_webfont",
+        name: "ChaChicle",
+        path: "assets/fonts/webfonts/ChaChicle.ttf",
+        fontFamily: "ChaChicle",
+        mimeType: "font/ttf",
+        format: "ttf",
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+
+    await preloadPixiSceneAsset(resolver, "asset_webfont");
+
+    expect(load).toHaveBeenCalledWith({
+      src: "/assets/fonts/webfonts/ChaChicle.ttf",
+      parser: "web-font",
+      data: { family: "ChaChicle" },
+    });
   });
 });

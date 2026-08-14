@@ -127,6 +127,28 @@ describe("editor sprite commands", () => {
     });
   });
 
+  it("sets Transform2D skew with undo", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const create = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "Sprite",
+      { x: 0, y: 0 },
+    );
+    editor.execute(create);
+
+    editor.setTransform2D(create.createdNodeId, {
+      skew: { x: 37.2422, y: -17.1887 },
+    });
+    expect(getTransform2D(editor.getScene().nodes[0]!)?.skew).toEqual({
+      x: 37.2422,
+      y: -17.1887,
+    });
+
+    editor.undo();
+    expect(getTransform2D(editor.getScene().nodes[0]!)?.skew).toBeUndefined();
+  });
+
   it("sets visual anchor with undo", () => {
     const editor = new Editor({ scene: createEmptyScene("Test") });
     const create = new CreateSpriteCommand(

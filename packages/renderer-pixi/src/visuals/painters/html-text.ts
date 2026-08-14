@@ -8,7 +8,8 @@ import {
   ensureChild,
   localBoundsOf,
 } from "../paint-helpers.js";
-import { toTextStyleOptions } from "../to-text-style-options.js";
+import { toTextStyleOptions, assignPixiTextStyle } from "../to-text-style-options.js";
+import { resolveTextStyleWithWebFont } from "../resolve-text-style-webfont.js";
 import {
   PLACEHOLDER_UNASSIGNED_TINT,
   TEXT_FALLBACK_CHAR_WIDTH_EM,
@@ -27,6 +28,11 @@ export const htmlTextPainter: PixiVisualPainter = {
     };
     try {
       ctx.hidePlaceholder();
+      const style = await resolveTextStyleWithWebFont(
+        data.style,
+        ctx.assetResolver,
+        ctx.warnMissingAsset,
+      );
       let view =
         ctx.visualType === "HTMLText" && ctx.visual instanceof HTMLText
           ? ctx.visual
@@ -35,12 +41,12 @@ export const htmlTextPainter: PixiVisualPainter = {
         destroyVisual(ctx.visual);
         view = new HTMLText({
           text: data.text,
-          style: toTextStyleOptions(data.style),
+          style: toTextStyleOptions(style),
         });
         ensureChild(ctx.visualsRoot, view);
       } else {
         view.text = data.text;
-        Object.assign(view.style, toTextStyleOptions(data.style));
+        assignPixiTextStyle(view.style, style);
         ensureChild(ctx.visualsRoot, view);
       }
       view.anchor.set(data.anchor?.x ?? 0.5, data.anchor?.y ?? 0.5);

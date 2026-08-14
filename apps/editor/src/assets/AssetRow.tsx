@@ -84,6 +84,12 @@ function assetRowIconClass(type: AssetRecord["type"]): string {
   if (type === "spine") {
     return "asset-row-icon spine";
   }
+  if (type === "font") {
+    return "asset-row-icon font";
+  }
+  if (type === "webfont") {
+    return "asset-row-icon webfont";
+  }
   if (type === "audio") {
     return "asset-row-icon audio";
   }

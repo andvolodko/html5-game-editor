@@ -11,7 +11,9 @@ import { AssetDatabaseStore } from "../services/asset-database-store.js";
 import { AssetImporterRegistry } from "../services/asset-importer.js";
 import { TextureAssetImporter } from "../services/texture-asset-importer.js";
 import { SpineAssetImporter } from "../services/spine-asset-importer.js";
+import { BitmapFontAssetImporter } from "../services/bitmap-font-asset-importer.js";
 import { AudioAssetImporter } from "../services/audio-asset-importer.js";
+import { WebFontAssetImporter } from "../services/webfont-asset-importer.js";
 import { GltfAssetImporter } from "../services/gltf-asset-importer.js";
 import { AssetImportService } from "../services/asset-import-service.js";
 import { AssetFolderService } from "../services/asset-folder-service.js";
@@ -67,8 +69,10 @@ describe("assets HTTP routes", () => {
     const registry = new AssetImporterRegistry();
     registry.register(new TextureAssetImporter());
     registry.register(new AudioAssetImporter());
+    registry.register(new WebFontAssetImporter());
     registry.register(new GltfAssetImporter());
     registry.registerBundle(new SpineAssetImporter());
+    registry.registerBundle(new BitmapFontAssetImporter());
     const assetImportService = new AssetImportService(
       projectService,
       assetDatabaseStore,
@@ -608,6 +612,52 @@ root
       `${baseUrl}/assets/${encodeURIComponent(assetId)}/part/hero.json`,
     );
     expect(unknown.status).toBe(404);
+  });
+
+  it("imports a bitmap font bundle and serves allowlisted page parts only", async () => {
+    const xml = Buffer.from(`<font>
+    <info face="Desyrel" size="70"/>
+    <common lineHeight="87" base="61"/>
+    <pages>
+        <page id="0" file="desyrel.png"/>
+    </pages>
+</font>
+`);
+    const multipart = buildMultipart(
+      { destination: "assets" },
+      [
+        { field: "files", fileName: "desyrel.xml", bytes: xml, mime: "application/xml" },
+        { field: "files", fileName: "desyrel.png", bytes: tinyPng(), mime: "image/png" },
+      ],
+    );
+    const imported = await fetch(`${baseUrl}/assets/import`, {
+      method: "POST",
+      headers: { "content-type": multipart.contentType },
+      body: multipart.body,
+    });
+    const importJson = (await imported.json()) as {
+      ok: boolean;
+      imported: Array<{ id: string; type: string }>;
+    };
+    expect(imported.status).toBe(200);
+    expect(importJson.imported[0]?.type).toBe("font");
+    const assetId = importJson.imported[0]!.id;
+
+    const pagePart = await fetch(
+      `${baseUrl}/assets/${encodeURIComponent(assetId)}/part/desyrel.png`,
+    );
+    expect(pagePart.ok).toBe(true);
+    expect(pagePart.headers.get("content-type")).toBe("image/png");
+
+    const escaped = await fetch(
+      `${baseUrl}/assets/${encodeURIComponent(assetId)}/part/..%2Fsecret`,
+    );
+    expect(escaped.status).toBe(404);
+
+    const unknownXml = await fetch(
+      `${baseUrl}/assets/${encodeURIComponent(assetId)}/part/desyrel.xml`,
+    );
+    expect(unknownXml.status).toBe(404);
   });
 
   it("GET /assets reconciles new and missing files automatically", async () => {

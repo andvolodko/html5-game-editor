@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   collectReferencedAssetIds,
   createAnimatedSpriteComponent,
+  createBitmapTextComponent,
   createEmptyScene,
   createNodeWithVisual,
   createScriptComponent,
   createSpriteNode,
+  createTextComponent,
   parseSceneData,
   SCENE_SCHEMA_VERSION,
   type SceneData,
@@ -273,6 +275,114 @@ describe("scene schema", () => {
         padding: 0,
         strokeWidth: 0,
         dropShadow: false,
+      },
+    });
+  });
+
+  it("round-trips gradient fill arrays and Transform2D skew", () => {
+    const parsed = parseSceneData({
+      id: "scene_1",
+      name: "Gradient",
+      version: SCENE_SCHEMA_VERSION,
+      nodes: [
+        {
+          id: "node_1",
+          name: "Label",
+          components: [
+            {
+              type: "Transform2D",
+              id: "comp_t",
+              position: { x: 300, y: 480 },
+              rotation: 0,
+              scale: { x: 1, y: 1 },
+              skew: { x: 37.2422, y: -17.1887 },
+            },
+            {
+              type: "Text",
+              id: "comp_text",
+              text: "Rich",
+              style: {
+                fontFamily: "Arial",
+                fontSize: 36,
+                fill: [0xffffff, 0x00ff99],
+                wordWrap: true,
+                wordWrapWidth: 440,
+              },
+            },
+          ],
+          children: [],
+        },
+      ],
+    });
+    const transform = parsed.nodes[0]?.components.find(
+      (c) => c.type === "Transform2D",
+    );
+    const text = parsed.nodes[0]?.components.find((c) => c.type === "Text");
+    expect(transform).toMatchObject({
+      type: "Transform2D",
+      skew: { x: 37.2422, y: -17.1887 },
+    });
+    expect(text).toMatchObject({
+      type: "Text",
+      style: { fill: [0xffffff, 0x00ff99] },
+    });
+  });
+
+  it("round-trips BitmapText with a font assetId", () => {
+    const scene = createEmptyScene("Bitmap");
+    scene.nodes.push(
+      createNodeWithVisual(
+        "Label",
+        { x: 50, y: 200 },
+        createBitmapTextComponent({
+          text: "bitmap fonts are supported!",
+          assetId: "asset_desyrel",
+          fontSize: 55,
+          align: "left",
+          anchor: { x: 0, y: 0 },
+        }),
+      ),
+    );
+    const parsed = parseSceneData(JSON.parse(JSON.stringify(scene)) as unknown);
+    expect(collectReferencedAssetIds(parsed)).toEqual(["asset_desyrel"]);
+    const visual = parsed.nodes[0]?.components.find((c) => c.type === "BitmapText");
+    expect(visual).toMatchObject({
+      type: "BitmapText",
+      assetId: "asset_desyrel",
+      fontSize: 55,
+      align: "left",
+    });
+  });
+
+  it("round-trips Text with a webfont fontAssetId", () => {
+    const scene = createEmptyScene("Webfonts");
+    scene.nodes.push(
+      createNodeWithVisual(
+        "ChaChicle",
+        { x: 720, y: 80 },
+        createTextComponent({
+          text: "ChaChicle.ttf",
+          style: {
+            fontFamily: "ChaChicle",
+            fontAssetId: "asset_webfont_chachicle",
+            fontSize: 50,
+          },
+          anchor: { x: 0, y: 0 },
+        }),
+      ),
+    );
+    const parsed = parseSceneData(JSON.parse(JSON.stringify(scene)) as unknown);
+    expect(collectReferencedAssetIds(parsed)).toEqual([
+      "asset_webfont_chachicle",
+    ]);
+    const visual = parsed.nodes[0]?.components.find((c) => c.type === "Text");
+    expect(visual).toMatchObject({
+      type: "Text",
+      text: "ChaChicle.ttf",
+      style: {
+        fontFamily: "ChaChicle",
+        fontAssetId: "asset_webfont_chachicle",
+        fontSize: 50,
       },
     });
   });

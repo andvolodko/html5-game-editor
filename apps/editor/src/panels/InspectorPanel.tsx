@@ -42,6 +42,8 @@ interface TransformDraft {
   rotation: string;
   scaleX: string;
   scaleY: string;
+  skewX: string;
+  skewY: string;
   anchorX: string;
   anchorY: string;
 }
@@ -105,6 +107,7 @@ export function InspectorPanel() {
       setDraft(null);
       return;
     }
+    const skew = transform.skew ?? { x: 0, y: 0 };
     const anchor = visualAnchor ?? { x: 0.5, y: 0.5 };
     setDraft({
       x: formatInspectorNumber(transform.position.x),
@@ -112,6 +115,8 @@ export function InspectorPanel() {
       rotation: formatInspectorNumber(transform.rotation),
       scaleX: formatInspectorNumber(transform.scale.x),
       scaleY: formatInspectorNumber(transform.scale.y),
+      skewX: formatInspectorNumber(skew.x),
+      skewY: formatInspectorNumber(skew.y),
       anchorX: formatInspectorNumber(anchor.x),
       anchorY: formatInspectorNumber(anchor.y),
     });
@@ -122,6 +127,8 @@ export function InspectorPanel() {
     transform?.rotation,
     transform?.scale.x,
     transform?.scale.y,
+    transform?.skew?.x,
+    transform?.skew?.y,
     visualAnchor?.x,
     visualAnchor?.y,
   ]);
@@ -246,32 +253,40 @@ export function InspectorPanel() {
     const rotation = resolveInspectorNumber(draft.rotation, transform.rotation);
     const scaleX = resolveInspectorNumber(draft.scaleX, transform.scale.x);
     const scaleY = resolveInspectorNumber(draft.scaleY, transform.scale.y);
+    const currentSkew = transform.skew ?? { x: 0, y: 0 };
+    const skewX = resolveInspectorNumber(draft.skewX, currentSkew.x);
+    const skewY = resolveInspectorNumber(draft.skewY, currentSkew.y);
 
     if (
       x === undefined ||
       y === undefined ||
       rotation === undefined ||
       scaleX === undefined ||
-      scaleY === undefined
+      scaleY === undefined ||
+      skewX === undefined ||
+      skewY === undefined
     ) {
       return;
     }
 
     const position = { x, y };
     const scale = { x: scaleX, y: scaleY };
+    const skew = { x: skewX, y: skewY };
 
     const unchanged =
       x === transform.position.x &&
       y === transform.position.y &&
       rotation === transform.rotation &&
       scaleX === transform.scale.x &&
-      scaleY === transform.scale.y;
+      scaleY === transform.scale.y &&
+      skewX === currentSkew.x &&
+      skewY === currentSkew.y;
 
     if (unchanged) {
       return;
     }
 
-    const patch: Transform2DPatch = { position, rotation, scale };
+    const patch: Transform2DPatch = { position, rotation, scale, skew };
     editor.setTransform2D(node.id, patch);
   };
 
@@ -438,6 +453,8 @@ export function InspectorPanel() {
                 ["Rotation", "rotation"],
                 ["Scale X", "scaleX"],
                 ["Scale Y", "scaleY"],
+                ["Skew X (°)", "skewX"],
+                ["Skew Y (°)", "skewY"],
               ] as const
             ).map(([label, key]) => (
               <label key={key}>

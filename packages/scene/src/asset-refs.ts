@@ -20,6 +20,12 @@ export function collectReferencedAssetIds(scene: SceneData): string[] {
         if ("assetId" in component) {
           addAssetId(ids, component.assetId);
         }
+        if (
+          (component.type === "Text" || component.type === "HTMLText") &&
+          "style" in component
+        ) {
+          addAssetId(ids, component.style.fontAssetId);
+        }
         if (component.type === "AnimatedSprite") {
           for (const frame of component.frames) {
             addAssetId(ids, frame);

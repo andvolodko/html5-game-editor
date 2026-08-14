@@ -12,6 +12,7 @@ export interface Transform2DPatch {
   position?: Vec2;
   rotation?: number;
   scale?: Vec2;
+  skew?: Vec2;
 }
 
 export class SetTransform2DCommand implements Command {
@@ -33,7 +34,7 @@ export class SetTransform2DCommand implements Command {
     }
 
     this.before = cloneTransform2D(transform);
-    this.after = cloneTransform2D({
+    const after = cloneTransform2D({
       ...transform,
       ...(patch.position !== undefined
         ? { position: { ...patch.position } }
@@ -41,6 +42,14 @@ export class SetTransform2DCommand implements Command {
       ...(patch.rotation !== undefined ? { rotation: patch.rotation } : {}),
       ...(patch.scale !== undefined ? { scale: { ...patch.scale } } : {}),
     });
+    if (patch.skew !== undefined) {
+      if (patch.skew.x === 0 && patch.skew.y === 0) {
+        delete after.skew;
+      } else {
+        after.skew = { ...patch.skew };
+      }
+    }
+    this.after = after;
   }
 
   execute(): void {

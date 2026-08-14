@@ -10,7 +10,7 @@ import {
 
 export const EDITOR_LAYOUT_STORAGE_KEY = "game-editor:layout:v1";
 /** Bump when default panel set / ids change so stale layouts are discarded. */
-export const EDITOR_LAYOUT_VERSION = 5 as const;
+export const EDITOR_LAYOUT_VERSION = 7 as const;
 
 export const EDITOR_SCENE_VIEW_STORAGE_KEY = "game-editor:scene-view:v1";
 /** Bump when scene-view preference shape changes incompatibly. */

@@ -5,6 +5,7 @@ import {
   createSpineAssetRecord,
   createTextureAssetRecord,
   createAsepriteAssetRecord,
+  createBitmapFontAssetRecord,
 } from "@game-editor/assets";
 import {
   ASSETS_ROOT_FOLDER,
@@ -109,6 +110,8 @@ describe("asset-browser-model", () => {
       contentUrl: (assetId: string) => `content/${assetId}`,
       spinePartUrl: (assetId: string, pageBasename: string) =>
         `spine/${assetId}/${pageBasename}`,
+      fontPartUrl: (assetId: string, pageBasename: string) =>
+        `font/${assetId}/${pageBasename}`,
       asepritePartUrl: (assetId: string, partBasename: string) =>
         `aseprite/${assetId}/${partBasename}`,
     };
@@ -128,6 +131,18 @@ describe("asset-browser-model", () => {
         resolvers,
       ),
     ).toBe("spine/asset_spine/hero.png");
+    expect(
+      resolveAssetBrowserPreviewUrl(
+        createBitmapFontAssetRecord({
+          id: "asset_font",
+          name: "desyrel",
+          path: "assets/fonts/desyrel.xml",
+          fontFamily: "Desyrel",
+          pagePaths: ["assets/fonts/desyrel.png"],
+        }),
+        resolvers,
+      ),
+    ).toBe("font/asset_font/desyrel.png");
     expect(
       resolveAssetBrowserPreviewUrl(
         createSpineAssetRecord({

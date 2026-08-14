@@ -10,5 +10,6 @@ export function cloneTransform2D(
     rotation: transform.rotation,
     scale: { ...transform.scale },
     ...(transform.anchor !== undefined ? { anchor: { ...transform.anchor } } : {}),
+    ...(transform.skew !== undefined ? { skew: { ...transform.skew } } : {}),
   };
 }

@@ -6,7 +6,9 @@ import {
   type AssetResolver,
   type AsepriteAssetUrls,
   type GltfAssetUrls,
+  type BitmapFontAssetUrls,
   type SpineAssetUrls,
+  type WebFontAssetUrls,
 } from "@game-editor/assets";
 import { collectReferencedAssetIds, type SceneData } from "@game-editor/scene";
 import type {
@@ -225,6 +227,58 @@ export class AssetManager implements AssetResolver {
       tags: asset.metadata.tags.map((tag) => tag.name),
       frameDurations: asset.metadata.frameDurations,
       frameCount: asset.metadata.frameCount,
+    };
+  }
+
+  resolveBitmapFontPartUrl(assetId: string, part: string): string | undefined {
+    if (!this.api || !this.database.has(assetId)) {
+      return undefined;
+    }
+    const asset = this.database.get(assetId);
+    if (!asset || asset.metadata.kind !== "font") {
+      return undefined;
+    }
+    return this.api.getAssetPartUrl(assetId, part);
+  }
+
+  resolveBitmapFontUrls(assetId: string): BitmapFontAssetUrls | undefined {
+    const asset = this.database.get(assetId);
+    if (!asset || asset.metadata.kind !== "font") {
+      return undefined;
+    }
+    const xmlUrl = this.resolveUrl(assetId);
+    if (!xmlUrl) {
+      return undefined;
+    }
+    const pageUrls: Record<string, string> = {};
+    for (const pagePath of asset.metadata.pagePaths) {
+      const name = getFileBasename(pagePath);
+      const url = this.resolveBitmapFontPartUrl(assetId, name);
+      if (!url) {
+        return undefined;
+      }
+      pageUrls[name] = url;
+    }
+    return {
+      xmlUrl,
+      fontFamily: asset.metadata.fontFamily,
+      pageUrls,
+    };
+  }
+
+  resolveWebFontUrls(assetId: string): WebFontAssetUrls | undefined {
+    const asset = this.database.get(assetId);
+    if (!asset || asset.metadata.kind !== "webfont") {
+      return undefined;
+    }
+    const url = this.resolveUrl(assetId);
+    if (!url) {
+      return undefined;
+    }
+    return {
+      url,
+      fontFamily: asset.metadata.fontFamily,
+      format: asset.metadata.format,
     };
   }
 

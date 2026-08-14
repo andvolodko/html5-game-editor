@@ -32,6 +32,9 @@ export interface Transform2DComponentData {
 
   scale: Vec2;
 
+  /** Skew in degrees (engine-neutral; renderer converts to radians). Omitted = none. */
+  skew?: Vec2;
+
   anchor?: Vec2;
 
 }
@@ -67,6 +70,8 @@ export type {
   GraphicsComponentData,
 
   TextStyleData,
+
+  TextStyleFill,
 
   TextAlign,
 
@@ -147,6 +152,10 @@ export {
   TEXT_BASELINE_OPTIONS,
 
   TEXT_STROKE_JOIN_OPTIONS,
+
+  textStyleFillStops,
+
+  compactTextStyleFill,
 
 } from "./visual-components.js";
 

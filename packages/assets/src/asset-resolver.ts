@@ -21,6 +21,12 @@ export interface AssetResolver {
   /** Generated spritesheet JSON / PNG for an Aseprite source asset. */
   resolveAsepritePartUrl?(assetId: string, part: string): string | undefined;
   resolveAsepriteUrls?(assetId: string): AsepriteAssetUrls | undefined;
+  /** Page textures for a bitmap-font bundle, keyed by allowlisted basename. */
+  resolveBitmapFontPartUrl?(assetId: string, part: string): string | undefined;
+  /** Descriptor + page URLs for a bitmap font (AngelCode XML/FNT). */
+  resolveBitmapFontUrls?(assetId: string): BitmapFontAssetUrls | undefined;
+  /** File URL + CSS family for a TTF/OTF/WOFF catalogue asset. */
+  resolveWebFontUrls?(assetId: string): WebFontAssetUrls | undefined;
 }
 
 export interface SpineAssetUrls {
@@ -46,6 +52,19 @@ export interface AsepriteAssetUrls {
   frameCount: number;
 }
 
+export interface BitmapFontAssetUrls {
+  xmlUrl: string;
+  fontFamily: string;
+  /** Page basename → fetch URL. */
+  pageUrls: Readonly<Record<string, string>>;
+}
+
+export interface WebFontAssetUrls {
+  url: string;
+  fontFamily: string;
+  format: "ttf" | "otf" | "woff" | "woff2";
+}
+
 /** Adapts a plain function to AssetResolver. */
 export function createAssetResolver(
   resolveUrl: (assetId: string) => string | undefined,
@@ -56,6 +75,12 @@ export function createAssetResolver(
   resolveGltfUrls?: (assetId: string) => GltfAssetUrls | undefined,
   resolveAsepritePartUrl?: (assetId: string, part: string) => string | undefined,
   resolveAsepriteUrls?: (assetId: string) => AsepriteAssetUrls | undefined,
+  resolveBitmapFontPartUrl?: (
+    assetId: string,
+    part: string,
+  ) => string | undefined,
+  resolveBitmapFontUrls?: (assetId: string) => BitmapFontAssetUrls | undefined,
+  resolveWebFontUrls?: (assetId: string) => WebFontAssetUrls | undefined,
 ): AssetResolver {
   return {
     resolveUrl,
@@ -66,5 +91,10 @@ export function createAssetResolver(
     ...(resolveGltfUrls !== undefined ? { resolveGltfUrls } : {}),
     ...(resolveAsepritePartUrl !== undefined ? { resolveAsepritePartUrl } : {}),
     ...(resolveAsepriteUrls !== undefined ? { resolveAsepriteUrls } : {}),
+    ...(resolveBitmapFontPartUrl !== undefined
+      ? { resolveBitmapFontPartUrl }
+      : {}),
+    ...(resolveBitmapFontUrls !== undefined ? { resolveBitmapFontUrls } : {}),
+    ...(resolveWebFontUrls !== undefined ? { resolveWebFontUrls } : {}),
   };
 }

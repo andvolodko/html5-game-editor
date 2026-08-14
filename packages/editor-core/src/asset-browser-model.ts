@@ -169,6 +169,7 @@ export function isFolderOrDescendant(folder: string, candidate: string): boolean
 export interface AssetBrowserPreviewResolvers {
   contentUrl: (assetId: string) => string | undefined;
   spinePartUrl: (assetId: string, pageBasename: string) => string | undefined;
+  fontPartUrl: (assetId: string, pageBasename: string) => string | undefined;
   asepritePartUrl: (assetId: string, partBasename: string) => string | undefined;
 }
 
@@ -191,6 +192,13 @@ export function resolveAssetBrowserPreviewUrl(
       }
       return resolvers.spinePartUrl(asset.id, getFileBasename(page));
     }
+    case "font": {
+      const page = asset.metadata.pagePaths[0];
+      if (!page) {
+        return undefined;
+      }
+      return resolvers.fontPartUrl(asset.id, getFileBasename(page));
+    }
     case "aseprite":
       return resolvers.asepritePartUrl(
         asset.id,
@@ -198,6 +206,7 @@ export function resolveAssetBrowserPreviewUrl(
       );
     case "audio":
     case "gltf":
+    case "webfont":
       return undefined;
   }
 }

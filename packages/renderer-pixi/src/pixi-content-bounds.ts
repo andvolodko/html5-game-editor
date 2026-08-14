@@ -33,5 +33,9 @@ function aff2FromContainer(container: Container) {
     { x: container.position.x, y: container.position.y },
     container.rotation * RADIANS_TO_DEGREES,
     { x: container.scale.x, y: container.scale.y },
+    {
+      x: container.skew.x * RADIANS_TO_DEGREES,
+      y: container.skew.y * RADIANS_TO_DEGREES,
+    },
   );
 }
