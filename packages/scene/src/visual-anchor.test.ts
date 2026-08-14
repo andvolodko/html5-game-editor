@@ -5,7 +5,12 @@ import {
   createNineSliceSpriteComponent,
   createTilingSpriteComponent,
   createGraphicsComponent,
+  DEFAULT_NINE_SLICE_HEIGHT,
+  DEFAULT_NINE_SLICE_WIDTH,
+  DEFAULT_SPRITE_SIZE,
+  DEFAULT_TILING_SPRITE_SIZE,
   DEFAULT_VISUAL_ANCHOR,
+  defaultVisualDisplaySize,
   getVisualAnchorOrDefault,
   getVisualDisplaySize,
   visualComponentSupportsAnchor,
@@ -40,6 +45,25 @@ describe("visual anchor helpers", () => {
     expect(getVisualDisplaySize(createSpriteComponent({ width: 64, height: 32 }))).toEqual(
       { width: 64, height: 32 },
     );
+  });
+
+  it("returns factory default display size per visual type", () => {
+    expect(defaultVisualDisplaySize(createSpriteComponent())).toEqual({
+      width: DEFAULT_SPRITE_SIZE,
+      height: DEFAULT_SPRITE_SIZE,
+    });
+    expect(
+      defaultVisualDisplaySize(createNineSliceSpriteComponent()),
+    ).toEqual({
+      width: DEFAULT_NINE_SLICE_WIDTH,
+      height: DEFAULT_NINE_SLICE_HEIGHT,
+    });
+    expect(defaultVisualDisplaySize(createTilingSpriteComponent())).toEqual({
+      width: DEFAULT_TILING_SPRITE_SIZE,
+      height: DEFAULT_TILING_SPRITE_SIZE,
+    });
+    expect(defaultVisualDisplaySize(createTextComponent())).toBeUndefined();
+    expect(defaultVisualDisplaySize(createGraphicsComponent())).toBeUndefined();
   });
 
   it("defaults omitted anchor to center", () => {

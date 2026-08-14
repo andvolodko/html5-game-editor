@@ -1,5 +1,19 @@
 import type { Vec2, Vec3 } from "./types.js";
 
+/** Identity Transform2D position (reset / factory default). */
+export const IDENTITY_POSITION_2D: Vec2 = { x: 0, y: 0 };
+/** Identity Transform2D rotation in degrees. */
+export const IDENTITY_ROTATION_2D = 0;
+/** Identity Transform2D scale. */
+export const IDENTITY_SCALE_2D: Vec2 = { x: 1, y: 1 };
+
+/** Identity Transform3D position (reset / factory default). */
+export const IDENTITY_POSITION_3D: Vec3 = { x: 0, y: 0, z: 0 };
+/** Identity Transform3D Euler rotation. */
+export const IDENTITY_ROTATION_3D: Vec3 = { x: 0, y: 0, z: 0 };
+/** Identity Transform3D scale. */
+export const IDENTITY_SCALE_3D: Vec3 = { x: 1, y: 1, z: 1 };
+
 /** Default world position when creating a new scene node. */
 export const DEFAULT_NODE_SPAWN_POSITION: Vec2 = { x: 120, y: 120 };
 

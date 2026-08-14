@@ -128,6 +128,8 @@ export {
 
   visualComponentSupportsDisplaySize,
 
+  defaultVisualDisplaySize,
+
   getVisualDisplaySize,
 
   getVisualAnchorOrDefault,

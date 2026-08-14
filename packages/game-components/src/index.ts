@@ -14,6 +14,7 @@ export type {
   ScriptCreateContext,
   ScriptRuntimeServices,
   ScriptSpawnModel3DOptions,
+  ScriptChildNodeRef,
   PlayAudioOptions,
   ScriptTransform2D,
   ScriptTransform2DPatch,
@@ -57,6 +58,10 @@ export {
   backgroundAudioComponent,
   BackgroundAudioBehaviour,
 } from "./shared/background-audio.js";
+export {
+  buttonComponent,
+  ButtonBehaviour,
+} from "./shared/button.js";
 export { installSceneFlowRuntime } from "./shared/scene-flow-runtime.js";
 export type {
   ComponentCatalogEntry,

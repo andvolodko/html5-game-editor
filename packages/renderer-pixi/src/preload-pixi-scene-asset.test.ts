@@ -6,9 +6,10 @@ import {
   createStaticAssetResolver,
   createTextureAssetRecord,
   createAudioAssetRecord,
+  createAsepriteAssetRecord,
 } from "@game-editor/assets";
 
-const load = vi.fn(async (_opts: unknown) => undefined);
+const load = vi.fn(async () => undefined);
 
 vi.mock("pixi.js", () => ({
   Assets: {
@@ -71,6 +72,26 @@ describe("preloadPixiSceneAsset", () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(load).toHaveBeenCalledWith("/assets/spine/boy.png");
+  });
+
+  it("loads Aseprite spritesheet JSON through Pixi Assets", async () => {
+    load.mockImplementation(async () => ({ textures: {}, animations: {} }));
+    const database = new AssetDatabase();
+    database.add(
+      createAsepriteAssetRecord({
+        id: "asset_hero",
+        name: "hero",
+        path: "assets/hero.aseprite",
+        frameCount: 2,
+        tags: [{ name: "idle", from: 0, to: 1 }],
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+    await preloadPixiSceneAsset(resolver, "asset_hero");
+    expect(load).toHaveBeenCalledWith({
+      src: "/.generated/assets/hero.json",
+      data: { cachePrefix: "/.generated/assets/hero.json#" },
+    });
   });
 
   it("skips glTF assets", async () => {

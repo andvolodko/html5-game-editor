@@ -1,9 +1,9 @@
-import { createPortal } from "react-dom";
 import {
   ASSETS_ROOT_FOLDER,
   isScenesFolder,
   isScenesFolderOrDescendant,
 } from "@game-editor/editor-core";
+import { EditorContextMenu } from "../ui/EditorContextMenu";
 
 export type AssetContextMenuState =
   | { x: number; y: number; kind: "asset"; id: string }
@@ -18,10 +18,12 @@ export function AssetContextMenu({
   onRenameAsset,
   onRenameFolder,
   onRemoveAsset,
+  onDuplicateAsset,
   onRemoveFolder,
   onOpenScene,
   onRenameScene,
   onRemoveScene,
+  onDuplicateScene,
   onNewScene,
   onNewFolder,
 }: {
@@ -30,10 +32,12 @@ export function AssetContextMenu({
   onRenameAsset: (id: string) => void;
   onRenameFolder: (path: string) => void;
   onRemoveAsset: (id: string) => void;
+  onDuplicateAsset: (id: string) => void;
   onRemoveFolder: (path: string) => void;
   onOpenScene: (id: string) => void;
   onRenameScene: (id: string) => void;
   onRemoveScene: (id: string) => void;
+  onDuplicateScene: (id: string) => void;
   onNewScene: () => void;
   onNewFolder: (folderPath?: string) => void;
 }) {
@@ -42,15 +46,21 @@ export function AssetContextMenu({
     menu.path !== ASSETS_ROOT_FOLDER &&
     !isScenesFolderOrDescendant(menu.path);
 
-  return createPortal(
-    <ul
-      className="hierarchy-context-menu"
-      style={{ left: menu.x, top: menu.y }}
-      onClick={(event) => event.stopPropagation()}
-      onPointerDown={(event) => event.stopPropagation()}
-    >
+  return (
+    <EditorContextMenu x={menu.x} y={menu.y}>
       {menu.kind === "asset" ? (
         <>
+          <li>
+            <button
+              type="button"
+              onClick={() => {
+                onDuplicateAsset(menu.id);
+                onClose();
+              }}
+            >
+              Duplicate
+            </button>
+          </li>
           <li>
             <button
               type="button"
@@ -120,6 +130,17 @@ export function AssetContextMenu({
             <button
               type="button"
               onClick={() => {
+                onDuplicateScene(menu.id);
+                onClose();
+              }}
+            >
+              Duplicate
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              onClick={() => {
                 onRenameScene(menu.id);
                 onClose();
               }}
@@ -168,7 +189,6 @@ export function AssetContextMenu({
           </button>
         </li>
       ) : null}
-    </ul>,
-    document.body,
+    </EditorContextMenu>
   );
 }

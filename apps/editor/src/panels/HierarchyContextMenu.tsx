@@ -1,3 +1,4 @@
+import { EditorContextMenu } from "../ui/EditorContextMenu";
 import type { HierarchyContextMenuState } from "./hierarchy-types";
 
 export function HierarchyContextMenu({
@@ -8,11 +9,7 @@ export function HierarchyContextMenu({
   onAction: (action: string) => void;
 }) {
   return (
-    <ul
-      className="hierarchy-context-menu"
-      style={{ left: menu.x, top: menu.y }}
-      onClick={(event) => event.stopPropagation()}
-    >
+    <EditorContextMenu x={menu.x} y={menu.y}>
       {typeof menu.target === "object" ? (
         <>
           <li>
@@ -52,6 +49,6 @@ export function HierarchyContextMenu({
           ) : null}
         </>
       )}
-    </ul>
+    </EditorContextMenu>
   );
 }

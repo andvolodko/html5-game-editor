@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { ASSET_SCHEMA_VERSION, type AssetDatabaseData, type AssetRecord } from "./types.js";
 
-export const assetTypeSchema = z.enum(["texture", "spine", "audio", "gltf"]);
+export const assetTypeSchema = z.enum(["texture", "spine", "audio", "gltf", "aseprite"]);
 
 export const textureAssetMetadataSchema = z.object({
   kind: z.literal("texture"),
@@ -34,11 +34,32 @@ export const gltfAssetMetadataSchema = z.object({
   imagePaths: z.array(z.string().min(1)).optional(),
 });
 
+export const asepriteTagMetadataSchema = z.object({
+  name: z.string().min(1),
+  from: z.number().int().nonnegative(),
+  to: z.number().int().nonnegative(),
+  direction: z.enum(["forward", "reverse", "pingpong"]).optional(),
+});
+
+export const asepriteAssetMetadataSchema = z.object({
+  kind: z.literal("aseprite"),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  frameCount: z.number().int().nonnegative(),
+  tags: z.array(asepriteTagMetadataSchema),
+  frameDurations: z.array(z.number().positive()),
+  sheetPath: z.string().min(1),
+  dataPath: z.string().min(1),
+  compileRevision: z.string().min(1).optional(),
+  compileError: z.string().min(1).optional(),
+});
+
 export const assetMetadataSchema = z.discriminatedUnion("kind", [
   textureAssetMetadataSchema,
   spineAssetMetadataSchema,
   audioAssetMetadataSchema,
   gltfAssetMetadataSchema,
+  asepriteAssetMetadataSchema,
 ]);
 
 const assetRecordObjectSchema = z.object({

@@ -5,8 +5,10 @@ import {
   createSpineAssetRecord,
   createStaticAssetResolver,
   createTextureAssetRecord,
+  createAsepriteAssetRecord,
 } from "@game-editor/assets";
 import {
+  createAnimatedSpriteComponent,
   createEmptyScene,
   createModel3DComponent,
   createNodeWithTransform3D,
@@ -107,6 +109,36 @@ describe("collectSceneAssetUrls", () => {
       "/assets/spine/boy.atlas",
       "/assets/spine/boy.json",
       "/assets/spine/boy.png",
+    ]);
+  });
+
+  it("expands Aseprite assets to generated PNG/JSON URLs", () => {
+    const database = new AssetDatabase();
+    database.add(
+      createAsepriteAssetRecord({
+        id: "asset_hero",
+        name: "hero",
+        path: "assets/characters/hero.aseprite",
+        frameCount: 2,
+        tags: [{ name: "idle", from: 0, to: 1 }],
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+    const scene = createEmptyScene("Main");
+    scene.nodes.push(
+      createNodeWithVisual(
+        "Hero",
+        { x: 0, y: 0 },
+        createAnimatedSpriteComponent({
+          assetId: "asset_hero",
+          animation: "idle",
+          playing: true,
+        }),
+      ),
+    );
+    expect(collectSceneAssetUrls([scene], resolver)).toEqual([
+      "/.generated/assets/characters/hero.json",
+      "/.generated/assets/characters/hero.png",
     ]);
   });
 });

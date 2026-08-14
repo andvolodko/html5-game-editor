@@ -91,6 +91,24 @@ export function HierarchyPanel() {
 
   const closeMenu = () => setContextMenu(null);
 
+  useEffect(() => {
+    if (!contextMenu) {
+      return;
+    }
+    const close = () => setContextMenu(null);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        close();
+      }
+    };
+    window.addEventListener("pointerdown", close);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("pointerdown", close);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [contextMenu]);
+
   const runMenu = (action: string) => {
     const menu = contextMenu;
     closeMenu();

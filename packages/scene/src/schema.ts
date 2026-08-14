@@ -228,6 +228,8 @@ export const animatedSpriteComponentSchema = z.object({
   type: z.literal("AnimatedSprite"),
   id: z.string().min(1),
   frames: z.array(z.string().min(1)),
+  assetId: z.string().min(1).optional(),
+  animation: z.string().min(1).optional(),
   animationSpeed: z.number().positive(),
   loop: z.boolean(),
   playing: z.boolean(),

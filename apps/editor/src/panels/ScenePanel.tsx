@@ -30,6 +30,10 @@ import type {
   ThreeViewMode,
 } from "../viewport/create-scene-viewport";
 import { useSceneViewport } from "../viewport/use-scene-viewport";
+import {
+  SceneContextMenu,
+  useSceneNodeContextMenu,
+} from "./SceneContextMenu";
 
 function formatScalePercent(scale: number): string {
   return `${Math.round(scale * 100)}%`;
@@ -74,6 +78,8 @@ export function ScenePanel({
     useState<ThreeTransformMode>("translate");
   const [threeViewMode, setThreeViewMode] =
     useState<ThreeViewMode>("camera");
+  const [showPixiLayers, setShowPixiLayers] = useState(true);
+  const [showThreeLayers, setShowThreeLayers] = useState(true);
 
   const viewportRef = useSceneViewport({
     editor,
@@ -82,6 +88,8 @@ export function ScenePanel({
     snapGridSize,
     threeTransformMode,
     threeViewMode,
+    showPixiLayers,
+    showThreeLayers,
     selectedIds,
     onScale: setScale,
     onGuides: (landscape, portrait) => {
@@ -89,6 +97,8 @@ export function ScenePanel({
       setShowPortrait(portrait);
     },
   });
+  const { menu: contextMenu, onViewportContextMenu, onAction: runSceneMenu } =
+    useSceneNodeContextMenu(editor, viewportRef, selectedIds);
 
   useEffect(() => {
     setSnapGridSizeDraft(String(snapGridSize));
@@ -298,6 +308,33 @@ export function ScenePanel({
             </div>
           </>
         ) : null}
+        {isHybrid ? (
+          <div className="scene-toolbar-group">
+            <span className="scene-toolbar-label">Layers</span>
+            <label
+              className="scene-toolbar-checkbox"
+              title="Show Pixi (2D) background and foreground"
+            >
+              <input
+                type="checkbox"
+                checked={showPixiLayers}
+                onChange={(event) => setShowPixiLayers(event.target.checked)}
+              />
+              <span>Pixi</span>
+            </label>
+            <label
+              className="scene-toolbar-checkbox"
+              title="Show 3D layer"
+            >
+              <input
+                type="checkbox"
+                checked={showThreeLayers}
+                onChange={(event) => setShowThreeLayers(event.target.checked)}
+              />
+              <span>3D</span>
+            </label>
+          </div>
+        ) : null}
         {showPixiChrome ? (
           <>
             <div className="scene-toolbar-group">
@@ -454,7 +491,14 @@ export function ScenePanel({
           </span>
         )}
       </div>
-      <div ref={hostRef} className="scene-viewport" />
+      <div
+        ref={hostRef}
+        className="scene-viewport"
+        onContextMenu={onViewportContextMenu}
+      />
+      {contextMenu ? (
+        <SceneContextMenu menu={contextMenu} onAction={runSceneMenu} />
+      ) : null}
       {dropActive ? (
         <div className="scene-drop-overlay">
           {isThree

@@ -1,7 +1,7 @@
 import type { Application, Container } from "pixi.js";
 import type { FederatedPointerEvent } from "pixi.js";
 import { getTransform2D, type Vec2 } from "@game-editor/scene";
-import { MOUSE_BUTTON_MIDDLE } from "@game-editor/shared";
+import { MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_SECONDARY } from "@game-editor/shared";
 import type { RuntimeNode } from "./pixi-runtime-nodes.js";
 import { snapPositionToGrid } from "./snap-to-grid.js";
 
@@ -63,6 +63,10 @@ export class PixiNodeDragController {
       });
 
       if (!transform) {
+        return;
+      }
+
+      if (event.button === MOUSE_BUTTON_SECONDARY) {
         return;
       }
 

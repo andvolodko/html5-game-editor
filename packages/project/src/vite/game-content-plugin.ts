@@ -2,11 +2,12 @@ import { cpSync, existsSync } from "node:fs";
 import path from "node:path";
 import type { Plugin } from "vite";
 
-const GAME_CONTENT_ENTRIES = ["assets"] as const;
+const GAME_CONTENT_ENTRIES = ["assets", ".generated"] as const;
 
 /**
  * Copies project content folders into the Vite build output so production
- * hosts can serve textures/spine at the same paths as AssetDatabase.
+ * hosts can serve textures/spine/generated spritesheets at the same paths
+ * as AssetDatabase.
  *
  * Bundled JS goes to `bundle/` (not `assets/`) to avoid colliding with
  * game content under `assets/`.

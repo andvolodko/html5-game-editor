@@ -149,6 +149,14 @@ export async function mountEditorFeaturesDemoRenderers(args: {
       pixiFg.pickNodeId(x, y) ??
       three.pickNodeId(x, y) ??
       pixiBg.pickNodeId(x, y);
+    const cursorFor = (nodeId: string | undefined): string => {
+      if (!nodeId) {
+        return "";
+      }
+      return (
+        pixiFg.getNodeCursor?.(nodeId) ?? pixiBg.getNodeCursor?.(nodeId) ?? ""
+      );
+    };
     const onDown = (event: PointerEvent) => {
       downId = pick(event.clientX, event.clientY);
       if (downId) {
@@ -165,13 +173,18 @@ export async function mountEditorFeaturesDemoRenderers(args: {
       }
       downId = undefined;
     };
+    const onMove = (event: PointerEvent) => {
+      inputHost.style.cursor = cursorFor(pick(event.clientX, event.clientY));
+    };
     inputHost.addEventListener("pointerdown", onDown);
     inputHost.addEventListener("pointerup", onUp);
+    inputHost.addEventListener("pointermove", onMove);
 
     return {
       destroy: async () => {
         inputHost.removeEventListener("pointerdown", onDown);
         inputHost.removeEventListener("pointerup", onUp);
+        inputHost.removeEventListener("pointermove", onMove);
         await Promise.all([
           pixiBg.destroy(),
           three.destroy(),

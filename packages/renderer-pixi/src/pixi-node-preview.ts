@@ -74,6 +74,7 @@ export class PixiNodePreviewController {
       return;
     }
     runtime.container.scale.set(scale.x, scale.y);
+    this.host.paintSelection(runtime);
   }
 
   previewSpriteAnchor(nodeId: string, anchor: Vec2, position: Vec2): void {

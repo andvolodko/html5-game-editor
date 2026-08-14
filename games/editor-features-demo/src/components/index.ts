@@ -20,6 +20,10 @@ import {
   installRaptorRuntime,
   raptorComponent,
 } from "./raptor.js";
+import {
+  cloneObjectComponent,
+  installCloneObjectRuntime,
+} from "./clone-object.js";
 
 /** Registers shared + editor-features-demo script components into the catalog. */
 export function registerGameComponents(registry: ComponentRegistry): void {
@@ -28,6 +32,7 @@ export function registerGameComponents(registry: ComponentRegistry): void {
   registry.register(mainButtonComponent);
   registry.register(goSpineButtonComponent);
   registry.register(raptorComponent);
+  registry.register(cloneObjectComponent);
 }
 
 /** Bus events for Inspector dynamicEnum source `busEvents`. */
@@ -49,6 +54,7 @@ export function installEditorFeaturesDemoRuntime(registry: ComponentRegistry): v
   installMainButtonRuntime(registry);
   installGoSpineButtonRuntime(registry);
   installRaptorRuntime(registry);
+  installCloneObjectRuntime(registry);
 }
 
 /** Standard hook discovered by the editor via import.meta.glob. */
@@ -68,3 +74,8 @@ export {
   installRaptorRuntime,
   RaptorBehaviour,
 } from "./raptor.js";
+export {
+  cloneObjectComponent,
+  installCloneObjectRuntime,
+  CloneObjectBehaviour,
+} from "./clone-object.js";

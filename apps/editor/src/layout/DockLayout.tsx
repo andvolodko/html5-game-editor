@@ -14,13 +14,19 @@ import { InspectorPanel } from "../panels/InspectorPanel";
 import { ProjectSettingsPanel } from "../panels/ProjectSettingsPanel";
 import { ConsolePanel } from "../panels/ConsolePanel";
 import { PreviewPanel } from "../panels/PreviewPanel";
+import { AssetPreviewPanel } from "../panels/AssetPreviewPanel";
+import { AssetPreviewSelectionProvider } from "../assets/asset-preview-selection";
 import {
   createLocalStorageEditorSettings,
   EDITOR_LAYOUT_VERSION,
   type EditorSettingsStorage,
 } from "../settings/editor-settings-storage";
 import { applyDefaultEditorLayout } from "./default-layout";
+import { PopoutHeaderActions } from "./PopoutHeaderActions";
+import { dockviewPopoutUrl } from "./dockview-popout";
 import { EditorLayoutContext } from "./layout-context";
+
+const EDITOR_POPOUT_URL = dockviewPopoutUrl(import.meta.env.BASE_URL);
 
 const components = {
   hierarchy: () => <HierarchyPanel />,
@@ -28,6 +34,7 @@ const components = {
   assets: () => <AssetsPanel />,
   inspector: () => <InspectorPanel />,
   projectSettings: () => <ProjectSettingsPanel />,
+  assetPreview: () => <AssetPreviewPanel />,
   console: () => <ConsolePanel />,
   preview: (props: IDockviewPanelProps) => <PreviewPanel {...props} />,
 };
@@ -109,16 +116,20 @@ export function DockLayout({
 
   return (
     <EditorLayoutContext.Provider value={{ resetLayout }}>
-      <div className="editor-shell">
-        <Toolbar />
-        <div className="editor-dock-host">
-          <DockviewReact
-            className="dockview-theme-dark editor-dockview"
-            components={components}
-            onReady={onReady}
-          />
+      <AssetPreviewSelectionProvider>
+        <div className="editor-shell">
+          <Toolbar />
+          <div className="editor-dock-host">
+            <DockviewReact
+              className="dockview-theme-dark editor-dockview"
+              components={components}
+              popoutUrl={EDITOR_POPOUT_URL}
+              rightHeaderActionsComponent={PopoutHeaderActions}
+              onReady={onReady}
+            />
+          </div>
         </div>
-      </div>
+      </AssetPreviewSelectionProvider>
     </EditorLayoutContext.Provider>
   );
 }

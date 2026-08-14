@@ -264,6 +264,7 @@ Responsibilities:
 * scene loading/saving;
 * asset processing;
 * spritesheet generation;
+* Aseprite / LibreSprite compile (editor-only CLI);
 * file watching;
 * collaboration;
 * resource locking;
@@ -595,6 +596,7 @@ Initial supported resources:
 * JPG;
 * WebP;
 * spritesheets;
+* Aseprite / LibreSprite (`.aseprite`, `.ase`) compiled to PNG + Pixi JSON;
 * fonts;
 * audio metadata where appropriate.
 
@@ -603,7 +605,7 @@ Initial supported resources:
 | Type | Status | Notes |
 | --- | --- | --- |
 | Container | Supported | Transform2D-only grouping; `canHaveChildren` |
-| Sprite | Supported | Texture assetId + display size |
+| Sprite | Supported | Texture or Aseprite `assetId` + display size |
 | NineSliceSprite | Supported | |
 | TilingSprite | Supported | |
 | Graphics | Supported | MVP shapes: rect / rounded-rect / circle / ellipse / polygon |
@@ -615,7 +617,7 @@ Initial supported resources:
 | MeshRope | Supported | |
 | MeshPlane | Supported | |
 | PerspectiveMesh | Supported | Corner positions in Inspector |
-| AnimatedSprite | Supported | Frames as assetId[]; basic play/loop/speed |
+| AnimatedSprite | Supported | Frames as assetId[], or Aseprite `assetId` + `animation` tag; play/loop/speed |
 | Spine | Supported | Bundled skeleton+atlas+pages; Pixi playback via `@esotericsoftware/spine-pixi-v8` |
 | ParticleContainer | Deferred | Pixi Particle API accepts Particle children only — incompatible with Container hierarchy |
 
@@ -653,6 +655,7 @@ Possible asset types:
 ```text
 texture
 spritesheet
+aseprite
 model3d
 audio
 font
@@ -661,6 +664,8 @@ environment
 scene
 prefab
 ```
+
+`aseprite` records point at the source `.aseprite` / `.ase` path. Derived PNG/JSON live under `.generated/` and are not catalogue entries. Scenes must store the Aseprite `assetId` (and optional tag `animation`), never a generated filesystem path. See `docs/aseprite.md`.
 
 Asset IDs remain stable after:
 
@@ -728,6 +733,12 @@ GLB/GLTF
 Model3D component
 ```
 
+```text
+.aseprite / .ase
+   ↓
+Sprite (one frame) or AnimatedSprite (tags / multiple frames)
+```
+
 The browser drag payload should pass an `assetId`.
 
 Do not transfer large asset data through drag metadata.
@@ -773,15 +784,22 @@ ModelImporter
 AudioImporter
 FontImporter
 SpineImporter
+AsepriteAssetImporter
 ```
 
 Shipping a game that uses the Spine runtime requires a Spine Editor license (Esoteric Software). The importer does not gate on that license.
+
+Aseprite compile is an **editor/build-time** dependency. Detect `aseprite` or the free `libresprite` CLI behind `AsepriteService` (PATH, `ASEPRITE` env, well-known install folders). Do not call `child_process` from the Assets UI. Missing CLI must not crash the editor. Games ship only generated PNG/JSON; players do not need Aseprite. Details: `docs/aseprite.md`.
 
 ---
 
 # 18. Spritesheet / Atlas Pipeline
 
-Users must be able to build spritesheets from multiple source textures.
+Aseprite / LibreSprite sources already compile incrementally to a packed PNG + Pixi spritesheet JSON (tags → `spritesheet.animations`). That path is documented in `docs/aseprite.md`.
+
+Users must still be able to build spritesheets from multiple loose source textures.
+
+Configuration should support:
 
 Configuration should support:
 
@@ -1557,18 +1575,21 @@ to the editor frontend.
 
 Generated assets must be clearly separated from source assets when practical.
 
-Example:
+Established convention:
 
 ```text
-assets/
-generated/
+assets/                         # source (including .aseprite)
+.generated/                     # derived PNG/JSON (mirrors source path)
+.project/aseprite-cache.json    # compile skip cache (mtime + size)
 ```
 
-or an equivalent cache/build location.
+Example: `assets/characters/hero.aseprite` → `.generated/assets/characters/hero.png` and `hero.json`.
+
+Do not invent a second generated-folder convention.
 
 Do not manually edit generated files.
 
-Generated build output should normally be ignored by Git unless a specific workflow requires otherwise.
+Derived PNG/JSON under `games/<name>/.generated` are committed so GitHub Actions can build the static demo and standalone games without the Aseprite CLI. Keep `.project/aseprite-cache.json` and `.generated` undo trash gitignored. After changing a source `.aseprite`, regenerate locally and commit the matching PNG/JSON. Game Vite copies `.generated` into the production `dist`; the editor demo plugin copies it under `/demo/<id>/.generated`.
 
 ---
 
@@ -1605,7 +1626,7 @@ Recommended order:
 * scene drag/drop;
 * asset IDs;
 * asset metadata;
-* spritesheet generation.
+* spritesheet generation (Aseprite / LibreSprite compile implemented; multi-PNG atlas still open).
 
 ## Phase 4 — Three.js
 

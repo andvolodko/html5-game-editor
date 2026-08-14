@@ -4,6 +4,7 @@ import {
   AssetSelectField,
   BooleanField,
   NumberField,
+  OptionalSelectField,
 } from "../fields/inspector-fields";
 import type { VisualCommit } from "./types";
 
@@ -58,37 +59,5 @@ export function SpineFields({
         onCommit={(playing) => commit({ playing })}
       />
     </>
-  );
-}
-
-function OptionalSelectField({
-  label,
-  value,
-  options,
-  onCommit,
-}: {
-  label: string;
-  value: string | undefined;
-  options: readonly string[];
-  onCommit: (value: string | undefined) => void;
-}) {
-  return (
-    <label>
-      {label}
-      <select
-        value={value ?? ""}
-        onChange={(event) => {
-          const next = event.target.value;
-          onCommit(next.length > 0 ? next : undefined);
-        }}
-      >
-        <option value="">(default)</option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    </label>
   );
 }

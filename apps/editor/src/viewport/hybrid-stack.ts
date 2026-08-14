@@ -11,8 +11,22 @@ import {
   nodeBelongsToThree,
   type SceneRenderer,
 } from "@game-editor/scene";
+import {
+  applyHybridPreviewInput,
+  DEFAULT_HYBRID_LAYER_VISIBILITY,
+  pickVisibleHybridNodeId,
+  syncHybridEditorChrome,
+  type HybridInputLayer,
+  type HybridLayerVisibility,
+} from "./hybrid-layer-visibility.js";
 
-export type HybridInputLayer = "background" | "foreground" | "three";
+export type { HybridInputLayer, HybridLayerVisibility };
+export {
+  applyHybridInputLayer,
+  applyHybridLayerVisibility,
+  applyHybridPreviewInput,
+  DEFAULT_HYBRID_LAYER_VISIBILITY,
+} from "./hybrid-layer-visibility.js";
 
 export interface HybridCanvasHosts {
   stack: HTMLElement;
@@ -28,7 +42,9 @@ export interface HybridRendererStack {
   three: ThreeSceneRenderer;
   pixiForeground: PixiSceneRenderer;
   documentRenderer: SceneRenderer;
+  layerVisibility: HybridLayerVisibility;
   setHybridInputLayer(layer: HybridInputLayer): void;
+  setHybridLayerVisibility(visibility: HybridLayerVisibility): void;
   /** Editor: selection-driven. Preview: leave all canvases none; use inputHost. */
   mode: "editor" | "preview";
   destroy(): Promise<void>;
@@ -62,24 +78,6 @@ export function createHybridCanvasHosts(host: HTMLElement): HybridCanvasHosts {
     el.style.inset = "0";
   }
   return { stack, bgHost, midHost, fgHost, inputHost };
-}
-
-export function applyHybridInputLayer(
-  hosts: HybridCanvasHosts,
-  layer: HybridInputLayer,
-): void {
-  hosts.bgHost.style.pointerEvents = layer === "background" ? "auto" : "none";
-  hosts.midHost.style.pointerEvents = layer === "three" ? "auto" : "none";
-  hosts.fgHost.style.pointerEvents = layer === "foreground" ? "auto" : "none";
-  hosts.inputHost.style.pointerEvents = "none";
-}
-
-/** Preview: canvases never take DOM hits; overlay routes picks. */
-export function applyHybridPreviewInput(hosts: HybridCanvasHosts): void {
-  hosts.bgHost.style.pointerEvents = "none";
-  hosts.midHost.style.pointerEvents = "none";
-  hosts.fgHost.style.pointerEvents = "none";
-  hosts.inputHost.style.pointerEvents = "auto";
 }
 
 export async function createHybridRendererStack(options: {
@@ -136,12 +134,6 @@ export async function createHybridRendererStack(options: {
     pixiForeground.whenReady(),
   ]);
 
-  if (options.mode === "editor") {
-    applyHybridInputLayer(hosts, "three");
-  } else {
-    applyHybridPreviewInput(hosts);
-  }
-
   const unsubBg = pixiBackground.subscribeViewportCamera((state) => {
     pixiForeground.applyViewportCamera(state);
   });
@@ -149,24 +141,32 @@ export async function createHybridRendererStack(options: {
     pixiBackground.applyViewportCamera(state);
   });
 
-  const documentRenderer = new MultiSceneRenderer([
-    { renderer: pixiBackground, accepts: nodeBelongsToPixiBackground },
-    { renderer: three, accepts: nodeBelongsToThree },
-    { renderer: pixiForeground, accepts: nodeBelongsToPixiForeground },
-  ]);
-
-  return {
+  let inputLayer: HybridInputLayer = "three";
+  const stack: HybridRendererStack = {
     hosts,
     pixiBackground,
     three,
     pixiForeground,
-    documentRenderer,
+    documentRenderer: new MultiSceneRenderer([
+      { renderer: pixiBackground, accepts: nodeBelongsToPixiBackground },
+      { renderer: three, accepts: nodeBelongsToThree },
+      { renderer: pixiForeground, accepts: nodeBelongsToPixiForeground },
+    ]),
+    layerVisibility: { ...DEFAULT_HYBRID_LAYER_VISIBILITY },
     mode: options.mode,
     setHybridInputLayer: (layer) => {
       if (options.mode !== "editor") {
         return;
       }
-      applyHybridInputLayer(hosts, layer);
+      inputLayer = layer;
+      syncHybridEditorChrome(hosts, inputLayer, stack.layerVisibility);
+    },
+    setHybridLayerVisibility: (visibility) => {
+      stack.layerVisibility = { pixi: visibility.pixi, three: visibility.three };
+      if (options.mode !== "editor") {
+        return;
+      }
+      syncHybridEditorChrome(hosts, inputLayer, stack.layerVisibility);
     },
     startExternalThreeLoop: () => {
       let raf = 0;
@@ -195,6 +195,14 @@ export async function createHybridRendererStack(options: {
       options.host.replaceChildren();
     },
   };
+
+  if (options.mode === "editor") {
+    syncHybridEditorChrome(hosts, inputLayer, stack.layerVisibility);
+  } else {
+    applyHybridPreviewInput(hosts);
+  }
+
+  return stack;
 }
 
 /**
@@ -203,14 +211,14 @@ export async function createHybridRendererStack(options: {
 export function pickHybridNodeId(
   stack: Pick<
     HybridRendererStack,
-    "pixiForeground" | "three" | "pixiBackground"
+    "pixiForeground" | "three" | "pixiBackground" | "layerVisibility"
   >,
   clientX: number,
   clientY: number,
 ): string | undefined {
-  return (
-    stack.pixiForeground.pickNodeId(clientX, clientY) ??
-    stack.three.pickNodeId(clientX, clientY) ??
-    stack.pixiBackground.pickNodeId(clientX, clientY)
-  );
+  return pickVisibleHybridNodeId(stack.layerVisibility, {
+    pickForeground: () => stack.pixiForeground.pickNodeId(clientX, clientY),
+    pickThree: () => stack.three.pickNodeId(clientX, clientY),
+    pickBackground: () => stack.pixiBackground.pickNodeId(clientX, clientY),
+  });
 }

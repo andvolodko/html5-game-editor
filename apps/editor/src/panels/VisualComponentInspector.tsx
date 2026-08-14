@@ -59,7 +59,7 @@ function VisualFields({
 
   switch (visual.type) {
     case "Sprite":
-      return <SpriteFields visual={visual} commit={commit} />;
+      return <SpriteFields visual={visual} commit={commit} editor={editor} />;
     case "NineSliceSprite":
       return <NineSliceFields visual={visual} commit={commit} />;
     case "TilingSprite":
@@ -82,7 +82,7 @@ function VisualFields({
     case "Mesh":
       return <MeshFields visual={visual} commit={commit} />;
     case "AnimatedSprite":
-      return <AnimatedSpriteFields visual={visual} commit={commit} />;
+      return <AnimatedSpriteFields visual={visual} commit={commit} editor={editor} />;
     case "Spine":
       return <SpineFields visual={visual} commit={commit} editor={editor} />;
     default: {

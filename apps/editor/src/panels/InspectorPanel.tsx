@@ -31,6 +31,10 @@ import {
   DirectionalLightInspector,
 } from "./ThreeLightInspector";
 import { ScriptComponentsInspector } from "./ScriptComponentsInspector";
+import {
+  formatInspectorNumber,
+  resolveInspectorNumber,
+} from "./fields/format-inspector-number";
 
 interface TransformDraft {
   x: string;
@@ -103,13 +107,13 @@ export function InspectorPanel() {
     }
     const anchor = visualAnchor ?? { x: 0.5, y: 0.5 };
     setDraft({
-      x: String(transform.position.x),
-      y: String(transform.position.y),
-      rotation: String(transform.rotation),
-      scaleX: String(transform.scale.x),
-      scaleY: String(transform.scale.y),
-      anchorX: String(anchor.x),
-      anchorY: String(anchor.y),
+      x: formatInspectorNumber(transform.position.x),
+      y: formatInspectorNumber(transform.position.y),
+      rotation: formatInspectorNumber(transform.rotation),
+      scaleX: formatInspectorNumber(transform.scale.x),
+      scaleY: formatInspectorNumber(transform.scale.y),
+      anchorX: formatInspectorNumber(anchor.x),
+      anchorY: formatInspectorNumber(anchor.y),
     });
   }, [
     selectedId,
@@ -128,15 +132,15 @@ export function InspectorPanel() {
       return;
     }
     setDraft3D({
-      x: String(transform3D.position.x),
-      y: String(transform3D.position.y),
-      z: String(transform3D.position.z),
-      rotX: String(transform3D.rotation.x),
-      rotY: String(transform3D.rotation.y),
-      rotZ: String(transform3D.rotation.z),
-      scaleX: String(transform3D.scale.x),
-      scaleY: String(transform3D.scale.y),
-      scaleZ: String(transform3D.scale.z),
+      x: formatInspectorNumber(transform3D.position.x),
+      y: formatInspectorNumber(transform3D.position.y),
+      z: formatInspectorNumber(transform3D.position.z),
+      rotX: formatInspectorNumber(transform3D.rotation.x),
+      rotY: formatInspectorNumber(transform3D.rotation.y),
+      rotZ: formatInspectorNumber(transform3D.rotation.z),
+      scaleX: formatInspectorNumber(transform3D.scale.x),
+      scaleY: formatInspectorNumber(transform3D.scale.y),
+      scaleZ: formatInspectorNumber(transform3D.scale.z),
     });
   }, [
     selectedId,
@@ -157,8 +161,8 @@ export function InspectorPanel() {
       return;
     }
     setSizeDraft({
-      width: String(sprite.width),
-      height: String(sprite.height),
+      width: formatInspectorNumber(sprite.width),
+      height: formatInspectorNumber(sprite.height),
     });
   }, [selectedId, sprite?.width, sprite?.height]);
 
@@ -237,26 +241,31 @@ export function InspectorPanel() {
     if (!transform || !draft) {
       return;
     }
-    const position = { x: Number(draft.x), y: Number(draft.y) };
-    const rotation = Number(draft.rotation);
-    const scale = { x: Number(draft.scaleX), y: Number(draft.scaleY) };
+    const x = resolveInspectorNumber(draft.x, transform.position.x);
+    const y = resolveInspectorNumber(draft.y, transform.position.y);
+    const rotation = resolveInspectorNumber(draft.rotation, transform.rotation);
+    const scaleX = resolveInspectorNumber(draft.scaleX, transform.scale.x);
+    const scaleY = resolveInspectorNumber(draft.scaleY, transform.scale.y);
 
     if (
-      Number.isNaN(position.x) ||
-      Number.isNaN(position.y) ||
-      Number.isNaN(rotation) ||
-      Number.isNaN(scale.x) ||
-      Number.isNaN(scale.y)
+      x === undefined ||
+      y === undefined ||
+      rotation === undefined ||
+      scaleX === undefined ||
+      scaleY === undefined
     ) {
       return;
     }
 
+    const position = { x, y };
+    const scale = { x: scaleX, y: scaleY };
+
     const unchanged =
-      position.x === transform.position.x &&
-      position.y === transform.position.y &&
+      x === transform.position.x &&
+      y === transform.position.y &&
       rotation === transform.rotation &&
-      scale.x === transform.scale.x &&
-      scale.y === transform.scale.y;
+      scaleX === transform.scale.x &&
+      scaleY === transform.scale.y;
 
     if (unchanged) {
       return;
@@ -270,12 +279,12 @@ export function InspectorPanel() {
     if (!node || !visual || !supportsAnchor || !draft) {
       return;
     }
-    const x = Number(draft.anchorX);
-    const y = Number(draft.anchorY);
-    if (Number.isNaN(x) || Number.isNaN(y)) {
+    const current = getVisualAnchorOrDefault(visual);
+    const x = resolveInspectorNumber(draft.anchorX, current.x);
+    const y = resolveInspectorNumber(draft.anchorY, current.y);
+    if (x === undefined || y === undefined) {
       return;
     }
-    const current = getVisualAnchorOrDefault(visual);
     if (x === current.x && y === current.y) {
       return;
     }
@@ -329,11 +338,11 @@ export function InspectorPanel() {
     if (!sprite || !sizeDraft) {
       return;
     }
-    const width = Number(sizeDraft.width);
-    const height = Number(sizeDraft.height);
+    const width = resolveInspectorNumber(sizeDraft.width, sprite.width);
+    const height = resolveInspectorNumber(sizeDraft.height, sprite.height);
     if (
-      Number.isNaN(width) ||
-      Number.isNaN(height) ||
+      width === undefined ||
+      height === undefined ||
       width <= 0 ||
       height <= 0
     ) {
@@ -349,38 +358,41 @@ export function InspectorPanel() {
     if (!transform3D || !draft3D) {
       return;
     }
-    const position = {
-      x: Number(draft3D.x),
-      y: Number(draft3D.y),
-      z: Number(draft3D.z),
-    };
-    const rotation = {
-      x: Number(draft3D.rotX),
-      y: Number(draft3D.rotY),
-      z: Number(draft3D.rotZ),
-    };
-    const scale = {
-      x: Number(draft3D.scaleX),
-      y: Number(draft3D.scaleY),
-      z: Number(draft3D.scaleZ),
-    };
+    const x = resolveInspectorNumber(draft3D.x, transform3D.position.x);
+    const y = resolveInspectorNumber(draft3D.y, transform3D.position.y);
+    const z = resolveInspectorNumber(draft3D.z, transform3D.position.z);
+    const rotX = resolveInspectorNumber(draft3D.rotX, transform3D.rotation.x);
+    const rotY = resolveInspectorNumber(draft3D.rotY, transform3D.rotation.y);
+    const rotZ = resolveInspectorNumber(draft3D.rotZ, transform3D.rotation.z);
+    const scaleX = resolveInspectorNumber(draft3D.scaleX, transform3D.scale.x);
+    const scaleY = resolveInspectorNumber(draft3D.scaleY, transform3D.scale.y);
+    const scaleZ = resolveInspectorNumber(draft3D.scaleZ, transform3D.scale.z);
     if (
-      [position.x, position.y, position.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z].some(
-        (n) => Number.isNaN(n),
-      )
+      x === undefined ||
+      y === undefined ||
+      z === undefined ||
+      rotX === undefined ||
+      rotY === undefined ||
+      rotZ === undefined ||
+      scaleX === undefined ||
+      scaleY === undefined ||
+      scaleZ === undefined
     ) {
       return;
     }
+    const position = { x, y, z };
+    const rotation = { x: rotX, y: rotY, z: rotZ };
+    const scale = { x: scaleX, y: scaleY, z: scaleZ };
     const unchanged =
-      position.x === transform3D.position.x &&
-      position.y === transform3D.position.y &&
-      position.z === transform3D.position.z &&
-      rotation.x === transform3D.rotation.x &&
-      rotation.y === transform3D.rotation.y &&
-      rotation.z === transform3D.rotation.z &&
-      scale.x === transform3D.scale.x &&
-      scale.y === transform3D.scale.y &&
-      scale.z === transform3D.scale.z;
+      x === transform3D.position.x &&
+      y === transform3D.position.y &&
+      z === transform3D.position.z &&
+      rotX === transform3D.rotation.x &&
+      rotY === transform3D.rotation.y &&
+      rotZ === transform3D.rotation.z &&
+      scaleX === transform3D.scale.x &&
+      scaleY === transform3D.scale.y &&
+      scaleZ === transform3D.scale.z;
     if (unchanged) {
       return;
     }

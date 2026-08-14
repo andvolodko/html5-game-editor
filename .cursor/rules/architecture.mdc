@@ -93,6 +93,8 @@ Persist:
 
 Asset path changes must be handled by AssetDatabase.
 
+Aseprite sources stay under `assets/`. Derived PNG/JSON live under `.generated/` (hidden from the Assets tree). Persist the source `assetId` (+ optional animation tag), never a generated path. CLI compile is editor/build-time only (`docs/aseprite.md`).
+
 ## Package boundaries
 
 Before importing across packages:

@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const unload = vi.fn(async () => undefined);
-const cacheHas = vi.fn((_url: string) => true);
-const load = vi.fn(async (_opts: unknown) => {
+const cacheHas = vi.fn(() => true);
+const load = vi.fn(async () => {
   return {
     destroy: vi.fn(),
   };

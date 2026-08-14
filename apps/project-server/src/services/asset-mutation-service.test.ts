@@ -112,6 +112,44 @@ describe("AssetMutationService", () => {
     await expect(access(path.join(root, "assets", "hero.png"))).rejects.toThrow();
   });
 
+  it("restores a deleted asset with the same id and file bytes", async () => {
+    await service.deleteAsset("asset_hero");
+    const restored = await service.restoreAsset("asset_hero");
+    expect(restored.asset.id).toBe("asset_hero");
+    expect(restored.asset.path).toBe("assets/hero.png");
+    expect(restored.database.assets).toHaveLength(1);
+    await expect(access(path.join(root, "assets", "hero.png"))).resolves.toBeUndefined();
+  });
+
+  it("restores a deleted spine bundle folder", async () => {
+    await mkdir(path.join(root, "assets", "hero"), { recursive: true });
+    await writeFile(path.join(root, "assets", "hero", "hero.json"), "{}");
+    await writeFile(path.join(root, "assets", "hero", "hero.atlas"), "hero.png\nsize: 1,1\n");
+    await writeFile(path.join(root, "assets", "hero", "hero.png"), Buffer.from([1]));
+    const database = await store.load();
+    database.add(
+      createSpineAssetRecord({
+        id: "asset_spine",
+        name: "hero",
+        path: "assets/hero/hero.json",
+        skeletonFormat: "json",
+        atlasPath: "assets/hero/hero.atlas",
+        pagePaths: ["assets/hero/hero.png"],
+        skins: ["default"],
+        animations: ["idle"],
+      }),
+    );
+    await store.save(database);
+
+    await service.deleteAsset("asset_spine");
+    await expect(access(path.join(root, "assets", "hero", "hero.json"))).rejects.toThrow();
+
+    const restored = await service.restoreAsset("asset_spine");
+    expect(restored.asset.id).toBe("asset_spine");
+    expect(restored.asset.path).toBe("assets/hero/hero.json");
+    await expect(access(path.join(root, "assets", "hero", "hero.json"))).resolves.toBeUndefined();
+  });
+
   it("deletes a folder and nested assets", async () => {
     await writeFile(path.join(root, "assets", "icons", "coin.png"), Buffer.from([9]));
     const database = await store.load();
@@ -131,6 +169,33 @@ describe("AssetMutationService", () => {
     expect(result.database.assets.find((a) => a.id === "asset_coin")).toBeUndefined();
     expect(result.folders).not.toContain("assets/icons");
     expect(result.database.assets.some((a) => a.id === "asset_hero")).toBe(true);
+  });
+
+  it("restores a deleted folder and nested assets", async () => {
+    await writeFile(path.join(root, "assets", "icons", "coin.png"), Buffer.from([9]));
+    const database = await store.load();
+    database.add(
+      createTextureAssetRecord({
+        id: "asset_coin",
+        name: "coin",
+        path: "assets/icons/coin.png",
+        width: 1,
+        height: 1,
+        mimeType: "image/png",
+      }),
+    );
+    await store.save(database);
+
+    await service.deleteFolder("assets/icons");
+    const restored = await service.restoreFolder("assets/icons");
+    expect(restored.folder).toBe("assets/icons");
+    expect(restored.database.assets.find((a) => a.id === "asset_coin")?.path).toBe(
+      "assets/icons/coin.png",
+    );
+    expect(restored.folders).toContain("assets/icons");
+    await expect(
+      access(path.join(root, "assets", "icons", "coin.png")),
+    ).resolves.toBeUndefined();
   });
 
   it("refuses unsafe folder delete targets", async () => {

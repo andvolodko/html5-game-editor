@@ -17,6 +17,7 @@ import {
 } from "@game-editor/editor-core";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
+import { useAssetPreviewSelection } from "./asset-preview-selection";
 
 export type BrowserSelection =
   | { kind: "asset"; id: string }
@@ -49,6 +50,7 @@ export function useAssetBrowserModel(options?: {
 
   const [query, setQuery] = useState("");
   const [selection, setSelection] = useState<BrowserSelection>();
+  const { setSelectedAssetId } = useAssetPreviewSelection();
   const [renaming, setRenaming] = useState<RenameTarget>();
   const [expanded, setExpanded] = useState<Set<string>>(
     () => new Set([ASSETS_ROOT_FOLDER, SCENES_FOLDER]),
@@ -60,6 +62,12 @@ export function useAssetBrowserModel(options?: {
   const [scenesError, setScenesError] = useState<string | null>(null);
 
   const searching = query.trim().length > 0;
+
+  useEffect(() => {
+    if (selection?.kind === "asset") {
+      setSelectedAssetId(selection.id);
+    }
+  }, [selection, setSelectedAssetId]);
 
   const refreshScenes = useCallback(async () => {
     try {
@@ -74,6 +82,15 @@ export function useAssetBrowserModel(options?: {
   useEffect(() => {
     void refreshScenes();
   }, [refreshScenes, storeVersion, activeSceneId]);
+
+  useEffect(() => {
+    if (selection?.kind !== "scene") {
+      return;
+    }
+    if (!scenes.some((scene) => scene.id === selection.id)) {
+      setSelection(undefined);
+    }
+  }, [scenes, selection]);
 
   const searchAssets = useMemo(() => {
     if (!searching) {
@@ -145,7 +162,7 @@ export function useAssetBrowserModel(options?: {
   const renameAsset = async (assetId: string, name: string): Promise<boolean> => {
     setFolderMessage(null);
     try {
-      await editor.assets.renameAsset(assetId, name);
+      await editor.renameAsset(assetId, name);
       setRenaming(undefined);
       return true;
     } catch (err) {
@@ -161,7 +178,7 @@ export function useAssetBrowserModel(options?: {
         setFolderMessage("Cannot rename the reserved scenes folder");
         return false;
       }
-      const next = await editor.assets.renameFolder(folderPath, name);
+      const next = await editor.renameFolder(folderPath, name);
       setExpanded((prev) => {
         const updated = new Set<string>();
         for (const key of prev) {
@@ -200,10 +217,32 @@ export function useAssetBrowserModel(options?: {
     }
   };
 
+  const duplicateAsset = async (
+    assetId: string,
+    destination?: string,
+  ): Promise<boolean> => {
+    setFolderMessage(null);
+    try {
+      if (destination && isScenesFolderOrDescendant(destination)) {
+        setFolderMessage("Cannot duplicate assets into assets/scenes");
+        return false;
+      }
+      const created = await editor.duplicateAsset(assetId, destination);
+      const slash = created.path.lastIndexOf("/");
+      const folder = slash > 0 ? created.path.slice(0, slash) : ASSETS_ROOT_FOLDER;
+      setExpanded((prev) => new Set(prev).add(folder));
+      setSelection({ kind: "asset", id: created.id });
+      return true;
+    } catch (err) {
+      setFolderMessage(err instanceof Error ? err.message : "Duplicate failed");
+      return false;
+    }
+  };
+
   const removeAsset = async (assetId: string): Promise<boolean> => {
     setFolderMessage(null);
     try {
-      await editor.assets.deleteAsset(assetId);
+      await editor.deleteAsset(assetId);
       setSelection((prev) =>
         prev?.kind === "asset" && prev.id === assetId ? undefined : prev,
       );
@@ -224,7 +263,7 @@ export function useAssetBrowserModel(options?: {
         setFolderMessage("Cannot remove this folder");
         return false;
       }
-      await editor.assets.deleteFolder(folderPath);
+      await editor.deleteFolder(folderPath);
       setExpanded((prev) => {
         const next = new Set<string>();
         for (const key of prev) {
@@ -381,11 +420,27 @@ export function useAssetBrowserModel(options?: {
     }
   };
 
+  const duplicateScene = async (sceneId: string): Promise<boolean> => {
+    setFolderMessage(null);
+    try {
+      const entry = await editor.duplicateSceneFile(sceneId);
+      setExpanded((prev) => new Set(prev).add(ASSETS_ROOT_FOLDER).add(SCENES_FOLDER));
+      setSelection({ kind: "scene", id: entry.id });
+      await refreshScenes();
+      return true;
+    } catch (err) {
+      setFolderMessage(err instanceof Error ? err.message : "Duplicate scene failed");
+      return false;
+    }
+  };
+
   const contentUrl = (asset: AssetRecord) =>
     resolveAssetBrowserPreviewUrl(asset, {
       contentUrl: (assetId) => editor.assets.getContentUrl(assetId),
       spinePartUrl: (assetId, pageBasename) =>
         editor.assets.resolveSpinePartUrl(assetId, pageBasename),
+      asepritePartUrl: (assetId, partBasename) =>
+        editor.assets.resolveAsepritePartUrl(assetId, partBasename),
     });
 
   const entriesForFolder = (folderPath: string) =>
@@ -431,11 +486,13 @@ export function useAssetBrowserModel(options?: {
     renameFolder,
     renameScene,
     moveAsset,
+    duplicateAsset,
     removeAsset,
     removeFolder,
     removeScene,
     openScene,
     createScene,
+    duplicateScene,
     contentUrl,
     entriesForFolder,
     refreshScenes,

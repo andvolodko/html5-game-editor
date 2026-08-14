@@ -1,0 +1,175 @@
+{
+  "frames": {
+    "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-0": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-1": {
+      "frame": {
+        "x": 128,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-2": {
+      "frame": {
+        "x": 256,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-3": {
+      "frame": {
+        "x": 384,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-4": {
+      "frame": {
+        "x": 0,
+        "y": 128,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-5": {
+      "frame": {
+        "x": 128,
+        "y": 128,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-6": {
+      "frame": {
+        "x": 256,
+        "y": 128,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    }
+  },
+  "animations": {
+    "Resource": [
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-0",
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-1",
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-2",
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-3",
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-4",
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-5",
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-6"
+    ],
+    "Still": [
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-0"
+    ],
+    "Highlight": [
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-1",
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-2",
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-3",
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-4",
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-5",
+      "assets-aseprite-Terrain-Resources-Gold-Gold-Resource-Gold-Resource-frame-6"
+    ]
+  },
+  "meta": {
+    "image": "Gold Resource.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 512,
+      "h": 256
+    },
+    "scale": "1"
+  }
+}

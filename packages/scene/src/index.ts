@@ -100,6 +100,8 @@ export {
 
   visualComponentSupportsDisplaySize,
 
+  defaultVisualDisplaySize,
+
   getVisualDisplaySize,
 
   getVisualAnchorOrDefault,
@@ -255,6 +257,8 @@ export {
 export {
 
   findNodeById,
+
+  findNodeByName,
 
   getTransform2D,
 
@@ -490,6 +494,12 @@ export {
 export { collectReferencedAssetIds } from "./asset-refs.js";
 
 export {
+  IDENTITY_POSITION_2D,
+  IDENTITY_ROTATION_2D,
+  IDENTITY_SCALE_2D,
+  IDENTITY_POSITION_3D,
+  IDENTITY_ROTATION_3D,
+  IDENTITY_SCALE_3D,
   DEFAULT_NODE_SPAWN_POSITION,
   DEFAULT_NODE_SPAWN_POSITION_3D,
   DEFAULT_SPRITE_SIZE,

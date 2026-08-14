@@ -39,11 +39,19 @@ export function applyDefaultEditorLayout(api: DockviewApi): void {
   });
 
   api.addPanel({
+    id: EDITOR_PANEL_IDS.assetPreview,
+    component: EDITOR_PANEL_IDS.assetPreview,
+    title: "Asset Preview",
+    position: { referencePanel: EDITOR_PANEL_IDS.inspector, direction: "below" },
+    initialHeight: 260,
+  });
+
+  api.addPanel({
     id: EDITOR_PANEL_IDS.assets,
     component: EDITOR_PANEL_IDS.assets,
     title: "Assets",
     position: { referencePanel: EDITOR_PANEL_IDS.hierarchy, direction: "below" },
-    initialHeight: 220,
+    // No initialHeight: dockview distributes the left column equally with Hierarchy (50%).
   });
 
   const consolePanel = api.addPanel({

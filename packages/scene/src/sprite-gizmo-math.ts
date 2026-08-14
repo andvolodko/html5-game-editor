@@ -50,25 +50,35 @@ export const SPRITE_GIZMO_ANCHOR_HIT_EXTENT = 12;
  * Apply this on the visuals root only — never on the node container —
  * or child sprites outside the parent rect become unselectable.
  *
- * `cameraScale` matches the editor preview camera: chrome offsets are
- * screen-constant, so world-space outsets grow as the view zooms out.
+ * `cameraScale` is the editor preview camera. `nodeScale` is the node's
+ * local-to-world scale (including ancestors, excluding camera). Chrome
+ * offsets stay screen-constant, so world-space outsets grow as the view
+ * zooms out or the node is scaled down.
  */
-export function spriteGizmoHitOutsets(cameraScale = 1): {
+export function spriteGizmoHitOutsets(
+  cameraScale = 1,
+  nodeScale: Vec2 = { x: 1, y: 1 },
+): {
   left: number;
   right: number;
   top: number;
   bottom: number;
 } {
-  const inv =
-    !Number.isFinite(cameraScale) || Math.abs(cameraScale) < 1e-9
-      ? 1
-      : 1 / Math.abs(cameraScale);
+  const invX = chromeInvScale(cameraScale * nodeScale.x);
+  const invY = chromeInvScale(cameraScale * nodeScale.y);
   return {
-    left: SPRITE_GIZMO_HANDLE_HIT_EXTENT * inv,
-    right: SPRITE_GIZMO_HANDLE_HIT_EXTENT * inv,
-    bottom: (SPRITE_GIZMO_FLIP_OFFSET + SPRITE_GIZMO_HANDLE_HIT_EXTENT) * inv,
-    top: (SPRITE_GIZMO_ROTATE_OFFSET + SPRITE_GIZMO_ROTATE_HIT_EXTENT) * inv,
+    left: SPRITE_GIZMO_HANDLE_HIT_EXTENT * invX,
+    right: SPRITE_GIZMO_HANDLE_HIT_EXTENT * invX,
+    bottom: (SPRITE_GIZMO_FLIP_OFFSET + SPRITE_GIZMO_HANDLE_HIT_EXTENT) * invY,
+    top: (SPRITE_GIZMO_ROTATE_OFFSET + SPRITE_GIZMO_ROTATE_HIT_EXTENT) * invY,
   };
+}
+
+function chromeInvScale(scale: number): number {
+  if (!Number.isFinite(scale) || Math.abs(scale) < 1e-9) {
+    return 1;
+  }
+  return 1 / Math.abs(scale);
 }
 
 export type SpriteSizeHandle = "nw" | "ne" | "sw" | "se" | "w" | "e";

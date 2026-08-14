@@ -1,5 +1,6 @@
 import type { AssetDatabase } from "./asset-database.js";
 import type {
+  AsepriteAssetUrls,
   AssetResolver,
   GltfAssetUrls,
   SpineAssetUrls,
@@ -10,6 +11,7 @@ import {
 } from "./texture-extensions.js";
 import { resolveGltfPartRelativePath } from "./gltf-extensions.js";
 import { resolveSpinePartRelativePath } from "./spine-extensions.js";
+import { resolveAsepritePartRelativePath } from "./aseprite-extensions.js";
 import { normalizeProjectRelativePath } from "./factories.js";
 
 export interface StaticAssetResolverOptions {
@@ -103,6 +105,29 @@ export function createStaticAssetResolver(
         rootUrl: toUrl(asset.path),
         format: asset.metadata.format,
         partUrls,
+      };
+    },
+
+    resolveAsepritePartUrl(assetId: string, part: string): string | undefined {
+      const asset = database.get(assetId);
+      if (!asset) {
+        return undefined;
+      }
+      const partPath = resolveAsepritePartRelativePath(asset, part);
+      return partPath === undefined ? undefined : toUrl(partPath);
+    },
+
+    resolveAsepriteUrls(assetId: string): AsepriteAssetUrls | undefined {
+      const asset = database.get(assetId);
+      if (!asset || asset.metadata.kind !== "aseprite") {
+        return undefined;
+      }
+      return {
+        jsonUrl: toUrl(asset.metadata.dataPath),
+        imageUrl: toUrl(asset.metadata.sheetPath),
+        tags: asset.metadata.tags.map((tag) => tag.name),
+        frameDurations: asset.metadata.frameDurations,
+        frameCount: asset.metadata.frameCount,
       };
     },
   };

@@ -15,6 +15,7 @@ import type {
   ImportFile,
   PreparedAssetImport,
 } from "./asset-importer.js";
+import type { AsepriteCompileService } from "./aseprite-compile-service.js";
 import {
   allocateUniqueFileName,
   normalizeAssetDestination,
@@ -39,6 +40,7 @@ export class AssetImportService {
     private readonly projectService: ProjectService,
     private readonly store: AssetDatabaseStore,
     private readonly registry: AssetImporterRegistry,
+    private readonly asepriteCompile?: AsepriteCompileService,
   ) {}
 
   async importFiles(
@@ -169,6 +171,7 @@ export class AssetImportService {
         }
       }
 
+      const imported: AssetRecord[] = [];
       for (const item of prepared) {
         for (const file of item.files) {
           const stagedAbsolute = path.join(
@@ -182,12 +185,25 @@ export class AssetImportService {
           await rename(stagedAbsolute, finalAbsolute);
           committedAbsolutePaths.push(finalAbsolute);
         }
-        database.add(item.record);
+        if (this.asepriteCompile && item.record.type === "aseprite") {
+          const compiled = await this.asepriteCompile.ensureCompiled(item.record);
+          if (compiled.error) {
+            errors.push({
+              fileName: item.record.path,
+              message: compiled.error,
+            });
+          }
+          database.add(compiled.record);
+          imported.push(compiled.record);
+        } else {
+          database.add(item.record);
+          imported.push(item.record);
+        }
       }
 
       const databaseJson = await this.store.save(database);
       return {
-        imported: prepared.map((item) => item.record),
+        imported,
         errors,
         database: databaseJson,
         revision: computeAssetDatabaseRevision(databaseJson),

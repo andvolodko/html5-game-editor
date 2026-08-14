@@ -11,6 +11,7 @@ import {
   type Vec2,
 } from "@game-editor/scene";
 import { samplePixiRenderStats } from "./pixi-render-stats.js";
+import { clientPointToScreen } from "./viewport-math.js";
 import { PixelGridOverlay } from "./pixel-grid.js";
 import {
   PixiRuntimeGraph,
@@ -401,31 +402,72 @@ export class PixiSceneRenderer implements SceneRenderer {
     return this.graph.has(nodeId);
   }
 
+  setNodeVisible(nodeId: string, visible: boolean): void {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    runtime.container.visible = visible;
+  }
+
+  setNodeCursor(nodeId: string, cursor: string): void {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    runtime.container.cursor = cursor;
+    runtime.visualsRoot.cursor = cursor;
+  }
+
+  getNodeCursor(nodeId: string): string | undefined {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return undefined;
+    }
+    const cursor = runtime.container.cursor;
+    if (typeof cursor !== "string" || cursor.length === 0) {
+      return undefined;
+    }
+    return cursor;
+  }
+
   /**
    * Hit-test a client point against visible node visuals (smallest area wins).
    * Used by hybrid preview input when canvases do not receive DOM events.
    */
   pickNodeId(clientX: number, clientY: number): string | undefined {
-    const canvas = this.lifecycle.app?.canvas;
-    if (!canvas) {
+    const app = this.lifecycle.app;
+    const canvas = app?.canvas;
+    if (!app || !canvas) {
       return undefined;
     }
     const rect = canvas.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
+    const screen = clientPointToScreen({
+      clientX,
+      clientY,
+      canvasLeft: rect.left,
+      canvasTop: rect.top,
+      canvasWidth: rect.width,
+      canvasHeight: rect.height,
+      screenWidth: app.screen.width,
+      screenHeight: app.screen.height,
+    });
     let bestId: string | undefined;
     let bestArea = Number.POSITIVE_INFINITY;
     for (const [nodeId, runtime] of this.graph.entries()) {
+      if (!runtime.container.visible) {
+        continue;
+      }
       const target = runtime.visual ?? runtime.visualsRoot;
       if (!target || !target.visible) {
         continue;
       }
       const bounds = target.getBounds();
       if (
-        x < bounds.x ||
-        y < bounds.y ||
-        x > bounds.x + bounds.width ||
-        y > bounds.y + bounds.height
+        screen.x < bounds.x ||
+        screen.y < bounds.y ||
+        screen.x > bounds.x + bounds.width ||
+        screen.y > bounds.y + bounds.height
       ) {
         continue;
       }

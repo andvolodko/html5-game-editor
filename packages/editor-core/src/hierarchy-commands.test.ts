@@ -179,6 +179,37 @@ describe("hierarchy CRUD commands", () => {
     expect(editor.selection.getSelectedNodeIds()).toEqual([first]);
   });
 
+  it("copy/paste clones with new ids and supports undo", () => {
+    const editor = new Editor({ scene: createEmptyScene("C") });
+    const id = editor.createSprite("Hero");
+    editor.selectNodes([id]);
+    expect(editor.copySelectedNodes()).toBe(true);
+
+    const pasted = editor.pasteNodes();
+    expect(pasted).toHaveLength(1);
+    const copyId = pasted[0]!;
+    expect(copyId).not.toBe(id);
+    const copy = findNodeById(editor.getScene(), copyId);
+    expect(copy?.name).toBe("Hero Copy");
+    expect(editor.getScene().nodes.map((n) => n.id)).toEqual([id, copyId]);
+
+    editor.undo();
+    expect(findNodeById(editor.getScene(), copyId)).toBeUndefined();
+    editor.redo();
+    expect(findNodeById(editor.getScene(), copyId)?.id).toBe(copyId);
+  });
+
+  it("paste still works after the source node is deleted", () => {
+    const editor = new Editor({ scene: createEmptyScene("C") });
+    const id = editor.createSprite("Hero");
+    editor.selectNodes([id]);
+    editor.copySelectedNodes();
+    editor.deleteNode(id);
+    const pasted = editor.pasteNodes();
+    expect(pasted).toHaveLength(1);
+    expect(findNodeById(editor.getScene(), pasted[0]!)?.name).toBe("Hero Copy");
+  });
+
   it("setScene clears undo history holding live graphs", () => {
     const editor = new Editor({ scene: createEmptyScene("L") });
     editor.createSprite("A");

@@ -1,5 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { clientPointToWorld } from "./viewport-math.js";
+import { clientPointToScreen, clientPointToWorld } from "./viewport-math.js";
+
+describe("clientPointToScreen", () => {
+  it("maps CSS canvas pixels onto the renderer screen", () => {
+    const point = clientPointToScreen({
+      clientX: 50,
+      clientY: 25,
+      canvasLeft: 0,
+      canvasTop: 0,
+      canvasWidth: 100,
+      canvasHeight: 50,
+      screenWidth: 1920,
+      screenHeight: 1080,
+    });
+    expect(point).toEqual({ x: 960, y: 540 });
+  });
+});
 
 describe("clientPointToWorld", () => {
   it("maps canvas center to screen center", () => {

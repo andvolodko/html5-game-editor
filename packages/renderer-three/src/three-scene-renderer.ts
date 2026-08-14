@@ -244,6 +244,14 @@ export class ThreeSceneRenderer implements SceneRenderer {
     return this.graph.has(nodeId);
   }
 
+  setNodeVisible(nodeId: string, visible: boolean): void {
+    const entry = this.graph.get(nodeId);
+    if (!entry) {
+      return;
+    }
+    entry.object.visible = visible;
+  }
+
   pickNodeId(clientX: number, clientY: number): string | undefined {
     if (this.editorTools) {
       return this.editorTools.pickNodeId(clientX, clientY);

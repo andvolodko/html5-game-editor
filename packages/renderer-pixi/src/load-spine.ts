@@ -1,0 +1,88 @@
+import { Assets } from "pixi.js";
+import type { Texture } from "pixi.js";
+import {
+  AtlasAttachmentLoader,
+  SkeletonBinary,
+  SkeletonJson,
+  Spine,
+  SpineTexture,
+  TextureAtlas,
+} from "@esotericsoftware/spine-pixi-v8";
+import type { SpineAssetUrls } from "@game-editor/assets";
+
+export interface SpinePlaybackOptions {
+  skin?: string;
+  animation?: string;
+  loop: boolean;
+  timeScale: number;
+  playing: boolean;
+}
+
+/** Load a Spine view from resolved URLs. Does not attach playback until `applySpinePlayback`. */
+export async function loadSpine(urls: SpineAssetUrls): Promise<Spine> {
+  const atlasResponse = await fetch(urls.atlasUrl);
+  if (!atlasResponse.ok) {
+    throw new Error(`Failed to fetch spine atlas (${String(atlasResponse.status)})`);
+  }
+  const atlasText = await atlasResponse.text();
+  const atlas = new TextureAtlas(atlasText);
+
+  for (const page of atlas.pages) {
+    const pageUrl =
+      urls.pageUrls[page.name] ??
+      Object.entries(urls.pageUrls).find(
+        ([name]) => name.toLowerCase() === page.name.toLowerCase(),
+      )?.[1];
+    if (!pageUrl) {
+      throw new Error(`Missing spine atlas page: ${page.name}`);
+    }
+    const texture = (await Assets.load(pageUrl)) as Texture;
+    page.setTexture(SpineTexture.from(texture.source));
+  }
+
+  const attachmentLoader = new AtlasAttachmentLoader(atlas);
+  const skeletonResponse = await fetch(urls.skeletonUrl);
+  if (!skeletonResponse.ok) {
+    throw new Error(
+      `Failed to fetch spine skeleton (${String(skeletonResponse.status)})`,
+    );
+  }
+
+  const skeletonData =
+    urls.skeletonFormat === "skel"
+      ? new SkeletonBinary(attachmentLoader).readSkeletonData(
+          new Uint8Array(await skeletonResponse.arrayBuffer()),
+        )
+      : new SkeletonJson(attachmentLoader).readSkeletonData(
+          (await skeletonResponse.json()) as object,
+        );
+
+  return new Spine({
+    skeletonData,
+    autoUpdate: false,
+  });
+}
+
+export function applySpinePlayback(
+  view: Spine,
+  options: SpinePlaybackOptions,
+): void {
+  if (options.skin) {
+    view.skeleton.setSkin(options.skin);
+    view.skeleton.setupPoseSlots();
+  }
+
+  const animationName =
+    options.animation ?? view.skeleton.data.animations[0]?.name;
+  if (animationName) {
+    view.state.setAnimation(0, animationName, options.loop);
+  } else {
+    view.state.clearTracks();
+    view.skeleton.setupPose();
+  }
+  view.state.timeScale = options.timeScale;
+  view.autoUpdate = options.playing;
+  if (!options.playing) {
+    view.update(0);
+  }
+}

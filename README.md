@@ -22,6 +22,7 @@ Playable standalone builds of every game are on the same site: **[demo games](ht
 - [Architecture](#architecture)
 - [Repository layout](#repository-layout)
 - [Getting started](#getting-started)
+- [Aseprite assets](#aseprite-assets)
 - [Static demo (GitHub Pages)](#static-demo-github-pages)
 - [Daily commands](#daily-commands)
 - [Using the editor](#using-the-editor)
@@ -51,11 +52,11 @@ The goal is a lightweight Unity / Cocos-style workflow aimed specifically at HTM
 
 | Area | What you get today |
 | --- | --- |
-| **Editor** | Dockable panels (Hierarchy, Scene, Inspector, Assets, Preview, Console, Project Settings), persisted layout, undo/redo, unsaved-changes guard |
+| **Editor** | Dockable panels (Hierarchy, Scene, Inspector, Assets, Asset Preview, Preview, Console, Project Settings), persisted layout, undo/redo, unsaved-changes guard |
 | **2D (PixiJS 8)** | Container, Sprite, NineSlice, TilingSprite, Graphics, Text, HTMLText, BitmapText, meshes, AnimatedSprite, Spine |
 | **3D (Three.js)** | Model3D (glTF / GLB), PerspectiveCamera, DirectionalLight, AmbientLight, Transform3D |
 | **Hybrid scenes** | Stacked Pixi / Three layers so UI, world, and background can share one scene |
-| **Assets** | Import textures, audio, Spine bundles, glTF/GLB; scenes reference stable `assetId`s, not filesystem paths |
+| **Assets** | Import textures, audio, Spine, glTF/GLB, and Aseprite (`.aseprite` / `.ase`); Asset Preview plays Aseprite, Spine, glTF, and audio; scenes reference stable `assetId`s |
 | **Runtime** | `GameRuntime` + script components, scene flow, asset preload, HTML audio, independent Vite builds per game |
 | **Project server** | Local Node HTTP API for save/load, import, folders, and project switching — browser never gets raw filesystem access |
 
@@ -142,6 +143,7 @@ Editable game content lives **next to the buildable package** under `games/<name
 
 - Node.js **≥ 20**
 - [pnpm](https://pnpm.io/) **10.33+** (see `packageManager` in the root `package.json`)
+- Optional: [Aseprite](https://www.aseprite.org/) or free [LibreSprite](https://github.com/LibreSprite/LibreSprite) CLI — only needed to compile `.aseprite` source files in the editor (see [Aseprite assets](#aseprite-assets))
 
 ```bash
 pnpm install
@@ -172,9 +174,53 @@ You can also switch games from **File → Open Project** in the editor toolbar.
 
 ---
 
+## Aseprite assets
+
+`.aseprite` / `.ase` files are **source assets**. The editor compiles them to a packed PNG spritesheet + PixiJS JSON (animation tags → `spritesheet.animations`). Games and players never need Aseprite installed — only the generated PNG/JSON ship in the build.
+
+Drop a file into the game `assets/` tree (or import it in the Assets panel):
+
+```text
+games/game1/assets/characters/hero.aseprite
+  → games/game1/.generated/assets/characters/hero.png
+  → games/game1/.generated/assets/characters/hero.json
+```
+
+The Assets panel shows the `.aseprite` file (not the generated artifacts). Select it to preview tags in the **Asset Preview** panel (below Inspector). Drag it into the scene to create a **Sprite** (single frame) or **AnimatedSprite** (tags / multiple frames; first tag is the default). Scenes store `assetId` + `animation`, never `.generated/` paths.
+
+### CLI detection
+
+Compile is editor/build-time only. The project server looks up an executable in this order:
+
+1. `ASEPRITE` environment variable (full path to `aseprite` / `libresprite`)
+2. `PATH` (`aseprite`, `Aseprite.exe`, `libresprite`, `libresprite.exe`)
+3. Well-known install folders (Program Files, Steam, `%LOCALAPPDATA%\Programs\Aseprite`, `%LOCALAPPDATA%\Programs\LibreSprite`, macOS `/Applications`, `/usr/bin`)
+
+If nothing is found, the editor stays up and the asset shows:
+
+```text
+Aseprite CLI was not found.
+
+Install Aseprite or the free LibreSprite fork, and make sure `aseprite` or `libresprite` is available in PATH (or set the ASEPRITE environment variable).
+```
+
+Restart `pnpm dev` after installing a CLI so the server picks it up.
+
+**LibreSprite** (free) is enough for spritesheet + tag export. A Windows build can live at:
+
+```text
+%LOCALAPPDATA%\Programs\LibreSprite\libresprite.exe
+```
+
+Unchanged files are skipped using `.project/aseprite-cache.json` (mtime + size). That cache file and `.generated` undo trash stay gitignored. Derived PNG/JSON under `games/*/.generated` are committed so GitHub Actions / Pages can build the demo without the Aseprite CLI.
+
+Full pipeline, serialization, and runtime notes: [`docs/aseprite.md`](./docs/aseprite.md).
+
+---
+
 ## Static demo (GitHub Pages)
 
-The hosted site is a **static Vite build**. It does not run `project-server`. The editor bundles every package under `games/` (scenes, `project.json`, asset catalogue) and serves files from `/demo/<project-id>/assets`. Switch games with **File → Open Project**.
+The hosted site is a **static Vite build**. It does not run `project-server`. The editor bundles every package under `games/` (scenes, `project.json`, asset catalogue) and serves files from `/demo/<project-id>/assets` plus `/demo/<project-id>/.generated`. Switch games with **File → Open Project**.
 
 Each `games/<id>` package is also built as a standalone player and copied to `/games/<id>/`. New games are picked up automatically — no workflow edit.
 
@@ -234,7 +280,8 @@ Default docking layout:
 │ Toolbar  (File / Edit / Node, undo, save, project)  │
 ├────────────┬──────────────────────────┬─────────────┤
 │ Hierarchy  │ Scene viewport           │ Inspector   │
-│            │ (Pixi + Three, gizmos)   │             │
+│            │ (Pixi + Three, gizmos)   ├─────────────┤
+│            │                          │ Asset Preview│
 ├────────────┼──────────────────────────┤             │
 │ Assets     │ Preview / Console        │             │
 └────────────┴──────────────────────────┴─────────────┘
@@ -244,7 +291,7 @@ Typical loop:
 
 1. Open a game project.
 2. Create or select nodes in Hierarchy / Scene.
-3. Assign textures, Spine, audio, or glTF from the Asset Browser (import via drag-and-drop).
+3. Assign textures, Aseprite, Spine, audio, or glTF from the Asset Browser (import via drag-and-drop).
 4. Tune transforms and visual fields in the Inspector; add Script components from **Add Component**.
 5. Save the scene (dirty state is tracked against the last saved snapshot).
 6. Use **Preview** to run the game runtime inside the editor, or `pnpm --filter @games/<name> dev` for a standalone window.
@@ -317,7 +364,7 @@ The architecture spec in [`PROJECT.md`](./PROJECT.md) is larger than the current
 ### Editor & content pipeline
 
 - **Prefabs** — reusable node subgraphs with instance overrides
-- **Spritesheet / atlas generation** — pack imported textures; wire BitmapText to a real font importer
+- **Spritesheet / atlas generation** — Aseprite/LibreSprite compile is in; still needed: pack loose PNGs and a BitmapText font importer
 - **Timeline & animation** — clip editing for Spine, AnimatedSprite, and glTF animations
 - **Particles, masks, filters** — Pixi ParticleContainer is deferred; masks/filters are still design-only
 - **Richer 3D** — HDR environments, shadows, materials, post-processing (extension points exist; implementations do not)
@@ -359,6 +406,7 @@ Do not mutate `PIXI.Sprite` or `THREE.Object3D` from React.
 | Doc | Use it for |
 | --- | --- |
 | [`PROJECT.md`](./PROJECT.md) | Vision, package boundaries, serialization, MVP phases, definition of done |
+| [`docs/aseprite.md`](./docs/aseprite.md) | Aseprite / LibreSprite pipeline, CLI detection, generated paths, runtime export |
 | `.cursor/rules/` | Package-specific invariants (editor UI, commands, server security, TypeScript) |
 | `.cursor/skills/create-game/` | How to scaffold a new `games/<name>` package |
 | `.cursor/skills/create-game-component/` | How to add a Script component |

@@ -13,6 +13,7 @@ import type {
   ImportFile,
   ImportPrepareContext,
 } from "./asset-importer.js";
+import type { AsepriteCompileService } from "./aseprite-compile-service.js";
 import { ASSETS_ROOT_FOLDER } from "./asset-folder-service.js";
 
 const SCENES_FOLDER = "assets/scenes";
@@ -39,6 +40,7 @@ export class AssetSyncService {
     private readonly projectService: ProjectService,
     private readonly store: AssetDatabaseStore,
     private readonly registry: AssetImporterRegistry,
+    private readonly asepriteCompile?: AsepriteCompileService,
   ) {}
 
   /** Serialized reconcile — safe under concurrent GET /assets. */
@@ -104,9 +106,17 @@ export class AssetSyncService {
     }
 
     const changed = removedIds.length > 0 || discovered.length > 0;
-    const data = changed
-      ? await this.store.save(database)
-      : database.toJSON();
+    let compileChanged = false;
+    if (this.asepriteCompile) {
+      const compiled = await this.asepriteCompile.processDatabase(database);
+      errors.push(...compiled.errors);
+      compileChanged = compiled.changed;
+    }
+
+    const data =
+      changed || compileChanged
+        ? await this.store.save(database)
+        : database.toJSON();
 
     return {
       database: data,
@@ -114,7 +124,7 @@ export class AssetSyncService {
       removedIds,
       discovered,
       errors,
-      changed,
+      changed: changed || compileChanged,
     };
   }
 

@@ -1,4 +1,4 @@
-import type { AssetDatabaseData, AssetMetadata, AssetRecord } from "./types.js";
+import type { AssetDatabaseData, AssetMetadata, AssetRecord, AsepriteTagMetadata } from "./types.js";
 import {
   createEmptyAssetDatabase,
   normalizeProjectRelativePath,
@@ -204,7 +204,46 @@ function assetMetadataEquivalent(
       stringArraysEqual(left.imagePaths ?? [], right.imagePaths ?? [])
     );
   }
+  if (left.kind === "aseprite" && right.kind === "aseprite") {
+    return (
+      left.width === right.width &&
+      left.height === right.height &&
+      left.frameCount === right.frameCount &&
+      left.sheetPath === right.sheetPath &&
+      left.dataPath === right.dataPath &&
+      left.compileRevision === right.compileRevision &&
+      left.compileError === right.compileError &&
+      asepriteTagsEqual(left.tags, right.tags) &&
+      numbersEqual(left.frameDurations, right.frameDurations)
+    );
+  }
   return false;
+}
+
+function asepriteTagsEqual(
+  left: readonly AsepriteTagMetadata[],
+  right: readonly AsepriteTagMetadata[],
+): boolean {
+  if (left.length !== right.length) {
+    return false;
+  }
+  return left.every((tag, index) => {
+    const other = right[index];
+    return (
+      other !== undefined &&
+      tag.name === other.name &&
+      tag.from === other.from &&
+      tag.to === other.to &&
+      tag.direction === other.direction
+    );
+  });
+}
+
+function numbersEqual(left: readonly number[], right: readonly number[]): boolean {
+  if (left.length !== right.length) {
+    return false;
+  }
+  return left.every((value, index) => value === right[index]);
 }
 
 function stringArraysEqual(left: readonly string[], right: readonly string[]): boolean {

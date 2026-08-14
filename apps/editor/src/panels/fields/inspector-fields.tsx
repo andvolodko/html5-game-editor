@@ -6,6 +6,15 @@ import {
   ASSET_SELECT_NONE_VALUE,
   buildAssetSelectOptions,
 } from "./asset-select-options";
+import {
+  formatInspectorNumber,
+  inspectorNumberUnchanged,
+} from "./format-inspector-number";
+import { uniqueSelectOptions } from "./unique-select-options";
+
+function displayInspectorNumber(value: number, integer?: boolean): string {
+  return integer ? String(value) : formatInspectorNumber(value);
+}
 
 export function NumberField({
   label,
@@ -18,12 +27,29 @@ export function NumberField({
   onCommit: (value: number) => void;
   integer?: boolean;
 }) {
-  const [draft, setDraft] = useState(String(value));
-  useEffect(() => setDraft(String(value)), [value]);
+  const [draft, setDraft] = useState(displayInspectorNumber(value, integer));
+  useEffect(
+    () => setDraft(displayInspectorNumber(value, integer)),
+    [value, integer],
+  );
   const commit = () => {
-    const next = integer ? Number.parseInt(draft, 10) : Number(draft);
-    if (Number.isNaN(next) || next === value) {
-      setDraft(String(value));
+    const display = displayInspectorNumber(value, integer);
+    if (integer) {
+      const next = Number.parseInt(draft, 10);
+      if (Number.isNaN(next) || next === value) {
+        setDraft(display);
+        return;
+      }
+      onCommit(next);
+      return;
+    }
+    if (inspectorNumberUnchanged(draft, value)) {
+      setDraft(display);
+      return;
+    }
+    const next = Number(draft);
+    if (Number.isNaN(next)) {
+      setDraft(display);
       return;
     }
     onCommit(next);
@@ -120,7 +146,7 @@ export function AssetSelectField({
 }: {
   label: string;
   value: string | undefined;
-  kind: AssetType;
+  kind: AssetType | readonly AssetType[];
   onCommit: (value: string | undefined) => void;
 }) {
   const assets = useEditorState((editor) => editor.assets.getAll());
@@ -196,7 +222,7 @@ export function EnumField<T extends string>({
   );
 }
 
-/** Optional string select with empty = undefined (Spine / Model3D clips). */
+/** Optional string select with empty = undefined (Spine / Model3D / Aseprite clips). */
 export function OptionalSelectField({
   label,
   value,
@@ -210,6 +236,7 @@ export function OptionalSelectField({
   emptyLabel?: string;
   onCommit: (value: string | undefined) => void;
 }) {
+  const unique = uniqueSelectOptions(options);
   return (
     <label>
       {label}
@@ -221,7 +248,7 @@ export function OptionalSelectField({
         }}
       >
         <option value="">{emptyLabel}</option>
-        {options.map((option) => (
+        {unique.map((option) => (
           <option key={option} value={option}>
             {option}
           </option>

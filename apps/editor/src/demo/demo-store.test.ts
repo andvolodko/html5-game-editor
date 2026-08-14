@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   ASSET_SCHEMA_VERSION,
+  createAsepriteAssetRecord,
   createTextureAssetRecord,
 } from "@game-editor/assets";
 import { createEmptyScene } from "@game-editor/scene";
@@ -159,6 +160,26 @@ describe("createDemoEditorClients", () => {
     await expect(clients.assetApi.importAssets([])).rejects.toMatchObject({
       code: DEMO_UNAVAILABLE_CODE,
     });
+  });
+
+  it("resolves Aseprite sheet URLs under .generated", () => {
+    const aseprite = createAsepriteAssetRecord({
+      id: "asset_hero",
+      name: "hero",
+      path: "assets/characters/hero.aseprite",
+    });
+    const snapshot = fixtureSnapshot();
+    snapshot.assets.assets.push(aseprite);
+    const clients = createDemoEditorClients([snapshot], {
+      assetBaseUrl: "/html5-game-editor/demo/",
+      catalogs: { "editor-features-demo": { components: [], busEvents: [] } },
+    });
+    expect(clients.assetApi.getAssetPartUrl(aseprite.id, "hero.json")).toBe(
+      "/html5-game-editor/demo/editor-features-demo/.generated/assets/characters/hero.json",
+    );
+    expect(clients.assetApi.getAssetPartUrl(aseprite.id, "hero.png")).toBe(
+      "/html5-game-editor/demo/editor-features-demo/.generated/assets/characters/hero.png",
+    );
   });
 
   it("lists every bundled demo project and switches assets", async () => {

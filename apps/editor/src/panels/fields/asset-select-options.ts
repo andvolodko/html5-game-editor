@@ -14,11 +14,12 @@ export interface AssetSelectOption {
  */
 export function buildAssetSelectOptions(
   assets: readonly AssetRecord[],
-  kind: AssetType,
+  kind: AssetType | readonly AssetType[],
   currentId: string | undefined,
 ): AssetSelectOption[] {
+  const kinds = new Set(Array.isArray(kind) ? kind : [kind]);
   const matching = assets
-    .filter((asset) => asset.type === kind)
+    .filter((asset) => kinds.has(asset.type))
     .slice()
     .sort(
       (a, b) => a.name.localeCompare(b.name) || a.path.localeCompare(b.path),

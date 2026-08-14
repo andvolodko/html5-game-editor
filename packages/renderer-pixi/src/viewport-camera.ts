@@ -37,6 +37,21 @@ export function viewportChromeInvScale(cameraScale: number): number {
   return 1 / Math.abs(cameraScale);
 }
 
+/**
+ * Per-axis inverse of camera × node world scale so gizmo handles stay
+ * constant in screen pixels while the object (or ancestors) scale.
+ */
+export function viewportChromeInvScaleAxes(
+  cameraScale: number,
+  nodeScaleX = 1,
+  nodeScaleY = 1,
+): Vec2 {
+  return {
+    x: viewportChromeInvScale(cameraScale * nodeScaleX),
+    y: viewportChromeInvScale(cameraScale * nodeScaleY),
+  };
+}
+
 export function createDefaultViewportCamera(): ViewportCameraState {
   return {
     pan: { x: 0, y: 0 },

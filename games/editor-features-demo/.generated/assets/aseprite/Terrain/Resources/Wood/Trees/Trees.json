@@ -1,0 +1,787 @@
+{
+  "frames": {
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-0": {
+      "frame": {
+        "x": 1344,
+        "y": 512,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-1": {
+      "frame": {
+        "x": 1728,
+        "y": 256,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-2": {
+      "frame": {
+        "x": 0,
+        "y": 512,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-3": {
+      "frame": {
+        "x": 192,
+        "y": 512,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-4": {
+      "frame": {
+        "x": 384,
+        "y": 512,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-5": {
+      "frame": {
+        "x": 576,
+        "y": 512,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-6": {
+      "frame": {
+        "x": 768,
+        "y": 512,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-7": {
+      "frame": {
+        "x": 960,
+        "y": 512,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-8": {
+      "frame": {
+        "x": 1152,
+        "y": 512,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-9": {
+      "frame": {
+        "x": 1536,
+        "y": 256,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-10": {
+      "frame": {
+        "x": 1536,
+        "y": 512,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-11": {
+      "frame": {
+        "x": 1728,
+        "y": 512,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-12": {
+      "frame": {
+        "x": 0,
+        "y": 768,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-13": {
+      "frame": {
+        "x": 192,
+        "y": 768,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-14": {
+      "frame": {
+        "x": 384,
+        "y": 768,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-15": {
+      "frame": {
+        "x": 576,
+        "y": 768,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-16": {
+      "frame": {
+        "x": 768,
+        "y": 768,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-17": {
+      "frame": {
+        "x": 960,
+        "y": 768,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-18": {
+      "frame": {
+        "x": 1728,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-19": {
+      "frame": {
+        "x": 192,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-20": {
+      "frame": {
+        "x": 384,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-21": {
+      "frame": {
+        "x": 576,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-22": {
+      "frame": {
+        "x": 768,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-23": {
+      "frame": {
+        "x": 960,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-24": {
+      "frame": {
+        "x": 1152,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-25": {
+      "frame": {
+        "x": 1344,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-26": {
+      "frame": {
+        "x": 1536,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-27": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-28": {
+      "frame": {
+        "x": 0,
+        "y": 256,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-29": {
+      "frame": {
+        "x": 192,
+        "y": 256,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-30": {
+      "frame": {
+        "x": 384,
+        "y": 256,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-31": {
+      "frame": {
+        "x": 576,
+        "y": 256,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-32": {
+      "frame": {
+        "x": 768,
+        "y": 256,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-33": {
+      "frame": {
+        "x": 960,
+        "y": 256,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-34": {
+      "frame": {
+        "x": 1152,
+        "y": 256,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-35": {
+      "frame": {
+        "x": 1344,
+        "y": 256,
+        "w": 192,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 256
+      }
+    }
+  },
+  "animations": {
+    "Tree 1": [
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-0",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-1",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-2",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-3",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-4",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-5",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-6",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-7"
+    ],
+    "Stump 1": [
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-8"
+    ],
+    "Tree 2": [
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-9",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-10",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-11",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-12",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-13",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-14",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-15",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-16"
+    ],
+    "Stump 2": [
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-17"
+    ],
+    "Tree 3": [
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-18",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-19",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-20",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-21",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-22",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-23",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-24",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-25"
+    ],
+    "Stump 3": [
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-26"
+    ],
+    "Tree 4": [
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-27",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-28",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-29",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-30",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-31",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-32",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-33",
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-34"
+    ],
+    "Stump 4": [
+      "assets-aseprite-Terrain-Resources-Wood-Trees-Trees-frame-35"
+    ]
+  },
+  "meta": {
+    "image": "Trees.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 2048,
+      "h": 1024
+    },
+    "scale": "1"
+  }
+}

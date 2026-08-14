@@ -112,4 +112,26 @@ export class MultiSceneRenderer implements SceneRenderer {
     }
     return undefined;
   }
+
+  setNodeVisible(nodeId: string, visible: boolean): void {
+    for (const slot of this.slots) {
+      slot.renderer.setNodeVisible?.(nodeId, visible);
+    }
+  }
+
+  setNodeCursor(nodeId: string, cursor: string): void {
+    for (const slot of this.slots) {
+      slot.renderer.setNodeCursor?.(nodeId, cursor);
+    }
+  }
+
+  getNodeCursor(nodeId: string): string | undefined {
+    for (const slot of this.slots) {
+      const cursor = slot.renderer.getNodeCursor?.(nodeId);
+      if (cursor !== undefined) {
+        return cursor;
+      }
+    }
+    return undefined;
+  }
 }

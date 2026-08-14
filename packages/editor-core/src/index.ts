@@ -6,6 +6,18 @@ export type {
 } from "./document-manager.js";
 export { Editor, isChordLetter } from "./editor.js";
 export type { EditorOptions, RenameRequestTarget } from "./editor.js";
+export {
+  EditorConsole,
+  EDITOR_CONSOLE_CATEGORY_SCENE,
+  EDITOR_CONSOLE_EVENT_SCENE_OPENED,
+  MAX_CONSOLE_LOG_ENTRIES,
+  formatSceneOpenedMessage,
+} from "./editor-console.js";
+export type {
+  ConsoleLogEntry,
+  ConsoleLogInput,
+  ConsoleLogLevel,
+} from "./editor-console.js";
 export { KEYBOARD_NUDGE_PIXELS, arrowNudgeDelta, isAssetsPanelKeyTarget } from "./editor-hotkeys.js";
 export { SelectionManager } from "./selection-manager.js";
 export type { EditorSelection } from "./selection-manager.js";
@@ -13,10 +25,12 @@ export { EditorViewportController } from "./viewport-controller.js";
 export {
   CreateSpriteCommand,
   CreateSpineCommand,
+  CreateAnimatedSpriteCommand,
   CreateModel3DCommand,
   CreateNodeCommand,
   SetTransform2DCommand,
   SetTransform3DCommand,
+  ResetNodeTransformCommand,
   SetModel3DCommand,
   SetPerspectiveCameraCommand,
   SetDirectionalLightCommand,
@@ -30,12 +44,21 @@ export {
   DeleteNodeCommand,
   DeleteNodesCommand,
   DuplicateNodeCommand,
+  PasteNodesCommand,
+  RenameSceneFileCommand,
+  DeleteSceneFileCommand,
+  RenameAssetCommand,
+  DeleteAssetCommand,
+  DuplicateAssetCommand,
+  RenameAssetFolderCommand,
+  DeleteAssetFolderCommand,
   RenameNodeCommand,
   SetSceneNameCommand,
   AddScriptComponentCommand,
   RemoveComponentCommand,
   SetScriptPropertiesCommand,
   createDeleteSelectionCommand,
+  createResetNodeTransformCommand,
 } from "./commands/index.js";
 export type {
   Transform2DPatch,
@@ -47,7 +70,9 @@ export type {
   SceneRendererKind,
   SpriteSizePatch,
   CreateSpriteOptions,
+  ResetNodeTransformOptions,
   CreateSpineOptions,
+  CreateAnimatedSpriteOptions,
   CreateModel3DOptions,
   CreateNodeOptions,
   MoveNodeCommandArgs,
@@ -77,6 +102,7 @@ export {
   installSceneFlowRuntime,
   changeSceneComponent,
   performanceMeterComponent,
+  buttonComponent,
 } from "@game-editor/game-components";
 export type {
   ComponentDefinition,

@@ -1,10 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { createEmptyScene, getModel3D, getSpine, getSprite, getTransform3D, findNodeById } from "@game-editor/scene";
+import { createEmptyScene, getModel3D, getSpine, getSprite, getAnimatedSprite, getTransform3D, findNodeById } from "@game-editor/scene";
 import {
   createAudioAssetRecord,
   createGltfAssetRecord,
   createSpineAssetRecord,
   createTextureAssetRecord,
+  createAsepriteAssetRecord,
   type AssetDatabaseData,
 } from "@game-editor/assets";
 import {
@@ -70,6 +71,51 @@ describe("asset workflows", () => {
     expect(editor.getScene().nodes).toHaveLength(0);
   });
 
+  it("dropAssetOntoScene creates an AnimatedSprite for tagged Aseprite assets", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    editor.assets.getDatabase().add(
+      createAsepriteAssetRecord({
+        id: "asset_hero",
+        name: "hero",
+        path: "assets/characters/hero.aseprite",
+        width: 32,
+        height: 48,
+        frameCount: 4,
+        tags: [{ name: "idle", from: 0, to: 1 }, { name: "run", from: 2, to: 3 }],
+      }),
+    );
+    const nodeId = dropAssetOntoScene(editor, "asset_hero", { x: 4, y: 5 });
+    const node = editor.getScene().nodes.find((n) => n.id === nodeId);
+    const visual = node ? getAnimatedSprite(node) : undefined;
+    expect(visual?.assetId).toBe("asset_hero");
+    expect(visual?.animation).toBe("idle");
+    expect(visual?.playing).toBe(true);
+    expect(visual?.width).toBe(32);
+    expect(visual?.height).toBe(48);
+    expect(JSON.stringify(editor.getScene())).not.toMatch(/\.generated/);
+    editor.undo();
+    expect(editor.getScene().nodes).toHaveLength(0);
+  });
+
+  it("dropAssetOntoScene creates a Sprite for a single-frame Aseprite asset", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    editor.assets.getDatabase().add(
+      createAsepriteAssetRecord({
+        id: "asset_icon",
+        name: "icon",
+        path: "assets/icon.aseprite",
+        width: 16,
+        height: 16,
+        frameCount: 1,
+      }),
+    );
+    const nodeId = dropAssetOntoScene(editor, "asset_icon", { x: 1, y: 2 });
+    const node = editor.getScene().nodes.find((n) => n.id === nodeId);
+    expect(getSprite(node!)?.assetId).toBe("asset_icon");
+    expect(getSprite(node!)?.width).toBe(16);
+    expect(getSprite(node!)?.height).toBe(16);
+  });
+
   it("dropAssetOntoScene rejects audio assets", () => {
     const editor = new Editor({ scene: createEmptyScene("Test") });
     editor.assets.getDatabase().add(
@@ -126,7 +172,16 @@ describe("asset workflows", () => {
         moveAsset: vi.fn(async () => {
           throw new Error("unused");
         }),
+        duplicateAsset: vi.fn(async () => {
+          throw new Error("unused");
+        }),
+        restoreAsset: vi.fn(async () => {
+          throw new Error("unused");
+        }),
         renameFolder: vi.fn(async () => {
+          throw new Error("unused");
+        }),
+        restoreFolder: vi.fn(async () => {
           throw new Error("unused");
         }),
         deleteAsset: vi.fn(async () => {
@@ -193,7 +248,16 @@ describe("asset workflows", () => {
         moveAsset: vi.fn(async () => {
           throw new Error("unused");
         }),
+        duplicateAsset: vi.fn(async () => {
+          throw new Error("unused");
+        }),
+        restoreAsset: vi.fn(async () => {
+          throw new Error("unused");
+        }),
         renameFolder: vi.fn(async () => {
+          throw new Error("unused");
+        }),
+        restoreFolder: vi.fn(async () => {
           throw new Error("unused");
         }),
         deleteAsset: vi.fn(async () => {
@@ -258,7 +322,16 @@ describe("asset workflows", () => {
           revision: "rev-2",
           folders: ["assets", "assets/icons"],
         })),
+        duplicateAsset: vi.fn(async () => {
+          throw new Error("unused");
+        }),
+        restoreAsset: vi.fn(async () => {
+          throw new Error("unused");
+        }),
         renameFolder: vi.fn(async () => {
+          throw new Error("unused");
+        }),
+        restoreFolder: vi.fn(async () => {
           throw new Error("unused");
         }),
         deleteAsset: vi.fn(async () => {

@@ -4,6 +4,7 @@ import {
   textureFormatFromMimeType,
   type AssetRecord,
   type AssetResolver,
+  type AsepriteAssetUrls,
   type GltfAssetUrls,
   type SpineAssetUrls,
 } from "@game-editor/assets";
@@ -187,6 +188,46 @@ export class AssetManager implements AssetResolver {
     };
   }
 
+  resolveAsepritePartUrl(assetId: string, part: string): string | undefined {
+    if (!this.api || !this.database.has(assetId)) {
+      return undefined;
+    }
+    const asset = this.database.get(assetId);
+    if (!asset || asset.metadata.kind !== "aseprite") {
+      return undefined;
+    }
+    return this.api.getAssetPartUrl(
+      assetId,
+      part,
+      asset.metadata.compileRevision,
+    );
+  }
+
+  resolveAsepriteUrls(assetId: string): AsepriteAssetUrls | undefined {
+    const asset = this.database.get(assetId);
+    if (!asset || asset.metadata.kind !== "aseprite") {
+      return undefined;
+    }
+    const jsonUrl = this.resolveAsepritePartUrl(
+      assetId,
+      getFileBasename(asset.metadata.dataPath),
+    );
+    const imageUrl = this.resolveAsepritePartUrl(
+      assetId,
+      getFileBasename(asset.metadata.sheetPath),
+    );
+    if (!jsonUrl || !imageUrl) {
+      return undefined;
+    }
+    return {
+      jsonUrl,
+      imageUrl,
+      tags: asset.metadata.tags.map((tag) => tag.name),
+      frameDurations: asset.metadata.frameDurations,
+      frameCount: asset.metadata.frameCount,
+    };
+  }
+
   /** Asset ids referenced by a scene (delete / usage prep). */
   getReferencedAssetIds(scene: SceneData): ReadonlySet<string> {
     return new Set(collectReferencedAssetIds(scene));
@@ -304,6 +345,47 @@ export class AssetManager implements AssetResolver {
     }
   }
 
+  async duplicateAsset(
+    assetId: string,
+    destinationFolder?: string,
+  ): Promise<AssetRecord> {
+    if (!this.api) {
+      throw new Error("Asset API client is not configured");
+    }
+    this.status = "loading";
+    this.error = undefined;
+    this.emit();
+    try {
+      const result = await this.api.duplicateAsset(assetId, destinationFolder);
+      this.applyMutationResult(result);
+      return result.asset;
+    } catch (error) {
+      this.status = "error";
+      this.error = error instanceof Error ? error.message : "Duplicate asset failed";
+      this.emit();
+      throw error;
+    }
+  }
+
+  async restoreAsset(assetId: string): Promise<AssetRecord> {
+    if (!this.api) {
+      throw new Error("Asset API client is not configured");
+    }
+    this.status = "loading";
+    this.error = undefined;
+    this.emit();
+    try {
+      const result = await this.api.restoreAsset(assetId);
+      this.applyMutationResult(result);
+      return result.asset;
+    } catch (error) {
+      this.status = "error";
+      this.error = error instanceof Error ? error.message : "Restore asset failed";
+      this.emit();
+      throw error;
+    }
+  }
+
   async deleteAsset(assetId: string): Promise<void> {
     if (!this.api) {
       throw new Error("Asset API client is not configured");
@@ -340,6 +422,29 @@ export class AssetManager implements AssetResolver {
     } catch (error) {
       this.status = "error";
       this.error = error instanceof Error ? error.message : "Rename folder failed";
+      this.emit();
+      throw error;
+    }
+  }
+
+  async restoreFolder(folderPath: string): Promise<string> {
+    if (!this.api) {
+      throw new Error("Asset API client is not configured");
+    }
+    this.status = "loading";
+    this.error = undefined;
+    this.emit();
+    try {
+      const result = await this.api.restoreFolder(folderPath);
+      this.database.applySnapshot(result.database);
+      this.revision = result.revision;
+      this.replaceFolders(result.folders);
+      this.status = "idle";
+      this.emit();
+      return result.folder;
+    } catch (error) {
+      this.status = "error";
+      this.error = error instanceof Error ? error.message : "Restore folder failed";
       this.emit();
       throw error;
     }

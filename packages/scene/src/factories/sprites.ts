@@ -101,6 +101,12 @@ export function createAnimatedSpriteComponent(
     loop: partial?.loop ?? true,
     playing: partial?.playing ?? false,
   };
+  if (partial?.assetId !== undefined) {
+    data.assetId = partial.assetId;
+  }
+  if (partial?.animation !== undefined) {
+    data.animation = partial.animation;
+  }
   if (partial?.anchor !== undefined) {
     data.anchor = { ...partial.anchor };
   }

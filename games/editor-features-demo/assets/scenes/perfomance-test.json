@@ -1,0 +1,910 @@
+{
+  "id": "scene_251fcb90-3b90-4cb0-9fc0-967159fbddf8",
+  "name": "perfomance-test",
+  "version": 1,
+  "renderer": "hybrid",
+  "nodes": [
+    {
+      "id": "node_a980df45-7a60-4e4b-b3ca-c31befb889c5",
+      "name": "Spineboy",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_681342bf-a053-48cc-8c2e-cfb5807e1b1a",
+          "position": {
+            "x": 280,
+            "y": 80
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 0.1321608991476075,
+            "y": 0.11443026269780399
+          }
+        },
+        {
+          "type": "Spine",
+          "id": "comp_5a5bbda7-126a-42c6-b23e-9db460ef93e8",
+          "assetId": "asset_b3d41acd-42c8-406e-946f-6e15d28e2c77",
+          "skin": "default",
+          "animation": "idle",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_ea2085c2-1b16-4e03-9914-9d1a17c1706f",
+      "name": "Stats",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_57d7df3e-98f8-4252-9655-7a99adc3f758",
+          "position": {
+            "x": 16,
+            "y": 16
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_cd075c35-9b52-429b-9622-c2233beef196",
+          "text": "Stats",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 16,
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 2031360,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_a291f003-2f12-4acf-ab56-0c62fa87e6ef",
+          "scriptId": "shared.PerformanceMeter",
+          "properties": {
+            "enabled": true,
+            "refreshIntervalMs": 250
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_0dee69ce-f321-408b-a1d7-41d2013ef4d8",
+      "name": "Warrior",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_19df278f-929c-4096-a77b-5b816c791ae9",
+          "position": {
+            "x": 832,
+            "y": 48
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_7aad1969-efbb-4540-9e5d-3fc9ebb73b96",
+          "frames": [],
+          "assetId": "asset_544ef966-497f-45ed-a86e-5bdb3a5c9d8e",
+          "animation": "Idle",
+          "animationSpeed": 0.2,
+          "loop": true,
+          "playing": true,
+          "width": 192,
+          "height": 192
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_2ff0786c-f908-44af-a31b-f50111046c32",
+      "name": "House2",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_f648b539-c9d7-48e9-8b34-80fddaace56d",
+          "position": {
+            "x": 1384,
+            "y": 40
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Sprite",
+          "id": "comp_02d9d744-41ee-4a03-b2ae-15b1da10e4c1",
+          "assetId": "asset_2451556f-b3f6-42ee-af74-9b93faf431a1",
+          "width": 55.19991641311867,
+          "height": 67.60002136230469
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_1f9ef807-fe91-45e9-98c6-48bf7e3a5a1b",
+      "name": "Ambient Light",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_a38cbfc2-99ce-4a5d-9c68-349d85a19608",
+          "position": {
+            "x": 120,
+            "y": 0,
+            "z": 120
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "AmbientLight",
+          "id": "comp_b4de35b5-9cbd-4887-b205-80d1d169a6e5",
+          "color": 16777215,
+          "intensity": 0.4
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_f04f4da6-1a14-4386-bbad-e3ba515d36fa",
+      "name": "Perspective Camera",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_0ec8af44-875f-45bd-a8c2-156d64fb2251",
+          "position": {
+            "x": 0,
+            "y": 8.568498500475119,
+            "z": 10
+          },
+          "rotation": {
+            "x": -0.5812370267925252,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "PerspectiveCamera",
+          "id": "comp_b82e0e9a-0a3f-4a18-b015-09e892dc87ce",
+          "fov": 50,
+          "near": 0.1,
+          "far": 1000,
+          "active": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_1b33fb2f-8625-434b-abd1-b1f93c47d1e8",
+      "name": "Monster01",
+      "components": [
+        {
+          "type": "Transform3D",
+          "id": "comp_493f58bc-0317-4bed-9c85-bc5a789fee5f",
+          "position": {
+            "x": -5.4095594671661065,
+            "y": 3.3915278056402,
+            "z": 0
+          },
+          "rotation": {
+            "x": -1.7182710599056261,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "type": "Model3D",
+          "id": "comp_523879fb-de37-4b54-9916-f71c008aa601",
+          "assetId": "asset_3c85e8f0-0538-4af6-b7d1-33e1a070d3bb",
+          "loop": true,
+          "timeScale": 1,
+          "playing": true
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_74a0cf5b-05dc-4f52-a1ac-88117fad2b9e",
+      "name": "Button Spine",
+      "layer": "foreground",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_7daa3c2c-2aee-4170-b467-620ab8b234d0",
+          "position": {
+            "x": -776,
+            "y": 464
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_d0836ad4-a6b4-4424-bacf-b4fe7e8edd75",
+          "scriptId": "shared.Button",
+          "properties": {}
+        },
+        {
+          "type": "Script",
+          "id": "comp_d268ab82-ade0-4920-af6e-7d29dc71a84d",
+          "scriptId": "editor-features-demo.CloneObject",
+          "properties": {
+            "objectName": "Spineboy",
+            "count": 100
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_0205a839-0c40-4e6d-aabe-c9c913c35866",
+          "name": "regular",
+          "parentId": "node_74a0cf5b-05dc-4f52-a1ac-88117fad2b9e",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_d4b58623-c2a5-44f9-b4d2-82bc42dbf72c",
+              "position": {
+                "x": 872,
+                "y": 576
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_d2f62ea5-468a-4691-a73c-5387961dfa53",
+              "assetId": "asset_a30e731c-7ae1-4b94-9d23-68cb20b8f6b4",
+              "width": 140,
+              "height": 40,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_2f48a288-6d26-4a4d-8b23-b502f9f8dc53",
+          "name": "pressed",
+          "parentId": "node_74a0cf5b-05dc-4f52-a1ac-88117fad2b9e",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_dd6491b6-3833-413b-bd7a-77e70385d795",
+              "position": {
+                "x": 872,
+                "y": 574
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_04b9d26a-50b8-49bf-a7ad-56d60186425f",
+              "assetId": "asset_ce15563b-23fe-4add-a567-e4641a3e6979",
+              "width": 140,
+              "height": 40,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_47398c6c-2200-41ab-a638-a60f45c61cc8",
+          "name": "Text",
+          "parentId": "node_74a0cf5b-05dc-4f52-a1ac-88117fad2b9e",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_58045e21-9fcd-4761-943a-d0ea4ec25fb3",
+              "position": {
+                "x": 874,
+                "y": 575
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_f296e50d-8bfa-418d-8978-44557b0fe8a6",
+              "text": "Add 100 spines",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 16,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": 16777215,
+                "fillAlpha": 1,
+                "align": "center",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": false,
+                "dropShadowColor": 0,
+                "dropShadowAlpha": 1,
+                "dropShadowBlur": 0,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "node_d27bc701-496d-485f-b268-770cccc49879",
+      "name": "Button Animated Sprite",
+      "layer": "foreground",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_c8e20c9f-a48f-4e79-9245-d36aa62da602",
+          "position": {
+            "x": -776,
+            "y": 416
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_8f500063-b44e-4664-bb0b-ea9f69755762",
+          "scriptId": "shared.Button",
+          "properties": {}
+        },
+        {
+          "type": "Script",
+          "id": "comp_3b2371ca-2416-4ead-98a0-560b688c6d42",
+          "scriptId": "editor-features-demo.CloneObject",
+          "properties": {
+            "objectName": "Warrior",
+            "count": 100
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_6ed28f01-1d74-44ac-9b14-405675a53c82",
+          "name": "regular",
+          "parentId": "node_d27bc701-496d-485f-b268-770cccc49879",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_e328bc07-a50e-4f4b-a606-cd266334930e",
+              "position": {
+                "x": 872,
+                "y": 576
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_d3f7f289-f397-440e-b766-0d309cd8f2ac",
+              "assetId": "asset_a30e731c-7ae1-4b94-9d23-68cb20b8f6b4",
+              "width": 160,
+              "height": 40,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_925fe417-a47d-4869-9e77-92272ec8ca85",
+          "name": "pressed",
+          "parentId": "node_d27bc701-496d-485f-b268-770cccc49879",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_8fbe2470-fd3a-45f3-a5da-23f502922747",
+              "position": {
+                "x": 872,
+                "y": 574
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_a087fd47-e876-4b16-b430-d5e5589d7216",
+              "assetId": "asset_ce15563b-23fe-4add-a567-e4641a3e6979",
+              "width": 160,
+              "height": 40,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_888b03b4-3a26-4e46-9061-a69fc141e8f7",
+          "name": "Text",
+          "parentId": "node_d27bc701-496d-485f-b268-770cccc49879",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_6424b6ca-7e53-408e-8e71-d18ba27155d7",
+              "position": {
+                "x": 874,
+                "y": 575
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_77710be7-d024-410e-a1cc-67dd4c4f9c29",
+              "text": "Add 100 anim sprites",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 16,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": 16777215,
+                "fillAlpha": 1,
+                "align": "center",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": false,
+                "dropShadowColor": 0,
+                "dropShadowAlpha": 1,
+                "dropShadowBlur": 0,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "node_cfb18f47-5829-40f2-9ce1-c915ebcd4bcc",
+      "name": "Button Sprite",
+      "layer": "foreground",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_32ad3f5d-4975-43d5-a46d-33de75456cb6",
+          "position": {
+            "x": -776,
+            "y": 368
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_162714d5-d076-4b3e-9751-3f7a62f3d718",
+          "scriptId": "shared.Button",
+          "properties": {}
+        },
+        {
+          "type": "Script",
+          "id": "comp_4ed49d0b-44ec-4c38-b6e7-0bcba0118cd8",
+          "scriptId": "editor-features-demo.CloneObject",
+          "properties": {
+            "objectName": "House2",
+            "count": 100
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_6c14d8f8-ef5b-4dfd-951a-4d3e7b7edeb9",
+          "name": "regular",
+          "parentId": "node_cfb18f47-5829-40f2-9ce1-c915ebcd4bcc",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_387f715f-1a71-48a6-b3b0-73b0ab0fd0e7",
+              "position": {
+                "x": 872,
+                "y": 576
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_ef188cb9-a59c-4d96-a38c-6f0afc769aa5",
+              "assetId": "asset_a30e731c-7ae1-4b94-9d23-68cb20b8f6b4",
+              "width": 140,
+              "height": 40,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_db4d1966-0e28-436e-aeb8-6f145fa50f06",
+          "name": "pressed",
+          "parentId": "node_cfb18f47-5829-40f2-9ce1-c915ebcd4bcc",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_f8f133a8-b2ed-4a29-81a2-b33e3811ae81",
+              "position": {
+                "x": 872,
+                "y": 574
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_b48b6489-186d-468a-9912-469425ffd31c",
+              "assetId": "asset_ce15563b-23fe-4add-a567-e4641a3e6979",
+              "width": 140,
+              "height": 40,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_5412b435-1fdc-44a7-b465-8be113bfcc6c",
+          "name": "Text",
+          "parentId": "node_cfb18f47-5829-40f2-9ce1-c915ebcd4bcc",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_5b2c009e-8017-4ae1-b6ff-55b46e46763c",
+              "position": {
+                "x": 874,
+                "y": 575
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_3070806e-4a26-482f-8058-8c8f87f20259",
+              "text": "Add 100 sprites",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 16,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": 16777215,
+                "fillAlpha": 1,
+                "align": "center",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": false,
+                "dropShadowColor": 0,
+                "dropShadowAlpha": 1,
+                "dropShadowBlur": 0,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "node_c9af8dfe-d472-45bd-9bf8-b11d9f70d2e8",
+      "name": "Button Monster",
+      "layer": "foreground",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_0cafb346-8140-48e2-9169-96d2d84e6433",
+          "position": {
+            "x": -776,
+            "y": 320
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_ed467590-6d1d-424e-9bcb-e2f514fb1583",
+          "scriptId": "shared.Button",
+          "properties": {}
+        },
+        {
+          "type": "Script",
+          "id": "comp_91724c83-6d9d-455b-94b1-ab9a618d30bf",
+          "scriptId": "editor-features-demo.CloneObject",
+          "properties": {
+            "objectName": "Monster01",
+            "count": 10
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_4d6efe2a-9271-4fc4-83b1-ed8f9e40da5b",
+          "name": "regular",
+          "parentId": "node_c9af8dfe-d472-45bd-9bf8-b11d9f70d2e8",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_7611346b-9934-469f-9014-42eaaf83b3ad",
+              "position": {
+                "x": 872,
+                "y": 576
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_db43651d-5c3e-42d2-b6d0-eb45f98540c6",
+              "assetId": "asset_a30e731c-7ae1-4b94-9d23-68cb20b8f6b4",
+              "width": 140,
+              "height": 40,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_9dd6b6ba-1eac-4ecc-b6c9-c13252a9018b",
+          "name": "pressed",
+          "parentId": "node_c9af8dfe-d472-45bd-9bf8-b11d9f70d2e8",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_48f7edc1-ecc8-456d-9867-75166cdbcbbb",
+              "position": {
+                "x": 872,
+                "y": 574
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_34bac744-d8c4-46e1-92fa-e47481c48abe",
+              "assetId": "asset_ce15563b-23fe-4add-a567-e4641a3e6979",
+              "width": 140,
+              "height": 40,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_ec392eaf-95c4-411c-a4d1-4c453323875a",
+          "name": "Text",
+          "parentId": "node_c9af8dfe-d472-45bd-9bf8-b11d9f70d2e8",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_e8db01ec-3d36-4ac8-a88d-a9a4f72ec226",
+              "position": {
+                "x": 874,
+                "y": 575
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_5920fd87-4c3d-4e46-b801-3c32160009da",
+              "text": "Add 10 monsters",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 16,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": 16777215,
+                "fillAlpha": 1,
+                "align": "center",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": false,
+                "dropShadowColor": 0,
+                "dropShadowAlpha": 1,
+                "dropShadowBlur": 0,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
+    }
+  ]
+}

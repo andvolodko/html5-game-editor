@@ -2,6 +2,7 @@ import type { PixiRuntimeGraph, RuntimeNode } from "./pixi-runtime-nodes.js";
 import type { PixelGridOverlay } from "./pixel-grid.js";
 import type { ScreenGuidesOverlay } from "./screen-guides.js";
 import { hitAreaFromBounds } from "./pixi-visual-hit-area.js";
+import { localScaleTowardAncestor } from "./pixi-chrome-scale.js";
 import {
   visibleWorldRect,
   type ViewportCameraState,
@@ -34,10 +35,12 @@ export function redrawEditorOverlays(host: EditorOverlaySyncHost): void {
       rect.minY - pad,
       rect.maxX + pad,
       rect.maxY + pad,
+      cameraScale,
     );
   }
   host.screenGuides?.redraw(cameraScale);
-  // Selection chrome + gizmo hit pads are screen-constant under zoom.
+  // Selection chrome + gizmo hit pads are screen-constant under zoom
+  // and node scale.
   for (const runtime of host.graph.values()) {
     if (
       runtime.visualBounds &&
@@ -46,6 +49,7 @@ export function redrawEditorOverlays(host: EditorOverlaySyncHost): void {
       runtime.visualsRoot.hitArea = hitAreaFromBounds(
         runtime.visualBounds,
         cameraScale,
+        localScaleTowardAncestor(runtime.container, host.graph.world),
       );
     }
     if (host.getSelectedNodeIds().has(runtime.node.id)) {

@@ -92,11 +92,20 @@ export function createDemoEditorClients(
     async moveAsset() {
       throwDemoUnavailable("Move asset");
     },
+    async duplicateAsset() {
+      throwDemoUnavailable("Duplicate asset");
+    },
+    async restoreAsset() {
+      throwDemoUnavailable("Restore asset");
+    },
     async deleteAsset() {
       throwDemoUnavailable("Delete asset");
     },
     async renameFolder() {
       throwDemoUnavailable("Rename folder");
+    },
+    async restoreFolder() {
+      throwDemoUnavailable("Restore folder");
     },
     async deleteFolder() {
       throwDemoUnavailable("Delete folder");
@@ -108,6 +117,7 @@ export function createDemoEditorClients(
       return (
         resolver.resolveSpinePartUrl?.(assetId, part) ??
         resolver.resolveGltfPartUrl?.(assetId, part) ??
+        resolver.resolveAsepritePartUrl?.(assetId, part) ??
         ""
       );
     },

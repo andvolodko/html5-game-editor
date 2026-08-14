@@ -7,6 +7,7 @@ import {
   createSpriteNode,
   createTransform2D,
   getNodeLocation,
+  findNodeByName,
   getTransform2D,
   getWorldAff2,
   moveNodeInScene,
@@ -107,5 +108,12 @@ describe("transform world/local", () => {
       parentId: game.id,
       index: 0,
     });
+  });
+
+  it("findNodeByName returns the first depth-first match", () => {
+    const { scene, game, reels } = sceneWithTree();
+    expect(findNodeByName(scene, "Reels")?.id).toBe(reels.id);
+    expect(findNodeByName(scene, "Game")?.id).toBe(game.id);
+    expect(findNodeByName(scene, "Missing")).toBeUndefined();
   });
 });

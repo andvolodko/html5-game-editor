@@ -1,0 +1,2933 @@
+{
+  "frames": {
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-0": {
+      "frame": {
+        "x": 1920,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-1": {
+      "frame": {
+        "x": 2688,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-2": {
+      "frame": {
+        "x": 2496,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-3": {
+      "frame": {
+        "x": 2304,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-4": {
+      "frame": {
+        "x": 2112,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-5": {
+      "frame": {
+        "x": 1920,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-6": {
+      "frame": {
+        "x": 1728,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-7": {
+      "frame": {
+        "x": 1536,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-8": {
+      "frame": {
+        "x": 1344,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-9": {
+      "frame": {
+        "x": 1152,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-10": {
+      "frame": {
+        "x": 960,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-11": {
+      "frame": {
+        "x": 768,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-12": {
+      "frame": {
+        "x": 576,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-13": {
+      "frame": {
+        "x": 384,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-14": {
+      "frame": {
+        "x": 192,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-15": {
+      "frame": {
+        "x": 0,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-16": {
+      "frame": {
+        "x": 2304,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-17": {
+      "frame": {
+        "x": 768,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-18": {
+      "frame": {
+        "x": 960,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-19": {
+      "frame": {
+        "x": 1152,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-20": {
+      "frame": {
+        "x": 1344,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-21": {
+      "frame": {
+        "x": 1536,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-22": {
+      "frame": {
+        "x": 1728,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-23": {
+      "frame": {
+        "x": 1920,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-24": {
+      "frame": {
+        "x": 2112,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-25": {
+      "frame": {
+        "x": 576,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-26": {
+      "frame": {
+        "x": 2496,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-27": {
+      "frame": {
+        "x": 2688,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-28": {
+      "frame": {
+        "x": 2880,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-29": {
+      "frame": {
+        "x": 3072,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-30": {
+      "frame": {
+        "x": 3264,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-31": {
+      "frame": {
+        "x": 3456,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-32": {
+      "frame": {
+        "x": 3648,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-33": {
+      "frame": {
+        "x": 3840,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-34": {
+      "frame": {
+        "x": 768,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-35": {
+      "frame": {
+        "x": 576,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-36": {
+      "frame": {
+        "x": 384,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-37": {
+      "frame": {
+        "x": 192,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-38": {
+      "frame": {
+        "x": 0,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-39": {
+      "frame": {
+        "x": 3840,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-40": {
+      "frame": {
+        "x": 3648,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-41": {
+      "frame": {
+        "x": 3456,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-42": {
+      "frame": {
+        "x": 3264,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-43": {
+      "frame": {
+        "x": 3072,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-44": {
+      "frame": {
+        "x": 2880,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-45": {
+      "frame": {
+        "x": 2688,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-46": {
+      "frame": {
+        "x": 2496,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-47": {
+      "frame": {
+        "x": 2304,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-48": {
+      "frame": {
+        "x": 2112,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-49": {
+      "frame": {
+        "x": 2880,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-50": {
+      "frame": {
+        "x": 1728,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-51": {
+      "frame": {
+        "x": 1536,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-52": {
+      "frame": {
+        "x": 1344,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-53": {
+      "frame": {
+        "x": 1152,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-54": {
+      "frame": {
+        "x": 960,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-55": {
+      "frame": {
+        "x": 768,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-56": {
+      "frame": {
+        "x": 576,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-57": {
+      "frame": {
+        "x": 384,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-58": {
+      "frame": {
+        "x": 192,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-59": {
+      "frame": {
+        "x": 0,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-60": {
+      "frame": {
+        "x": 3840,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-61": {
+      "frame": {
+        "x": 3648,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-62": {
+      "frame": {
+        "x": 3456,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-63": {
+      "frame": {
+        "x": 3264,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-64": {
+      "frame": {
+        "x": 3072,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-65": {
+      "frame": {
+        "x": 1536,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-66": {
+      "frame": {
+        "x": 2112,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-67": {
+      "frame": {
+        "x": 1920,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-68": {
+      "frame": {
+        "x": 1728,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-69": {
+      "frame": {
+        "x": 1536,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-70": {
+      "frame": {
+        "x": 1344,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-71": {
+      "frame": {
+        "x": 1152,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-72": {
+      "frame": {
+        "x": 960,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-73": {
+      "frame": {
+        "x": 768,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-74": {
+      "frame": {
+        "x": 576,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-75": {
+      "frame": {
+        "x": 384,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-76": {
+      "frame": {
+        "x": 192,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-77": {
+      "frame": {
+        "x": 0,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-78": {
+      "frame": {
+        "x": 3840,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-79": {
+      "frame": {
+        "x": 3648,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-80": {
+      "frame": {
+        "x": 3456,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-81": {
+      "frame": {
+        "x": 1728,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-82": {
+      "frame": {
+        "x": 192,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-83": {
+      "frame": {
+        "x": 384,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-84": {
+      "frame": {
+        "x": 576,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-85": {
+      "frame": {
+        "x": 768,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-86": {
+      "frame": {
+        "x": 960,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-87": {
+      "frame": {
+        "x": 1152,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-88": {
+      "frame": {
+        "x": 1344,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-89": {
+      "frame": {
+        "x": 1536,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-90": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-91": {
+      "frame": {
+        "x": 1920,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-92": {
+      "frame": {
+        "x": 2112,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-93": {
+      "frame": {
+        "x": 2304,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-94": {
+      "frame": {
+        "x": 2496,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-95": {
+      "frame": {
+        "x": 2688,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-96": {
+      "frame": {
+        "x": 2880,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-97": {
+      "frame": {
+        "x": 3072,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-98": {
+      "frame": {
+        "x": 3264,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-99": {
+      "frame": {
+        "x": 384,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-100": {
+      "frame": {
+        "x": 192,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-101": {
+      "frame": {
+        "x": 0,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-102": {
+      "frame": {
+        "x": 3840,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-103": {
+      "frame": {
+        "x": 3648,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-104": {
+      "frame": {
+        "x": 3456,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-105": {
+      "frame": {
+        "x": 3264,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-106": {
+      "frame": {
+        "x": 3072,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-107": {
+      "frame": {
+        "x": 2880,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-108": {
+      "frame": {
+        "x": 2688,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-109": {
+      "frame": {
+        "x": 2496,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-110": {
+      "frame": {
+        "x": 2304,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-111": {
+      "frame": {
+        "x": 2112,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-112": {
+      "frame": {
+        "x": 1920,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-113": {
+      "frame": {
+        "x": 1728,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-114": {
+      "frame": {
+        "x": 0,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-115": {
+      "frame": {
+        "x": 2496,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-116": {
+      "frame": {
+        "x": 2688,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-117": {
+      "frame": {
+        "x": 2880,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-118": {
+      "frame": {
+        "x": 3072,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-119": {
+      "frame": {
+        "x": 3264,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-120": {
+      "frame": {
+        "x": 3456,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-121": {
+      "frame": {
+        "x": 3648,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-122": {
+      "frame": {
+        "x": 3840,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-123": {
+      "frame": {
+        "x": 2304,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-124": {
+      "frame": {
+        "x": 192,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-125": {
+      "frame": {
+        "x": 384,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-126": {
+      "frame": {
+        "x": 576,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-127": {
+      "frame": {
+        "x": 768,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-128": {
+      "frame": {
+        "x": 960,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-129": {
+      "frame": {
+        "x": 1152,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-130": {
+      "frame": {
+        "x": 1344,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    }
+  },
+  "animations": {
+    "Idle": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-0",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-1",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-2",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-3",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-4",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-5",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-6",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-7",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-8",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-9",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-10",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-11",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-12",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-13",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-14",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-15",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-16",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-17",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-18",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-19",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-20",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-21",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-22",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-23",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-24",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-25",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-26",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-27",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-28",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-29",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-30",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-31",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-32",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-33",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-34",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-35",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-36",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-37",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-38",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-39",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-40",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-41",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-42",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-43",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-44",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-45",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-46",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-47",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-48",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-49",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-50",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-51",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-52",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-53",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-54",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-55",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-56",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-57",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-58",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-59",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-60",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-61",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-62",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-63"
+    ],
+    "Idle Wood": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-8",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-9",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-10",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-11",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-12",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-13",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-14",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-15"
+    ],
+    "Idle Meat": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-16",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-17",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-18",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-19",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-20",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-21",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-22",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-23"
+    ],
+    "Idle Gold": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-24",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-25",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-26",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-27",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-28",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-29",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-30",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-31"
+    ],
+    "Idle Hammer": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-32",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-33",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-34",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-35",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-36",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-37",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-38",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-39"
+    ],
+    "Idle Axe": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-40",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-41",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-42",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-43",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-44",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-45",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-46",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-47"
+    ],
+    "Idle Knife": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-48",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-49",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-50",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-51",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-52",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-53",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-54",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-55"
+    ],
+    "Idle Pickaxe": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-56",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-57",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-58",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-59",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-60",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-61",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-62",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-63"
+    ],
+    "Run ": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-64",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-65",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-66",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-67",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-68",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-69",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-70",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-71",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-72",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-73",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-74",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-75",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-76",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-77",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-78",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-79",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-80",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-81",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-82",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-83",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-84",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-85",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-86",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-87",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-88",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-89",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-90",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-91",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-92",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-93",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-94",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-95",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-96",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-97",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-98",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-99",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-100",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-101",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-102",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-103",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-104",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-105",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-106",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-107",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-108",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-109",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-110",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-111"
+    ],
+    "Run": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-64",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-65",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-66",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-67",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-68",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-69"
+    ],
+    "Run Wood": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-70",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-71",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-72",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-73",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-74",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-75"
+    ],
+    "Run Meat": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-76",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-77",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-78",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-79",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-80",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-81"
+    ],
+    "Run Gold": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-82",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-83",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-84",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-85",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-86",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-87"
+    ],
+    "Run Hammer": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-88",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-89",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-90",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-91",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-92",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-93"
+    ],
+    "Run Axe": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-94",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-95",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-96",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-97",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-98",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-99"
+    ],
+    "Run Knife": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-100",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-101",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-102",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-103",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-104",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-105"
+    ],
+    "Run Pickaxe": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-106",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-107",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-108",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-109",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-110",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-111"
+    ],
+    "Interact": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-112",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-113",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-114",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-115",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-116",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-117",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-118",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-119",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-120",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-121",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-122",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-123",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-124",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-125",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-126",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-127",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-128",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-129",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-130"
+    ],
+    "Interact Hammer": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-112",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-113",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-114"
+    ],
+    "Interact Axe": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-115",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-116",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-117",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-118",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-119",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-120"
+    ],
+    "Interact Knife": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-121",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-122",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-123",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-124"
+    ],
+    "Interact Pickaxe": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-125",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-126",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-127",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-128",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-129",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Pawn-frame-130"
+    ]
+  },
+  "meta": {
+    "image": "Pawn.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 4096,
+      "h": 2048
+    },
+    "scale": "1"
+  }
+}

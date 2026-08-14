@@ -1,7 +1,10 @@
+import { createId } from "@game-editor/shared";
 import {
+  allocateDuplicateName,
   parseSceneData,
   type SceneData,
 } from "@game-editor/scene";
+import { SCENES_FOLDER } from "./asset-browser-model.js";
 import type { DocumentManager } from "./document-manager.js";
 import type { SceneApiClient, SceneListEntry } from "./scene-api-client.js";
 import { allocateSceneFileId } from "./scene-api-client.js";
@@ -11,8 +14,11 @@ export interface ScenePersistenceHost {
   getSceneFileId(): string;
   setSceneFileId(id: string): void;
   document: DocumentManager;
-  setScene(scene: SceneData): void;
+  setScene(scene: SceneData, options?: { preserveUndo?: boolean }): void;
   emit(): void;
+  onSceneOpened(sceneFileId: string, sceneName: string): void;
+  syncProjectAfterSceneFileChange(): Promise<void>;
+  restoreStartScene(sceneId: string): Promise<void>;
 }
 
 function requireSceneApi(host: ScenePersistenceHost): SceneApiClient {
@@ -50,11 +56,14 @@ export async function saveSceneDocument(
 export async function loadSceneDocument(
   host: ScenePersistenceHost,
   sceneFileId = host.getSceneFileId(),
+  options?: { preserveUndo?: boolean },
 ): Promise<void> {
   const sceneApi = requireSceneApi(host);
   host.setSceneFileId(sceneFileId);
   const loaded = await sceneApi.loadScene(sceneFileId);
-  host.setScene(parseSceneData(loaded));
+  const scene = parseSceneData(loaded);
+  host.setScene(scene, options);
+  host.onSceneOpened(sceneFileId, scene.name);
 }
 
 export async function listSceneDocuments(
@@ -80,6 +89,34 @@ export async function createSceneDocument(
   await loadSceneDocument(host, sceneFileId);
 }
 
+/**
+ * Copies a scene file to a unique id. Does not switch the active document.
+ * The open scene (including unsaved edits) is the source when duplicating it.
+ */
+export async function duplicateSceneDocument(
+  host: ScenePersistenceHost,
+  sourceSceneId: string,
+): Promise<SceneListEntry> {
+  const api = requireSceneApi(host);
+  const existing = await api.listScenes();
+  const isActive = host.getSceneFileId() === sourceSceneId;
+  if (!isActive && !existing.some((entry) => entry.id === sourceSceneId)) {
+    throw new Error(`Scene not found: ${sourceSceneId}`);
+  }
+  const newId = allocateSceneFileId(existing, sourceSceneId);
+  const source = isActive
+    ? host.document.getScene()
+    : parseSceneData(await api.loadScene(sourceSceneId));
+  const copy: SceneData = {
+    ...structuredClone(source),
+    id: createId("scene"),
+    name: allocateDuplicateName(source.name, [source.name]),
+  };
+  await api.saveScene(newId, copy);
+  host.emit();
+  return { id: newId, path: `${SCENES_FOLDER}/${newId}.json` };
+}
+
 export async function renameSceneDocumentFile(
   host: ScenePersistenceHost,
   sceneFileId: string,
@@ -92,6 +129,7 @@ export async function renameSceneDocumentFile(
   if (host.getSceneFileId() === sceneFileId) {
     host.setSceneFileId(entry.id);
   }
+  await host.syncProjectAfterSceneFileChange();
   host.emit();
   return entry;
 }
@@ -103,13 +141,35 @@ export async function deleteSceneDocumentFile(
   host: ScenePersistenceHost,
   sceneFileId: string,
   fallbackSceneId: string,
+  options?: { preserveUndo?: boolean },
 ): Promise<void> {
   const api = requireSceneApi(host);
   const wasActive = host.getSceneFileId() === sceneFileId;
   await api.deleteScene(sceneFileId);
+  await host.syncProjectAfterSceneFileChange();
   if (wasActive) {
-    await loadSceneDocument(host, fallbackSceneId);
+    await loadSceneDocument(host, fallbackSceneId, options);
   } else {
     host.emit();
   }
+}
+
+export async function restoreDeletedSceneDocument(
+  host: ScenePersistenceHost,
+  sceneFileId: string,
+  snapshot: SceneData,
+  options: { open: boolean; restoreStartScene: boolean },
+): Promise<void> {
+  await requireSceneApi(host).saveScene(sceneFileId, snapshot);
+  if (options.restoreStartScene) {
+    await host.restoreStartScene(sceneFileId);
+  } else {
+    await host.syncProjectAfterSceneFileChange();
+  }
+  if (options.open) {
+    host.setSceneFileId(sceneFileId);
+    host.setScene(structuredClone(snapshot), { preserveUndo: true });
+    host.onSceneOpened(sceneFileId, snapshot.name);
+  }
+  host.emit();
 }

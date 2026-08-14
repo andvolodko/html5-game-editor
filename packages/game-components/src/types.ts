@@ -17,6 +17,7 @@ export const COMPONENT_ASSET_TYPES = [
   "spine",
   "audio",
   "gltf",
+  "aseprite",
 ] as const;
 
 export type ComponentAssetType = (typeof COMPONENT_ASSET_TYPES)[number];
@@ -186,6 +187,12 @@ export interface ScriptSpawnModel3DOptions {
   scale?: { x: number; y: number; z: number };
 }
 
+/** Immediate child of a scene node, for script lookups by name. */
+export interface ScriptChildNodeRef {
+  id: string;
+  name: string;
+}
+
 /** Services provided by GameRuntime / preview to script `create` factories. */
 export interface ScriptRuntimeServices {
   bus: EventBus;
@@ -280,10 +287,31 @@ export interface ScriptRuntimeServices {
    */
   spawnModel3D?: (options: ScriptSpawnModel3DOptions) => string | undefined;
   /**
+   * Clone an authored scene node (and subtree) by name. 2D/3D.
+   * Strips Script components. Runtime-only; does not write scene files.
+   * `index` offsets the clone from the source in a grid.
+   * `columns` is how many clones sit on one X row before wrapping (default 15).
+   */
+  cloneNodeByName?: (
+    sourceName: string,
+    index: number,
+    columns?: number,
+  ) => string | undefined;
+  /**
    * Remove a node previously created by `spawnModel3D`.
    * No-op for authored scene nodes.
    */
   destroyNode?: (nodeId: string) => void;
+  /** Immediate children of a node (empty when missing). */
+  listChildNodes?: (nodeId: string) => readonly ScriptChildNodeRef[];
+  /**
+   * Show or hide a node's runtime object. Does not persist to scene files.
+   */
+  setNodeVisible?: (nodeId: string, visible: boolean) => void;
+  /**
+   * CSS cursor on a node's runtime object (e.g. `pointer`). Pixi playback.
+   */
+  setNodeCursor?: (nodeId: string, cursor: string) => void;
 }
 
 export interface ScriptCreateContext {

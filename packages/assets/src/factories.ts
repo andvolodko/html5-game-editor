@@ -4,10 +4,13 @@ import {
   type AssetDatabaseData,
   type AssetRecord,
   type AudioAssetMetadata,
+  type AsepriteAssetMetadata,
+  type AsepriteTagMetadata,
   type GltfAssetMetadata,
   type SpineAssetMetadata,
   type TextureAssetMetadata,
 } from "./types.js";
+import { generatedAsepriteOutputPaths } from "./aseprite-extensions.js";
 
 export function createEmptyAssetDatabase(): AssetDatabaseData {
   return {
@@ -114,6 +117,47 @@ export function createGltfAssetRecord(input: {
   return {
     id: input.id ?? createId("asset"),
     type: "gltf",
+    name: input.name,
+    path: normalizeProjectRelativePath(input.path),
+    metadata,
+  };
+}
+
+export function createAsepriteAssetRecord(input: {
+  name: string;
+  path: string;
+  width?: number;
+  height?: number;
+  frameCount?: number;
+  tags?: AsepriteTagMetadata[];
+  frameDurations?: number[];
+  sheetPath?: string;
+  dataPath?: string;
+  compileRevision?: string;
+  compileError?: string;
+  id?: string;
+}): AssetRecord {
+  const generated = generatedAsepriteOutputPaths(input.path);
+  const metadata: AsepriteAssetMetadata = {
+    kind: "aseprite",
+    width: input.width ?? 1,
+    height: input.height ?? 1,
+    frameCount: input.frameCount ?? 0,
+    tags: input.tags ? [...input.tags] : [],
+    frameDurations: input.frameDurations ? [...input.frameDurations] : [],
+    sheetPath: normalizeProjectRelativePath(input.sheetPath ?? generated.sheetPath),
+    dataPath: normalizeProjectRelativePath(input.dataPath ?? generated.dataPath),
+  };
+  if (input.compileRevision !== undefined) {
+    metadata.compileRevision = input.compileRevision;
+  }
+  if (input.compileError !== undefined) {
+    metadata.compileError = input.compileError;
+  }
+
+  return {
+    id: input.id ?? createId("asset"),
+    type: "aseprite",
     name: input.name,
     path: normalizeProjectRelativePath(input.path),
     metadata,

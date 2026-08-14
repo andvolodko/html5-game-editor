@@ -1,19 +1,32 @@
 import { useEffect, useRef, useState } from "react";
 import type { IDockviewPanelProps } from "dockview";
+import type { SceneListEntry } from "@game-editor/editor-core";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
+import {
+  isCrossWindowDockMove,
+  isPopoutGroupLocation,
+} from "../layout/dockview-popout";
 import { GamePreviewSession } from "../preview/game-preview-session";
+import { resolvePreviewScene } from "../preview/resolve-preview-scene";
+import { buildStartSceneSelectOptions } from "./fields/start-scene-select-options";
 
 type PreviewStatus = "idle" | "starting" | "running" | "error";
 
 export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
   const editor = useEditor();
-  const sceneName = useEditorState((ed) => ed.getScene().name);
+  const editorSceneFileId = useEditorState((ed) => ed.getSceneFileId());
   const hostRef = useRef<HTMLDivElement | null>(null);
   const sessionRef = useRef(new GamePreviewSession());
   const [status, setStatus] = useState<PreviewStatus>("idle");
   const [error, setError] = useState<string | null>(null);
   const [maximized, setMaximized] = useState(() => api.isMaximized());
+  const [locationType, setLocationType] = useState(api.location.type);
+  const locationTypeRef = useRef(api.location.type);
+  const [sceneEntries, setSceneEntries] = useState<readonly SceneListEntry[]>(
+    [],
+  );
+  const [selectedSceneId, setSelectedSceneId] = useState(editorSceneFileId);
 
   useEffect(() => {
     const session = sessionRef.current;
@@ -21,6 +34,32 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
       void session.stop();
     };
   }, []);
+
+  useEffect(() => {
+    if (status === "running" || status === "starting") {
+      return;
+    }
+    setSelectedSceneId(editorSceneFileId);
+  }, [editorSceneFileId, status]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void editor
+      .listScenes()
+      .then((entries) => {
+        if (!cancelled) {
+          setSceneEntries(entries);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setSceneEntries([]);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [editor, editorSceneFileId]);
 
   useEffect(() => {
     setMaximized(api.isMaximized());
@@ -31,6 +70,27 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
       disposable.dispose();
     };
   }, [api, containerApi]);
+
+  useEffect(() => {
+    locationTypeRef.current = api.location.type;
+    setLocationType(api.location.type);
+    const disposable = api.onDidLocationChange((event) => {
+      const nextType = event.location.type;
+      const previousType = locationTypeRef.current;
+      locationTypeRef.current = nextType;
+      setLocationType(nextType);
+      if (!isCrossWindowDockMove(previousType, nextType)) {
+        return;
+      }
+      void sessionRef.current.stop().then(() => {
+        setStatus("idle");
+        setError(null);
+      });
+    });
+    return () => {
+      disposable.dispose();
+    };
+  }, [api]);
 
   const handlePlay = () => {
     const host = hostRef.current;
@@ -45,29 +105,34 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
     }
     setError(null);
     setStatus("starting");
-    const snapshot = structuredClone(editor.getScene());
-    void sessionRef.current
-      .start({
-        canvasParent: host,
-        scene: snapshot,
-        assetResolver: editor.assets,
-        resolution: project.resolution,
-        background: project.background,
-        components: editor.components,
-        projectId: editor.project.getActiveProjectId(),
-        loadSceneById: async (sceneId) => editor.loadSceneData(sceneId),
-        listScenes: async () => {
-          const currentId = editor.getSceneFileId();
-          const entries = await editor.listScenes();
-          return Promise.all(
-            entries.map((entry) =>
-              entry.id === currentId
-                ? structuredClone(editor.getScene())
-                : editor.loadSceneData(entry.id),
-            ),
-          );
-        },
-      })
+    void resolvePreviewScene(editor, selectedSceneId)
+      .then((snapshot) =>
+        sessionRef.current.start({
+          canvasParent: host,
+          scene: snapshot,
+          sceneId: selectedSceneId,
+          assetResolver: editor.assets,
+          resolution: project.resolution,
+          background: project.background,
+          components: editor.components,
+          projectId: editor.project.getActiveProjectId(),
+          loadSceneById: async (sceneId) => resolvePreviewScene(editor, sceneId),
+          listScenes: async () => {
+            const currentId = editor.getSceneFileId();
+            const entries = await editor.listScenes();
+            return Promise.all(
+              entries.map((entry) =>
+                entry.id === currentId
+                  ? structuredClone(editor.getScene())
+                  : editor.loadSceneData(entry.id),
+              ),
+            );
+          },
+          onSceneChange: (_scene, sceneId) => {
+            setSelectedSceneId(sceneId);
+          },
+        }),
+      )
       .then(() => {
         if (sessionRef.current.isRunning) {
           setStatus("running");
@@ -101,8 +166,24 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
     setMaximized(api.isMaximized());
   };
 
+  const handlePreviewSceneChange = (sceneId: string) => {
+    setSelectedSceneId(sceneId);
+    if (status !== "running") {
+      return;
+    }
+    void sessionRef.current.changeScene(sceneId).catch((changeError: unknown) => {
+      setStatus("error");
+      setError(
+        changeError instanceof Error
+          ? changeError.message
+          : "Failed to change preview scene",
+      );
+    });
+  };
+
   const busy = status === "starting";
   const running = status === "running";
+  const poppedOut = isPopoutGroupLocation({ type: locationType });
 
   return (
     <div className="panel panel-preview">
@@ -123,23 +204,47 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
         >
           Stop
         </button>
-        <span className="preview-toolbar-scene">{sceneName}</span>
-        <button
-          type="button"
-          className="scene-toolbar-btn preview-expand-btn"
-          aria-label={
-            maximized ? "Restore preview panel size" : "Expand preview to full window"
-          }
-          title={maximized ? "Restore" : "Expand"}
-          onClick={handleToggleMaximize}
-        >
-          {maximized ? "Restore" : "Expand"}
-        </button>
+        <span className="preview-toolbar-scene">
+          <label className="preview-scene-label" htmlFor="preview-scene-select">
+            Scene
+          </label>
+          <select
+            id="preview-scene-select"
+            className="preview-scene-select"
+            value={selectedSceneId}
+            disabled={busy}
+            aria-label="Preview scene"
+            onChange={(event) => handlePreviewSceneChange(event.target.value)}
+          >
+            {buildStartSceneSelectOptions(sceneEntries, selectedSceneId).map(
+              (option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ),
+            )}
+          </select>
+        </span>
+        {poppedOut ? null : (
+          <button
+            type="button"
+            className="scene-toolbar-btn preview-expand-btn"
+            aria-label={
+              maximized
+                ? "Restore preview panel size"
+                : "Expand preview to full window"
+            }
+            title={maximized ? "Restore" : "Expand"}
+            onClick={handleToggleMaximize}
+          >
+            {maximized ? "Restore" : "Expand"}
+          </button>
+        )}
       </div>
       <div ref={hostRef} className="preview-viewport">
         {!running && !busy ? (
           <p className="panel-empty preview-idle-hint">
-            Press Play to preview the current scene
+            Press Play to preview the selected scene
           </p>
         ) : null}
         {busy ? (

@@ -4,6 +4,7 @@ import {
   panByScreenDelta,
   screenToWorld,
   viewportChromeInvScale,
+  viewportChromeInvScaleAxes,
   visibleWorldRect,
   worldToScreen,
   zoomAtScreenPoint,
@@ -20,6 +21,15 @@ describe("viewport camera math", () => {
     expect(viewportChromeInvScale(2)).toBeCloseTo(0.5, 5);
     expect(viewportChromeInvScale(0.5)).toBeCloseTo(2, 5);
     expect(viewportChromeInvScale(0)).toBe(1);
+  });
+
+  it("maps per-axis chrome inverse for camera × node scale", () => {
+    const nonUniform = viewportChromeInvScaleAxes(1, 3, 2);
+    expect(nonUniform.x).toBeCloseTo(1 / 3, 5);
+    expect(nonUniform.y).toBeCloseTo(0.5, 5);
+    const withCamera = viewportChromeInvScaleAxes(2, 2, -2);
+    expect(withCamera.x).toBeCloseTo(0.25, 5);
+    expect(withCamera.y).toBeCloseTo(0.25, 5);
   });
 
   it("round-trips screen ↔ world with pan and scale", () => {

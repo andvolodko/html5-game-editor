@@ -18,8 +18,9 @@ import {
   defaultVisualBounds,
   provisionalVisualBounds,
 } from "./pixi-visual-bounds.js";
+import { localScaleTowardAncestor } from "./pixi-chrome-scale.js";
 import { hitAreaFromBounds } from "./pixi-visual-hit-area.js";
-import { viewportChromeInvScale } from "./viewport-camera.js";
+import { viewportChromeInvScaleAxes } from "./viewport-camera.js";
 import {
   EDITOR_ACCENT_COLOR,
   EDITOR_CHROME_FILL,
@@ -204,7 +205,16 @@ export class PixiNodePainter {
     const selected = this.host.getSelectedNodeIds().has(runtime.node.id);
     const visual = getVisualComponent(runtime.node);
     const cameraScale = this.host.getCameraScale();
-    const inv = viewportChromeInvScale(cameraScale);
+    const nodeScale = localScaleTowardAncestor(
+      runtime.container,
+      this.host.graph.world,
+    );
+    const inv = viewportChromeInvScaleAxes(
+      cameraScale,
+      nodeScale.x,
+      nodeScale.y,
+    );
+    const invStroke = Math.min(inv.x, inv.y);
     selection.clear();
     if (!selected) {
       runtime.gizmo?.setVisible(false);
@@ -245,7 +255,10 @@ export class PixiNodePainter {
         width,
         height,
         { anchor, flipX, flipY },
-        cameraScale,
+        {
+          x: cameraScale * nodeScale.x,
+          y: cameraScale * nodeScale.y,
+        },
         {
           size: visualComponentSupportsDisplaySize(visual),
           scale: !visualComponentSupportsDisplaySize(visual),
@@ -261,19 +274,19 @@ export class PixiNodePainter {
       selection.rect(x, y, width, height);
       selection.stroke({
         color: EDITOR_ACCENT_COLOR,
-        width: EDITOR_SELECTION_STROKE_WIDTH * inv,
+        width: EDITOR_SELECTION_STROKE_WIDTH * invStroke,
       });
       return;
     }
     // Grouping nodes have no default bounds graphic — mark origin only.
-    selection.circle(0, 0, EDITOR_GROUP_ORIGIN_MARKER_RADIUS * inv);
+    selection.circle(0, 0, EDITOR_GROUP_ORIGIN_MARKER_RADIUS * invStroke);
     selection.fill({
       color: EDITOR_CHROME_FILL,
       alpha: EDITOR_SELECTION_FILL_ALPHA,
     });
     selection.stroke({
       color: EDITOR_ACCENT_COLOR,
-      width: EDITOR_SELECTION_STROKE_WIDTH * inv,
+      width: EDITOR_SELECTION_STROKE_WIDTH * invStroke,
     });
   }
 
@@ -297,6 +310,7 @@ export class PixiNodePainter {
     runtime.visualsRoot.hitArea = hitAreaFromBounds(
       bounds,
       this.host.getCameraScale(),
+      localScaleTowardAncestor(runtime.container, this.host.graph.world),
     );
   }
 

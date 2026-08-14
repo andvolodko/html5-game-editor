@@ -1,27 +1,40 @@
-import type { VisualComponentData } from "@game-editor/scene";
+import type { Editor } from "@game-editor/editor-core";
+import { DEFAULT_SPRITE_SIZE, type VisualComponentData } from "@game-editor/scene";
+import { rasterAssetDisplaySize } from "@game-editor/assets";
 import {
   AssetSelectField,
   BooleanField,
   ColorField,
   NumberField,
+  OptionalSelectField,
   StringField,
 } from "../fields/inspector-fields";
+import { uniqueSelectOptions } from "../fields/unique-select-options";
 import type { VisualCommit } from "./types";
 
 export function SpriteFields({
   visual,
   commit,
+  editor,
 }: {
   visual: Extract<VisualComponentData, { type: "Sprite" }>;
   commit: VisualCommit;
+  editor: Editor;
 }) {
   return (
     <>
       <AssetSelectField
         label="Texture"
-        kind="texture"
+        kind={["texture", "aseprite"]}
         value={visual.assetId}
-        onCommit={(assetId) => commit({ assetId })}
+        onCommit={(assetId) => {
+          const next = assetId ? editor.assets.get(assetId) : undefined;
+          const size = next ? rasterAssetDisplaySize(next) : undefined;
+          commit({
+            assetId,
+            ...(size ?? {}),
+          });
+        }}
       />
       <NumberField
         label="Width"
@@ -116,22 +129,69 @@ export function TilingFields({
 export function AnimatedSpriteFields({
   visual,
   commit,
+  editor,
 }: {
   visual: Extract<VisualComponentData, { type: "AnimatedSprite" }>;
   commit: VisualCommit;
+  editor: Editor;
 }) {
+  const asset = visual.assetId ? editor.assets.get(visual.assetId) : undefined;
+  const asepriteTags =
+    asset?.metadata.kind === "aseprite"
+      ? uniqueSelectOptions(asset.metadata.tags.map((tag) => tag.name))
+      : [];
+  const isAseprite = asset?.metadata.kind === "aseprite";
+
   return (
     <>
-      <StringField
-        label="Frames (comma-separated asset IDs)"
-        value={visual.frames.join(", ")}
-        onCommit={(raw) => {
-          const frames = raw
-            .split(",")
-            .map((s) => s.trim())
-            .filter((s) => s.length > 0);
-          commit({ frames });
+      <AssetSelectField
+        label="Aseprite Asset"
+        kind="aseprite"
+        value={visual.assetId}
+        onCommit={(assetId) => {
+          const next = assetId ? editor.assets.get(assetId) : undefined;
+          const animation =
+            next?.metadata.kind === "aseprite"
+              ? next.metadata.tags[0]?.name
+              : undefined;
+          const size = next ? rasterAssetDisplaySize(next) : undefined;
+          commit({
+            assetId,
+            animation,
+            frames: [],
+            ...(size ?? {}),
+          });
         }}
+      />
+      {isAseprite ? (
+        <OptionalSelectField
+          label="Animation"
+          value={visual.animation}
+          options={asepriteTags}
+          onCommit={(animation) => commit({ animation })}
+        />
+      ) : (
+        <StringField
+          label="Frames (comma-separated asset IDs)"
+          value={visual.frames.join(", ")}
+          onCommit={(raw) => {
+            const frames = raw
+              .split(",")
+              .map((s) => s.trim())
+              .filter((s) => s.length > 0);
+            commit({ frames });
+          }}
+        />
+      )}
+      <NumberField
+        label="Width"
+        value={visual.width ?? DEFAULT_SPRITE_SIZE}
+        onCommit={(width) => commit({ width })}
+      />
+      <NumberField
+        label="Height"
+        value={visual.height ?? DEFAULT_SPRITE_SIZE}
+        onCommit={(height) => commit({ height })}
       />
       <NumberField
         label="Animation Speed"

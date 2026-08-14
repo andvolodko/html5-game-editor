@@ -97,12 +97,31 @@
             "fontSize": 32,
             "fontWeight": "normal",
             "fontStyle": "normal",
+            "fontVariant": "normal",
             "fill": 16777215,
+            "fillAlpha": 1,
             "align": "left",
             "letterSpacing": 0,
             "lineHeight": 0,
+            "leading": 0,
             "wordWrap": false,
-            "wordWrapWidth": 440
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
           }
         },
         {
@@ -119,6 +138,79 @@
           "scriptId": "shared.AudioClick",
           "properties": {
             "audioAssetId": "asset_011b4367-80e0-4f48-b16e-8e92467567e3",
+            "mouseEvent": "pointertap"
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_bf5d0809-8c0a-4266-a4d1-7f117c9c4506",
+      "name": "Text Copy",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_ead7a0c4-8150-4784-9678-f59496ddda15",
+          "position": {
+            "x": 656,
+            "y": 376
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_79aad730-05db-4f36-a302-0e933933717e",
+          "text": "Go to Test scene",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 32,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 16777215,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_84e377ec-11f6-458d-9778-9224b4c08afe",
+          "scriptId": "editor-features-demo.GoSpineButton",
+          "properties": {
+            "sceneName": "perfomance-test"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_d4570b09-b0e7-409f-b9ae-83b81192d13e",
+          "scriptId": "shared.AudioClick",
+          "properties": {
+            "audioAssetId": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
             "mouseEvent": "pointertap"
           }
         }

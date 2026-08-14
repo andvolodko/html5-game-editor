@@ -2,13 +2,63 @@
   "version": 1,
   "assets": [
     {
-      "id": "asset_011b4367-80e0-4f48-b16e-8e92467567e3",
-      "type": "audio",
-      "name": "ui_button_simple_click_07",
-      "path": "assets/audio/ui_button_simple_click_07.wav",
+      "id": "asset_000722ea-c858-4fd1-b885-1cfd549388d4",
+      "type": "texture",
+      "name": "Heal",
+      "path": "assets/aseprite/Units/Blue Units/Monk/Heal.png",
       "metadata": {
-        "kind": "audio",
-        "mimeType": "audio/wav"
+        "kind": "texture",
+        "width": 2112,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_023a3766-bdcd-4a2e-a1cc-8406ac86de34",
+      "type": "texture",
+      "name": "Rubber duck",
+      "path": "assets/aseprite/Terrain/Decorations/Rubber Duck/Rubber duck.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 96,
+        "height": 32,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0291a97c-a8c3-4fc8-9a48-968938bd5df0",
+      "type": "texture",
+      "name": "Explosion_01",
+      "path": "assets/aseprite/particles/Explosion_01.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_02a18283-0317-479c-8546-603123380ce0",
+      "type": "texture",
+      "name": "Sheep_Move",
+      "path": "assets/aseprite/Terrain/Resources/Meat/Sheep/Sheep_Move.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 512,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0368e1a3-3b16-48f1-8696-1ef910b6c7c6",
+      "type": "texture",
+      "name": "Avatars_25",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_25.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
       }
     },
     {
@@ -36,6 +86,1530 @@
       }
     },
     {
+      "id": "asset_0486a81d-ef12-412b-8f43-c0109534b94c",
+      "type": "texture",
+      "name": "Idle",
+      "path": "assets/aseprite/Units/Yellow Units/Monk/Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_04c8a6c7-2de9-4921-a465-01d9f38dd573",
+      "type": "texture",
+      "name": "Pawn_Run Meat",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Run Meat.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_04f55f6d-8d4b-429a-bd9d-1579b8cdf1d3",
+      "type": "texture",
+      "name": "Lancer_Up_Defence",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_Up_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_054522e0-96e5-4d54-806d-08c7888bf0a6",
+      "type": "texture",
+      "name": "Pawn_Idle Pickaxe",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Idle Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_055fe1c9-b28c-4d34-9ad9-63447b83381c",
+      "type": "texture",
+      "name": "Lancer_Idle",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 3840,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_069aa582-1d39-4543-9c9c-2dc5e7526738",
+      "type": "texture",
+      "name": "Lancer_Right_Attack",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_Right_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0736c496-dcee-4ba0-b52e-a6538efd867d",
+      "type": "texture",
+      "name": "Stump 4",
+      "path": "assets/aseprite/Terrain/Resources/Wood/Trees/Stump 4.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_075dd02e-aa5f-4f23-8aed-4d666f117061",
+      "type": "texture",
+      "name": "Pawn_Run Pickaxe",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Run Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_07913339-2e93-4c5d-a1c1-e3be657b537d",
+      "type": "texture",
+      "name": "Heal_Effect",
+      "path": "assets/aseprite/Units/Black Units/Monk/Heal_Effect.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 2112,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_07a73305-2cfb-471e-8ca2-d47edaa0c487",
+      "type": "texture",
+      "name": "Pawn_Interact Knife",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Interact Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_088f6444-9f04-4845-896e-da13c8803c70",
+      "type": "texture",
+      "name": "Monastery",
+      "path": "assets/aseprite/Buildings/Blue Buildings/Monastery.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_08a85ef1-b3b4-41a6-a0ed-f8141410a747",
+      "type": "texture",
+      "name": "Avatars_20",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_20.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_08c9e4c2-8028-4f9f-a5bd-1a4061f5d4bc",
+      "type": "texture",
+      "name": "Warrior_Attack2",
+      "path": "assets/aseprite/Units/Yellow Units/Warrior/Warrior_Attack2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_08ff37cd-29ab-4511-9004-4c65d6a3069e",
+      "type": "texture",
+      "name": "Clouds_08",
+      "path": "assets/aseprite/Terrain/Decorations/Clouds/Clouds_08.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_090adc17-fa5d-4598-8751-dcc27ba63475",
+      "type": "texture",
+      "name": "Gold_Resource",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Resource/Gold_Resource.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0911fdc7-5582-468f-ad99-56f960c94a34",
+      "type": "texture",
+      "name": "Pawn_Idle Knife",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Idle Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0963a23d-8454-4bdc-873f-1077e7d941f6",
+      "type": "texture",
+      "name": "Warrior_Idle",
+      "path": "assets/aseprite/Units/Black Units/Warrior/Warrior_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_09e93d4b-3253-40cb-a34b-f54f35fd934d",
+      "type": "texture",
+      "name": "BigRedButton_Regular",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/BigRedButton_Regular.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0ab20e7b-f278-4076-be4d-848409c04b12",
+      "type": "texture",
+      "name": "Tree3",
+      "path": "assets/aseprite/Terrain/Resources/Wood/Trees/Tree3.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0ae20c17-4c69-43b0-88c2-eb9ea0b6c92f",
+      "type": "texture",
+      "name": "Tree2",
+      "path": "assets/aseprite/Terrain/Resources/Wood/Trees/Tree2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0be3deb0-09b0-45a3-b6c3-8675a583fcee",
+      "type": "texture",
+      "name": "Monastery",
+      "path": "assets/aseprite/Buildings/Purple Buildings/Monastery.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0c5ae6ec-fb49-4aab-9092-bd5b7602cc99",
+      "type": "texture",
+      "name": "Pawn_Run Knife",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Run Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0d33ab01-eea5-4af5-8174-59769dde392b",
+      "type": "texture",
+      "name": "Warrior_Attack1",
+      "path": "assets/aseprite/Units/Purple Units/Warrior/Warrior_Attack1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0dbcca76-a194-4668-88f9-4ef14708f14d",
+      "type": "texture",
+      "name": "Pawn_Run Pickaxe",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Run Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0e4d708c-561f-457a-aa46-5a2668ece0bf",
+      "type": "texture",
+      "name": "Arrow",
+      "path": "assets/aseprite/Units/Black Units/Archer/Arrow.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0f2d63c4-06f7-4598-879f-781149b593a6",
+      "type": "texture",
+      "name": "BigRedButton_Pressed",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/BigRedButton_Pressed.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_10302d3d-31de-4abe-821d-e3657b332f74",
+      "type": "texture",
+      "name": "SmallRedRoundButton_Regular",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/SmallRedRoundButton_Regular.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1180337f-7b80-4e4a-acc1-60bb275e85d4",
+      "type": "texture",
+      "name": "Heal",
+      "path": "assets/aseprite/Units/Black Units/Monk/Heal.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 2112,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_122f0cd0-f896-4b2e-82f3-30d38c64281f",
+      "type": "texture",
+      "name": "Pawn_Idle Meat",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Idle Meat.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_127202b3-7cb5-4b04-8a32-3411d0b9c037",
+      "type": "texture",
+      "name": "Pawn_Idle Knife",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Idle Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_12ef31b9-0886-4e4e-ab80-a8fd9454bfa6",
+      "type": "texture",
+      "name": "Arrow",
+      "path": "assets/aseprite/Units/Blue Units/Archer/Arrow.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_12f15527-d774-4308-83a6-876007c62d51",
+      "type": "texture",
+      "name": "Bushe4",
+      "path": "assets/aseprite/Terrain/Decorations/Bushes/Bushe4.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1024,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1397c930-7e5d-4eb1-9f59-bac1bd64c26a",
+      "type": "aseprite",
+      "name": "Trees",
+      "path": "assets/aseprite/Terrain/Resources/Wood/Trees/Trees.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 192,
+        "height": 256,
+        "frameCount": 36,
+        "tags": [
+          {
+            "name": "Tree 1",
+            "from": 0,
+            "to": 7,
+            "direction": "forward"
+          },
+          {
+            "name": "Stump 1",
+            "from": 8,
+            "to": 8,
+            "direction": "forward"
+          },
+          {
+            "name": "Tree 2",
+            "from": 9,
+            "to": 16,
+            "direction": "forward"
+          },
+          {
+            "name": "Stump 2",
+            "from": 17,
+            "to": 17,
+            "direction": "forward"
+          },
+          {
+            "name": "Tree 3",
+            "from": 18,
+            "to": 25,
+            "direction": "forward"
+          },
+          {
+            "name": "Stump 3",
+            "from": 26,
+            "to": 26,
+            "direction": "forward"
+          },
+          {
+            "name": "Tree 4",
+            "from": 27,
+            "to": 34,
+            "direction": "forward"
+          },
+          {
+            "name": "Stump 4",
+            "from": 35,
+            "to": 35,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Resources/Wood/Trees/Trees.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Resources/Wood/Trees/Trees.json",
+        "compileRevision": "1765676783000-82301"
+      }
+    },
+    {
+      "id": "asset_13a467de-91b7-449c-8c20-36d9d382d9aa",
+      "type": "texture",
+      "name": "Barracks",
+      "path": "assets/aseprite/Buildings/Black Buildings/Barracks.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_14016e65-5401-44c6-aecc-360349760e8d",
+      "type": "texture",
+      "name": "Tower",
+      "path": "assets/aseprite/Buildings/Red Buildings/Tower.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1472e453-15a4-4040-8642-fa8022b5c515",
+      "type": "texture",
+      "name": "Pawn_Interact Pickaxe",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Interact Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_14eb7409-9720-41de-89b3-8fccc553f675",
+      "type": "texture",
+      "name": "Avatars_18",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_18.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_151264a8-6a52-4ec4-8f28-0361fd47a20d",
+      "type": "texture",
+      "name": "Archer_Idle",
+      "path": "assets/aseprite/Units/Yellow Units/Archer/Archer_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_158a1952-70a4-4750-a820-f8b7a3967653",
+      "type": "texture",
+      "name": "Lancer_Right_Attack",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_Right_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_158b200f-29e6-46d1-9375-a2f47b656d32",
+      "type": "texture",
+      "name": "Pawn_Interact Hammer",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Interact Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_17be1d61-382d-46d1-8dbf-5a08d2c33a48",
+      "type": "texture",
+      "name": "Archer_Shoot",
+      "path": "assets/aseprite/Units/Purple Units/Archer/Archer_Shoot.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_185afea5-44bb-4696-b70b-7daadfe083b9",
+      "type": "texture",
+      "name": "Lancer_DownRight_Defence",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_DownRight_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_195495fe-5e4d-4aa7-a856-e06080d0b809",
+      "type": "texture",
+      "name": "Lancer_Right_Defence",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_Right_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_195566dc-7006-4c96-958c-1d9e271c8e40",
+      "type": "texture",
+      "name": "Monastery",
+      "path": "assets/aseprite/Buildings/Black Buildings/Monastery.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_19cb5df0-8697-4b21-a026-25c850563d20",
+      "type": "texture",
+      "name": "Warrior_Guard",
+      "path": "assets/aseprite/Units/Black Units/Warrior/Warrior_Guard.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1a2df660-8caf-45b3-adc2-d0c8fe1db229",
+      "type": "texture",
+      "name": "Arrow",
+      "path": "assets/aseprite/Units/Purple Units/Archer/Arrow.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1aa1937c-8db4-4cdd-b17c-1b8aa81d53b0",
+      "type": "texture",
+      "name": "Lancer_Up_Attack",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_Up_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1b35f31a-dfa5-4904-b71b-a679ef37602e",
+      "type": "texture",
+      "name": "Lancer_Up_Attack",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_Up_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1b46d2a3-8a0f-4dac-a5dd-1267cb17c053",
+      "type": "texture",
+      "name": "Pawn_Run Wood",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Run Wood.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1beb16c5-3740-41b0-863c-b1273e09196b",
+      "type": "aseprite",
+      "name": "Bushes",
+      "path": "assets/aseprite/Terrain/Decorations/Bushes/Bushes.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 128,
+        "height": 128,
+        "frameCount": 32,
+        "tags": [
+          {
+            "name": "Bush 1",
+            "from": 0,
+            "to": 7,
+            "direction": "forward"
+          },
+          {
+            "name": "Bush 2",
+            "from": 8,
+            "to": 15,
+            "direction": "forward"
+          },
+          {
+            "name": "Bush 3",
+            "from": 16,
+            "to": 23,
+            "direction": "forward"
+          },
+          {
+            "name": "Bush 4",
+            "from": 24,
+            "to": 31,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Decorations/Bushes/Bushes.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Decorations/Bushes/Bushes.json",
+        "compileRevision": "1749694162000-29993"
+      }
+    },
+    {
+      "id": "asset_1c53fda3-a38c-4c39-80ae-c3a00fc72f10",
+      "type": "texture",
+      "name": "House2",
+      "path": "assets/aseprite/Buildings/Blue Buildings/House2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1c8b8016-1b6f-41c3-9654-2bbdc219bb07",
+      "type": "aseprite",
+      "name": "Sheep",
+      "path": "assets/aseprite/Terrain/Resources/Meat/Sheep/Sheep.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 128,
+        "height": 128,
+        "frameCount": 22,
+        "tags": [
+          {
+            "name": "Idle",
+            "from": 0,
+            "to": 5,
+            "direction": "forward"
+          },
+          {
+            "name": "Grass",
+            "from": 6,
+            "to": 17,
+            "direction": "forward"
+          },
+          {
+            "name": "Move",
+            "from": 18,
+            "to": 21,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Resources/Meat/Sheep/Sheep.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Resources/Meat/Sheep/Sheep.json",
+        "compileRevision": "1749694252000-17812"
+      }
+    },
+    {
+      "id": "asset_1cf4b818-b837-476c-860d-7b63117df7ba",
+      "type": "texture",
+      "name": "Gold Stone 2",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1d455b9d-b538-4c62-b3f6-48219e78018d",
+      "type": "texture",
+      "name": "Pawn_Idle Hammer",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Idle Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1d9a208f-2fa6-42d5-8a0b-d7e648138436",
+      "type": "texture",
+      "name": "Lancer_Up_Defence",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_Up_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1e50285a-a510-449b-9ad1-40f9dfcbbcfd",
+      "type": "texture",
+      "name": "Idle",
+      "path": "assets/aseprite/Units/Red Units/Monk/Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1f53ae4d-7352-41ca-85ce-1d0a6f120bd4",
+      "type": "texture",
+      "name": "Lancer_Right_Attack",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_Right_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1f8eebbe-65e5-4cfa-b2de-8a938a332602",
+      "type": "texture",
+      "name": "Barracks",
+      "path": "assets/aseprite/Buildings/Red Buildings/Barracks.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1fd9b9fb-8084-4f58-8f35-06da50d5679b",
+      "type": "texture",
+      "name": "Archer_Run",
+      "path": "assets/aseprite/Units/Black Units/Archer/Archer_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_20ff3de8-10a9-4ed2-a7ca-17787adbef2d",
+      "type": "texture",
+      "name": "Clouds_06",
+      "path": "assets/aseprite/Terrain/Decorations/Clouds/Clouds_06.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_225216dc-c0c5-4e42-ab1b-27fa437804c2",
+      "type": "texture",
+      "name": "Avatars_01",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_01.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_238872bb-6642-4c7a-be6c-2d041593e8ae",
+      "type": "texture",
+      "name": "SmallBar_Fill",
+      "path": "assets/aseprite/UI Elements/UI Elements/Bars/SmallBar_Fill.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_23ce74e1-5da4-44d1-a541-55de2fd21fa2",
+      "type": "texture",
+      "name": "Warrior_Attack1",
+      "path": "assets/aseprite/Units/Red Units/Warrior/Warrior_Attack1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2451556f-b3f6-42ee-af74-9b93faf431a1",
+      "type": "texture",
+      "name": "House2",
+      "path": "assets/aseprite/Buildings/Purple Buildings/House2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_25d8172f-04ae-447a-8a2d-63508ba7abfc",
+      "type": "texture",
+      "name": "Sheep_Grass",
+      "path": "assets/aseprite/Terrain/Resources/Meat/Sheep/Sheep_Grass.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_265714ef-0d63-4771-afe8-a0cae2519e9a",
+      "type": "texture",
+      "name": "Pawn_Idle Wood",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Idle Wood.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2776bd05-5baf-456a-89a2-b9c6ebf4a6c0",
+      "type": "texture",
+      "name": "Warrior_Run",
+      "path": "assets/aseprite/Units/Purple Units/Warrior/Warrior_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_27bbc45b-2cec-4678-ab4a-d8a1410f7cf9",
+      "type": "texture",
+      "name": "Avatars_02",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_27cdc935-fd01-4a50-bf2c-1fa3a19aa393",
+      "type": "texture",
+      "name": "Pawn_Idle Hammer",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Idle Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2840623d-bd23-4ba7-85ba-4d883b3f50b0",
+      "type": "texture",
+      "name": "Pawn_Idle Pickaxe",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Idle Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_28f6c763-381b-4558-9e24-ff7a8aee890b",
+      "type": "texture",
+      "name": "Lancer_Run",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_28fdf842-f7c5-4d45-920d-1a1d67d4085d",
+      "type": "texture",
+      "name": "Icon_07",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_07.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_29f033a6-2eae-46fd-ada4-5515050f00f2",
+      "type": "texture",
+      "name": "Pawn_Run Hammer",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Run Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2aa58e0b-ceb2-4645-9f72-619dc43d6704",
+      "type": "texture",
+      "name": "Avatars_22",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_22.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2acd8422-09f8-41bd-826b-bf1667ac7c92",
+      "type": "texture",
+      "name": "Swords",
+      "path": "assets/aseprite/UI Elements/UI Elements/Swords/Swords.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 448,
+        "height": 640,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2aedeebe-295c-42f4-b400-b463e55849a4",
+      "type": "texture",
+      "name": "Lancer_Idle",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 3840,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2b4a0046-3eed-402f-bf60-3c93d8cb1393",
+      "type": "texture",
+      "name": "TinySquareBlueButton",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/TinySquareBlueButton.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2bf48f24-76a9-4f3f-af00-58d5fdf10ab3",
+      "type": "aseprite",
+      "name": "Water Rocks_04",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_04.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 64,
+        "height": 64,
+        "frameCount": 16,
+        "tags": [],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_04.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_04.json",
+        "compileRevision": "1760028769000-20506"
+      }
+    },
+    {
+      "id": "asset_2d081d18-9190-4823-9ca8-88f57f4491b3",
+      "type": "texture",
+      "name": "Icon_08",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_08.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2d5208cd-dbec-4f23-b584-3efdb5ebe3d1",
+      "type": "texture",
+      "name": "Clouds_02",
+      "path": "assets/aseprite/Terrain/Decorations/Clouds/Clouds_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2e024119-8d38-4ddc-9a05-5ed494cdb46f",
+      "type": "texture",
+      "name": "Pawn_Interact Axe",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Interact Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2ebeaaaa-61dc-475a-adc4-e63223f1c1ff",
+      "type": "texture",
+      "name": "Archer_Run",
+      "path": "assets/aseprite/Units/Purple Units/Archer/Archer_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2f261a07-32b1-4c08-a5b1-ea47612cd48b",
+      "type": "texture",
+      "name": "Pawn_Run Knife",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Run Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2f4fbd6f-7227-4e5f-af7f-756d4acb93c4",
+      "type": "texture",
+      "name": "Pawn_Run Meat",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Run Meat.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2fbfb92f-d3a2-4347-8e97-b530765b2c1f",
+      "type": "texture",
+      "name": "Pawn_Run Gold",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Run Gold.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_30defddf-1497-4e40-9e3b-64ac49497848",
+      "type": "texture",
+      "name": "Pawn_Run Axe",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Run Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_30f2f8a6-3f00-4000-8744-e8416ec64058",
+      "type": "texture",
+      "name": "Avatars_24",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_24.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_3119ff80-537b-47a4-b32b-4ff940bfaf51",
+      "type": "texture",
+      "name": "Archer_Run",
+      "path": "assets/aseprite/Units/Yellow Units/Archer/Archer_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+      "type": "aseprite",
+      "name": "Water Foam",
+      "path": "assets/aseprite/Terrain/Tileset/Water Foam.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 192,
+        "height": 192,
+        "frameCount": 16,
+        "tags": [
+          {
+            "name": "New version",
+            "from": 0,
+            "to": 15,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Tileset/Water Foam.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Tileset/Water Foam.json",
+        "compileRevision": "1760049507000-175276"
+      }
+    },
+    {
+      "id": "asset_31e11aed-e76f-402c-9e8c-ee984c4e3ff7",
+      "type": "texture",
+      "name": "Pawn_Idle Hammer",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Idle Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_32ecbbf6-ed02-407b-8d1d-4b26827f3d53",
+      "type": "texture",
+      "name": "Gold Stone 2_Highlight",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 2_Highlight.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_32fe2cff-60d1-418e-87e9-4c7fc444917c",
+      "type": "texture",
+      "name": "Pawn_Idle",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_344e2e7d-569c-4812-baa5-a68ff388e00a",
+      "type": "texture",
+      "name": "Lancer_UpRight_Attack",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_UpRight_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_34ee3445-a16f-4e78-a288-c5b3a768fb1a",
+      "type": "texture",
+      "name": "Warrior_Run",
+      "path": "assets/aseprite/Units/Yellow Units/Warrior/Warrior_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_3557632d-e6f3-458d-bd11-9f33b52224c7",
+      "type": "texture",
+      "name": "Archery",
+      "path": "assets/aseprite/Buildings/Blue Buildings/Archery.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_35a066eb-55c4-4870-b44c-f0e443933806",
+      "type": "texture",
+      "name": "Water Rocks_01",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_01.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1024,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_382e1182-30e5-49d1-89cd-3cc36dce3efd",
+      "type": "texture",
+      "name": "Pawn_Interact Pickaxe",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Interact Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_38654530-ee70-46ea-acdf-a2aa70f97ab0",
+      "type": "texture",
+      "name": "Lancer_DownRight_Attack",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_DownRight_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_38d7ef45-b9de-4bf0-bf85-11e54ea2fa65",
+      "type": "texture",
+      "name": "House1",
+      "path": "assets/aseprite/Buildings/Purple Buildings/House1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_39e00d75-03dc-43cb-874c-0923699b5566",
+      "type": "texture",
+      "name": "Lancer_Down_Attack",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_Down_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_39e8a1fb-1e45-4eeb-95cf-2af63c71d974",
+      "type": "texture",
+      "name": "Avatars_09",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_09.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_3a212541-87ac-4e58-b2e1-7141fe38f89b",
+      "type": "texture",
+      "name": "Pawn_Idle Meat",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Idle Meat.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_3a7aac78-12ad-44aa-aedc-df0e5788bbff",
+      "type": "texture",
+      "name": "Castle",
+      "path": "assets/aseprite/Buildings/Blue Buildings/Castle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_3ab0900e-63cf-4f4e-8682-02d6511058c2",
+      "type": "texture",
+      "name": "Rock3",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks/Rock3.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_3b120351-ecf1-401d-b2e3-b1f063586dc7",
+      "type": "texture",
+      "name": "Avatars_13",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_13.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_3c537abf-1e59-4ebb-b70d-88f8b3454027",
+      "type": "texture",
+      "name": "Run",
+      "path": "assets/aseprite/Units/Purple Units/Monk/Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
       "id": "asset_3c85e8f0-0538-4af6-b7d1-33e1a070d3bb",
       "type": "gltf",
       "name": "Monster01",
@@ -56,6 +1630,66 @@
       }
     },
     {
+      "id": "asset_3ca17fca-4b6a-4bce-bfa1-11fefcaef4d1",
+      "type": "texture",
+      "name": "Lancer_Run",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_3de4459d-089a-40ab-85d5-22a08c5561a3",
+      "type": "texture",
+      "name": "Lancer_Up_Defence",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_Up_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_3fae60d8-afc5-4a4b-b7ac-712a89f53b2a",
+      "type": "texture",
+      "name": "SpecialPaper",
+      "path": "assets/aseprite/UI Elements/UI Elements/Papers/SpecialPaper.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_3fc661e3-bbd3-4b29-b01b-f6e86b58328c",
+      "type": "texture",
+      "name": "Tower",
+      "path": "assets/aseprite/Buildings/Purple Buildings/Tower.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_4039d628-61ac-4dc0-ad6d-26c639b6e0b5",
+      "type": "texture",
+      "name": "Archery",
+      "path": "assets/aseprite/Buildings/Purple Buildings/Archery.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
       "id": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
       "type": "texture",
       "name": "2222",
@@ -68,6 +1702,2162 @@
       }
     },
     {
+      "id": "asset_40aae961-ccbf-4b2b-8215-dae2741a796f",
+      "type": "texture",
+      "name": "Water Background color",
+      "path": "assets/aseprite/Terrain/Tileset/Water Background color.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_410b7169-4491-4cb5-894d-938586a657b4",
+      "type": "texture",
+      "name": "Pawn_Idle Pickaxe",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Idle Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_47db1bc6-8a3a-46f8-8ebd-926345cecc3a",
+      "type": "texture",
+      "name": "Lancer_DownRight_Defence",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_DownRight_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_482554f5-4cf9-49ba-9459-e2497bc3cc7b",
+      "type": "texture",
+      "name": "House1",
+      "path": "assets/aseprite/Buildings/Yellow Buildings/House1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_484c4460-f098-4780-8d8e-47e506ab2885",
+      "type": "texture",
+      "name": "Water Rocks_02",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1024,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_48648b3d-db61-41ec-b0c3-a12b61135042",
+      "type": "texture",
+      "name": "Pawn_Interact Pickaxe",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Interact Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_48e103de-e7ff-4332-adee-3f914a4f5c33",
+      "type": "texture",
+      "name": "Pawn_Run Meat",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Run Meat.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_4934b305-a6f9-40b1-8e68-3cd93e4a3867",
+      "type": "texture",
+      "name": "Warrior_Idle",
+      "path": "assets/aseprite/Units/Yellow Units/Warrior/Warrior_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_49acb8cb-ec01-4c98-89d0-c5edcc9519fc",
+      "type": "texture",
+      "name": "Ribbon_Red",
+      "path": "assets/aseprite/UI Elements/UI Banners from the store page/Ribbons/Ribbon_Red.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 576,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_4b65e730-757f-4e60-8fd6-d5654086f586",
+      "type": "texture",
+      "name": "SmallRibbons",
+      "path": "assets/aseprite/UI Elements/UI Elements/Ribbons/SmallRibbons.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 640,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_4b9e8864-faf5-41b7-aeee-8ae7ee968111",
+      "type": "aseprite",
+      "name": "Archer",
+      "path": "assets/aseprite/Units/Units (aseprite in Blue only)/Archer.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 192,
+        "height": 192,
+        "frameCount": 19,
+        "tags": [
+          {
+            "name": "Idle",
+            "from": 0,
+            "to": 5,
+            "direction": "forward"
+          },
+          {
+            "name": "Run ",
+            "from": 6,
+            "to": 9,
+            "direction": "forward"
+          },
+          {
+            "name": "Shoot",
+            "from": 10,
+            "to": 17,
+            "direction": "forward"
+          },
+          {
+            "name": "Arrow",
+            "from": 18,
+            "to": 18,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Archer.png",
+        "dataPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Archer.json",
+        "compileRevision": "1749689347000-30224"
+      }
+    },
+    {
+      "id": "asset_4bce636a-bd2c-402f-9a22-6fa1c630e6a6",
+      "type": "texture",
+      "name": "BigBar_Base",
+      "path": "assets/aseprite/UI Elements/UI Elements/Bars/BigBar_Base.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_4c155191-ba9d-421b-a7c4-5c525a665ca0",
+      "type": "texture",
+      "name": "Pawn_Idle Axe",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Idle Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_4c393275-d66d-438e-9a90-1d118b2951e5",
+      "type": "texture",
+      "name": "Idle",
+      "path": "assets/aseprite/Units/Blue Units/Monk/Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_4c83544c-119b-480a-b5e2-bc19f04c6c7e",
+      "type": "texture",
+      "name": "House3",
+      "path": "assets/aseprite/Buildings/Blue Buildings/House3.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_4cc0478a-85b2-463c-b9ab-0c86fb647858",
+      "type": "aseprite",
+      "name": "Rubber Duck",
+      "path": "assets/aseprite/Terrain/Decorations/Rubber Duck/Rubber Duck.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 32,
+        "height": 32,
+        "frameCount": 3,
+        "tags": [],
+        "frameDurations": [
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Decorations/Rubber Duck/Rubber Duck.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Decorations/Rubber Duck/Rubber Duck.json",
+        "compileRevision": "1765242750000-1231"
+      }
+    },
+    {
+      "id": "asset_4cc78f21-5f27-466b-a406-a4082f01a8ef",
+      "type": "aseprite",
+      "name": "Lancer",
+      "path": "assets/aseprite/Units/Units (aseprite in Blue only)/Lancer.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 320,
+        "height": 320,
+        "frameCount": 63,
+        "tags": [
+          {
+            "name": "Idle",
+            "from": 0,
+            "to": 11,
+            "direction": "forward"
+          },
+          {
+            "name": "Run",
+            "from": 12,
+            "to": 17,
+            "direction": "forward"
+          },
+          {
+            "name": "Up",
+            "from": 18,
+            "to": 26,
+            "direction": "forward"
+          },
+          {
+            "name": "Defense",
+            "from": 18,
+            "to": 23,
+            "direction": "forward"
+          },
+          {
+            "name": "Attack",
+            "from": 24,
+            "to": 26,
+            "direction": "forward"
+          },
+          {
+            "name": "Up Right",
+            "from": 27,
+            "to": 35,
+            "direction": "forward"
+          },
+          {
+            "name": "Right",
+            "from": 36,
+            "to": 44,
+            "direction": "forward"
+          },
+          {
+            "name": "Down Right",
+            "from": 45,
+            "to": 53,
+            "direction": "forward"
+          },
+          {
+            "name": "Down",
+            "from": 54,
+            "to": 62,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Lancer.png",
+        "dataPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Lancer.json",
+        "compileRevision": "1749688596000-94182"
+      }
+    },
+    {
+      "id": "asset_4d168edf-9e04-4373-91c5-a1b799002f81",
+      "type": "texture",
+      "name": "Water Rocks_03",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_03.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1024,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_4d48a694-e89a-4881-b044-9e2820aba3f2",
+      "type": "texture",
+      "name": "Tilemap_color2",
+      "path": "assets/aseprite/Terrain/Tileset/Tilemap_color2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 384,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_4df73cb3-d77a-4fc1-863d-913bf29bdd71",
+      "type": "texture",
+      "name": "Pawn_Run Gold",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Run Gold.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_4e60b3aa-513f-4359-a2ca-6172eb8a0755",
+      "type": "texture",
+      "name": "Pawn_Run Pickaxe",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Run Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_50897a5b-5607-4ab1-826b-99538dbb7853",
+      "type": "texture",
+      "name": "Arrow",
+      "path": "assets/aseprite/Units/Red Units/Archer/Arrow.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5100a820-4555-4aba-b1db-d9223760146b",
+      "type": "texture",
+      "name": "Pawn_Interact Axe",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Interact Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_51a065e0-9d46-4e6d-ad84-e76521fee501",
+      "type": "texture",
+      "name": "Lancer_DownRight_Attack",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_DownRight_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_522574fd-9223-4b43-b354-4a739f5f3dfa",
+      "type": "texture",
+      "name": "Pawn_Run Wood",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Run Wood.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_53088808-8970-46e8-a1ac-411535e06d4e",
+      "type": "aseprite",
+      "name": "Water Rocks_02",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_02.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 64,
+        "height": 64,
+        "frameCount": 16,
+        "tags": [],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_02.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_02.json",
+        "compileRevision": "1760028715000-20506"
+      }
+    },
+    {
+      "id": "asset_53397ac0-d337-458d-a634-f6614db6d0cf",
+      "type": "texture",
+      "name": "Tool_01",
+      "path": "assets/aseprite/Terrain/Resources/Tools/Tool_01.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_53974c09-a0ea-446f-a7f7-a9cfcdf645b3",
+      "type": "texture",
+      "name": "Ribbon_Blue",
+      "path": "assets/aseprite/UI Elements/UI Banners from the store page/Ribbons/Ribbon_Blue.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 576,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5421778a-8f04-448e-9e79-ad02c87a32c8",
+      "type": "texture",
+      "name": "Stump 2",
+      "path": "assets/aseprite/Terrain/Resources/Wood/Trees/Stump 2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_544ef966-497f-45ed-a86e-5bdb3a5c9d8e",
+      "type": "aseprite",
+      "name": "Warrior",
+      "path": "assets/aseprite/Units/Units (aseprite in Blue only)/Warrior.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 192,
+        "height": 192,
+        "frameCount": 28,
+        "tags": [
+          {
+            "name": "Idle",
+            "from": 0,
+            "to": 7,
+            "direction": "forward"
+          },
+          {
+            "name": "Run",
+            "from": 8,
+            "to": 13,
+            "direction": "forward"
+          },
+          {
+            "name": "Attack 1",
+            "from": 14,
+            "to": 17,
+            "direction": "forward"
+          },
+          {
+            "name": "Attack 2",
+            "from": 18,
+            "to": 21,
+            "direction": "forward"
+          },
+          {
+            "name": "Guard",
+            "from": 22,
+            "to": 27,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Warrior.png",
+        "dataPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Warrior.json",
+        "compileRevision": "1749689138000-52776"
+      }
+    },
+    {
+      "id": "asset_54799409-f9c4-4744-aadc-1f0b54b12d2f",
+      "type": "texture",
+      "name": "Warrior_Attack2",
+      "path": "assets/aseprite/Units/Red Units/Warrior/Warrior_Attack2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5530ea5f-c790-441e-8280-27c98e30a900",
+      "type": "texture",
+      "name": "Avatars_19",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_19.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_55a95bbd-c64b-4e53-819e-9533b2426dfa",
+      "type": "texture",
+      "name": "Heal_Effect",
+      "path": "assets/aseprite/Units/Yellow Units/Monk/Heal_Effect.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 2112,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_55ab4d4a-5f85-4b5e-bc26-b16115b88699",
+      "type": "texture",
+      "name": "Pawn_Idle Gold",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Idle Gold.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_56223c99-9195-4c0d-959d-274cf5b38509",
+      "type": "texture",
+      "name": "Castle",
+      "path": "assets/aseprite/Buildings/Red Buildings/Castle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5630e291-e446-45d1-86ad-c3ec4d2e25aa",
+      "type": "texture",
+      "name": "Pawn_Run Pickaxe",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Run Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5720dc0b-a41f-480b-acf2-56c03534fdfd",
+      "type": "texture",
+      "name": "Pawn_Run Meat",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Run Meat.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_58e94070-9d73-46e1-927b-3e520056ddbb",
+      "type": "texture",
+      "name": "Lancer_DownRight_Defence",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_DownRight_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5a42d2f2-5567-4532-8ad3-65a231a96da4",
+      "type": "texture",
+      "name": "Icon_10",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_10.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5c8921ce-1131-4c44-ad50-d1956d430a9d",
+      "type": "texture",
+      "name": "Heal_Effect",
+      "path": "assets/aseprite/Units/Red Units/Monk/Heal_Effect.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 2112,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5ef8d714-6b25-4b11-94fa-629ee636c817",
+      "type": "texture",
+      "name": "Clouds_05",
+      "path": "assets/aseprite/Terrain/Decorations/Clouds/Clouds_05.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_60444772-21fc-4be8-970d-fc820cf810b2",
+      "type": "texture",
+      "name": "Icon_06",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_06.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_60cc4119-76c3-4166-9848-e256d57bca6b",
+      "type": "texture",
+      "name": "Pawn_Idle Pickaxe",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Idle Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_611594dd-a547-4ad7-a0b2-139139443630",
+      "type": "texture",
+      "name": "WoodTable_Slots",
+      "path": "assets/aseprite/UI Elements/UI Elements/Wood Table/WoodTable_Slots.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_61564514-9b76-4657-a0d9-77a305a5dd59",
+      "type": "texture",
+      "name": "Tree4",
+      "path": "assets/aseprite/Terrain/Resources/Wood/Trees/Tree4.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_61df4f3f-db19-4afe-b843-545a12c62165",
+      "type": "texture",
+      "name": "Pawn_Idle Gold",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Idle Gold.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_61f9b6ed-22a2-424f-a242-7c66193f9fe8",
+      "type": "texture",
+      "name": "Fire_01",
+      "path": "assets/aseprite/particles/Fire_01.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 512,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_633bd34a-0297-4b08-80ab-ef2d1f711538",
+      "type": "texture",
+      "name": "Pawn_Interact Hammer",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Interact Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6352b320-dd9f-4612-9084-12c9409cac64",
+      "type": "texture",
+      "name": "Warrior_Guard",
+      "path": "assets/aseprite/Units/Blue Units/Warrior/Warrior_Guard.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_64309dda-42b7-40cb-ac01-c2603a3f8386",
+      "type": "texture",
+      "name": "Lancer_Up_Attack",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_Up_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6440ba87-ba41-4f4e-8688-78019c76cccc",
+      "type": "texture",
+      "name": "Water Rocks_04",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_04.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1024,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_64d649b4-70d6-4a20-8e36-e9dd31c81f54",
+      "type": "texture",
+      "name": "Lancer_UpRight_Defence",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_UpRight_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_65444877-e13f-408f-87d6-2d1ad9ddea33",
+      "type": "texture",
+      "name": "Clouds_04",
+      "path": "assets/aseprite/Terrain/Decorations/Clouds/Clouds_04.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_676c9f24-8ae7-4b04-a629-e221c3e8a4a2",
+      "type": "texture",
+      "name": "Tilemap_color5",
+      "path": "assets/aseprite/Terrain/Tileset/Tilemap_color5.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 384,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_67b6f16e-9c60-4cdb-8053-a9cdf5f8ea9a",
+      "type": "texture",
+      "name": "Lancer_Down_Defence",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_Down_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_685a786e-4b9f-4717-aa9e-9aa0d282fced",
+      "type": "texture",
+      "name": "SmallBlueSquareButton_Pressed",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/SmallBlueSquareButton_Pressed.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_68b9eddf-fd16-480f-8e49-2556f51db742",
+      "type": "texture",
+      "name": "Pawn_Idle Wood",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Idle Wood.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6a85f542-6098-4649-b734-51199e787536",
+      "type": "texture",
+      "name": "Avatars_05",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_05.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6a94ef8c-e973-4d3e-b135-046265c0efbf",
+      "type": "texture",
+      "name": "Pawn_Interact Hammer",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Interact Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6c63697d-cadd-496e-8220-15af819de71e",
+      "type": "texture",
+      "name": "Icon_04",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_04.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6c67eca8-08e1-4864-a9db-7f919406e006",
+      "type": "texture",
+      "name": "Banner",
+      "path": "assets/aseprite/UI Elements/UI Banners from the store page/Banner/Banner.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 704,
+        "height": 512,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6d222cf9-3da4-4f66-b6f1-fa848071e4b8",
+      "type": "texture",
+      "name": "Lancer_UpRight_Defence",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_UpRight_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6d645ea5-8cb1-48f9-9d3d-65150453cee1",
+      "type": "texture",
+      "name": "Lancer_Down_Defence",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_Down_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6e0c977b-14c7-4995-b110-14d7e9adb918",
+      "type": "texture",
+      "name": "Pawn_Idle Knife",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Idle Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6f9ab998-944e-45a3-9dc3-d4b42c578ba7",
+      "type": "texture",
+      "name": "Ribbon_Yellow",
+      "path": "assets/aseprite/UI Elements/UI Banners from the store page/Ribbons/Ribbon_Yellow.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 576,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6fd3340a-ffbe-4acf-b164-5dce5e164d09",
+      "type": "texture",
+      "name": "Pawn_Interact Pickaxe",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Interact Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6ff8a842-0f8f-42a2-bf3a-99bcee151f40",
+      "type": "texture",
+      "name": "Pawn_Idle",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_70c6f91c-8dc6-46d8-bd85-4933648028ca",
+      "type": "texture",
+      "name": "Pawn_Idle Axe",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Idle Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_70e0c65d-3a0c-46dc-a0f6-b0d6f6765f2d",
+      "type": "texture",
+      "name": "House2",
+      "path": "assets/aseprite/Buildings/Red Buildings/House2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_70f839b5-2895-49c2-9771-a716639921d3",
+      "type": "texture",
+      "name": "Pawn_Idle Hammer",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Idle Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7297d162-76a4-49f1-a54a-f39f638ad6f9",
+      "type": "texture",
+      "name": "Meat Resource",
+      "path": "assets/aseprite/Terrain/Resources/Meat/Meat Resource/Meat Resource.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_731995ca-127e-4ec2-8a01-32cf89c33b25",
+      "type": "texture",
+      "name": "Castle",
+      "path": "assets/aseprite/Buildings/Yellow Buildings/Castle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_731d3dfa-cbf2-401b-b3ae-2a501262b7e9",
+      "type": "texture",
+      "name": "SmallBar_Base",
+      "path": "assets/aseprite/UI Elements/UI Elements/Bars/SmallBar_Base.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_75a6480d-cd71-4391-9970-75958dfd97db",
+      "type": "texture",
+      "name": "Lancer_UpRight_Attack",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_UpRight_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_784ae545-f2ae-4f24-b0d1-daab462f8ea2",
+      "type": "texture",
+      "name": "Pawn_Run Wood",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Run Wood.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_786a908d-d36e-4f34-8f46-b408e70da3b9",
+      "type": "texture",
+      "name": "Avatars_16",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_16.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7975a629-30a8-499d-848a-8f01b892ed21",
+      "type": "texture",
+      "name": "Tower",
+      "path": "assets/aseprite/Buildings/Yellow Buildings/Tower.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7a51add4-6096-42ab-b0d5-82d172a752c1",
+      "type": "texture",
+      "name": "Run",
+      "path": "assets/aseprite/Units/Blue Units/Monk/Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7b183983-b12c-42ae-b2db-3b628a3d7f29",
+      "type": "texture",
+      "name": "Pawn_Run Axe",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Run Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7b8ba623-684f-4c4b-b76d-d5cfe639106d",
+      "type": "texture",
+      "name": "Archer_Idle",
+      "path": "assets/aseprite/Units/Blue Units/Archer/Archer_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7ba5ae11-86fe-4f31-902f-8a5bfd4a145e",
+      "type": "texture",
+      "name": "Tool_04",
+      "path": "assets/aseprite/Terrain/Resources/Tools/Tool_04.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7be71217-1cc2-48bf-b5a2-505e6c998d7a",
+      "type": "texture",
+      "name": "Lancer_Up_Attack",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_Up_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7c04aa00-296f-4c1f-8ddd-5e3d4616185a",
+      "type": "texture",
+      "name": "Gold Stone 5_Highlight",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 5_Highlight.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7caa23ac-a360-4de6-822f-db86a4fec561",
+      "type": "texture",
+      "name": "Archer_Idle",
+      "path": "assets/aseprite/Units/Black Units/Archer/Archer_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7e5a5c49-f0b0-4d03-96cb-6b6f59a453cd",
+      "type": "texture",
+      "name": "TinyRoundBlueButton",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/TinyRoundBlueButton.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7f246551-0cff-4c91-a8f6-b6cd8f1d597a",
+      "type": "texture",
+      "name": "Pawn_Idle Hammer",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Idle Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7f65c726-a438-479f-bb10-421300ba1c6e",
+      "type": "texture",
+      "name": "House1",
+      "path": "assets/aseprite/Buildings/Black Buildings/House1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7fbcdb26-fd63-4899-806a-8adf532d1266",
+      "type": "texture",
+      "name": "Lancer_UpRight_Defence",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_UpRight_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7fefb016-d321-481f-972b-fafccb19f293",
+      "type": "texture",
+      "name": "Warrior_Attack2",
+      "path": "assets/aseprite/Units/Black Units/Warrior/Warrior_Attack2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_807ba437-b62d-4291-b887-824325e09c62",
+      "type": "texture",
+      "name": "Lancer_UpRight_Attack",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_UpRight_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_808c0030-ac3d-4c89-97e3-f1d5e097a354",
+      "type": "texture",
+      "name": "Icon_02",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_80f2083e-75b0-4b2e-8a92-54c4598419c9",
+      "type": "texture",
+      "name": "Icon_01",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_01.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_80f250df-b41d-40fe-9dba-b65b19ede1c4",
+      "type": "texture",
+      "name": "Warrior_Attack1",
+      "path": "assets/aseprite/Units/Blue Units/Warrior/Warrior_Attack1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_81122b78-67ff-47cf-8fbe-0fe666ff89a0",
+      "type": "texture",
+      "name": "Icon_03",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_03.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_8150c432-2ea1-45e7-9b8d-465bd013f827",
+      "type": "texture",
+      "name": "Icon_05",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_05.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_825c5f86-9521-432d-91a0-3f2d0bc2bd3a",
+      "type": "texture",
+      "name": "Wood Resource",
+      "path": "assets/aseprite/Terrain/Resources/Wood/Wood Resource/Wood Resource.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_82b9cf68-97ab-4421-a1f7-1a5ca71e0cbb",
+      "type": "texture",
+      "name": "Archer_Shoot",
+      "path": "assets/aseprite/Units/Yellow Units/Archer/Archer_Shoot.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_843af9b2-1969-4152-9d08-f4e55f34ceef",
+      "type": "texture",
+      "name": "Avatars_04",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_04.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_85b8aafa-30e9-4371-88c1-f24c25291747",
+      "type": "texture",
+      "name": "Heal_Effect",
+      "path": "assets/aseprite/Units/Purple Units/Monk/Heal_Effect.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 2112,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_85ed4115-0df3-424b-908b-7392a241ef75",
+      "type": "texture",
+      "name": "Avatars_15",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_15.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_867feef1-3a70-4008-bbb2-cb691157409b",
+      "type": "texture",
+      "name": "Monastery",
+      "path": "assets/aseprite/Buildings/Red Buildings/Monastery.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_86a7b995-58ca-4517-a782-369ac9a4084f",
+      "type": "texture",
+      "name": "Arrow",
+      "path": "assets/aseprite/Units/Yellow Units/Archer/Arrow.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_87044738-495b-43da-8974-d7943c6e4de0",
+      "type": "texture",
+      "name": "Archer_Shoot",
+      "path": "assets/aseprite/Units/Red Units/Archer/Archer_Shoot.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_87b68f7f-4f94-437e-88ff-1fa7bab8c915",
+      "type": "texture",
+      "name": "House3",
+      "path": "assets/aseprite/Buildings/Purple Buildings/House3.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_87e43598-697e-4a2b-91b0-34e10ecf8630",
+      "type": "texture",
+      "name": "Warrior_Guard",
+      "path": "assets/aseprite/Units/Yellow Units/Warrior/Warrior_Guard.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_8aa7d841-6006-42b8-b57c-adee282073f5",
+      "type": "texture",
+      "name": "Bushe2",
+      "path": "assets/aseprite/Terrain/Decorations/Bushes/Bushe2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1024,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_8b0bc0c8-dfc2-4f62-a677-34e724211d7c",
+      "type": "texture",
+      "name": "Pawn_Interact Knife",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Interact Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_8bb365ed-99e9-4fa9-ae34-aa0fecc64914",
+      "type": "aseprite",
+      "name": "Clouds",
+      "path": "assets/aseprite/Terrain/Decorations/Clouds/Clouds.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 576,
+        "height": 256,
+        "frameCount": 8,
+        "tags": [],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Decorations/Clouds/Clouds.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Decorations/Clouds/Clouds.json",
+        "compileRevision": "1765234499000-14097"
+      }
+    },
+    {
+      "id": "asset_8bef37c3-74a7-41d7-ad38-e1856307d176",
+      "type": "texture",
+      "name": "Clouds_03",
+      "path": "assets/aseprite/Terrain/Decorations/Clouds/Clouds_03.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_8d418835-6c0c-4979-8b87-78d7ab020fb2",
+      "type": "texture",
+      "name": "SmallBlueRoundButton_Pressed",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/SmallBlueRoundButton_Pressed.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_8da73ff4-de2d-4cec-ab9d-eb113a1269f6",
+      "type": "texture",
+      "name": "Lancer_Down_Defence",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_Down_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_8e2e128d-4ee2-4e9b-be6e-abc68ef71f65",
+      "type": "texture",
+      "name": "Avatars_11",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_11.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_8f2f475e-ab2d-46b6-87ef-e95f4f4b4508",
+      "type": "texture",
+      "name": "Archer_Shoot",
+      "path": "assets/aseprite/Units/Black Units/Archer/Archer_Shoot.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_8f6ee9ce-a682-45ed-907d-674d5af65065",
+      "type": "texture",
+      "name": "Gold Stone 5",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 5.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_91b37d2a-2d1a-4a7d-8bda-ff10128e104a",
+      "type": "texture",
+      "name": "Lancer_Right_Attack",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_Right_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_927955e9-4df8-4665-8373-5841a734ebf4",
+      "type": "texture",
+      "name": "Gold Stone 6_Highlight",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 6_Highlight.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9458d470-1616-45a0-8594-9a432b070c39",
+      "type": "texture",
+      "name": "Pawn_Interact Axe",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Interact Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_94b880be-66b4-4edc-b5c7-f9fa492a6179",
+      "type": "texture",
+      "name": "Lancer_Down_Attack",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_Down_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_94f1933c-d10c-4996-9c64-46b82adc0dbe",
+      "type": "texture",
+      "name": "Pawn_Run Wood",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Run Wood.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9532eb18-706d-424b-be78-e019f9acc57e",
+      "type": "texture",
+      "name": "Clouds_01",
+      "path": "assets/aseprite/Terrain/Decorations/Clouds/Clouds_01.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9687f613-c18b-42fa-a8eb-b3bd3b3034d6",
+      "type": "texture",
+      "name": "Banner_Slots",
+      "path": "assets/aseprite/UI Elements/UI Elements/Banners/Banner_Slots.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_96d5fc38-27eb-4628-a119-0a5ce3b8e121",
+      "type": "texture",
+      "name": "Dust_01",
+      "path": "assets/aseprite/particles/Dust_01.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 512,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9710237d-dee4-4c3a-88f7-29937d8f04a0",
+      "type": "texture",
+      "name": "Lancer_DownRight_Defence",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_DownRight_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_974b1fa1-50d5-4a7f-8272-74a6fc900af1",
+      "type": "texture",
+      "name": "Pawn_Idle Meat",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Idle Meat.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_97cb6ca4-170f-44b3-8937-e972de938ffe",
+      "type": "texture",
+      "name": "Gold Stone 4",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 4.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_99070244-9f17-45dd-99ef-75bb67b9753e",
+      "type": "texture",
+      "name": "Pawn_Run",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_99ebf457-f961-466d-b20c-457c4e1a0118",
+      "type": "texture",
+      "name": "Lancer_Idle",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 3840,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9a29fa22-7500-475c-bac2-807935dc214e",
+      "type": "texture",
+      "name": "House1",
+      "path": "assets/aseprite/Buildings/Blue Buildings/House1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9a43b096-dfe6-4eb9-ac52-7e7c2bebd29c",
+      "type": "texture",
+      "name": "Archer_Shoot",
+      "path": "assets/aseprite/Units/Blue Units/Archer/Archer_Shoot.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9adb2364-56f6-4fcb-a4c2-1c0b73447c0f",
+      "type": "texture",
+      "name": "Pawn_Run Pickaxe",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Run Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9afcf159-863b-4b86-b179-ac5fd72d196b",
+      "type": "texture",
+      "name": "Lancer_UpRight_Defence",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_UpRight_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9b00780b-fee3-4329-8939-5ec6ccc821ad",
+      "type": "texture",
+      "name": "Pawn_Idle Gold",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Idle Gold.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9b69efdd-0e0d-47f4-9f4e-8d713b924f96",
+      "type": "texture",
+      "name": "Lancer_Run",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9b70cb77-9668-42a5-9f8d-a3ef5a72f4dd",
+      "type": "texture",
+      "name": "Run",
+      "path": "assets/aseprite/Units/Black Units/Monk/Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9bf92160-3dde-4db8-be91-bf3f598355db",
+      "type": "texture",
+      "name": "Gold Stone 3",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 3.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9c262751-9cd2-4f44-8f75-01c8f177bb7a",
+      "type": "texture",
+      "name": "Lancer_DownRight_Attack",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_DownRight_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9c9244d0-df2c-4574-8462-fa935f8a8f64",
+      "type": "texture",
+      "name": "Warrior_Idle",
+      "path": "assets/aseprite/Units/Purple Units/Warrior/Warrior_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9ced11d9-d5b4-4f53-9b85-a95a67c42751",
+      "type": "texture",
+      "name": "Archery",
+      "path": "assets/aseprite/Buildings/Yellow Buildings/Archery.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9cee8551-c309-481b-868c-a168d68cb4ac",
+      "type": "texture",
+      "name": "Gold Stone 6",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 6.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9e798f0d-efbe-44f2-a713-474adb310371",
+      "type": "texture",
+      "name": "Shadow",
+      "path": "assets/aseprite/Terrain/Tileset/Shadow.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9ea24a85-1200-4f8b-93da-5b897754fe77",
+      "type": "texture",
+      "name": "Warrior_Guard",
+      "path": "assets/aseprite/Units/Purple Units/Warrior/Warrior_Guard.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9eafa06e-e498-41fa-bd3d-7de15b015cc3",
+      "type": "texture",
+      "name": "Lancer_Down_Defence",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_Down_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9fe2f2ae-deea-4b64-97eb-aa2f9b51a3cf",
+      "type": "texture",
+      "name": "Pawn_Run",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9feaa768-e7a7-40f6-9907-0b6edac41408",
+      "type": "texture",
+      "name": "Pawn_Idle Axe",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Idle Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a14994fc-765a-4e3e-92e1-10fed4483a80",
+      "type": "texture",
+      "name": "Pawn_Interact Axe",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Interact Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a18ba12c-cf2a-47f2-ae1e-c1681d094e92",
+      "type": "texture",
+      "name": "Avatars_14",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_14.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a1ccad8a-7115-490e-a31e-9d46d04480f5",
+      "type": "texture",
+      "name": "Stump 3",
+      "path": "assets/aseprite/Terrain/Resources/Wood/Trees/Stump 3.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a21cc08e-b628-4aaf-a417-979294424a56",
+      "type": "texture",
+      "name": "Rock2",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks/Rock2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a2aa7833-324e-4f09-a1ab-57d09bdb4ad6",
+      "type": "texture",
+      "name": "Pawn_Run Knife",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Run Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a2e31c9b-dab1-4875-aa89-221dc82b6294",
+      "type": "texture",
+      "name": "Pawn_Idle Meat",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Idle Meat.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a30e731c-7ae1-4b94-9d23-68cb20b8f6b4",
+      "type": "texture",
+      "name": "SmallRedSquareButton_Regular",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/SmallRedSquareButton_Regular.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a36c8ad5-c295-42a4-a799-2decbfb277f8",
+      "type": "texture",
+      "name": "Heal",
+      "path": "assets/aseprite/Units/Yellow Units/Monk/Heal.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 2112,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a37a67fd-975c-4946-86bd-ad91d204d304",
+      "type": "texture",
+      "name": "Bushe3",
+      "path": "assets/aseprite/Terrain/Decorations/Bushes/Bushe3.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1024,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a3b93d15-4e57-459f-a782-f192e3cb83cf",
+      "type": "texture",
+      "name": "Pawn_Idle Gold",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Idle Gold.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a3fbc38e-c28b-4d8d-b4fe-064e5f4c1918",
+      "type": "texture",
+      "name": "Pawn_Run Gold",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Run Gold.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a4917999-4a93-4e44-843a-fab8f60b8f7b",
+      "type": "texture",
+      "name": "Tower",
+      "path": "assets/aseprite/Buildings/Blue Buildings/Tower.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
       "id": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
       "type": "audio",
       "name": "ui_button_simple_click_01",
@@ -75,6 +3865,232 @@
       "metadata": {
         "kind": "audio",
         "mimeType": "audio/wav"
+      }
+    },
+    {
+      "id": "asset_a7a8aad6-9894-4afe-9003-b598ca8cbad9",
+      "type": "texture",
+      "name": "TinyRoundRedButton",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/TinyRoundRedButton.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a8ff43a7-17c7-4ba0-83b7-4b8c1cd22ab8",
+      "type": "texture",
+      "name": "Warrior_Attack2",
+      "path": "assets/aseprite/Units/Purple Units/Warrior/Warrior_Attack2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a95520ae-4641-4015-ad9c-58a76ce60956",
+      "type": "texture",
+      "name": "Pawn_Run",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_aa31b134-a3a7-4ba6-bbdc-d7a53ac8f039",
+      "type": "texture",
+      "name": "Bushe1",
+      "path": "assets/aseprite/Terrain/Decorations/Bushes/Bushe1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1024,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ab5d578b-50b9-4ae8-8c0e-5677fb7d79b6",
+      "type": "texture",
+      "name": "Gold_Resource_Highlight",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Resource/Gold_Resource_Highlight.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_acadcc39-2536-469a-b2c7-74c7db3f4cfd",
+      "type": "texture",
+      "name": "Ribbon_Black",
+      "path": "assets/aseprite/UI Elements/UI Banners from the store page/Ribbons/Ribbon_Black.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 576,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_acba912d-5b2c-4dd6-9f04-324bcac27a20",
+      "type": "texture",
+      "name": "Icon_11",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_11.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_acf5b429-5d70-4a7c-9f3f-13fdc1d97786",
+      "type": "texture",
+      "name": "Lancer_Run",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_add471c1-65ee-4312-9f3b-c62e399ea64f",
+      "type": "aseprite",
+      "name": "Water Rocks_01",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_01.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 64,
+        "height": 64,
+        "frameCount": 16,
+        "tags": [],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_01.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_01.json",
+        "compileRevision": "1760028685000-20506"
+      }
+    },
+    {
+      "id": "asset_ae4c574b-3700-4eb0-94c8-33e2bb540a2d",
+      "type": "texture",
+      "name": "BigBlueButton_Pressed",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/BigBlueButton_Pressed.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_aedd35ec-539b-46be-9078-9cf60dd2dcf3",
+      "type": "texture",
+      "name": "Warrior_Attack1",
+      "path": "assets/aseprite/Units/Yellow Units/Warrior/Warrior_Attack1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_af1509e3-0336-488f-87c6-79a40d22c7f8",
+      "type": "texture",
+      "name": "Idle",
+      "path": "assets/aseprite/Units/Black Units/Monk/Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b03f2bdd-3ff1-403b-bd9f-396541c85bb6",
+      "type": "texture",
+      "name": "Pawn_Run Knife",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Run Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b0f4ecf5-9675-4aa7-ac21-0c31aa63b9e3",
+      "type": "texture",
+      "name": "Pawn_Idle Knife",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Idle Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b1f93cb0-9423-4140-8aea-002ade2881dd",
+      "type": "texture",
+      "name": "Gold Stone 3_Highlight",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 3_Highlight.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b2691f4e-1e4f-4990-a2fa-11716f6eb7f4",
+      "type": "texture",
+      "name": "Lancer_UpRight_Defence",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_UpRight_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b2f7815b-b217-4d89-b1ae-52dad12da124",
+      "type": "texture",
+      "name": "Tilemap_color4",
+      "path": "assets/aseprite/Terrain/Tileset/Tilemap_color4.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 384,
+        "mimeType": "image/png"
       }
     },
     {
@@ -105,6 +4121,66 @@
       }
     },
     {
+      "id": "asset_b3e53f48-1f9e-4ac5-8b9c-868440ae2f5b",
+      "type": "texture",
+      "name": "Pawn_Idle Wood",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Idle Wood.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b6010201-6a8a-4087-9005-172b2583af67",
+      "type": "texture",
+      "name": "Clouds_07",
+      "path": "assets/aseprite/Terrain/Decorations/Clouds/Clouds_07.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b6caffcd-c3aa-4024-a78d-8c2b6b1c05ec",
+      "type": "texture",
+      "name": "Pawn_Idle Wood",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Idle Wood.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b7ae5d95-1a0e-4e0f-9baf-459731a6475c",
+      "type": "texture",
+      "name": "Pawn_Idle Pickaxe",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Idle Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b882bc22-7e1a-4608-9fee-f0325a2d1554",
+      "type": "texture",
+      "name": "Pawn_Run Hammer",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Run Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
       "id": "asset_b8f604c4-25db-4cf1-bd5f-8fb354ee280f",
       "type": "texture",
       "name": "11",
@@ -117,6 +4193,208 @@
       }
     },
     {
+      "id": "asset_ba87c5d7-da86-46f5-8101-d69d497938a4",
+      "type": "texture",
+      "name": "Lancer_Idle",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 3840,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_bab74708-d99c-44aa-be28-1878adbf1148",
+      "type": "texture",
+      "name": "Pawn_Idle Wood",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Idle Wood.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_bacb8b67-c93b-4627-978e-1051bcc4f382",
+      "type": "texture",
+      "name": "Cursor_02",
+      "path": "assets/aseprite/UI Elements/UI Elements/Cursors/Cursor_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_bb5594b4-9179-4cf3-af07-07f92145092d",
+      "type": "texture",
+      "name": "Pawn_Run Hammer",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Run Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_bbd81f00-e9ee-4d73-82df-952c5a5bfdc4",
+      "type": "texture",
+      "name": "BigBlueButton_Regular",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/BigBlueButton_Regular.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_bc24bff4-6cfc-4c16-ad20-48ea9332d25d",
+      "type": "texture",
+      "name": "SmallBlueSquareButton_Regular",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/SmallBlueSquareButton_Regular.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_bc6c74d7-a1c1-41e2-9c49-16067f9b817b",
+      "type": "texture",
+      "name": "Tool_02",
+      "path": "assets/aseprite/Terrain/Resources/Tools/Tool_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_bce27169-6896-4418-bdd0-c5d28ebdc168",
+      "type": "texture",
+      "name": "Warrior_Idle",
+      "path": "assets/aseprite/Units/Red Units/Warrior/Warrior_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_bd79977e-fcb3-42f1-8c20-82f8b5abc89f",
+      "type": "texture",
+      "name": "WoodTable",
+      "path": "assets/aseprite/UI Elements/UI Elements/Wood Table/WoodTable.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 448,
+        "height": 448,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_be4686ce-3e55-468f-917e-460ce101003b",
+      "type": "texture",
+      "name": "Avatars_06",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_06.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_bee10ed2-727b-4434-b178-55a3b967bfde",
+      "type": "texture",
+      "name": "Pawn_Interact Hammer",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Interact Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c17e2aaa-b19f-440b-9924-d2f4d7117a36",
+      "type": "texture",
+      "name": "Stump 1",
+      "path": "assets/aseprite/Terrain/Resources/Wood/Trees/Stump 1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c2906c40-fee2-4836-a6b9-2777ed9df744",
+      "type": "aseprite",
+      "name": "Water Rocks_03",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_03.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 64,
+        "height": 64,
+        "frameCount": 16,
+        "tags": [],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_03.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Decorations/Rocks in the Water/Water Rocks_03.json",
+        "compileRevision": "1760028743000-20506"
+      }
+    },
+    {
+      "id": "asset_c39a5319-55c1-4e57-a64b-32d5e8b9cfa0",
+      "type": "texture",
+      "name": "Pawn_Run Meat",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Run Meat.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c3e91799-79d8-4e3d-86b2-6b350b4d8de4",
+      "type": "texture",
+      "name": "Pawn_Idle Axe",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Idle Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
       "id": "asset_c49eee78-55fa-4261-b489-8b0c90fa9305",
       "type": "gltf",
       "name": "ManaRune",
@@ -126,6 +4404,2026 @@
         "mimeType": "model/gltf-binary",
         "format": "glb",
         "animations": []
+      }
+    },
+    {
+      "id": "asset_c519c36c-833c-422e-a3e2-77a73739591f",
+      "type": "texture",
+      "name": "Pawn_Idle Meat",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Idle Meat.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c548e53e-9bf5-4ebc-b4a4-d5b45fc228ce",
+      "type": "texture",
+      "name": "Gold Stone 4_Highlight",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 4_Highlight.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c550df23-186d-424b-9cd7-2c7f920ca98f",
+      "type": "texture",
+      "name": "Lancer_Right_Defence",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_Right_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c55f397d-ab30-477f-b637-50a61c9766ce",
+      "type": "texture",
+      "name": "Lancer_DownRight_Attack",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_DownRight_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c61dd98a-a49a-4aaf-b411-e62fb0f5879b",
+      "type": "texture",
+      "name": "Avatars_17",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_17.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c6793aad-3776-4d8b-9c38-70722559f4e7",
+      "type": "texture",
+      "name": "Pawn_Run Gold",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Run Gold.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c6c5c0f3-792e-4e1d-811c-3918923089a9",
+      "type": "texture",
+      "name": "Lancer_DownRight_Defence",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_DownRight_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c750b54f-e0f7-498f-ba40-ef9c5ef546c4",
+      "type": "texture",
+      "name": "Gold Stone 1_Highlight",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 1_Highlight.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c7b9d375-f07b-4fd3-8794-54ac80c463aa",
+      "type": "texture",
+      "name": "Monastery",
+      "path": "assets/aseprite/Buildings/Yellow Buildings/Monastery.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c87dc229-161c-4e14-ba6c-99a7fc64d15c",
+      "type": "texture",
+      "name": "Archery",
+      "path": "assets/aseprite/Buildings/Red Buildings/Archery.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c9b16b47-66a8-4fc6-b83b-4fcae0f594b7",
+      "type": "texture",
+      "name": "Cursor_04",
+      "path": "assets/aseprite/UI Elements/UI Elements/Cursors/Cursor_04.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c9f511f9-7d2a-4a6e-ad71-9f08b049bb34",
+      "type": "texture",
+      "name": "Pawn_Interact Axe",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Interact Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_caa58877-d0c5-4392-977d-cb77baefb8fc",
+      "type": "texture",
+      "name": "Warrior_Attack1",
+      "path": "assets/aseprite/Units/Black Units/Warrior/Warrior_Attack1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cabbbb19-ec48-43f5-9a12-8c26b78ea125",
+      "type": "texture",
+      "name": "Idle",
+      "path": "assets/aseprite/Units/Purple Units/Monk/Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cac53a67-f6ee-4889-9457-a1f10de35582",
+      "type": "texture",
+      "name": "Avatars_23",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_23.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cb51bccc-77b0-4f96-b5a4-168c2206a7c5",
+      "type": "texture",
+      "name": "Archer_Run",
+      "path": "assets/aseprite/Units/Red Units/Archer/Archer_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cb922e2e-5133-4a95-a592-b7d1d72afc6a",
+      "type": "texture",
+      "name": "Tower",
+      "path": "assets/aseprite/Buildings/Black Buildings/Tower.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cc03d26b-f2e2-4fc4-b64a-867f4fd7b12e",
+      "type": "texture",
+      "name": "Lancer_Down_Attack",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_Down_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cc48cfd6-c1ef-4404-aef0-6c4a5b21a528",
+      "type": "texture",
+      "name": "Pawn_Run Hammer",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Run Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cd68a8fe-6fc8-4be7-a58e-826882d067c1",
+      "type": "texture",
+      "name": "Fire_02",
+      "path": "assets/aseprite/particles/Fire_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 640,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cd8edfd0-c931-43df-832d-820470fe5da7",
+      "type": "texture",
+      "name": "Lancer_Up_Defence",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_Up_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ce15563b-23fe-4add-a567-e4641a3e6979",
+      "type": "texture",
+      "name": "SmallRedSquareButton_Pressed",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/SmallRedSquareButton_Pressed.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ce43c1bd-4b37-44df-91a0-d91933b4f0e0",
+      "type": "texture",
+      "name": "Avatars_08",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_08.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cef51409-ce46-4fa2-8631-376b961bf6e0",
+      "type": "texture",
+      "name": "Pawn_Run Axe",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Run Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cf3b7ce4-dfe8-4c84-81cb-26f8d6375d42",
+      "type": "texture",
+      "name": "Avatars_07",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_07.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cfb9349d-2ea2-48c5-ac4e-1ef62e23f696",
+      "type": "aseprite",
+      "name": "Gold Stones",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stones.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 128,
+        "height": 128,
+        "frameCount": 42,
+        "tags": [
+          {
+            "name": "1",
+            "from": 0,
+            "to": 6,
+            "direction": "forward"
+          },
+          {
+            "name": "Still",
+            "from": 0,
+            "to": 0,
+            "direction": "forward"
+          },
+          {
+            "name": "Highlight",
+            "from": 1,
+            "to": 6,
+            "direction": "forward"
+          },
+          {
+            "name": "2",
+            "from": 7,
+            "to": 13,
+            "direction": "forward"
+          },
+          {
+            "name": "3",
+            "from": 14,
+            "to": 20,
+            "direction": "forward"
+          },
+          {
+            "name": "4",
+            "from": 21,
+            "to": 27,
+            "direction": "forward"
+          },
+          {
+            "name": "5",
+            "from": 28,
+            "to": 34,
+            "direction": "forward"
+          },
+          {
+            "name": "6",
+            "from": 35,
+            "to": 41,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          500,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          500,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          500,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          500,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          500,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          500
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stones.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stones.json",
+        "compileRevision": "1765677194000-35957"
+      }
+    },
+    {
+      "id": "asset_d06cfd9b-6106-441a-9980-c7e917dfcbf5",
+      "type": "texture",
+      "name": "Lancer_Right_Defence",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_Right_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d0dc97cd-6a22-4d19-94f0-caa884d8e923",
+      "type": "texture",
+      "name": "Lancer_Right_Defence",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_Right_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d0e30159-3d86-4116-b093-f7bb11ced654",
+      "type": "texture",
+      "name": "Pawn_Idle",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d10224d8-6f32-480c-8a45-b95ec8a79cb4",
+      "type": "texture",
+      "name": "Ribbon_Purple",
+      "path": "assets/aseprite/UI Elements/UI Banners from the store page/Ribbons/Ribbon_Purple.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 576,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d16f06e1-3086-4233-976c-c376683d55b6",
+      "type": "texture",
+      "name": "Water Splash",
+      "path": "assets/aseprite/particles/Water Splash.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1728,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d1acf359-f96f-4e90-b7a8-13aad847387b",
+      "type": "texture",
+      "name": "Pawn_Run",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d2f737eb-a1d0-48cc-be61-3f34ebec6a43",
+      "type": "texture",
+      "name": "Tool_03",
+      "path": "assets/aseprite/Terrain/Resources/Tools/Tool_03.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d34b2701-23b9-43b5-b7a0-094f093843d8",
+      "type": "texture",
+      "name": "BigRibbons",
+      "path": "assets/aseprite/UI Elements/UI Elements/Ribbons/BigRibbons.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 448,
+        "height": 640,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d3f3d62a-8e60-4fd3-ba17-eee4c850ac62",
+      "type": "texture",
+      "name": "Heal",
+      "path": "assets/aseprite/Units/Purple Units/Monk/Heal.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 2112,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d4fcd676-3207-480c-942b-1d53e39532a6",
+      "type": "texture",
+      "name": "Lancer_Right_Defence",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_Right_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d501d686-f5df-4cfc-82bb-443d5a792660",
+      "type": "texture",
+      "name": "Warrior_Run",
+      "path": "assets/aseprite/Units/Black Units/Warrior/Warrior_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d55d1143-b3fa-4ab8-82c6-c9089e745678",
+      "type": "texture",
+      "name": "Icon_09",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_09.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d65a61a1-0c29-45d3-8054-cb9e691b029e",
+      "type": "texture",
+      "name": "Sheep_Idle",
+      "path": "assets/aseprite/Terrain/Resources/Meat/Sheep/Sheep_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d6f0551f-a661-4a7a-afbf-6b74955151a8",
+      "type": "texture",
+      "name": "Pawn_Interact Pickaxe",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Interact Pickaxe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d82d5768-434f-4bfd-82b7-1c16d45dca78",
+      "type": "texture",
+      "name": "Avatars_21",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_21.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d8d0ab51-0a90-4a2e-b76c-d07c83fc4bcb",
+      "type": "texture",
+      "name": "Lancer_Down_Defence",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_Down_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d9534f4c-9456-4f26-b999-d8ce863e6f4d",
+      "type": "texture",
+      "name": "Explosion_02",
+      "path": "assets/aseprite/particles/Explosion_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d98ddb0a-cff3-4313-a95a-42c4be188fa7",
+      "type": "texture",
+      "name": "Lancer_Up_Attack",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_Up_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_daadc7de-8ddf-4427-842a-c5d264e63a6c",
+      "type": "texture",
+      "name": "Warrior_Guard",
+      "path": "assets/aseprite/Units/Red Units/Warrior/Warrior_Guard.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_dae76ef5-e20c-4bb9-ad2a-d1d8cd629113",
+      "type": "texture",
+      "name": "Pawn_Interact Hammer",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Interact Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_dc33c682-d778-480b-b903-8978b5929e18",
+      "type": "texture",
+      "name": "Pawn_Idle Axe",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Idle Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_dc83489e-4978-4b8d-aa5a-9a3de53835fd",
+      "type": "texture",
+      "name": "Pawn_Run Axe",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Run Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_dc88734f-2854-4f58-9721-c8bf36fdde1c",
+      "type": "aseprite",
+      "name": "Pawn",
+      "path": "assets/aseprite/Units/Units (aseprite in Blue only)/Pawn.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 192,
+        "height": 192,
+        "frameCount": 131,
+        "tags": [
+          {
+            "name": "Idle",
+            "from": 0,
+            "to": 63,
+            "direction": "forward"
+          },
+          {
+            "name": "Idle Wood",
+            "from": 8,
+            "to": 15,
+            "direction": "forward"
+          },
+          {
+            "name": "Idle Meat",
+            "from": 16,
+            "to": 23,
+            "direction": "forward"
+          },
+          {
+            "name": "Idle Gold",
+            "from": 24,
+            "to": 31,
+            "direction": "forward"
+          },
+          {
+            "name": "Idle Hammer",
+            "from": 32,
+            "to": 39,
+            "direction": "forward"
+          },
+          {
+            "name": "Idle Axe",
+            "from": 40,
+            "to": 47,
+            "direction": "forward"
+          },
+          {
+            "name": "Idle Knife",
+            "from": 48,
+            "to": 55,
+            "direction": "forward"
+          },
+          {
+            "name": "Idle Pickaxe",
+            "from": 56,
+            "to": 63,
+            "direction": "forward"
+          },
+          {
+            "name": "Run ",
+            "from": 64,
+            "to": 111,
+            "direction": "forward"
+          },
+          {
+            "name": "Run",
+            "from": 64,
+            "to": 69,
+            "direction": "forward"
+          },
+          {
+            "name": "Run Wood",
+            "from": 70,
+            "to": 75,
+            "direction": "forward"
+          },
+          {
+            "name": "Run Meat",
+            "from": 76,
+            "to": 81,
+            "direction": "forward"
+          },
+          {
+            "name": "Run Gold",
+            "from": 82,
+            "to": 87,
+            "direction": "forward"
+          },
+          {
+            "name": "Run Hammer",
+            "from": 88,
+            "to": 93,
+            "direction": "forward"
+          },
+          {
+            "name": "Run Axe",
+            "from": 94,
+            "to": 99,
+            "direction": "forward"
+          },
+          {
+            "name": "Run Knife",
+            "from": 100,
+            "to": 105,
+            "direction": "forward"
+          },
+          {
+            "name": "Run Pickaxe",
+            "from": 106,
+            "to": 111,
+            "direction": "forward"
+          },
+          {
+            "name": "Interact",
+            "from": 112,
+            "to": 130,
+            "direction": "forward"
+          },
+          {
+            "name": "Interact Hammer",
+            "from": 112,
+            "to": 114,
+            "direction": "forward"
+          },
+          {
+            "name": "Interact Axe",
+            "from": 115,
+            "to": 120,
+            "direction": "forward"
+          },
+          {
+            "name": "Interact Knife",
+            "from": 121,
+            "to": 124,
+            "direction": "forward"
+          },
+          {
+            "name": "Interact Pickaxe",
+            "from": 125,
+            "to": 130,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Pawn.png",
+        "dataPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Pawn.json",
+        "compileRevision": "1765675910000-165731"
+      }
+    },
+    {
+      "id": "asset_dcad9c9f-3bff-42d4-aafe-5dba01aa1aca",
+      "type": "texture",
+      "name": "Pawn_Run Axe",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Run Axe.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_dceb45ec-98aa-4f57-9814-2f2d03f6c982",
+      "type": "texture",
+      "name": "RegularPaper",
+      "path": "assets/aseprite/UI Elements/UI Elements/Papers/RegularPaper.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_dd6eb1d0-3573-430e-9ab4-3eee4c5cab74",
+      "type": "texture",
+      "name": "Lancer_Right_Attack",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_Right_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_dda9a366-661a-4477-afa1-9aaa11674e5c",
+      "type": "texture",
+      "name": "Archer_Run",
+      "path": "assets/aseprite/Units/Blue Units/Archer/Archer_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_de3badfc-4980-4e3b-9ad3-33157a69949c",
+      "type": "texture",
+      "name": "Water Foam",
+      "path": "assets/aseprite/Terrain/Tileset/Water Foam.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 3072,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_de741ba2-52e6-47d4-ae73-52550db0e210",
+      "type": "texture",
+      "name": "Avatars_03",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_03.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_de9bf8dc-cee0-4fd1-b621-7858bfc13da0",
+      "type": "texture",
+      "name": "Barracks",
+      "path": "assets/aseprite/Buildings/Yellow Buildings/Barracks.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_dedb2545-d197-49c9-8f94-c3af9a97646c",
+      "type": "texture",
+      "name": "Icon_12",
+      "path": "assets/aseprite/UI Elements/UI Elements/Icons/Icon_12.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_df4b0868-120a-4865-b044-865b95ae5be6",
+      "type": "texture",
+      "name": "Archer_Idle",
+      "path": "assets/aseprite/Units/Purple Units/Archer/Archer_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e00463a2-fb60-4cd7-804c-0ebca1901cab",
+      "type": "texture",
+      "name": "House3",
+      "path": "assets/aseprite/Buildings/Yellow Buildings/House3.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e0a8c068-02d3-435f-86d5-2f64decd5c72",
+      "type": "texture",
+      "name": "Gold Stone 1",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Stones/Gold Stone 1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e1acf1cf-cfe6-4f76-aa99-a8ae8c03ccd7",
+      "type": "texture",
+      "name": "House3",
+      "path": "assets/aseprite/Buildings/Red Buildings/House3.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e1e4c2b0-6fb0-4e04-8368-e6e470b83328",
+      "type": "texture",
+      "name": "Heal_Effect",
+      "path": "assets/aseprite/Units/Blue Units/Monk/Heal_Effect.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 2112,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e246bced-ddf4-4461-aff8-1fd55f29821f",
+      "type": "texture",
+      "name": "Lancer_Up_Defence",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_Up_Defence.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e2498593-bbda-446a-9083-d4ce0c07c694",
+      "type": "texture",
+      "name": "Warrior_Attack2",
+      "path": "assets/aseprite/Units/Blue Units/Warrior/Warrior_Attack2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e2f23316-ce6b-478d-ba82-6670e9a2e89c",
+      "type": "texture",
+      "name": "SmallBlueRoundButton_Regular",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/SmallBlueRoundButton_Regular.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e318fbe1-1b23-4796-b9f0-9e56b64d0de5",
+      "type": "texture",
+      "name": "Pawn_Run Gold",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Run Gold.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e3729377-49c1-4885-a544-e9f5bcede072",
+      "type": "texture",
+      "name": "Archery",
+      "path": "assets/aseprite/Buildings/Black Buildings/Archery.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e480e4fb-a4dd-4004-bf63-7afbb49e08fb",
+      "type": "texture",
+      "name": "Archer_Idle",
+      "path": "assets/aseprite/Units/Red Units/Archer/Archer_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e4cfdc79-b365-408d-be13-ec0deacff9fd",
+      "type": "texture",
+      "name": "Pawn_Run Hammer",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Run Hammer.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e4fabc8c-8acd-4086-9197-c25ab2b0839c",
+      "type": "texture",
+      "name": "Pawn_Interact Knife",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Interact Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e59514b7-096d-4191-9656-c3553647f701",
+      "type": "texture",
+      "name": "Run",
+      "path": "assets/aseprite/Units/Red Units/Monk/Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e73c37ec-928f-4ab9-94c3-d36920de9198",
+      "type": "texture",
+      "name": "BigBar_Fill",
+      "path": "assets/aseprite/UI Elements/UI Elements/Bars/BigBar_Fill.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e77dde23-ed8d-41dc-ab2e-f11a9ecad2b5",
+      "type": "texture",
+      "name": "Lancer_Down_Attack",
+      "path": "assets/aseprite/Units/Red Units/Lancer/Lancer_Down_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e7961cb3-fcd2-4769-b6ef-886f26843b00",
+      "type": "texture",
+      "name": "Heal",
+      "path": "assets/aseprite/Units/Red Units/Monk/Heal.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 2112,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e8fdbcde-8e25-4686-a906-195df588c211",
+      "type": "texture",
+      "name": "SmallRedRoundButton_Pressed",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/SmallRedRoundButton_Pressed.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 128,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e9b2c817-b412-4032-9f5f-01bfe40ddc2e",
+      "type": "texture",
+      "name": "Castle",
+      "path": "assets/aseprite/Buildings/Black Buildings/Castle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_eaa6adfd-3906-4fe4-8eb3-902a4b6ebaec",
+      "type": "texture",
+      "name": "Pawn_Run",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_eabfe28c-424c-425b-a73b-1e2408ca9a65",
+      "type": "texture",
+      "name": "Castle",
+      "path": "assets/aseprite/Buildings/Purple Buildings/Castle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_eafd2312-f30c-4569-bea7-70d79036ea42",
+      "type": "texture",
+      "name": "Run",
+      "path": "assets/aseprite/Units/Yellow Units/Monk/Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ebca3801-a909-4482-9c8c-cc9f8de35471",
+      "type": "texture",
+      "name": "Slots",
+      "path": "assets/aseprite/UI Elements/UI Banners from the store page/Banner/Slots.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 320,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ebd3d49f-206c-4cef-ad1d-c3f1d0db4062",
+      "type": "texture",
+      "name": "Tree1",
+      "path": "assets/aseprite/Terrain/Resources/Wood/Trees/Tree1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ecac4553-e0df-4cb9-b01c-fff26dbd95b7",
+      "type": "texture",
+      "name": "Barracks",
+      "path": "assets/aseprite/Buildings/Purple Buildings/Barracks.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ecb38d38-aab7-42eb-bdca-37650b6e2fc8",
+      "type": "texture",
+      "name": "Pawn_Idle",
+      "path": "assets/aseprite/Units/Black Units/Pawn/Pawn_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ecc4aa3c-8292-46d9-b5a6-72f5104728af",
+      "type": "texture",
+      "name": "Lancer_DownRight_Attack",
+      "path": "assets/aseprite/Units/Yellow Units/Lancer/Lancer_DownRight_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_edb96f4f-4fac-4adb-8689-046a2efc6384",
+      "type": "texture",
+      "name": "Cursor_01",
+      "path": "assets/aseprite/UI Elements/UI Elements/Cursors/Cursor_01.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ee6d2439-4062-413d-ae68-7ae08961ce5c",
+      "type": "texture",
+      "name": "Lancer_Down_Attack",
+      "path": "assets/aseprite/Units/Blue Units/Lancer/Lancer_Down_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ee7e105a-b87a-4a96-bdd2-7c01d1e13db5",
+      "type": "texture",
+      "name": "Pawn_Run Knife",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Run Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_eeda779a-d72b-4ca3-88e0-b9bfac3bf3cb",
+      "type": "texture",
+      "name": "Lancer_Idle",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 3840,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ef134671-db7b-481c-ab90-e822e8fbd775",
+      "type": "texture",
+      "name": "House2",
+      "path": "assets/aseprite/Buildings/Yellow Buildings/House2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ef95fdf9-d792-4d0c-ad18-d11721d830ad",
+      "type": "texture",
+      "name": "House1",
+      "path": "assets/aseprite/Buildings/Red Buildings/House1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f0ae3bf0-4223-4b15-b79e-b6649ce4598a",
+      "type": "aseprite",
+      "name": "Monk",
+      "path": "assets/aseprite/Units/Units (aseprite in Blue only)/Monk.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 192,
+        "height": 192,
+        "frameCount": 32,
+        "tags": [
+          {
+            "name": "Idle",
+            "from": 0,
+            "to": 5,
+            "direction": "forward"
+          },
+          {
+            "name": "Run",
+            "from": 6,
+            "to": 9,
+            "direction": "forward"
+          },
+          {
+            "name": "Heal",
+            "from": 10,
+            "to": 20,
+            "direction": "forward"
+          },
+          {
+            "name": "Heal Effect",
+            "from": 21,
+            "to": 31,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Monk.png",
+        "dataPath": ".generated/assets/aseprite/Units/Units (aseprite in Blue only)/Monk.json",
+        "compileRevision": "1750729664000-40700"
+      }
+    },
+    {
+      "id": "asset_f0fb1fb0-e5ab-4c29-8972-9b344906eac7",
+      "type": "texture",
+      "name": "Tilemap_color3",
+      "path": "assets/aseprite/Terrain/Tileset/Tilemap_color3.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 384,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f202850c-7db5-4f87-801e-ec103198e1e8",
+      "type": "texture",
+      "name": "House2",
+      "path": "assets/aseprite/Buildings/Black Buildings/House2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f209355f-14a8-421e-aff8-fcdf9fdfe9b5",
+      "type": "texture",
+      "name": "Avatars_10",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_10.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f2252d9b-c150-4d17-aab7-69a80cbf970b",
+      "type": "texture",
+      "name": "Lancer_UpRight_Attack",
+      "path": "assets/aseprite/Units/Purple Units/Lancer/Lancer_UpRight_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f2404c3b-c302-45dc-b5c2-868a9c50a6cf",
+      "type": "texture",
+      "name": "Banner",
+      "path": "assets/aseprite/UI Elements/UI Elements/Banners/Banner.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 448,
+        "height": 448,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f24537fc-d0e4-4435-ac8a-bab6bb586546",
+      "type": "texture",
+      "name": "Warrior_Run",
+      "path": "assets/aseprite/Units/Red Units/Warrior/Warrior_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f26a57a4-11b8-4e6d-a68f-833692cd58c6",
+      "type": "texture",
+      "name": "Rock1",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks/Rock1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f2f372f8-7866-4b77-9e9b-25fade9ccbab",
+      "type": "texture",
+      "name": "Rock4",
+      "path": "assets/aseprite/Terrain/Decorations/Rocks/Rock4.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f31f805f-a1e0-4278-8219-21c2935411bc",
+      "type": "texture",
+      "name": "Avatars_12",
+      "path": "assets/aseprite/UI Elements/UI Elements/Human Avatars/Avatars_12.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 256,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f54215b0-9205-4d91-a699-2329b67e7dff",
+      "type": "texture",
+      "name": "Cursor_03",
+      "path": "assets/aseprite/UI Elements/UI Elements/Cursors/Cursor_03.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f5a8960d-831d-457d-98ea-594a477631e0",
+      "type": "texture",
+      "name": "TinySquareRedButton",
+      "path": "assets/aseprite/UI Elements/UI Elements/Buttons/TinySquareRedButton.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 64,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f632db55-3491-4a72-b7a5-b62776a84c2b",
+      "type": "aseprite",
+      "name": "Particle FX",
+      "path": "assets/aseprite/particles/Particle FX.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 192,
+        "height": 192,
+        "frameCount": 75,
+        "tags": [
+          {
+            "name": "Dust 1",
+            "from": 0,
+            "to": 7,
+            "direction": "forward"
+          },
+          {
+            "name": "Dust 2",
+            "from": 8,
+            "to": 17,
+            "direction": "forward"
+          },
+          {
+            "name": "Explosion 1",
+            "from": 18,
+            "to": 25,
+            "direction": "forward"
+          },
+          {
+            "name": "Explosion 2",
+            "from": 26,
+            "to": 35,
+            "direction": "forward"
+          },
+          {
+            "name": "Fire 1",
+            "from": 36,
+            "to": 43,
+            "direction": "forward"
+          },
+          {
+            "name": "Fire 2",
+            "from": 44,
+            "to": 53,
+            "direction": "forward"
+          },
+          {
+            "name": "Fire 3",
+            "from": 54,
+            "to": 65,
+            "direction": "forward"
+          },
+          {
+            "name": "Water Splash",
+            "from": 66,
+            "to": 74,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "sheetPath": ".generated/assets/aseprite/particles/Particle FX.png",
+        "dataPath": ".generated/assets/aseprite/particles/Particle FX.json",
+        "compileRevision": "1786655098973.2354-27624"
+      }
+    },
+    {
+      "id": "asset_f887f8aa-b088-4824-9472-1c0db23ae256",
+      "type": "texture",
+      "name": "Pawn_Interact Knife",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Interact Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f9140293-2921-4daa-b19b-ff5efd32bb84",
+      "type": "texture",
+      "name": "Pawn_Idle Knife",
+      "path": "assets/aseprite/Units/Red Units/Pawn/Pawn_Idle Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f9a3f936-59ac-40c4-9632-063b1ed27baa",
+      "type": "texture",
+      "name": "Pawn_Idle",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_fa301e3f-24b9-4d23-af38-80b6ce34ab05",
+      "type": "texture",
+      "name": "Warrior_Idle",
+      "path": "assets/aseprite/Units/Blue Units/Warrior/Warrior_Idle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_fac3f72a-c51a-47ad-8ee9-b55df166b90e",
+      "type": "texture",
+      "name": "Fire_03",
+      "path": "assets/aseprite/particles/Fire_03.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_fbc07ae3-84a1-42e6-a9b4-aa8c75611510",
+      "type": "texture",
+      "name": "Pawn_Idle Gold",
+      "path": "assets/aseprite/Units/Purple Units/Pawn/Pawn_Idle Gold.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1536,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_fc6747f0-513f-4d8c-a936-7416a6d3c67c",
+      "type": "texture",
+      "name": "Tilemap_color1",
+      "path": "assets/aseprite/Terrain/Tileset/Tilemap_color1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 576,
+        "height": 384,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_fc9cbaee-f09f-4cb3-b68f-1c3e875cd13b",
+      "type": "texture",
+      "name": "Lancer_UpRight_Attack",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_UpRight_Attack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 960,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_fd1a85cd-815f-41a2-abc4-12e168a587df",
+      "type": "texture",
+      "name": "House3",
+      "path": "assets/aseprite/Buildings/Black Buildings/House3.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 128,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_feb25f53-551c-40d9-ad2b-c204bd410285",
+      "type": "texture",
+      "name": "Barracks",
+      "path": "assets/aseprite/Buildings/Blue Buildings/Barracks.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 192,
+        "height": 256,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_fed09139-1668-43ea-b7d0-438a2e71f0f9",
+      "type": "texture",
+      "name": "Dust_02",
+      "path": "assets/aseprite/particles/Dust_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 640,
+        "height": 64,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_fed0af94-7450-4404-a067-5a1304652bb6",
+      "type": "aseprite",
+      "name": "Gold Resource",
+      "path": "assets/aseprite/Terrain/Resources/Gold/Gold Resource/Gold Resource.aseprite",
+      "metadata": {
+        "kind": "aseprite",
+        "width": 128,
+        "height": 128,
+        "frameCount": 7,
+        "tags": [
+          {
+            "name": "Resource",
+            "from": 0,
+            "to": 6,
+            "direction": "forward"
+          },
+          {
+            "name": "Still",
+            "from": 0,
+            "to": 0,
+            "direction": "forward"
+          },
+          {
+            "name": "Highlight",
+            "from": 1,
+            "to": 6,
+            "direction": "forward"
+          }
+        ],
+        "frameDurations": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          500
+        ],
+        "sheetPath": ".generated/assets/aseprite/Terrain/Resources/Gold/Gold Resource/Gold Resource.png",
+        "dataPath": ".generated/assets/aseprite/Terrain/Resources/Gold/Gold Resource/Gold Resource.json",
+        "compileRevision": "1765677199000-2439"
+      }
+    },
+    {
+      "id": "asset_fee4b1db-b124-4eb1-ac52-7b5f63f04dc2",
+      "type": "texture",
+      "name": "Pawn_Interact Knife",
+      "path": "assets/aseprite/Units/Blue Units/Pawn/Pawn_Interact Knife.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 768,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ff754be9-fdab-4651-8706-bd1d7339d09f",
+      "type": "texture",
+      "name": "Lancer_Run",
+      "path": "assets/aseprite/Units/Black Units/Lancer/Lancer_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1920,
+        "height": 320,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ff768d6d-9241-4009-ad33-86f90c7dc586",
+      "type": "texture",
+      "name": "Warrior_Run",
+      "path": "assets/aseprite/Units/Blue Units/Warrior/Warrior_Run.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ffde097c-ef61-4549-b3c7-c711e07fa228",
+      "type": "texture",
+      "name": "Pawn_Run Wood",
+      "path": "assets/aseprite/Units/Yellow Units/Pawn/Pawn_Run Wood.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 1152,
+        "height": 192,
+        "mimeType": "image/png"
       }
     }
   ]

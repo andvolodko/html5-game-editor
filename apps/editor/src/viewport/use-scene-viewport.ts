@@ -25,6 +25,8 @@ export function useSceneViewport(args: {
   snapGridSize: number;
   threeTransformMode: ThreeTransformMode;
   threeViewMode: ThreeViewMode;
+  showPixiLayers: boolean;
+  showThreeLayers: boolean;
   selectedIds: readonly string[];
   onScale: (scale: number) => void;
   onGuides: (landscape: boolean, portrait: boolean) => void;
@@ -36,6 +38,8 @@ export function useSceneViewport(args: {
     snapGridSize,
     threeTransformMode,
     threeViewMode,
+    showPixiLayers,
+    showThreeLayers,
     selectedIds,
     onScale,
     onGuides,
@@ -44,8 +48,12 @@ export function useSceneViewport(args: {
   const [viewportGeneration, setViewportGeneration] = useState(0);
   const snapToGridRef = useRef(snapToGrid);
   const snapGridSizeRef = useRef(snapGridSize);
+  const showPixiLayersRef = useRef(showPixiLayers);
+  const showThreeLayersRef = useRef(showThreeLayers);
   snapToGridRef.current = snapToGrid;
   snapGridSizeRef.current = snapGridSize;
+  showPixiLayersRef.current = showPixiLayers;
+  showThreeLayersRef.current = showThreeLayers;
 
   useEffect(() => {
     return editor.subscribeViewportRemount(() => {
@@ -103,6 +111,10 @@ export function useSceneViewport(args: {
           snapToGridRef.current,
           snapGridSizeRef.current,
         );
+        created.setHybridLayerVisibility?.({
+          pixi: showPixiLayersRef.current,
+          three: showThreeLayersRef.current,
+        });
       }
       if (created.three && created.kind !== "pixi") {
         unbinds.push(bindThreeTransformTool(editor, created.three));
@@ -133,6 +145,13 @@ export function useSceneViewport(args: {
     viewportRef.current?.pixi?.setSnapToGrid(snapToGrid, snapGridSize);
     viewportRef.current?.pixiForeground?.setSnapToGrid(snapToGrid, snapGridSize);
   }, [snapToGrid, snapGridSize]);
+
+  useEffect(() => {
+    viewportRef.current?.setHybridLayerVisibility?.({
+      pixi: showPixiLayers,
+      three: showThreeLayers,
+    });
+  }, [showPixiLayers, showThreeLayers]);
 
   useEffect(() => {
     const vp = viewportRef.current;

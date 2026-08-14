@@ -5,6 +5,7 @@ import {
   mimeTypeForTextureFileName,
 } from "./texture-extensions.js";
 import { ownedGltfPaths } from "./gltf-extensions.js";
+import { generatedAsepriteOutputPaths } from "./aseprite-extensions.js";
 import type { AssetRecord } from "./types.js";
 
 function normalizePath(pathValue: string): string {
@@ -176,6 +177,20 @@ export function relocateOwnedAssetPaths(
         ...(record.metadata.imagePaths
           ? { imagePaths: record.metadata.imagePaths.map(relocate) }
           : {}),
+      },
+    };
+  }
+
+  if (record.metadata.kind === "aseprite") {
+    const nextPath = relocate(record.path);
+    const generated = generatedAsepriteOutputPaths(nextPath);
+    return {
+      ...record,
+      path: nextPath,
+      metadata: {
+        ...record.metadata,
+        sheetPath: generated.sheetPath,
+        dataPath: generated.dataPath,
       },
     };
   }

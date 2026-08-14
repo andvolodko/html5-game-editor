@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   AssetDatabase,
+  createAsepriteAssetRecord,
   createTextureAssetRecord,
   humanizeAssetNodeName,
   parseAssetDatabase,
@@ -157,6 +158,26 @@ describe("AssetDatabase", () => {
     const parsed = parseAssetRecord(record);
     expect(parsed.type).toBe("spine");
     expect(parsed.metadata.kind).toBe("spine");
+  });
+
+  it("round-trips an aseprite asset record", () => {
+    const record = createAsepriteAssetRecord({
+      id: "asset_ase",
+      name: "hero",
+      path: "assets/characters/hero.aseprite",
+      width: 32,
+      height: 32,
+      frameCount: 4,
+      tags: [{ name: "idle", from: 0, to: 1, direction: "forward" }],
+      frameDurations: [100, 100, 100, 100],
+    });
+    const parsed = parseAssetRecord(record);
+    expect(parsed.type).toBe("aseprite");
+    expect(parsed.metadata.kind).toBe("aseprite");
+    if (parsed.metadata.kind === "aseprite") {
+      expect(parsed.metadata.tags[0]?.name).toBe("idle");
+      expect(parsed.metadata.sheetPath).toBe(".generated/assets/characters/hero.png");
+    }
   });
 
   it("applySnapshot preserves unchanged record identity", () => {

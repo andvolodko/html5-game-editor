@@ -18,6 +18,9 @@ export interface AssetResolver {
   resolveGltfPartUrl?(assetId: string, part: string): string | undefined;
   /** Root + part map for GLTFLoader URL rewriting. */
   resolveGltfUrls?(assetId: string): GltfAssetUrls | undefined;
+  /** Generated spritesheet JSON / PNG for an Aseprite source asset. */
+  resolveAsepritePartUrl?(assetId: string, part: string): string | undefined;
+  resolveAsepriteUrls?(assetId: string): AsepriteAssetUrls | undefined;
 }
 
 export interface SpineAssetUrls {
@@ -35,6 +38,14 @@ export interface GltfAssetUrls {
   partUrls: Readonly<Record<string, string>>;
 }
 
+export interface AsepriteAssetUrls {
+  jsonUrl: string;
+  imageUrl: string;
+  tags: readonly string[];
+  frameDurations: readonly number[];
+  frameCount: number;
+}
+
 /** Adapts a plain function to AssetResolver. */
 export function createAssetResolver(
   resolveUrl: (assetId: string) => string | undefined,
@@ -43,6 +54,8 @@ export function createAssetResolver(
   resolveSpineUrls?: (assetId: string) => SpineAssetUrls | undefined,
   resolveGltfPartUrl?: (assetId: string, part: string) => string | undefined,
   resolveGltfUrls?: (assetId: string) => GltfAssetUrls | undefined,
+  resolveAsepritePartUrl?: (assetId: string, part: string) => string | undefined,
+  resolveAsepriteUrls?: (assetId: string) => AsepriteAssetUrls | undefined,
 ): AssetResolver {
   return {
     resolveUrl,
@@ -51,5 +64,7 @@ export function createAssetResolver(
     ...(resolveSpineUrls !== undefined ? { resolveSpineUrls } : {}),
     ...(resolveGltfPartUrl !== undefined ? { resolveGltfPartUrl } : {}),
     ...(resolveGltfUrls !== undefined ? { resolveGltfUrls } : {}),
+    ...(resolveAsepritePartUrl !== undefined ? { resolveAsepritePartUrl } : {}),
+    ...(resolveAsepriteUrls !== undefined ? { resolveAsepriteUrls } : {}),
   };
 }

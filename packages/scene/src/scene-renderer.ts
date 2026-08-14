@@ -77,4 +77,10 @@ export interface SceneRenderer {
     nodeId: string,
     boneName: string,
   ): BoneWorldTransform | undefined;
+  /** Runtime-only visibility (does not persist on SceneNodeData). */
+  setNodeVisible?(nodeId: string, visible: boolean): void;
+  /** CSS cursor for the node's runtime object (Pixi). Empty string clears it. */
+  setNodeCursor?(nodeId: string, cursor: string): void;
+  /** Last cursor assigned via `setNodeCursor`, if any. */
+  getNodeCursor?(nodeId: string): string | undefined;
 }

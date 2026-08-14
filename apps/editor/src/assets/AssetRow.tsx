@@ -90,6 +90,9 @@ function assetRowIconClass(type: AssetRecord["type"]): string {
   if (type === "gltf") {
     return "asset-row-icon gltf";
   }
+  if (type === "aseprite") {
+    return "asset-row-icon aseprite";
+  }
   return "asset-row-icon texture";
 }
 

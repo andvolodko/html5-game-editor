@@ -208,6 +208,19 @@ describe("assets HTTP routes", () => {
     expect(content.headers.get("content-type")).toBe("audio/mpeg");
     const bytes = Buffer.from(await content.arrayBuffer());
     expect(bytes.equals(audioBytes)).toBe(true);
+
+    const ranged = await fetch(
+      `${baseUrl}/assets/${encodeURIComponent(assetId)}/content`,
+      { headers: { Range: "bytes=0-3" } },
+    );
+    expect(ranged.status).toBe(206);
+    expect(ranged.headers.get("accept-ranges")).toBe("bytes");
+    expect(ranged.headers.get("content-range")).toBe(
+      `bytes 0-3/${String(audioBytes.length)}`,
+    );
+    expect(Buffer.from(await ranged.arrayBuffer()).equals(audioBytes.subarray(0, 4))).toBe(
+      true,
+    );
   });
 
   it("creates empty folders for the asset browser", async () => {
@@ -287,6 +300,149 @@ describe("assets HTTP routes", () => {
     expect(moved.status).toBe(200);
     expect(movedJson.asset.id).toBe(assetId);
     expect(movedJson.asset.path).toBe("assets/icons/coin.png");
+  });
+
+  it("duplicates an imported texture with a new id", async () => {
+    const multipart = buildMultipart(
+      { destination: "assets" },
+      [
+        {
+          field: "files",
+          fileName: "token.png",
+          bytes: tinyPng(),
+          mime: "image/png",
+        },
+      ],
+    );
+    const imported = await fetch(`${baseUrl}/assets/import`, {
+      method: "POST",
+      headers: { "content-type": multipart.contentType },
+      body: multipart.body,
+    });
+    const importJson = (await imported.json()) as {
+      imported: Array<{ id: string; path: string }>;
+    };
+    const assetId = importJson.imported[0]!.id;
+
+    const duplicated = await fetch(
+      `${baseUrl}/assets/${encodeURIComponent(assetId)}/duplicate`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({}),
+      },
+    );
+    const duplicatedJson = (await duplicated.json()) as {
+      ok: boolean;
+      asset: { id: string; path: string; name: string };
+    };
+    expect(duplicated.status).toBe(200);
+    expect(duplicatedJson.ok).toBe(true);
+    expect(duplicatedJson.asset.id).not.toBe(assetId);
+    expect(duplicatedJson.asset.path).toBe("assets/token-1.png");
+    expect(duplicatedJson.asset.name).toBe("token-1");
+  });
+
+  it("deletes an imported asset and restores the same id", async () => {
+    const multipart = buildMultipart(
+      { destination: "assets" },
+      [
+        {
+          field: "files",
+          fileName: "restore-me.png",
+          bytes: tinyPng(),
+          mime: "image/png",
+        },
+      ],
+    );
+    const imported = await fetch(`${baseUrl}/assets/import`, {
+      method: "POST",
+      headers: { "content-type": multipart.contentType },
+      body: multipart.body,
+    });
+    const importJson = (await imported.json()) as {
+      imported: Array<{ id: string; path: string }>;
+    };
+    const assetId = importJson.imported[0]!.id;
+
+    const deleted = await fetch(
+      `${baseUrl}/assets/${encodeURIComponent(assetId)}/delete`,
+      { method: "POST" },
+    );
+    expect(deleted.status).toBe(200);
+
+    const listed = await fetch(`${baseUrl}/assets`);
+    const listedJson = (await listed.json()) as {
+      database: { assets: Array<{ id: string }> };
+    };
+    expect(listedJson.database.assets.some((asset) => asset.id === assetId)).toBe(
+      false,
+    );
+
+    const restored = await fetch(
+      `${baseUrl}/assets/${encodeURIComponent(assetId)}/restore`,
+      { method: "POST" },
+    );
+    const restoredJson = (await restored.json()) as {
+      ok: boolean;
+      asset: { id: string; path: string };
+    };
+    expect(restored.status).toBe(200);
+    expect(restoredJson.asset.id).toBe(assetId);
+    expect(restoredJson.asset.path).toBe("assets/restore-me.png");
+
+    const content = await fetch(
+      `${baseUrl}/assets/${encodeURIComponent(assetId)}/content`,
+    );
+    expect(content.ok).toBe(true);
+    expect(Buffer.from(await content.arrayBuffer()).equals(tinyPng())).toBe(true);
+  });
+
+  it("deletes a folder and restores nested assets with the same ids", async () => {
+    const multipart = buildMultipart(
+      { destination: "assets/undo-bin" },
+      [
+        {
+          field: "files",
+          fileName: "coin.png",
+          bytes: tinyPng(),
+          mime: "image/png",
+        },
+      ],
+    );
+    const imported = await fetch(`${baseUrl}/assets/import`, {
+      method: "POST",
+      headers: { "content-type": multipart.contentType },
+      body: multipart.body,
+    });
+    const importJson = (await imported.json()) as {
+      imported: Array<{ id: string; path: string }>;
+    };
+    expect(imported.status).toBe(200);
+    const assetId = importJson.imported[0]!.id;
+
+    const deleted = await fetch(`${baseUrl}/assets/folders/delete`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ path: "assets/undo-bin" }),
+    });
+    expect(deleted.status).toBe(200);
+
+    const restored = await fetch(`${baseUrl}/assets/folders/restore`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ path: "assets/undo-bin" }),
+    });
+    const restoredJson = (await restored.json()) as {
+      ok: boolean;
+      folder: string;
+      database: { assets: Array<{ id: string; path: string }> };
+    };
+    expect(restored.status).toBe(200);
+    expect(restoredJson.folder).toBe("assets/undo-bin");
+    expect(
+      restoredJson.database.assets.find((asset) => asset.id === assetId)?.path,
+    ).toBe("assets/undo-bin/coin.png");
   });
 
   it("lists scenes", async () => {

@@ -1,19 +1,11 @@
 import type { AssetResolver } from "@game-editor/assets";
-import {
-  AnimationClip,
-  type Group,
-  type Object3D,
-  LoadingManager,
-} from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { type AnimationClip, type Object3D } from "three";
 import { clone as skeletonClone } from "three/addons/utils/SkeletonUtils.js";
+import { loadGltf, type LoadedGltf } from "./load-gltf.js";
 
 const PLACEHOLDER_NAME = "__model3d_placeholder";
 
-export interface CachedGltfAsset {
-  scene: Group;
-  animations: AnimationClip[];
-}
+export type CachedGltfAsset = LoadedGltf;
 
 /**
  * Loads and caches glTF scenes by assetId.
@@ -87,24 +79,15 @@ export class ThreeGltfCache {
     }
 
     const partUrls = gltfUrls?.partUrls ?? {};
-    const manager = new LoadingManager();
-    manager.setURLModifier((url) => {
-      const base = url.split(/[\\/]/).pop() ?? url;
-      const mapped = partUrls[base] ?? partUrls[base.toLowerCase()];
-      return mapped ?? url;
-    });
-    const loader = new GLTFLoader(manager);
-
-    const loadPromise = loader
-      .loadAsync(rootUrl)
+    const loadPromise = loadGltf({
+      rootUrl,
+      format: gltfUrls?.format ?? "glb",
+      partUrls,
+    })
       .then((gltf) => {
-        const entry: CachedGltfAsset = {
-          scene: gltf.scene,
-          animations: gltf.animations.slice(),
-        };
-        this.cache.set(assetId, entry);
+        this.cache.set(assetId, gltf);
         this.inflight.delete(assetId);
-        return entry;
+        return gltf;
       })
       .catch((error: unknown) => {
         this.inflight.delete(assetId);

@@ -40,6 +40,8 @@ export interface EditorHotkeyHost {
   undo(): boolean;
   redo(): boolean;
   duplicateNode(): string | undefined;
+  copySelectedNodes(): boolean;
+  pasteNodes(): readonly string[];
   deleteSelectedNodes(): void;
   requestRename(): void;
   /** Returns true when at least one selected node was moved. */
@@ -78,6 +80,15 @@ export function isAssetsPanelKeyTarget(eventTarget: EventTarget | null): boolean
   // Call as a method so DOM Element.closest keeps its receiver (`this`).
   const el = eventTarget as { closest(selector: string): unknown };
   return el.closest('[data-editor-panel="assets"]') != null;
+}
+
+/** True when the user has highlighted DOM text (let the browser copy it). */
+function hasDomTextSelection(): boolean {
+  if (typeof globalThis.getSelection !== "function") {
+    return false;
+  }
+  const selection = globalThis.getSelection();
+  return Boolean(selection && selection.toString().length > 0);
 }
 
 /**
@@ -125,6 +136,19 @@ export function bindEditorHotkeys(
     if (mod && isChordLetter(event, "KeyD", "d")) {
       event.preventDefault();
       host.duplicateNode();
+      return;
+    }
+    if (mod && isChordLetter(event, "KeyC", "c") && !event.shiftKey && !event.altKey) {
+      if (hasDomTextSelection()) {
+        return;
+      }
+      event.preventDefault();
+      host.copySelectedNodes();
+      return;
+    }
+    if (mod && isChordLetter(event, "KeyV", "v") && !event.shiftKey && !event.altKey) {
+      event.preventDefault();
+      host.pasteNodes();
       return;
     }
     if (event.key === "Delete") {

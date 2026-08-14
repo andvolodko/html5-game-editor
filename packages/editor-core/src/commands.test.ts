@@ -295,6 +295,51 @@ describe("DocumentManager dirty tracking", () => {
     dispose();
   });
 
+  it("Ctrl+C / Ctrl+V copies and pastes the selected node", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const created = editor.createSprite("Hero");
+    editor.selectNodes([created]);
+
+    const listeners = new Map<string, EventListener>();
+    const target = {
+      addEventListener(type: string, listener: EventListener) {
+        listeners.set(type, listener);
+      },
+      removeEventListener(type: string) {
+        listeners.delete(type);
+      },
+    } as unknown as Window;
+
+    const dispose = editor.bindEditorHotkeys(target);
+    const onKeyDown = listeners.get("keydown");
+    const preventDefault = vi.fn();
+
+    onKeyDown!({
+      key: "c",
+      code: "KeyC",
+      ctrlKey: true,
+      metaKey: false,
+      shiftKey: false,
+      altKey: false,
+      preventDefault,
+    } as unknown as Event);
+
+    onKeyDown!({
+      key: "v",
+      code: "KeyV",
+      ctrlKey: true,
+      metaKey: false,
+      shiftKey: false,
+      altKey: false,
+      preventDefault,
+    } as unknown as Event);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(editor.getScene().nodes).toHaveLength(2);
+    expect(editor.getScene().nodes[1]?.name).toBe("Hero Copy");
+    dispose();
+  });
+
   it("Ctrl+S hotkey matches physical KeyS on non-Latin layouts", async () => {
     let saveCount = 0;
     const editor = new Editor({

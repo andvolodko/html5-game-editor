@@ -1,6 +1,7 @@
 import type { ComponentDefinition } from "../types.js";
 import { audioClickComponent } from "./audio-click.js";
 import { backgroundAudioComponent } from "./background-audio.js";
+import { buttonComponent } from "./button.js";
 import { changeSceneComponent } from "./change-scene.js";
 import { loadAllSceneAssetsComponent } from "./load-all-scene-assets.js";
 import { performanceMeterComponent } from "./performance-meter.js";
@@ -12,6 +13,7 @@ const SHARED_SCRIPT_RUNTIME: readonly ComponentDefinition[] = [
   performanceMeterComponent,
   audioClickComponent,
   backgroundAudioComponent,
+  buttonComponent,
 ];
 
 /**

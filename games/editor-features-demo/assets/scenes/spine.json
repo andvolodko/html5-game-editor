@@ -11,8 +11,8 @@
           "type": "Transform2D",
           "id": "comp_cffdb41d-0c71-46ef-ac3d-e5924f34de05",
           "position": {
-            "x": 620,
-            "y": 210
+            "x": 512,
+            "y": 128
           },
           "rotation": 0,
           "scale": {
@@ -25,7 +25,11 @@
           "id": "comp_48f9da4a-3bcd-4aaf-b0dd-ab296e1a960a",
           "assetId": "asset_b8f604c4-25db-4cf1-bd5f-8fb354ee280f",
           "width": 367.3581574907264,
-          "height": 303.2549893790642
+          "height": 303.2549893790642,
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
         }
       ],
       "children": []
@@ -125,12 +129,31 @@
             "fontSize": 32,
             "fontWeight": "normal",
             "fontStyle": "normal",
+            "fontVariant": "normal",
             "fill": 16777215,
+            "fillAlpha": 1,
             "align": "left",
             "letterSpacing": 0,
             "lineHeight": 0,
+            "leading": 0,
             "wordWrap": false,
-            "wordWrapWidth": 440
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
           }
         },
         {
@@ -161,8 +184,8 @@
           "type": "Transform2D",
           "id": "comp_d92f8177-9278-465a-8232-078a2ba10d9b",
           "position": {
-            "x": 10,
-            "y": 10
+            "x": 16,
+            "y": 16
           },
           "rotation": 0,
           "scale": {
@@ -179,12 +202,31 @@
             "fontSize": 24,
             "fontWeight": "normal",
             "fontStyle": "normal",
+            "fontVariant": "normal",
             "fill": 16777215,
+            "fillAlpha": 1,
             "align": "left",
             "letterSpacing": 0,
             "lineHeight": 0,
+            "leading": 0,
             "wordWrap": true,
-            "wordWrapWidth": 440
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
           },
           "anchor": {
             "x": 0,

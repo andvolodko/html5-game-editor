@@ -90,6 +90,26 @@ export function findNodeById(
 
 }
 
+/** First node whose `name` matches, depth-first in sibling order. */
+export function findNodeByName(
+  scene: SceneData,
+  name: string,
+): SceneNodeData | undefined {
+  const visit = (nodes: SceneNodeData[]): SceneNodeData | undefined => {
+    for (const node of nodes) {
+      if (node.name === name) {
+        return node;
+      }
+      const nested = visit(node.children);
+      if (nested) {
+        return nested;
+      }
+    }
+    return undefined;
+  };
+  return visit(scene.nodes);
+}
+
 
 
 export function getTransform2D(

@@ -1,0 +1,422 @@
+{
+  "frames": {
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-0": {
+      "frame": {
+        "x": 0,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-1": {
+      "frame": {
+        "x": 576,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-2": {
+      "frame": {
+        "x": 384,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-3": {
+      "frame": {
+        "x": 192,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-4": {
+      "frame": {
+        "x": 0,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-5": {
+      "frame": {
+        "x": 768,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-6": {
+      "frame": {
+        "x": 576,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-7": {
+      "frame": {
+        "x": 384,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-8": {
+      "frame": {
+        "x": 192,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-9": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-10": {
+      "frame": {
+        "x": 768,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-11": {
+      "frame": {
+        "x": 576,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-12": {
+      "frame": {
+        "x": 384,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-13": {
+      "frame": {
+        "x": 192,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-14": {
+      "frame": {
+        "x": 0,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-15": {
+      "frame": {
+        "x": 768,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-16": {
+      "frame": {
+        "x": 576,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-17": {
+      "frame": {
+        "x": 384,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-18": {
+      "frame": {
+        "x": 192,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    }
+  },
+  "animations": {
+    "Idle": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-0",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-1",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-2",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-3",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-4",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-5"
+    ],
+    "Run ": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-6",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-7",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-8",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-9"
+    ],
+    "Shoot": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-10",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-11",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-12",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-13",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-14",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-15",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-16",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-17"
+    ],
+    "Arrow": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Archer-frame-18"
+    ]
+  },
+  "meta": {
+    "image": "Archer.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1024,
+      "h": 1024
+    },
+    "scale": "1"
+  }
+}

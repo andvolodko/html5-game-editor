@@ -5,6 +5,8 @@ export type {
   ThreePointerHandlers,
   ThreeGizmoDragEnd,
 } from "./three-scene-renderer-types.js";
+export { mountGltfPreview } from "./gltf-preview.js";
+export type { GltfPreviewHandle } from "./gltf-preview.js";
 export {
   DEFAULT_THREE_BACKGROUND,
   EDITOR_CAMERA_POSITION,

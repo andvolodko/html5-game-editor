@@ -53,8 +53,14 @@ export interface AssetApiClient {
   createFolder(folderPath: string): Promise<AssetCreateFolderResult>;
   renameAsset(assetId: string, name: string): Promise<AssetMutationApiResult>;
   moveAsset(assetId: string, destination: string): Promise<AssetMutationApiResult>;
+  duplicateAsset(
+    assetId: string,
+    destination?: string,
+  ): Promise<AssetMutationApiResult>;
+  restoreAsset(assetId: string): Promise<AssetMutationApiResult>;
   deleteAsset(assetId: string): Promise<AssetDeleteApiResult>;
   renameFolder(folderPath: string, name: string): Promise<FolderRenameApiResult>;
+  restoreFolder(folderPath: string): Promise<FolderRenameApiResult>;
   deleteFolder(folderPath: string): Promise<AssetDeleteApiResult>;
   getAssetContentUrl(assetId: string, revision?: string): string;
   getAssetPartUrl(assetId: string, part: string, revision?: string): string;
@@ -165,6 +171,26 @@ export function createFetchAssetApiClient(
       return parseMutationPayload(response, "Move asset");
     },
 
+    async duplicateAsset(assetId, destination) {
+      const response = await fetchImpl(
+        `${root}/assets/${encodeURIComponent(assetId)}/duplicate`,
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(destination ? { destination } : {}),
+        },
+      );
+      return parseMutationPayload(response, "Duplicate asset");
+    },
+
+    async restoreAsset(assetId) {
+      const response = await fetchImpl(
+        `${root}/assets/${encodeURIComponent(assetId)}/restore`,
+        { method: "POST" },
+      );
+      return parseMutationPayload(response, "Restore asset");
+    },
+
     async deleteAsset(assetId) {
       const response = await fetchImpl(
         `${root}/assets/${encodeURIComponent(assetId)}/delete`,
@@ -179,30 +205,17 @@ export function createFetchAssetApiClient(
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ path: folderPath, name }),
       });
-      const payload = (await response.json()) as {
-        ok: boolean;
-        folder?: string;
-        database?: AssetDatabaseData;
-        revision?: string;
-        folders?: string[];
-        message?: string;
-      };
-      if (
-        !response.ok ||
-        !payload.ok ||
-        payload.folder === undefined ||
-        payload.database === undefined ||
-        payload.revision === undefined ||
-        payload.folders === undefined
-      ) {
-        throw new Error(payload.message ?? `Rename folder failed (${String(response.status)})`);
-      }
-      return {
-        folder: payload.folder,
-        database: payload.database,
-        revision: payload.revision,
-        folders: payload.folders,
-      };
+      return parseFolderMutationPayload(response, "Rename folder");
+    },
+
+    async restoreFolder(folderPath) {
+      const safePath = parseDeletableAssetFolderPath(folderPath);
+      const response = await fetchImpl(`${root}/assets/folders/restore`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ path: safePath }),
+      });
+      return parseFolderMutationPayload(response, "Restore folder");
     },
 
     async deleteFolder(folderPath) {
@@ -279,6 +292,36 @@ async function parseDeletePayload(
     throw new Error(payload.message ?? `${label} failed (${String(response.status)})`);
   }
   return {
+    database: payload.database,
+    revision: payload.revision,
+    folders: payload.folders,
+  };
+}
+
+async function parseFolderMutationPayload(
+  response: Response,
+  label: string,
+): Promise<FolderRenameApiResult> {
+  const payload = (await response.json()) as {
+    ok: boolean;
+    folder?: string;
+    database?: AssetDatabaseData;
+    revision?: string;
+    folders?: string[];
+    message?: string;
+  };
+  if (
+    !response.ok ||
+    !payload.ok ||
+    payload.folder === undefined ||
+    payload.database === undefined ||
+    payload.revision === undefined ||
+    payload.folders === undefined
+  ) {
+    throw new Error(payload.message ?? `${label} failed (${String(response.status)})`);
+  }
+  return {
+    folder: payload.folder,
     database: payload.database,
     revision: payload.revision,
     folders: payload.folders,

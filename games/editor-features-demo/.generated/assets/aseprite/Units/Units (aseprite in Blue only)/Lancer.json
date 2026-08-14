@@ -1,0 +1,1365 @@
+{
+  "frames": {
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-0": {
+      "frame": {
+        "x": 0,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-1": {
+      "frame": {
+        "x": 2880,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-2": {
+      "frame": {
+        "x": 3200,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-3": {
+      "frame": {
+        "x": 3520,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-4": {
+      "frame": {
+        "x": 0,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-5": {
+      "frame": {
+        "x": 320,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-6": {
+      "frame": {
+        "x": 640,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-7": {
+      "frame": {
+        "x": 960,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-8": {
+      "frame": {
+        "x": 1280,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-9": {
+      "frame": {
+        "x": 1600,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-10": {
+      "frame": {
+        "x": 1920,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-11": {
+      "frame": {
+        "x": 2240,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-12": {
+      "frame": {
+        "x": 2560,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-13": {
+      "frame": {
+        "x": 2880,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-14": {
+      "frame": {
+        "x": 3200,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-15": {
+      "frame": {
+        "x": 3520,
+        "y": 960,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-16": {
+      "frame": {
+        "x": 2560,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-17": {
+      "frame": {
+        "x": 320,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-18": {
+      "frame": {
+        "x": 640,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-19": {
+      "frame": {
+        "x": 960,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-20": {
+      "frame": {
+        "x": 1280,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-21": {
+      "frame": {
+        "x": 1600,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-22": {
+      "frame": {
+        "x": 1920,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-23": {
+      "frame": {
+        "x": 2240,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-24": {
+      "frame": {
+        "x": 2560,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-25": {
+      "frame": {
+        "x": 2880,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-26": {
+      "frame": {
+        "x": 3200,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-27": {
+      "frame": {
+        "x": 3520,
+        "y": 1280,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-28": {
+      "frame": {
+        "x": 0,
+        "y": 1600,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-29": {
+      "frame": {
+        "x": 320,
+        "y": 1600,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-30": {
+      "frame": {
+        "x": 640,
+        "y": 1600,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-31": {
+      "frame": {
+        "x": 1280,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-32": {
+      "frame": {
+        "x": 320,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-33": {
+      "frame": {
+        "x": 640,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-34": {
+      "frame": {
+        "x": 960,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-35": {
+      "frame": {
+        "x": 1280,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-36": {
+      "frame": {
+        "x": 1600,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-37": {
+      "frame": {
+        "x": 1920,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-38": {
+      "frame": {
+        "x": 2240,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-39": {
+      "frame": {
+        "x": 2560,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-40": {
+      "frame": {
+        "x": 2880,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-41": {
+      "frame": {
+        "x": 3200,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-42": {
+      "frame": {
+        "x": 3520,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-43": {
+      "frame": {
+        "x": 0,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-44": {
+      "frame": {
+        "x": 320,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-45": {
+      "frame": {
+        "x": 640,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-46": {
+      "frame": {
+        "x": 960,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-47": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-48": {
+      "frame": {
+        "x": 1600,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-49": {
+      "frame": {
+        "x": 1920,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-50": {
+      "frame": {
+        "x": 2240,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-51": {
+      "frame": {
+        "x": 2560,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-52": {
+      "frame": {
+        "x": 2880,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-53": {
+      "frame": {
+        "x": 3200,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-54": {
+      "frame": {
+        "x": 3520,
+        "y": 320,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-55": {
+      "frame": {
+        "x": 0,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-56": {
+      "frame": {
+        "x": 320,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-57": {
+      "frame": {
+        "x": 640,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-58": {
+      "frame": {
+        "x": 960,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-59": {
+      "frame": {
+        "x": 1280,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-60": {
+      "frame": {
+        "x": 1600,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-61": {
+      "frame": {
+        "x": 1920,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    },
+    "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-62": {
+      "frame": {
+        "x": 2240,
+        "y": 640,
+        "w": 320,
+        "h": 320
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 320
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 320
+      }
+    }
+  },
+  "animations": {
+    "Idle": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-0",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-1",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-2",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-3",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-4",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-5",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-6",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-7",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-8",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-9",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-10",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-11"
+    ],
+    "Run": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-12",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-13",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-14",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-15",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-16",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-17"
+    ],
+    "Up": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-18",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-19",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-20",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-21",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-22",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-23",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-24",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-25",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-26"
+    ],
+    "Defense": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-18",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-19",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-20",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-21",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-22",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-23"
+    ],
+    "Attack": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-24",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-25",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-26"
+    ],
+    "Up Right": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-27",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-28",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-29",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-30",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-31",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-32",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-33",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-34",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-35"
+    ],
+    "Right": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-36",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-37",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-38",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-39",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-40",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-41",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-42",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-43",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-44"
+    ],
+    "Down Right": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-45",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-46",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-47",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-48",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-49",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-50",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-51",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-52",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-53"
+    ],
+    "Down": [
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-54",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-55",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-56",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-57",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-58",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-59",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-60",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-61",
+      "assets-aseprite-Units-Units-aseprite-in-Blue-only-Lancer-frame-62"
+    ]
+  },
+  "meta": {
+    "image": "Lancer.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 4096,
+      "h": 2048
+    },
+    "scale": "1"
+  }
+}

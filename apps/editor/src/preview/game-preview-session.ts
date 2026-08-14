@@ -46,10 +46,27 @@ export interface GamePreviewStartOptions {
   loadSceneById?: (sceneId: string) => Promise<SceneData>;
   /** All project scenes — used by Load All Scene Assets. */
   listScenes?: () => Promise<readonly SceneData[]>;
+  /** Scene file id being started (Assets id, not SceneData.id). */
+  sceneId: string;
+  /** Fires after the preview actually displays a scene (start or changeScene). */
+  onSceneChange?: (scene: SceneData, sceneId: string) => void;
 }
 
 interface PreviewRendererBundle {
   destroy(): Promise<void>;
+}
+
+function onceDestroyable(bundle: PreviewRendererBundle): PreviewRendererBundle {
+  let destroyed = false;
+  return {
+    async destroy() {
+      if (destroyed) {
+        return;
+      }
+      destroyed = true;
+      await bundle.destroy();
+    },
+  };
 }
 
 /**
@@ -65,6 +82,10 @@ export class GamePreviewSession {
   private rafId = 0;
   private lastFrameMs = 0;
   private audioPlayer: HtmlAudioPlayerHandle | undefined;
+  private sceneChangeSeq = 0;
+  private switchScene:
+    | ((sceneId: string) => Promise<void>)
+    | undefined;
 
   get isRunning(): boolean {
     return this.runtime !== undefined;
@@ -82,7 +103,6 @@ export class GamePreviewSession {
     const screen = new GameScreenHost(options.canvasParent, options.resolution);
     const design = screen.getResolution();
     options.canvasParent.style.background = options.background;
-    const kind = getSceneRendererKind(options.scene);
     const pixiBgColor = projectBackgroundToPixiColor(options.background);
 
     const bus = new EventBus();
@@ -103,6 +123,12 @@ export class GamePreviewSession {
     this.audioPlayer = audioPlayer;
 
     const runtimeRef: { current?: GameRuntime } = {};
+    const applySceneRef: {
+      current: (sceneId: string, scene: SceneData) => Promise<void>;
+    } = {
+      current: async () => undefined,
+    };
+
     const runtime = new GameRuntime({
       components,
       services: {
@@ -115,9 +141,7 @@ export class GamePreviewSession {
           if (token !== this.startToken) {
             return;
           }
-          runtime.loadScene(next);
-          runtime.resize(design.width, design.height);
-          runtime.render();
+          await applySceneRef.current(sceneId, next);
         },
         resolveAssetUrl: (assetId) =>
           options.assetResolver.resolveUrl(assetId),
@@ -157,32 +181,65 @@ export class GamePreviewSession {
     });
     runtimeRef.current = runtime;
 
-    const bundle = await mountPreviewRenderers({
-      frame: screen.frame,
-      kind,
-      assetResolver: options.assetResolver,
-      design,
-      pixiBgColor,
-      runtime,
-      gltfCache,
-    });
+    applySceneRef.current = async (sceneId, scene) => {
+      const changeSeq = ++this.sceneChangeSeq;
+      const previous = this.bundle;
+      this.bundle = undefined;
+      if (previous) {
+        await previous.destroy();
+      }
+      if (token !== this.startToken || changeSeq !== this.sceneChangeSeq) {
+        return;
+      }
+      runtime.clearRenderers();
+      const nextBundle = onceDestroyable(
+        await mountPreviewRenderers({
+          frame: screen.frame,
+          kind: getSceneRendererKind(scene),
+          assetResolver: options.assetResolver,
+          design,
+          pixiBgColor,
+          runtime,
+          gltfCache,
+        }),
+      );
+      if (token !== this.startToken || changeSeq !== this.sceneChangeSeq) {
+        await nextBundle.destroy();
+        return;
+      }
+      this.bundle = nextBundle;
+      runtime.loadScene(scene);
+      runtime.resize(design.width, design.height);
+      runtime.render();
+      options.onSceneChange?.(scene, sceneId);
+    };
 
+    this.switchScene = async (sceneId) => {
+      if (!options.loadSceneById) {
+        return;
+      }
+      const next = await options.loadSceneById(sceneId);
+      if (token !== this.startToken) {
+        return;
+      }
+      await applySceneRef.current(sceneId, next);
+    };
+
+    this.screen = screen;
+    this.runtime = runtime;
+    this.bus = bus;
+    await applySceneRef.current(options.sceneId, options.scene);
     if (token !== this.startToken) {
-      await bundle.destroy();
-      screen.destroy();
+      await this.disposeInternal();
       return;
     }
 
-    runtime.loadScene(options.scene);
-    runtime.resize(design.width, design.height);
-    runtime.render();
-
-    this.screen = screen;
-    this.bundle = bundle;
-    this.runtime = runtime;
-    this.bus = bus;
     this.lastFrameMs = performance.now();
     this.scheduleFrame(token);
+  }
+
+  async changeScene(sceneId: string): Promise<void> {
+    await this.switchScene?.(sceneId);
   }
 
   async stop(): Promise<void> {
@@ -215,6 +272,7 @@ export class GamePreviewSession {
     }
     this.runtime?.dispose();
     this.runtime = undefined;
+    this.switchScene = undefined;
     this.audioPlayer?.stop();
     this.audioPlayer = undefined;
     this.bus?.clear();
@@ -325,13 +383,23 @@ async function mountPreviewRenderers(args: {
       }
       downNodeId = undefined;
     };
+    const onPointerMove = (event: PointerEvent) => {
+      const nodeId = pickHybridNodeId(stack, event.clientX, event.clientY);
+      stack.hosts.inputHost.style.cursor =
+        (nodeId
+          ? (stack.pixiForeground.getNodeCursor?.(nodeId) ??
+            stack.pixiBackground.getNodeCursor?.(nodeId))
+          : undefined) ?? "";
+    };
     stack.hosts.inputHost.addEventListener("pointerdown", onPointerDown);
     stack.hosts.inputHost.addEventListener("pointerup", onPointerUp);
+    stack.hosts.inputHost.addEventListener("pointermove", onPointerMove);
 
     return {
       destroy: async () => {
         stack.hosts.inputHost.removeEventListener("pointerdown", onPointerDown);
         stack.hosts.inputHost.removeEventListener("pointerup", onPointerUp);
+        stack.hosts.inputHost.removeEventListener("pointermove", onPointerMove);
         await stack.destroy();
       },
     };

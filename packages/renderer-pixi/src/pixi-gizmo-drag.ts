@@ -19,7 +19,7 @@ import {
   type SpriteScaleHandle,
   type Vec2,
 } from "@game-editor/scene";
-import { MOUSE_BUTTON_MIDDLE } from "@game-editor/shared";
+import { MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_SECONDARY } from "@game-editor/shared";
 import type { RuntimeNode } from "./pixi-runtime-nodes.js";
 
 interface GizmoDragState {
@@ -94,7 +94,10 @@ export class PixiGizmoDragController {
     event: FederatedPointerEvent,
     host: GizmoDragHost,
   ): void {
-    if (event.button === MOUSE_BUTTON_MIDDLE) {
+    if (
+      event.button === MOUSE_BUTTON_MIDDLE ||
+      event.button === MOUSE_BUTTON_SECONDARY
+    ) {
       return;
     }
     const visual = getVisualComponent(runtime.node);

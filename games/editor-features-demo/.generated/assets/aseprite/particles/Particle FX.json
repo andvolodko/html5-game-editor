@@ -1,0 +1,1606 @@
+{
+  "frames": {
+    "assets-aseprite-particles-Particle-FX-frame-0": {
+      "frame": {
+        "x": 1152,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-1": {
+      "frame": {
+        "x": 1152,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-2": {
+      "frame": {
+        "x": 960,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-3": {
+      "frame": {
+        "x": 768,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-4": {
+      "frame": {
+        "x": 576,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-5": {
+      "frame": {
+        "x": 384,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-6": {
+      "frame": {
+        "x": 192,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-7": {
+      "frame": {
+        "x": 0,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-8": {
+      "frame": {
+        "x": 1728,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-9": {
+      "frame": {
+        "x": 1536,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-10": {
+      "frame": {
+        "x": 1344,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-11": {
+      "frame": {
+        "x": 1152,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-12": {
+      "frame": {
+        "x": 960,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-13": {
+      "frame": {
+        "x": 768,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-14": {
+      "frame": {
+        "x": 576,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-15": {
+      "frame": {
+        "x": 384,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-16": {
+      "frame": {
+        "x": 192,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-17": {
+      "frame": {
+        "x": 0,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-18": {
+      "frame": {
+        "x": 1728,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-19": {
+      "frame": {
+        "x": 1536,
+        "y": 768,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-20": {
+      "frame": {
+        "x": 768,
+        "y": 1344,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-21": {
+      "frame": {
+        "x": 576,
+        "y": 1344,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-22": {
+      "frame": {
+        "x": 384,
+        "y": 1344,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-23": {
+      "frame": {
+        "x": 192,
+        "y": 1344,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-24": {
+      "frame": {
+        "x": 0,
+        "y": 1344,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-25": {
+      "frame": {
+        "x": 1728,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-26": {
+      "frame": {
+        "x": 1536,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-27": {
+      "frame": {
+        "x": 1344,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-28": {
+      "frame": {
+        "x": 1344,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-29": {
+      "frame": {
+        "x": 960,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-30": {
+      "frame": {
+        "x": 768,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-31": {
+      "frame": {
+        "x": 576,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-32": {
+      "frame": {
+        "x": 384,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-33": {
+      "frame": {
+        "x": 192,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-34": {
+      "frame": {
+        "x": 0,
+        "y": 1152,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-35": {
+      "frame": {
+        "x": 1728,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-36": {
+      "frame": {
+        "x": 1536,
+        "y": 960,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-37": {
+      "frame": {
+        "x": 1728,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-38": {
+      "frame": {
+        "x": 1536,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-39": {
+      "frame": {
+        "x": 1344,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-40": {
+      "frame": {
+        "x": 1152,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-41": {
+      "frame": {
+        "x": 960,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-42": {
+      "frame": {
+        "x": 768,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-43": {
+      "frame": {
+        "x": 576,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-44": {
+      "frame": {
+        "x": 384,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-45": {
+      "frame": {
+        "x": 192,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-46": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-47": {
+      "frame": {
+        "x": 1728,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-48": {
+      "frame": {
+        "x": 1536,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-49": {
+      "frame": {
+        "x": 1344,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-50": {
+      "frame": {
+        "x": 1152,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-51": {
+      "frame": {
+        "x": 960,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-52": {
+      "frame": {
+        "x": 768,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-53": {
+      "frame": {
+        "x": 576,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-54": {
+      "frame": {
+        "x": 384,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-55": {
+      "frame": {
+        "x": 192,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-56": {
+      "frame": {
+        "x": 0,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-57": {
+      "frame": {
+        "x": 1344,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-58": {
+      "frame": {
+        "x": 1152,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-59": {
+      "frame": {
+        "x": 960,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-60": {
+      "frame": {
+        "x": 768,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-61": {
+      "frame": {
+        "x": 576,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-62": {
+      "frame": {
+        "x": 384,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-63": {
+      "frame": {
+        "x": 192,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-64": {
+      "frame": {
+        "x": 0,
+        "y": 576,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-65": {
+      "frame": {
+        "x": 1728,
+        "y": 192,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-66": {
+      "frame": {
+        "x": 1536,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-67": {
+      "frame": {
+        "x": 1344,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-68": {
+      "frame": {
+        "x": 1152,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-69": {
+      "frame": {
+        "x": 960,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-70": {
+      "frame": {
+        "x": 768,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-71": {
+      "frame": {
+        "x": 576,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-72": {
+      "frame": {
+        "x": 384,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-73": {
+      "frame": {
+        "x": 192,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    },
+    "assets-aseprite-particles-Particle-FX-frame-74": {
+      "frame": {
+        "x": 0,
+        "y": 384,
+        "w": 192,
+        "h": 192
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 192
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      }
+    }
+  },
+  "animations": {
+    "Dust 1": [
+      "assets-aseprite-particles-Particle-FX-frame-0",
+      "assets-aseprite-particles-Particle-FX-frame-1",
+      "assets-aseprite-particles-Particle-FX-frame-2",
+      "assets-aseprite-particles-Particle-FX-frame-3",
+      "assets-aseprite-particles-Particle-FX-frame-4",
+      "assets-aseprite-particles-Particle-FX-frame-5",
+      "assets-aseprite-particles-Particle-FX-frame-6",
+      "assets-aseprite-particles-Particle-FX-frame-7"
+    ],
+    "Dust 2": [
+      "assets-aseprite-particles-Particle-FX-frame-8",
+      "assets-aseprite-particles-Particle-FX-frame-9",
+      "assets-aseprite-particles-Particle-FX-frame-10",
+      "assets-aseprite-particles-Particle-FX-frame-11",
+      "assets-aseprite-particles-Particle-FX-frame-12",
+      "assets-aseprite-particles-Particle-FX-frame-13",
+      "assets-aseprite-particles-Particle-FX-frame-14",
+      "assets-aseprite-particles-Particle-FX-frame-15",
+      "assets-aseprite-particles-Particle-FX-frame-16",
+      "assets-aseprite-particles-Particle-FX-frame-17"
+    ],
+    "Explosion 1": [
+      "assets-aseprite-particles-Particle-FX-frame-18",
+      "assets-aseprite-particles-Particle-FX-frame-19",
+      "assets-aseprite-particles-Particle-FX-frame-20",
+      "assets-aseprite-particles-Particle-FX-frame-21",
+      "assets-aseprite-particles-Particle-FX-frame-22",
+      "assets-aseprite-particles-Particle-FX-frame-23",
+      "assets-aseprite-particles-Particle-FX-frame-24",
+      "assets-aseprite-particles-Particle-FX-frame-25"
+    ],
+    "Explosion 2": [
+      "assets-aseprite-particles-Particle-FX-frame-26",
+      "assets-aseprite-particles-Particle-FX-frame-27",
+      "assets-aseprite-particles-Particle-FX-frame-28",
+      "assets-aseprite-particles-Particle-FX-frame-29",
+      "assets-aseprite-particles-Particle-FX-frame-30",
+      "assets-aseprite-particles-Particle-FX-frame-31",
+      "assets-aseprite-particles-Particle-FX-frame-32",
+      "assets-aseprite-particles-Particle-FX-frame-33",
+      "assets-aseprite-particles-Particle-FX-frame-34",
+      "assets-aseprite-particles-Particle-FX-frame-35"
+    ],
+    "Fire 1": [
+      "assets-aseprite-particles-Particle-FX-frame-36",
+      "assets-aseprite-particles-Particle-FX-frame-37",
+      "assets-aseprite-particles-Particle-FX-frame-38",
+      "assets-aseprite-particles-Particle-FX-frame-39",
+      "assets-aseprite-particles-Particle-FX-frame-40",
+      "assets-aseprite-particles-Particle-FX-frame-41",
+      "assets-aseprite-particles-Particle-FX-frame-42",
+      "assets-aseprite-particles-Particle-FX-frame-43"
+    ],
+    "Fire 2": [
+      "assets-aseprite-particles-Particle-FX-frame-44",
+      "assets-aseprite-particles-Particle-FX-frame-45",
+      "assets-aseprite-particles-Particle-FX-frame-46",
+      "assets-aseprite-particles-Particle-FX-frame-47",
+      "assets-aseprite-particles-Particle-FX-frame-48",
+      "assets-aseprite-particles-Particle-FX-frame-49",
+      "assets-aseprite-particles-Particle-FX-frame-50",
+      "assets-aseprite-particles-Particle-FX-frame-51",
+      "assets-aseprite-particles-Particle-FX-frame-52",
+      "assets-aseprite-particles-Particle-FX-frame-53"
+    ],
+    "Fire 3": [
+      "assets-aseprite-particles-Particle-FX-frame-54",
+      "assets-aseprite-particles-Particle-FX-frame-55",
+      "assets-aseprite-particles-Particle-FX-frame-56",
+      "assets-aseprite-particles-Particle-FX-frame-57",
+      "assets-aseprite-particles-Particle-FX-frame-58",
+      "assets-aseprite-particles-Particle-FX-frame-59",
+      "assets-aseprite-particles-Particle-FX-frame-60",
+      "assets-aseprite-particles-Particle-FX-frame-61",
+      "assets-aseprite-particles-Particle-FX-frame-62",
+      "assets-aseprite-particles-Particle-FX-frame-63",
+      "assets-aseprite-particles-Particle-FX-frame-64",
+      "assets-aseprite-particles-Particle-FX-frame-65"
+    ],
+    "Water Splash": [
+      "assets-aseprite-particles-Particle-FX-frame-66",
+      "assets-aseprite-particles-Particle-FX-frame-67",
+      "assets-aseprite-particles-Particle-FX-frame-68",
+      "assets-aseprite-particles-Particle-FX-frame-69",
+      "assets-aseprite-particles-Particle-FX-frame-70",
+      "assets-aseprite-particles-Particle-FX-frame-71",
+      "assets-aseprite-particles-Particle-FX-frame-72",
+      "assets-aseprite-particles-Particle-FX-frame-73",
+      "assets-aseprite-particles-Particle-FX-frame-74"
+    ]
+  },
+  "meta": {
+    "image": "Particle FX.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 2048,
+      "h": 2048
+    },
+    "scale": "1"
+  }
+}

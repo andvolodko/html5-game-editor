@@ -4,6 +4,7 @@ import {
   decodeAssetDragPayload,
   EDITOR_ASSET_MIME,
   importDroppedFiles,
+  isChordLetter,
   isScenesFolder,
   isScenesFolderOrDescendant,
 } from "@game-editor/editor-core";
@@ -19,6 +20,11 @@ import { useAssetBrowserModel } from "./useAssetBrowserModel";
 
 /** How often the Assets panel re-lists (server reconciles FS ↔ manifest on each list). */
 const ASSET_CATALOGUE_POLL_MS = 2500;
+
+/** Catalogue copy buffer for Assets panel Ctrl+C / Ctrl+V. */
+type CatalogueClipboard =
+  | { kind: "asset"; id: string }
+  | { kind: "scene"; id: string };
 
 function isTextEditingTarget(target: EventTarget | null): boolean {
   return (
@@ -38,6 +44,7 @@ export function AssetsPanel() {
   const [panelFocused, setPanelFocused] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const treeRef = useRef<HTMLDivElement | null>(null);
+  const copiedCatalogueRef = useRef<CatalogueClipboard | undefined>(undefined);
 
   useEffect(() => {
     const refresh = () => {
@@ -58,6 +65,29 @@ export function AssetsPanel() {
     }
     const onKeyDown = (event: KeyboardEvent) => {
       if (isTextEditingTarget(event.target) || model.renaming) {
+        return;
+      }
+
+      const mod = event.ctrlKey || event.metaKey;
+      if (mod && isChordLetter(event, "KeyC", "c") && !event.shiftKey && !event.altKey) {
+        if (model.selection?.kind === "asset") {
+          event.preventDefault();
+          copiedCatalogueRef.current = { kind: "asset", id: model.selection.id };
+        } else if (model.selection?.kind === "scene") {
+          event.preventDefault();
+          copiedCatalogueRef.current = { kind: "scene", id: model.selection.id };
+        }
+        return;
+      }
+      if (mod && isChordLetter(event, "KeyV", "v") && !event.shiftKey && !event.altKey) {
+        const copied = copiedCatalogueRef.current;
+        if (copied?.kind === "asset") {
+          event.preventDefault();
+          void model.duplicateAsset(copied.id, model.importDestination);
+        } else if (copied?.kind === "scene") {
+          event.preventDefault();
+          void model.duplicateScene(copied.id);
+        }
         return;
       }
 
@@ -464,6 +494,9 @@ export function AssetsPanel() {
           onRemoveAsset={(id) => {
             void model.removeAsset(id);
           }}
+          onDuplicateAsset={(id) => {
+            void model.duplicateAsset(id);
+          }}
           onRemoveFolder={(path) => {
             void model.removeFolder(path);
           }}
@@ -473,6 +506,9 @@ export function AssetsPanel() {
           onRenameScene={(id) => model.setRenaming({ kind: "scene", id })}
           onRemoveScene={(id) => {
             void model.removeScene(id);
+          }}
+          onDuplicateScene={(id) => {
+            void model.duplicateScene(id);
           }}
           onNewScene={() => {
             void model.createScene();

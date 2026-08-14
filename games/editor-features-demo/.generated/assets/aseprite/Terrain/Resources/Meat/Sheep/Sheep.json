@@ -1,0 +1,483 @@
+{
+  "frames": {
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-0": {
+      "frame": {
+        "x": 384,
+        "y": 128,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-1": {
+      "frame": {
+        "x": 640,
+        "y": 256,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-2": {
+      "frame": {
+        "x": 512,
+        "y": 256,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-3": {
+      "frame": {
+        "x": 384,
+        "y": 256,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-4": {
+      "frame": {
+        "x": 256,
+        "y": 256,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-5": {
+      "frame": {
+        "x": 128,
+        "y": 256,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-6": {
+      "frame": {
+        "x": 0,
+        "y": 256,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-7": {
+      "frame": {
+        "x": 896,
+        "y": 128,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-8": {
+      "frame": {
+        "x": 768,
+        "y": 128,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-9": {
+      "frame": {
+        "x": 640,
+        "y": 128,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-10": {
+      "frame": {
+        "x": 512,
+        "y": 128,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-11": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-12": {
+      "frame": {
+        "x": 256,
+        "y": 128,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-13": {
+      "frame": {
+        "x": 128,
+        "y": 128,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-14": {
+      "frame": {
+        "x": 0,
+        "y": 128,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-15": {
+      "frame": {
+        "x": 896,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-16": {
+      "frame": {
+        "x": 768,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-17": {
+      "frame": {
+        "x": 640,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-18": {
+      "frame": {
+        "x": 512,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-19": {
+      "frame": {
+        "x": 384,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-20": {
+      "frame": {
+        "x": 256,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-21": {
+      "frame": {
+        "x": 128,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      }
+    }
+  },
+  "animations": {
+    "Idle": [
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-0",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-1",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-2",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-3",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-4",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-5"
+    ],
+    "Grass": [
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-6",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-7",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-8",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-9",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-10",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-11",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-12",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-13",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-14",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-15",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-16",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-17"
+    ],
+    "Move": [
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-18",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-19",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-20",
+      "assets-aseprite-Terrain-Resources-Meat-Sheep-Sheep-frame-21"
+    ]
+  },
+  "meta": {
+    "image": "Sheep.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1024,
+      "h": 512
+    },
+    "scale": "1"
+  }
+}

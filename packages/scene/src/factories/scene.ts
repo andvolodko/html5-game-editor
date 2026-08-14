@@ -11,7 +11,15 @@ import {
   type VisualComponentData,
 } from "../types.js";
 import type { ThreeComponentData } from "../three-components.js";
-import { DEFAULT_NODE_SPAWN_POSITION } from "../defaults.js";
+import {
+  DEFAULT_NODE_SPAWN_POSITION,
+  IDENTITY_POSITION_2D,
+  IDENTITY_POSITION_3D,
+  IDENTITY_ROTATION_2D,
+  IDENTITY_ROTATION_3D,
+  IDENTITY_SCALE_2D,
+  IDENTITY_SCALE_3D,
+} from "../defaults.js";
 import { createSpriteComponent } from "./sprites.js";
 
 export function createEmptyScene(
@@ -51,9 +59,9 @@ export function createTransform2D(
   return {
     type: "Transform2D",
     id: partial?.id ?? createId("comp"),
-    position: partial?.position ?? { x: 0, y: 0 },
-    rotation: partial?.rotation ?? 0,
-    scale: partial?.scale ?? { x: 1, y: 1 },
+    position: partial?.position ?? { ...IDENTITY_POSITION_2D },
+    rotation: partial?.rotation ?? IDENTITY_ROTATION_2D,
+    scale: partial?.scale ?? { ...IDENTITY_SCALE_2D },
     ...(partial?.anchor !== undefined ? { anchor: partial.anchor } : {}),
   };
 }
@@ -64,9 +72,9 @@ export function createTransform3D(
   return {
     type: "Transform3D",
     id: partial?.id ?? createId("comp"),
-    position: partial?.position ?? { x: 0, y: 0, z: 0 },
-    rotation: partial?.rotation ?? { x: 0, y: 0, z: 0 },
-    scale: partial?.scale ?? { x: 1, y: 1, z: 1 },
+    position: partial?.position ?? { ...IDENTITY_POSITION_3D },
+    rotation: partial?.rotation ?? { ...IDENTITY_ROTATION_3D },
+    scale: partial?.scale ?? { ...IDENTITY_SCALE_3D },
   };
 }
 

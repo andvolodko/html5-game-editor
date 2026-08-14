@@ -4,6 +4,7 @@ import {
   createGltfAssetRecord,
   createSpineAssetRecord,
   createTextureAssetRecord,
+  createAsepriteAssetRecord,
 } from "./factories.js";
 import { createStaticAssetResolver } from "./static-asset-resolver.js";
 
@@ -100,6 +101,34 @@ describe("createStaticAssetResolver", () => {
     });
     expect(resolver.resolveGltfPartUrl?.("asset_gltf", "hero.bin")).toBe(
       "/assets/models/hero.bin",
+    );
+  });
+
+  it("resolves generated Aseprite spritesheet URLs, not the source .aseprite", () => {
+    const database = new AssetDatabase();
+    database.add(
+      createAsepriteAssetRecord({
+        id: "asset_hero",
+        name: "hero",
+        path: "assets/characters/hero.aseprite",
+        frameCount: 4,
+        tags: [{ name: "idle", from: 0, to: 1 }],
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+
+    expect(resolver.resolveAsepriteUrls?.("asset_hero")).toEqual({
+      jsonUrl: "/.generated/assets/characters/hero.json",
+      imageUrl: "/.generated/assets/characters/hero.png",
+      tags: ["idle"],
+      frameDurations: [],
+      frameCount: 4,
+    });
+    expect(resolver.resolveAsepritePartUrl?.("asset_hero", "hero.json")).toBe(
+      "/.generated/assets/characters/hero.json",
+    );
+    expect(resolver.resolveUrl("asset_hero")).toBe(
+      "/assets/characters/hero.aseprite",
     );
   });
 });

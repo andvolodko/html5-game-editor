@@ -1,4 +1,4 @@
-import { humanizeAssetNodeName } from "@game-editor/assets";
+import { humanizeAssetNodeName, rasterAssetDisplaySize, type AssetRecord } from "@game-editor/assets";
 import {
   CommandManager,
   CompositeCommand,
@@ -14,6 +14,8 @@ import {
   createEmptyScene,
   findNodeById,
   getTransform2D,
+  getVisualComponent,
+  parseSceneData,
   type SceneData,
   type SceneRenderer,
   type SceneRendererKind,
@@ -22,10 +24,19 @@ import {
 import {
   CreateSpriteCommand,
   CreateSpineCommand,
+  CreateAnimatedSpriteCommand,
   CreateModel3DCommand,
   CreateNodeCommand,
   DeleteNodeCommand,
   DuplicateNodeCommand,
+  PasteNodesCommand,
+  RenameSceneFileCommand,
+  DeleteSceneFileCommand,
+  RenameAssetCommand,
+  DeleteAssetCommand,
+  DuplicateAssetCommand,
+  RenameAssetFolderCommand,
+  DeleteAssetFolderCommand,
   MoveNodeCommand,
   RenameNodeCommand,
   SetSceneNameCommand,
@@ -33,6 +44,7 @@ import {
   SetNodeLayerCommand,
   SetTransform2DCommand,
   SetTransform3DCommand,
+  createResetNodeTransformCommand,
   SetModel3DCommand,
   SetPerspectiveCameraCommand,
   SetDirectionalLightCommand,
@@ -44,6 +56,7 @@ import {
   SetScriptPropertiesCommand,
   createDeleteSelectionCommand,
   type CreateSpriteOptions,
+  type CreateAnimatedSpriteOptions,
   type CreateNodeOptions,
   type Transform2DPatch,
   type Transform3DPatch,
@@ -76,10 +89,15 @@ import {
 import type { ProjectApiClient } from "./project-api-client.js";
 import type { ComponentCatalogApiClient } from "./component-catalog-api-client.js";
 import { bindEditorHotkeys } from "./editor-hotkeys.js";
+import { NodeClipboard, resolvePasteLocation } from "./node-clipboard.js";
+import { isAsyncCommand, type SceneFileHistoryHost } from "./scene-file-history-host.js";
+import type { AssetHistoryHost } from "./asset-history-host.js";
 import {
   allocateSceneDocumentId,
   createSceneDocument,
+  duplicateSceneDocument,
   deleteSceneDocumentFile,
+  restoreDeletedSceneDocument,
   listSceneDocuments,
   loadSceneDocument,
   renameSceneDocumentFile,
@@ -87,6 +105,7 @@ import {
   type ScenePersistenceHost,
 } from "./editor-scene-persistence.js";
 import { RenameRequestBus, type RenameRequestListener } from "./rename-request-bus.js";
+import { EditorConsole } from "./editor-console.js";
 
 export type { RenameRequestTarget } from "./rename-request-bus.js";
 export { isChordLetter } from "./editor-hotkeys.js";
@@ -116,6 +135,8 @@ export class Editor {
   readonly project: ProjectManager;
   /** Session catalog of Add Component script definitions for the open project. */
   readonly components: ComponentRegistry;
+  /** Structured log for the Console panel (not scene/document state). */
+  readonly console: EditorConsole;
   /** Bus event ids for dynamicEnum source `busEvents` (set when loading game catalog). */
   private busEvents: readonly BusEventDefinition[] = [];
 
@@ -124,6 +145,8 @@ export class Editor {
   private componentCatalogApi: ComponentCatalogApiClient | undefined;
   private readonly listeners = new Set<Listener>();
   private readonly renameBus = new RenameRequestBus();
+  private readonly nodeClipboard = new NodeClipboard();
+  private historyBusy = false;
   private readonly unsubscribers: Array<() => void> = [];
   /** Bumps on every façade emit (document, selection, assets, dirty, …). */
   private storeVersion = 0;
@@ -138,21 +161,19 @@ export class Editor {
     this.assets = new AssetManager(options.assetApi);
     this.project = new ProjectManager(options.projectApi);
     this.components = new ComponentRegistry();
+    this.console = new EditorConsole();
     this.sceneFileId = options.sceneFileId ?? "main";
     this.sceneApi = options.sceneApi;
     this.componentCatalogApi = options.componentCatalogApi;
 
     this.unsubscribers.push(
-      this.document.subscribe((event) => {
-        // Domain reload must drop undo history — commands hold live node graphs.
-        if (event.kind === "reload") {
-          this.commands.clear();
-        }
+      this.document.subscribe(() => {
         this.emit();
       }),
       this.selection.subscribe(() => this.emit()),
       this.assets.subscribe(() => this.emit()),
       this.project.subscribe(() => this.emit()),
+      this.console.subscribe(() => this.emit()),
     );
   }
 
@@ -180,10 +201,11 @@ export class Editor {
     this.componentCatalogApi = client;
   }
 
-  setScene(scene: SceneData): void {
+  setScene(scene: SceneData, options?: { preserveUndo?: boolean }): void {
     this.selection.clear();
-    // Clear before replace so reload handler is idempotent.
-    this.commands.clear();
+    if (!options?.preserveUndo) {
+      this.commands.clear();
+    }
     this.document.replaceScene(scene);
   }
 
@@ -209,6 +231,17 @@ export class Editor {
   }
 
   undo(): boolean {
+    if (this.historyBusy) {
+      return false;
+    }
+    const top = this.commands.peekUndo();
+    if (!top) {
+      return false;
+    }
+    if (isAsyncCommand(top)) {
+      void this.runAsyncHistory("undo");
+      return true;
+    }
     const did = this.commands.undo();
     if (did) {
       this.document.syncDirtyFromContent();
@@ -218,6 +251,17 @@ export class Editor {
   }
 
   redo(): boolean {
+    if (this.historyBusy) {
+      return false;
+    }
+    const top = this.commands.peekRedo();
+    if (!top) {
+      return false;
+    }
+    if (isAsyncCommand(top)) {
+      void this.runAsyncHistory("redo");
+      return true;
+    }
     const did = this.commands.redo();
     if (did) {
       this.document.syncDirtyFromContent();
@@ -247,11 +291,37 @@ export class Editor {
       position,
       assetId,
     };
-    if (asset?.metadata.kind === "texture") {
-      options.width = asset.metadata.width;
-      options.height = asset.metadata.height;
+    const size = asset ? rasterAssetDisplaySize(asset) : undefined;
+    if (size) {
+      options.width = size.width;
+      options.height = size.height;
     }
     const command = new CreateSpriteCommand(
+      this.document,
+      this.selection,
+      options,
+    );
+    this.execute(command);
+    return command.createdNodeId;
+  }
+
+  createAnimatedSpriteFromAsset(assetId: string, position: Vec2): string {
+    const asset = this.assets.get(assetId);
+    const options: CreateAnimatedSpriteOptions = {
+      name: asset ? humanizeAssetNodeName(asset.name) : "Missing Animated Sprite",
+      position,
+      assetId,
+      playing: true,
+    };
+    if (asset?.metadata.kind === "aseprite") {
+      options.animation = asset.metadata.tags[0]?.name;
+      const size = rasterAssetDisplaySize(asset);
+      if (size) {
+        options.width = size.width;
+        options.height = size.height;
+      }
+    }
+    const command = new CreateAnimatedSpriteCommand(
       this.document,
       this.selection,
       options,
@@ -334,6 +404,38 @@ export class Editor {
     return command.createdNodeId;
   }
 
+  /** Copy selected root-most nodes into the editor clipboard. */
+  copySelectedNodes(): boolean {
+    return this.nodeClipboard.copyFromScene(
+      this.document.getScene(),
+      this.selection.getSelectedNodeIds(),
+    );
+  }
+
+  /**
+   * Paste clipboard nodes as siblings after the primary selection
+   * (or at the scene root). One undo step.
+   */
+  pasteNodes(): readonly string[] {
+    if (!this.nodeClipboard.hasContent()) {
+      return [];
+    }
+    const scene = this.document.getScene();
+    const location = resolvePasteLocation(
+      scene,
+      this.selection.getPrimaryNodeId(),
+    );
+    const command = new PasteNodesCommand(
+      this.document,
+      this.selection,
+      this.nodeClipboard.templates(),
+      location.parentId,
+      location.index,
+    );
+    this.execute(command);
+    return command.createdNodeIds;
+  }
+
   deleteSelectedNodes(): void {
     const command = createDeleteSelectionCommand(this.document, this.selection);
     if (!command) {
@@ -373,6 +475,37 @@ export class Editor {
 
   setTransform3D(nodeId: string, patch: Transform3DPatch): void {
     this.execute(new SetTransform3DCommand(this.document, nodeId, patch));
+  }
+
+  /**
+   * Reset Transform2D / Transform3D (position, rotation, scale), visual anchor,
+   * and display width/height to identity/defaults (one undo step).
+   * Textured sprites restore native asset size when available.
+   * Uses the primary selection when `nodeId` is omitted.
+   */
+  resetNodeTransform(nodeId?: string): boolean {
+    const id = nodeId ?? this.selection.getPrimaryNodeId();
+    if (!id) {
+      return false;
+    }
+    const node = findNodeById(this.document.getScene(), id);
+    const visual = node ? getVisualComponent(node) : undefined;
+    const assetId =
+      visual && "assetId" in visual && typeof visual.assetId === "string"
+        ? visual.assetId
+        : undefined;
+    const asset = assetId ? this.assets.get(assetId) : undefined;
+    const displaySize = asset ? rasterAssetDisplaySize(asset) : undefined;
+    const command = createResetNodeTransformCommand(
+      this.document,
+      id,
+      displaySize ? { displaySize } : undefined,
+    );
+    if (!command) {
+      return false;
+    }
+    this.execute(command);
+    return true;
   }
 
   setModel3D(nodeId: string, patch: Model3DPatch): void {
@@ -607,27 +740,136 @@ export class Editor {
   }
 
   /**
+   * Copies a scene file to a unique id. Does not switch the open document.
+   */
+  async duplicateSceneFile(sourceSceneId: string): Promise<SceneListEntry> {
+    return duplicateSceneDocument(this.persistenceHost(), sourceSceneId);
+  }
+
+  /**
    * Renames the scene file on disk. If the active document is that file,
    * updates `sceneFileId` after a successful rename.
    */
   async renameSceneFile(sceneFileId: string, newSceneFileId: string): Promise<SceneListEntry> {
-    return renameSceneDocumentFile(
+    const entry = await renameSceneDocumentFile(
       this.persistenceHost(),
       sceneFileId,
       newSceneFileId,
     );
+    if (sceneFileId !== entry.id) {
+      this.commands.record(
+        new RenameSceneFileCommand(
+          this.sceneFileHistoryHost(),
+          sceneFileId,
+          entry.id,
+        ),
+      );
+      this.emit();
+    }
+    return entry;
   }
 
   /**
-   * Deletes a scene file. If it is active, switches to `fallbackSceneId` first
+   * Deletes a scene file. If it is active, switches to `fallbackSceneId`
    * after the file is removed (caller must pick a remaining scene id).
    */
   async deleteSceneFile(sceneFileId: string, fallbackSceneId: string): Promise<void> {
-    return deleteSceneDocumentFile(
+    const api = this.sceneApi;
+    if (!api) {
+      throw new Error("Scene API client is not configured");
+    }
+    const wasActive = this.sceneFileId === sceneFileId;
+    const snapshot = wasActive
+      ? structuredClone(this.document.getScene())
+      : parseSceneData(await api.loadScene(sceneFileId));
+    const wasStartScene = this.project.getProject()?.startScene === sceneFileId;
+    await deleteSceneDocumentFile(
       this.persistenceHost(),
       sceneFileId,
       fallbackSceneId,
     );
+    this.commands.record(
+      new DeleteSceneFileCommand(
+        this.sceneFileHistoryHost(),
+        sceneFileId,
+        snapshot,
+        fallbackSceneId,
+        wasActive,
+        wasStartScene,
+      ),
+    );
+    this.emit();
+  }
+
+  /**
+   * Renames an asset file. Stable assetId is unchanged.
+   */
+  async renameAsset(assetId: string, name: string): Promise<AssetRecord> {
+    const before = this.assets.get(assetId);
+    const asset = await this.assets.renameAsset(assetId, name);
+    if (before && before.name !== asset.name) {
+      this.commands.record(
+        new RenameAssetCommand(
+          this.assetHistoryHost(),
+          assetId,
+          before.name,
+          asset.name,
+        ),
+      );
+      this.emit();
+    }
+    return asset;
+  }
+
+  /**
+   * Deletes an asset. Undo restores the same assetId and files.
+   */
+  async deleteAsset(assetId: string): Promise<void> {
+    await this.assets.deleteAsset(assetId);
+    this.commands.record(
+      new DeleteAssetCommand(this.assetHistoryHost(), assetId),
+    );
+    this.emit();
+  }
+
+  /**
+   * Copies an asset to a new id. Undo deletes that copy (same id on redo).
+   */
+  async duplicateAsset(
+    assetId: string,
+    destinationFolder?: string,
+  ): Promise<AssetRecord> {
+    const created = await this.assets.duplicateAsset(assetId, destinationFolder);
+    this.commands.record(
+      new DuplicateAssetCommand(this.assetHistoryHost(), created.id),
+    );
+    this.emit();
+    return created;
+  }
+
+  /**
+   * Renames an asset folder. Nested asset ids stay stable; paths update.
+   */
+  async renameFolder(folderPath: string, name: string): Promise<string> {
+    const next = await this.assets.renameFolder(folderPath, name);
+    if (next !== folderPath) {
+      this.commands.record(
+        new RenameAssetFolderCommand(this.assetHistoryHost(), folderPath, next),
+      );
+      this.emit();
+    }
+    return next;
+  }
+
+  /**
+   * Deletes an asset folder. Undo restores nested files and the same asset ids.
+   */
+  async deleteFolder(folderPath: string): Promise<void> {
+    await this.assets.deleteFolder(folderPath);
+    this.commands.record(
+      new DeleteAssetFolderCommand(this.assetHistoryHost(), folderPath),
+    );
+    this.emit();
   }
 
   /**
@@ -658,6 +900,8 @@ export class Editor {
         undo: () => this.undo(),
         redo: () => this.redo(),
         duplicateNode: () => this.duplicateNode(),
+        copySelectedNodes: () => this.copySelectedNodes(),
+        pasteNodes: () => this.pasteNodes(),
         deleteSelectedNodes: () => this.deleteSelectedNodes(),
         requestRename: () => this.requestRename(),
         nudgeSelectedNodes: (deltaX, deltaY) =>
@@ -695,6 +939,7 @@ export class Editor {
     this.viewport.detach();
     this.listeners.clear();
     this.renameBus.clear();
+    this.console.dispose();
   }
 
   private persistenceHost(): ScenePersistenceHost {
@@ -705,9 +950,89 @@ export class Editor {
         this.sceneFileId = id;
       },
       document: this.document,
-      setScene: (scene) => this.setScene(scene),
+      setScene: (scene, options) => this.setScene(scene, options),
       emit: () => this.emit(),
+      onSceneOpened: (sceneFileId, sceneName) => {
+        this.console.logSceneOpened(sceneFileId, sceneName);
+      },
+      syncProjectAfterSceneFileChange: async () => {
+        try {
+          await this.project.refresh();
+        } catch {
+          // Project API is optional in unit tests and demo-only hosts.
+        }
+      },
+      restoreStartScene: async (sceneId) => {
+        try {
+          await this.project.setStartScene(sceneId);
+        } catch {
+          // Project API is optional in unit tests and demo-only hosts.
+        }
+      },
     };
+  }
+
+  private sceneFileHistoryHost(): SceneFileHistoryHost {
+    return {
+      renameSceneFileOnDisk: async (fromId, toId) => {
+        await renameSceneDocumentFile(this.persistenceHost(), fromId, toId);
+      },
+      deleteSceneFileOnDisk: async (sceneId, fallbackSceneId, options) => {
+        await deleteSceneDocumentFile(
+          this.persistenceHost(),
+          sceneId,
+          fallbackSceneId,
+          options,
+        );
+      },
+      restoreSceneFileOnDisk: async (sceneId, snapshot, options) => {
+        await restoreDeletedSceneDocument(
+          this.persistenceHost(),
+          sceneId,
+          snapshot,
+          options,
+        );
+      },
+    };
+  }
+
+  private assetHistoryHost(): AssetHistoryHost {
+    return {
+      renameAssetOnDisk: async (assetId, name) => {
+        await this.assets.renameAsset(assetId, name);
+      },
+      deleteAssetOnDisk: async (assetId) => {
+        await this.assets.deleteAsset(assetId);
+      },
+      restoreAssetOnDisk: async (assetId) => {
+        await this.assets.restoreAsset(assetId);
+      },
+      renameFolderOnDisk: async (folderPath, name) => {
+        await this.assets.renameFolder(folderPath, name);
+      },
+      deleteFolderOnDisk: async (folderPath) => {
+        await this.assets.deleteFolder(folderPath);
+      },
+      restoreFolderOnDisk: async (folderPath) => {
+        await this.assets.restoreFolder(folderPath);
+      },
+    };
+  }
+
+  private async runAsyncHistory(direction: "undo" | "redo"): Promise<void> {
+    this.historyBusy = true;
+    try {
+      const did =
+        direction === "undo"
+          ? await this.commands.undoAsync()
+          : await this.commands.redoAsync();
+      if (did) {
+        this.document.syncDirtyFromContent();
+      }
+    } finally {
+      this.historyBusy = false;
+      this.emit();
+    }
   }
 
   private emit(): void {

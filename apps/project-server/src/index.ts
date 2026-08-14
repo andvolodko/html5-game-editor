@@ -12,6 +12,10 @@ import { SpineAssetImporter } from "./services/spine-asset-importer.js";
 import { AudioAssetImporter } from "./services/audio-asset-importer.js";
 import { GltfAssetImporter } from "./services/gltf-asset-importer.js";
 import { GltfBundleImporter } from "./services/gltf-bundle-importer.js";
+import { AsepriteAssetImporter } from "./services/aseprite-asset-importer.js";
+import { AsepriteService } from "./services/aseprite-service.js";
+import { AsepriteCacheStore } from "./services/aseprite-cache.js";
+import { AsepriteCompileService } from "./services/aseprite-compile-service.js";
 import { AssetImportService } from "./services/asset-import-service.js";
 import { AssetFolderService } from "./services/asset-folder-service.js";
 import { AssetMutationService } from "./services/asset-mutation-service.js";
@@ -44,13 +48,21 @@ const importerRegistry = new AssetImporterRegistry();
 importerRegistry.register(new TextureAssetImporter());
 importerRegistry.register(new AudioAssetImporter());
 importerRegistry.register(new GltfAssetImporter());
+importerRegistry.register(new AsepriteAssetImporter());
 importerRegistry.registerBundle(new GltfBundleImporter());
 importerRegistry.registerBundle(new SpineAssetImporter());
+
+const asepriteCompileService = new AsepriteCompileService(
+  projectService,
+  new AsepriteService(),
+  new AsepriteCacheStore(projectService),
+);
 
 const assetImportService = new AssetImportService(
   projectService,
   assetDatabaseStore,
   importerRegistry,
+  asepriteCompileService,
 );
 const assetFolderService = new AssetFolderService(projectService);
 const assetMutationService = new AssetMutationService(
@@ -62,6 +74,7 @@ const assetSyncService = new AssetSyncService(
   projectService,
   assetDatabaseStore,
   importerRegistry,
+  asepriteCompileService,
 );
 const componentCatalogService = new ComponentCatalogService(projectService);
 

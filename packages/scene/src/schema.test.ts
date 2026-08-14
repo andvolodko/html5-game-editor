@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   collectReferencedAssetIds,
+  createAnimatedSpriteComponent,
   createEmptyScene,
+  createNodeWithVisual,
   createScriptComponent,
   createSpriteNode,
   parseSceneData,
@@ -62,6 +64,31 @@ describe("scene schema", () => {
     );
     expect(sprite && "tint" in sprite ? sprite.tint : undefined).toBeUndefined();
     expect(JSON.stringify(parsed)).not.toMatch(/PIXI|Application|Texture/i);
+  });
+
+  it("persists Aseprite AnimatedSprite as assetId + animation, not generated paths", () => {
+    const scene = createEmptyScene("Aseprite Scene");
+    scene.nodes.push(
+      createNodeWithVisual(
+        "Hero",
+        { x: 0, y: 0 },
+        createAnimatedSpriteComponent({
+          assetId: "asset_hero",
+          animation: "idle",
+          playing: true,
+        }),
+      ),
+    );
+    const parsed = parseSceneData(JSON.parse(JSON.stringify(scene)) as unknown);
+    const visual = parsed.nodes[0]?.components.find((c) => c.type === "AnimatedSprite");
+    expect(visual).toMatchObject({
+      type: "AnimatedSprite",
+      assetId: "asset_hero",
+      animation: "idle",
+      frames: [],
+    });
+    expect(JSON.stringify(parsed)).not.toMatch(/\.generated/);
+    expect(collectReferencedAssetIds(parsed)).toEqual(["asset_hero"]);
   });
 
   it("accepts sprites with an optional tint", () => {

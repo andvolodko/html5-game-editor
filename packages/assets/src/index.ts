@@ -4,6 +4,9 @@ export type {
   SpineAssetMetadata,
   AudioAssetMetadata,
   GltfAssetMetadata,
+  AsepriteAssetMetadata,
+  AsepriteTagMetadata,
+  AsepriteTagDirection,
   AssetMetadata,
   AssetRecord,
   AssetDatabaseData,
@@ -15,6 +18,8 @@ export {
   spineAssetMetadataSchema,
   audioAssetMetadataSchema,
   gltfAssetMetadataSchema,
+  asepriteAssetMetadataSchema,
+  asepriteTagMetadataSchema,
   assetMetadataSchema,
   assetRecordSchema,
   assetDatabaseSchema,
@@ -29,16 +34,23 @@ export {
   createSpineAssetRecord,
   createAudioAssetRecord,
   createGltfAssetRecord,
+  createAsepriteAssetRecord,
   normalizeProjectRelativePath,
   humanizeAssetNodeName,
 } from "./factories.js";
 export { AssetDatabase, assetRecordsEquivalent } from "./asset-database.js";
 export { parseDeletableAssetFolderPath } from "./deletable-asset-folder-path.js";
-export type { AssetResolver, SpineAssetUrls, GltfAssetUrls } from "./asset-resolver.js";
+export type {
+  AssetResolver,
+  SpineAssetUrls,
+  GltfAssetUrls,
+  AsepriteAssetUrls,
+} from "./asset-resolver.js";
 export { createAssetResolver } from "./asset-resolver.js";
 export type { StaticAssetResolverOptions } from "./static-asset-resolver.js";
 export { createStaticAssetResolver } from "./static-asset-resolver.js";
 export { computeAssetDatabaseRevision } from "./revision.js";
+export { rasterAssetDisplaySize } from "./raster-display-size.js";
 export {
   TEXTURE_FILE_EXTENSIONS,
   getFileBasename,
@@ -96,3 +108,36 @@ export {
   mimeTypeForSpineSkeleton,
 } from "./spine-extensions.js";
 export type { SpineSkeletonMeta } from "./spine-extensions.js";
+export {
+  ASEPRITE_FILE_EXTENSIONS,
+  GENERATED_ASSETS_ROOT,
+  isSupportedAsepriteExtension,
+  isSupportedAsepriteFile,
+  generatedAsepriteOutputPaths,
+  derivedAsepritePaths,
+  withAsepriteSourcePath,
+  isAsepriteAnimated,
+  firstAsepriteAnimation,
+  isAllowedAsepritePartName,
+  resolveAsepritePartRelativePath,
+  mimeTypeForAsepritePart,
+  asepriteCompileRevision,
+} from "./aseprite-extensions.js";
+export type { AsepriteFileExtension } from "./aseprite-extensions.js";
+export {
+  ASEPRITE_DEFAULT_FRAME_DURATION_MS,
+  isAsepriteCliJson,
+  parseAsepriteCliJsonBytes,
+  listAsepriteCliFrames,
+  normalizeAsepriteTagDirection,
+  asepriteFrameName,
+  asepriteFrameNamespace,
+  normalizeAsepriteMetadata,
+  asepriteCliJsonToPixiSpritesheet,
+} from "./aseprite-json.js";
+export type {
+  AsepriteCliJson,
+  AsepriteCliFrame,
+  AsepriteCliTag,
+  PixiSpritesheetJson,
+} from "./aseprite-json.js";

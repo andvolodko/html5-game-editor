@@ -1,4 +1,11 @@
 import type { Vec2 } from "./types.js";
+import {
+  DEFAULT_MESH_PLANE_SIZE,
+  DEFAULT_NINE_SLICE_HEIGHT,
+  DEFAULT_NINE_SLICE_WIDTH,
+  DEFAULT_SPRITE_SIZE,
+  DEFAULT_TILING_SPRITE_SIZE,
+} from "./defaults.js";
 
 /**
  * Stable visual component discriminants (domain identity — not PIXI class names).
@@ -244,8 +251,18 @@ export interface MeshComponentData {
 export interface AnimatedSpriteComponentData {
   type: "AnimatedSprite";
   id: string;
-  /** Frame textures by stable asset id (order = animation order). */
+  /**
+   * Frame textures by stable asset id (order = animation order).
+   * Empty when `assetId` points at an Aseprite spritesheet.
+   */
   frames: string[];
+  /**
+   * Optional Aseprite (or future spritesheet) asset id.
+   * Scenes persist this id — never a generated PNG/JSON path.
+   */
+  assetId?: string;
+  /** Aseprite tag name when `assetId` is an Aseprite asset. */
+  animation?: string;
   animationSpeed: number;
   loop: boolean;
   playing: boolean;
@@ -347,6 +364,35 @@ export function visualComponentSupportsDisplaySize(
   visual: VisualComponentData,
 ): boolean {
   return DISPLAY_SIZE_VISUAL_TYPES.has(visual.type);
+}
+
+/** Factory default width/height for visuals that store a display size. */
+export function defaultVisualDisplaySize(
+  visual: VisualComponentData,
+): { width: number; height: number } | undefined {
+  switch (visual.type) {
+    case "Sprite":
+    case "AnimatedSprite":
+      return { width: DEFAULT_SPRITE_SIZE, height: DEFAULT_SPRITE_SIZE };
+    case "NineSliceSprite":
+      return {
+        width: DEFAULT_NINE_SLICE_WIDTH,
+        height: DEFAULT_NINE_SLICE_HEIGHT,
+      };
+    case "TilingSprite":
+      return {
+        width: DEFAULT_TILING_SPRITE_SIZE,
+        height: DEFAULT_TILING_SPRITE_SIZE,
+      };
+    case "MeshPlane":
+    case "PerspectiveMesh":
+      return {
+        width: DEFAULT_MESH_PLANE_SIZE,
+        height: DEFAULT_MESH_PLANE_SIZE,
+      };
+    default:
+      return undefined;
+  }
 }
 
 /**

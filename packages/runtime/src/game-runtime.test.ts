@@ -70,6 +70,20 @@ describe("GameRuntime.loadScene", () => {
     expect(renderer.created[1]?.parentId).toBe(parent.id);
   });
 
+  it("clearRenderers drops registrations so a later loadScene does not paint the old stack", () => {
+    const renderer = createMockRenderer();
+    const runtime = new GameRuntime();
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+    runtime.clearRenderers();
+    runtime.loadScene(createEmptyScene("Empty"));
+    expect(renderer.clear).not.toHaveBeenCalled();
+    expect(runtime.getRegisteredRenderers()).toEqual([]);
+  });
+
   it("instantiates registered Script components via ScriptHost", () => {
     const created = vi.fn((ctx) => {
       expect(ctx.services.bus).toBeDefined();
@@ -249,6 +263,52 @@ describe("GameRuntime.loadScene", () => {
     runtime.emitNodePointerEvent(node.id, "pointertap");
     expect(onTap).toHaveBeenCalledTimes(1);
     expect(onLegacyClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("bubbles pointer events from a child visual to a parent script", () => {
+    const onTap = vi.fn();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.ParentClick",
+        displayName: "Parent Click",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => {
+          const off = ctx.services.onNodePointerEvent?.(
+            ctx.nodeId,
+            "pointertap",
+            onTap,
+          );
+          return {
+            destroy() {
+              off?.();
+            },
+          };
+        },
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: createMockRenderer(),
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+
+    const parent = createContainerNode("Button");
+    parent.components.push(createScriptComponent("test.ParentClick"));
+    const child = createSpriteNode("regular", { x: 0, y: 0 });
+    child.parentId = parent.id;
+    parent.children = [child];
+    const scene = createEmptyScene("Bubble");
+    scene.nodes = [parent];
+    runtime.loadScene(scene);
+
+    runtime.emitNodePointerEvent(child.id, "pointertap");
+    expect(onTap).toHaveBeenCalledTimes(1);
   });
 
   it("exposes getTransform2D / setTransform2D and syncs renderers", () => {
@@ -605,6 +665,59 @@ describe("GameRuntime.loadScene", () => {
     runtime.dispose();
     expect(renderer.destroyNode).toHaveBeenCalledWith(spawnedIds[0]);
     expect(runtime.getScene()?.nodes).toHaveLength(1);
+  });
+
+  it("cloneNodeByName copies a 2D node into the live scene", () => {
+    const renderer = createMockRenderer();
+    const clonedIds: string[] = [];
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.Cloner",
+        displayName: "Cloner",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            if (clonedIds.length > 0) {
+              return;
+            }
+            const id = ctx.services.cloneNodeByName?.("Hero", 0);
+            if (id) {
+              clonedIds.push(id);
+            }
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+    const source = createSpriteNode("Hero", { x: 10, y: 20 });
+    const host = createSpriteNode("Host", { x: 0, y: 0 });
+    host.components.push(createScriptComponent("test.Cloner"));
+    const scene = createEmptyScene("Clone");
+    scene.nodes = [source, host];
+    runtime.loadScene(scene);
+
+    runtime.tick(1 / 60);
+    expect(clonedIds).toHaveLength(1);
+    expect(runtime.getScene()?.nodes.map((node) => node.name)).toEqual([
+      "Hero",
+      "Host",
+      "Hero Copy",
+    ]);
+    expect(renderer.created.map((node) => node.name)).toEqual([
+      "Hero",
+      "Host",
+      "Hero Copy",
+    ]);
   });
 
   it("destroyNode ignores authored scene nodes", () => {

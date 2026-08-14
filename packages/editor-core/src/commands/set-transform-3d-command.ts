@@ -6,23 +6,12 @@ import {
   type Vec3,
 } from "@game-editor/scene";
 import type { DocumentManager } from "../document-manager.js";
+import { cloneTransform3D } from "./clone-transform-3d.js";
 
 export interface Transform3DPatch {
   position?: Vec3;
   rotation?: Vec3;
   scale?: Vec3;
-}
-
-function cloneTransform3D(
-  transform: Transform3DComponentData,
-): Transform3DComponentData {
-  return {
-    type: "Transform3D",
-    id: transform.id,
-    position: { ...transform.position },
-    rotation: { ...transform.rotation },
-    scale: { ...transform.scale },
-  };
 }
 
 export class SetTransform3DCommand implements Command {

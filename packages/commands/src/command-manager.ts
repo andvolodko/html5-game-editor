@@ -1,14 +1,21 @@
 /**
  * Undoable user mutation. Prefer one command per completed interaction.
+ * File/catalog operations may return a Promise from execute/undo.
  */
 export interface Command {
   readonly name: string;
-  execute(): void;
-  undo(): void;
+  /** File/catalog ops: Editor uses undoAsync/redoAsync instead of sync undo/redo. */
+  readonly async?: boolean;
+  execute(): void | Promise<void>;
+  undo(): void | Promise<void>;
 }
 
 export interface CommandManagerOptions {
   maxHistory?: number;
+}
+
+function isThenable(value: unknown): value is Promise<void> {
+  return typeof value === "object" && value !== null && "then" in value;
 }
 
 export class CommandManager {
@@ -21,31 +28,94 @@ export class CommandManager {
   }
 
   execute(command: Command): void {
-    command.execute();
+    const result = command.execute();
+    if (isThenable(result)) {
+      throw new Error(
+        `Command ${command.name} execute() is async; use executeAsync`,
+      );
+    }
+    this.record(command);
+  }
+
+  async executeAsync(command: Command): Promise<void> {
+    await command.execute();
+    this.record(command);
+  }
+
+  /**
+   * Push a command that already applied its mutation (skip execute).
+   * Redo still calls execute().
+   */
+  record(command: Command): void {
     this.undoStack.push(command);
     this.redoStack.length = 0;
-
     if (this.undoStack.length > this.maxHistory) {
       this.undoStack.shift();
     }
   }
 
+  peekUndo(): Command | undefined {
+    return this.undoStack[this.undoStack.length - 1];
+  }
+
+  peekRedo(): Command | undefined {
+    return this.redoStack[this.redoStack.length - 1];
+  }
+
   undo(): boolean {
+    const command = this.undoStack[this.undoStack.length - 1];
+    if (command === undefined) {
+      return false;
+    }
+    const result = command.undo();
+    if (isThenable(result)) {
+      throw new Error(`Command ${command.name} undo() is async; use undoAsync`);
+    }
+    this.undoStack.pop();
+    this.redoStack.push(command);
+    return true;
+  }
+
+  async undoAsync(): Promise<boolean> {
     const command = this.undoStack.pop();
     if (command === undefined) {
       return false;
     }
-    command.undo();
+    try {
+      await command.undo();
+    } catch (error) {
+      this.undoStack.push(command);
+      throw error;
+    }
     this.redoStack.push(command);
     return true;
   }
 
   redo(): boolean {
+    const command = this.redoStack[this.redoStack.length - 1];
+    if (command === undefined) {
+      return false;
+    }
+    const result = command.execute();
+    if (isThenable(result)) {
+      throw new Error(`Command ${command.name} execute() is async; use redoAsync`);
+    }
+    this.redoStack.pop();
+    this.undoStack.push(command);
+    return true;
+  }
+
+  async redoAsync(): Promise<boolean> {
     const command = this.redoStack.pop();
     if (command === undefined) {
       return false;
     }
-    command.execute();
+    try {
+      await command.execute();
+    } catch (error) {
+      this.redoStack.push(command);
+      throw error;
+    }
     this.undoStack.push(command);
     return true;
   }

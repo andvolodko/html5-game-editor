@@ -159,4 +159,15 @@ describe("sprite-gizmo-math", () => {
     const zoomedOut = spriteGizmoHitOutsets(0.5);
     expect(zoomedOut.left).toBeCloseTo(SPRITE_GIZMO_HANDLE_HIT_EXTENT * 2, 5);
   });
+
+  it("scales hit outsets with inverse node scale so handles stay hittable", () => {
+    const scaledUp = spriteGizmoHitOutsets(1, { x: 3, y: 2 });
+    expect(scaledUp.left).toBeCloseTo(SPRITE_GIZMO_HANDLE_HIT_EXTENT / 3, 5);
+    expect(scaledUp.top).toBeCloseTo(
+      (SPRITE_GIZMO_ROTATE_OFFSET + SPRITE_GIZMO_ROTATE_HIT_EXTENT) / 2,
+      5,
+    );
+    const scaledDown = spriteGizmoHitOutsets(2, { x: 0.5, y: 0.5 });
+    expect(scaledDown.left).toBeCloseTo(SPRITE_GIZMO_HANDLE_HIT_EXTENT * 1, 5);
+  });
 });

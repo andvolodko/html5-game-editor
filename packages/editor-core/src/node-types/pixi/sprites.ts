@@ -18,7 +18,7 @@ export function registerPixiSpriteTypes(registry: NodeTypeRegistry): void {
       order: 10,
       icon: "▧",
       canHaveChildren: false,
-      supportedAssetTypes: ["texture"],
+      supportedAssetTypes: ["texture", "aseprite"],
       createDefaultNode: (ctx) =>
         createNodeWithVisual(
           ctx.name,
@@ -84,13 +84,13 @@ export function registerPixiSpriteTypes(registry: NodeTypeRegistry): void {
       order: 40,
       icon: "▷",
       canHaveChildren: false,
-      supportedAssetTypes: ["texture"],
+      supportedAssetTypes: ["texture", "aseprite"],
       createDefaultNode: (ctx) =>
         createNodeWithVisual(
           ctx.name,
           ctx.position,
           createAnimatedSpriteComponent(
-            ctx.assetId !== undefined ? { frames: [ctx.assetId] } : {},
+            ctx.assetId !== undefined ? { assetId: ctx.assetId, frames: [] } : {},
           ),
           ctx.parentId,
         ),

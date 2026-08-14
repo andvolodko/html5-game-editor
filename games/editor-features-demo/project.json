@@ -8,8 +8,8 @@
   ],
   "startScene": "loading",
   "resolution": {
-    "width": 1280,
-    "height": 720
+    "width": 1920,
+    "height": 1080
   },
   "background": "#1c2a4a"
 }

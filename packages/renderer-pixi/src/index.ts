@@ -7,6 +7,10 @@ export {
 } from "./editor-chrome.js";
 export { PixiSceneRenderer } from "./pixi-scene-renderer.js";
 export { preloadPixiSceneAsset } from "./preload-pixi-scene-asset.js";
+export { mountAsepritePreview } from "./aseprite-preview.js";
+export type { AsepritePreviewHandle } from "./aseprite-preview.js";
+export { mountSpinePreview } from "./spine-preview.js";
+export type { SpinePreviewHandle } from "./spine-preview.js";
 export type {
   PixiSceneRendererOptions,
   PixiPointerHandlers,
@@ -14,11 +18,15 @@ export type {
   PixiGizmoAnchorResult,
   PixiSyncStats,
 } from "./pixi-scene-renderer-types.js";
-export { clientPointToWorld } from "./viewport-math.js";
+export { clientPointToScreen, clientPointToWorld } from "./viewport-math.js";
 export {
   PixelGridOverlay,
   DEFAULT_PIXEL_GRID_STYLE,
+  PIXEL_LINE_ALPHA,
+  PIXEL_LINE_CELL_SIZE,
+  PIXEL_LINE_MIN_SCALE,
   iterateGridLines,
+  shouldDrawPixelLines,
 } from "./pixel-grid.js";
 export type { PixelGridStyle } from "./pixel-grid.js";
 export { SpriteSelectionGizmo } from "./sprite-selection-gizmo.js";
@@ -48,6 +56,7 @@ export {
   MAX_VIEWPORT_SCALE,
   VIEWPORT_SCALE_STEP,
   viewportChromeInvScale,
+  viewportChromeInvScaleAxes,
   screenToWorld,
   worldToScreen,
   zoomAtScreenPoint,

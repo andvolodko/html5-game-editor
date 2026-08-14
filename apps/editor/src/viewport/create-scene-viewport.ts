@@ -11,11 +11,13 @@ import {
 } from "@game-editor/scene";
 import {
   createHybridRendererStack,
+  pickHybridNodeId,
   type HybridInputLayer,
+  type HybridLayerVisibility,
   type HybridRendererStack,
 } from "./hybrid-stack.js";
 
-export type { HybridInputLayer };
+export type { HybridInputLayer, HybridLayerVisibility };
 export type ThreeTransformMode = "translate" | "rotate" | "scale";
 export type ThreeViewMode = "editor" | "camera";
 
@@ -31,11 +33,13 @@ export interface SceneViewportHandle {
   setAssetResolver(resolver: AssetResolver): void;
   setSelectedNodeIds(ids: readonly string[]): void;
   setHybridInputLayer?(layer: HybridInputLayer): void;
+  setHybridLayerVisibility?(visibility: HybridLayerVisibility): void;
   setThreeTransformMode?(mode: ThreeTransformMode): void;
   getThreeTransformMode?(): ThreeTransformMode;
   setThreeViewMode?(mode: ThreeViewMode): void;
   getThreeViewMode?(): ThreeViewMode;
   clientToWorld(clientX: number, clientY: number): { x: number; y: number };
+  pickNodeId(clientX: number, clientY: number): string | undefined;
 }
 
 export async function createSceneViewport(options: {
@@ -65,6 +69,7 @@ export async function createSceneViewport(options: {
       setAssetResolver: (resolver) => pixi.setAssetResolver(resolver),
       setSelectedNodeIds: (ids) => pixi.setSelectedNodeIds(ids),
       clientToWorld: (x, y) => pixi.clientToWorld(x, y),
+      pickNodeId: (x, y) => pixi.pickNodeId(x, y),
     };
   }
 
@@ -88,6 +93,7 @@ export async function createSceneViewport(options: {
       setThreeViewMode: (mode) => three.setViewMode(mode),
       getThreeViewMode: () => three.getViewMode(),
       clientToWorld: (x, y) => three.clientToWorld(x, y),
+      pickNodeId: (x, y) => three.pickNodeId(x, y),
     };
   }
 
@@ -122,6 +128,8 @@ export async function createSceneViewport(options: {
       stack.three.setSelectedNodeIds(ids);
     },
     setHybridInputLayer: (layer) => stack.setHybridInputLayer(layer),
+    setHybridLayerVisibility: (visibility) =>
+      stack.setHybridLayerVisibility(visibility),
     setThreeTransformMode: (mode) => stack.three.setTransformMode(mode),
     getThreeTransformMode: () => stack.three.getTransformMode(),
     setThreeViewMode: (mode) => stack.three.setViewMode(mode),
@@ -135,5 +143,6 @@ export async function createSceneViewport(options: {
       }
       return stack.three.clientToWorld(x, y);
     },
+    pickNodeId: (x, y) => pickHybridNodeId(stack, x, y),
   };
 }

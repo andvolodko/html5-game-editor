@@ -27,6 +27,34 @@ describe("CommandManager", () => {
     expect(manager.canRedo).toBe(true);
   });
 
+  it("records an already-applied command without executing again", () => {
+    const counter = { value: 5 };
+    const manager = new CommandManager();
+    manager.record(createCounterCommand(counter, 5));
+    expect(counter.value).toBe(5);
+    expect(manager.canUndo).toBe(true);
+    expect(manager.undo()).toBe(true);
+    expect(counter.value).toBe(0);
+  });
+
+  it("undoAsync awaits promise-returning undo", async () => {
+    const counter = { value: 1 };
+    const manager = new CommandManager();
+    manager.record({
+      name: "async-add",
+      async execute() {
+        counter.value += 1;
+      },
+      async undo() {
+        counter.value -= 1;
+      },
+    });
+    expect(await manager.undoAsync()).toBe(true);
+    expect(counter.value).toBe(0);
+    expect(await manager.redoAsync()).toBe(true);
+    expect(counter.value).toBe(1);
+  });
+
   it("redoes after undo", () => {
     const counter = { value: 0 };
     const manager = new CommandManager();

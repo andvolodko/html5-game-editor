@@ -1,4 +1,4 @@
-import { access, lstat, realpath, rename, rm } from "node:fs/promises";
+import { access, lstat, realpath, rename } from "node:fs/promises";
 import path from "node:path";
 import {
   computeAssetDatabaseRevision,
@@ -6,6 +6,7 @@ import {
   parseDeletableAssetFolderPath,
   relocateOwnedAssetPaths,
   spineBundleFolder,
+  withAsepriteSourcePath,
   type AssetDatabaseData,
   type AssetRecord,
 } from "@game-editor/assets";
@@ -18,6 +19,9 @@ import {
   ASSETS_ROOT_FOLDER,
 } from "./asset-folder-service.js";
 import { normalizeAssetDestination } from "./asset-path-utils.js";
+import { GeneratedAssetFileService } from "./generated-asset-files.js";
+import { AssetDuplicateService } from "./asset-duplicate-service.js";
+import { AssetTrashService } from "./asset-trash-service.js";
 
 const ASSET_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._ -]*$/;
 const SCENES_FOLDER = "assets/scenes";
@@ -61,11 +65,30 @@ export interface AssetDeleteResult {
  * Filesystem + manifest updates happen in one service method (single-writer).
  */
 export class AssetMutationService {
+  private readonly generatedFiles: GeneratedAssetFileService;
+  private readonly duplicator: AssetDuplicateService;
+  private readonly trash: AssetTrashService;
+
   constructor(
     private readonly projectService: ProjectService,
     private readonly store: AssetDatabaseStore,
     private readonly folderService: AssetFolderService,
-  ) {}
+  ) {
+    this.generatedFiles = new GeneratedAssetFileService(projectService);
+    this.duplicator = new AssetDuplicateService(
+      projectService,
+      store,
+      folderService,
+    );
+    this.trash = new AssetTrashService(projectService);
+  }
+
+  async duplicateAsset(
+    assetId: string,
+    destinationFolder?: string,
+  ): Promise<AssetMutationResult> {
+    return this.duplicator.duplicateAsset(assetId, destinationFolder);
+  }
 
   async renameAsset(assetId: string, newName: string): Promise<AssetMutationResult> {
     const name = newName.trim();
@@ -133,7 +156,11 @@ export class AssetMutationService {
     }
 
     await this.renameFile(record.path, nextPath);
-    const updated: AssetRecord = { ...record, name, path: nextPath };
+    const updated =
+      record.metadata.kind === "aseprite"
+        ? { ...withAsepriteSourcePath(record, nextPath), name }
+        : { ...record, name, path: nextPath };
+    await this.relocateGeneratedFiles(record, updated);
     database.update(updated);
     const data = await this.store.save(database);
     return {
@@ -221,7 +248,11 @@ export class AssetMutationService {
     }
 
     await this.renameFile(record.path, nextPath);
-    const updated: AssetRecord = { ...record, path: nextPath };
+    const updated =
+      record.metadata.kind === "aseprite"
+        ? withAsepriteSourcePath(record, nextPath)
+        : { ...record, path: nextPath };
+    await this.relocateGeneratedFiles(record, updated);
     database.update(updated);
     const data = await this.store.save(database);
     return {
@@ -270,10 +301,16 @@ export class AssetMutationService {
 
     const database = await this.store.load();
     const prefix = `${folder}/`;
+    const relocated: Array<{ previous: AssetRecord; next: AssetRecord }> = [];
     for (const asset of [...database.getAll()]) {
       if (asset.path === folder || asset.path.startsWith(prefix)) {
-        database.update(relocateOwnedAssetPaths(asset, folder, nextFolder));
+        const next = relocateOwnedAssetPaths(asset, folder, nextFolder);
+        relocated.push({ previous: asset, next });
+        database.update(next);
       }
+    }
+    for (const pair of relocated) {
+      await this.relocateGeneratedFiles(pair.previous, pair.next);
     }
     const data = await this.store.save(database);
     return {
@@ -291,18 +328,34 @@ export class AssetMutationService {
       throw new DomainError("ASSET_NOT_FOUND", `Asset not found: ${assetId}`);
     }
 
-    const bundleFolder = spineBundleFolder(record);
-    if (bundleFolder) {
-      await this.removeOwnedDirectory(bundleFolder);
-    } else {
-      for (const assetPath of ownedAssetPaths(record)) {
-        await this.removeOwnedFile(assetPath);
-      }
-    }
-
+    await this.trash.stash(record);
     database.remove(assetId);
     const data = await this.store.save(database);
     return {
+      database: data,
+      revision: computeAssetDatabaseRevision(data),
+      folders: await this.folderService.listFolders(),
+    };
+  }
+
+  async restoreAsset(assetId: string): Promise<AssetMutationResult> {
+    const record = await this.trash.peekRecord(assetId);
+    const database = await this.store.load();
+    if (database.get(assetId)) {
+      throw new DomainError("ASSET_EXISTS", `Asset already exists: ${assetId}`);
+    }
+    if (database.findByPath(record.path)) {
+      throw new DomainError(
+        "ASSET_PATH_EXISTS",
+        `Asset already exists: ${record.path}`,
+      );
+    }
+
+    await this.trash.restoreFiles(assetId, record);
+    database.add(record);
+    const data = await this.store.save(database);
+    return {
+      asset: record,
       database: data,
       revision: computeAssetDatabaseRevision(data),
       folders: await this.folderService.listFolders(),
@@ -321,23 +374,70 @@ export class AssetMutationService {
     await this.assertSafeDeletableDirectory(folder);
 
     const database = await this.store.load();
-    const prefix = `${folder}/`;
-    for (const asset of [...database.getAll()]) {
-      const underFolder = ownedAssetPaths(asset).some(
-        (assetPath) => assetPath === folder || assetPath.startsWith(prefix),
-      );
-      if (underFolder) {
-        database.remove(asset.id);
-      }
+    const records = recordsOwnedUnderFolder(database, folder);
+    await this.trash.stashFolder(folder, records);
+    for (const record of records) {
+      database.remove(record.id);
     }
 
-    await this.removeOwnedDirectory(folder);
     const data = await this.store.save(database);
     return {
       database: data,
       revision: computeAssetDatabaseRevision(data),
       folders: await this.folderService.listFolders(),
     };
+  }
+
+  async restoreFolder(folderPath: string): Promise<FolderRenameResult> {
+    const folder = parseDeletableAssetFolderPath(folderPath);
+    const { records } = await this.trash.peekFolder(folder);
+    const known = await this.folderService.listFolders();
+    if (known.includes(folder)) {
+      throw new DomainError("FOLDER_EXISTS", `Folder already exists: ${folder}`);
+    }
+
+    const database = await this.store.load();
+    for (const record of records) {
+      if (database.get(record.id)) {
+        throw new DomainError("ASSET_EXISTS", `Asset already exists: ${record.id}`);
+      }
+      if (database.findByPath(record.path)) {
+        throw new DomainError(
+          "ASSET_PATH_EXISTS",
+          `Asset already exists: ${record.path}`,
+        );
+      }
+    }
+
+    await this.trash.restoreFolderFiles(folder);
+    for (const record of records) {
+      database.add(record);
+    }
+    const data = await this.store.save(database);
+    return {
+      folder,
+      database: data,
+      revision: computeAssetDatabaseRevision(data),
+      folders: await this.folderService.listFolders(),
+    };
+  }
+
+  private async relocateGeneratedFiles(
+    previous: AssetRecord,
+    next: AssetRecord,
+  ): Promise<void> {
+    if (previous.metadata.kind !== "aseprite" || next.metadata.kind !== "aseprite") {
+      return;
+    }
+    const pairs: Array<[string, string]> = [
+      [previous.metadata.sheetPath, next.metadata.sheetPath],
+      [previous.metadata.dataPath, next.metadata.dataPath],
+    ];
+    for (const [from, to] of pairs) {
+      if (from !== to) {
+        await this.generatedFiles.renameFile(from, to);
+      }
+    }
   }
 
   /**
@@ -372,51 +472,6 @@ export class AssetMutationService {
     return realAbsolute;
   }
 
-  private async removeOwnedDirectory(relative: string): Promise<void> {
-    const absolute = await this.assertSafeDeletableDirectory(relative);
-    await rm(absolute, { recursive: true });
-  }
-
-  private async removeOwnedFile(relative: string): Promise<void> {
-    const normalized = relative.replace(/\\/g, "/").replace(/^\/+/, "");
-    if (
-      !normalized.startsWith(`${ASSETS_ROOT_FOLDER}/`) ||
-      normalized.includes("..") ||
-      normalized === ASSETS_ROOT_FOLDER
-    ) {
-      throw new ValidationError(`Refusing to delete unsafe asset path: ${relative}`);
-    }
-    if (
-      normalized === SCENES_FOLDER ||
-      normalized.startsWith(`${SCENES_FOLDER}/`)
-    ) {
-      throw new ValidationError("Cannot delete files under assets/scenes");
-    }
-
-    const absolute = this.projectService.resolveProjectPath(normalized);
-    const assetsRootAbsolute = this.projectService.resolveProjectPath(
-      ASSETS_ROOT_FOLDER,
-    );
-
-    let stats;
-    try {
-      stats = await lstat(absolute);
-    } catch {
-      return;
-    }
-    if (stats.isSymbolicLink()) {
-      throw new ValidationError("Refusing to delete a symbolic link");
-    }
-    if (!stats.isFile()) {
-      throw new ValidationError(`Not a file: ${normalized}`);
-    }
-
-    const realAbsolute = await realpath(absolute);
-    const realAssetsRoot = await realpath(assetsRootAbsolute);
-    assertPathStrictlyInside(realAbsolute, realAssetsRoot, normalized);
-    await rm(realAbsolute);
-  }
-
   private async renameFile(fromRelative: string, toRelative: string): Promise<void> {
     const fromAbsolute = this.projectService.resolveProjectPath(fromRelative);
     const toAbsolute = this.projectService.resolveProjectPath(toRelative);
@@ -436,6 +491,18 @@ export function assertValidAssetName(name: string): void {
   if (!ASSET_NAME_PATTERN.test(name) || name.includes("/") || name.includes("\\")) {
     throw new ValidationError(`Invalid asset name: ${name}`);
   }
+}
+
+function recordsOwnedUnderFolder(
+  database: { getAll(): readonly AssetRecord[] },
+  folder: string,
+): AssetRecord[] {
+  const prefix = `${folder}/`;
+  return [...database.getAll()].filter((asset) =>
+    ownedAssetPaths(asset).some(
+      (assetPath) => assetPath === folder || assetPath.startsWith(prefix),
+    ),
+  );
 }
 
 /** `candidate` must resolve strictly inside `container` (not equal to it). */

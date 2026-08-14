@@ -1,10 +1,10 @@
-import { createReadStream } from "node:fs";
-import { stat } from "node:fs/promises";
 import {
+  mimeTypeForAsepritePart,
   mimeTypeForGltfPart,
   mimeTypeForSpinePart,
   mimeTypeForSpineSkeleton,
   parseDeletableAssetFolderPath,
+  resolveAsepritePartRelativePath,
   resolveGltfPartRelativePath,
   resolveSpinePartRelativePath,
 } from "@game-editor/assets";
@@ -18,6 +18,7 @@ import {
   sendNotFound,
 } from "../responses.js";
 import type { RouteHandler } from "../route-context.js";
+import { sendLocalFile } from "../send-file.js";
 
 const ASSET_CONTENT_CACHE_MAX_AGE_SECONDS = 60;
 
@@ -114,7 +115,7 @@ export const handleAssetContentRoute: RouteHandler = async (ctx) => {
   if (!match) {
     return false;
   }
-  if (ctx.method !== "GET") {
+  if (ctx.method !== "GET" && ctx.method !== "HEAD") {
     sendMethodNotAllowed(ctx.res);
     return true;
   }
@@ -126,7 +127,6 @@ export const handleAssetContentRoute: RouteHandler = async (ctx) => {
     return true;
   }
   const absolute = ctx.deps.projectService.resolveProjectPath(record.path);
-  const fileStat = await stat(absolute);
   const mime =
     record.metadata.kind === "texture" ||
     record.metadata.kind === "audio" ||
@@ -135,14 +135,13 @@ export const handleAssetContentRoute: RouteHandler = async (ctx) => {
       : record.metadata.kind === "spine"
         ? mimeTypeForSpineSkeleton(record.metadata.skeletonFormat)
         : "application/octet-stream";
-  // Local-dev only: wildcard CORS. Do not ship this for non-local hosts.
-  ctx.res.writeHead(200, {
-    "content-type": mime,
-    "content-length": fileStat.size,
-    "cache-control": `private, max-age=${String(ASSET_CONTENT_CACHE_MAX_AGE_SECONDS)}`,
-    "access-control-allow-origin": "*",
-  });
-  createReadStream(absolute).pipe(ctx.res);
+  await sendLocalFile(
+    ctx.req,
+    ctx.res,
+    absolute,
+    mime,
+    ASSET_CONTENT_CACHE_MAX_AGE_SECONDS,
+  );
   return true;
 };
 
@@ -151,7 +150,7 @@ export const handleAssetPartRoute: RouteHandler = async (ctx) => {
   if (!match) {
     return false;
   }
-  if (ctx.method !== "GET") {
+  if (ctx.method !== "GET" && ctx.method !== "HEAD") {
     sendMethodNotAllowed(ctx.res);
     return true;
   }
@@ -165,24 +164,26 @@ export const handleAssetPartRoute: RouteHandler = async (ctx) => {
   }
   const relative =
     resolveSpinePartRelativePath(record, part) ??
-    resolveGltfPartRelativePath(record, part);
+    resolveGltfPartRelativePath(record, part) ??
+    resolveAsepritePartRelativePath(record, part);
   if (!relative) {
     sendNotFound(ctx.res);
     return true;
   }
   const absolute = ctx.deps.projectService.resolveProjectPath(relative);
-  const fileStat = await stat(absolute);
   const partMime =
     record.metadata.kind === "spine"
       ? mimeTypeForSpinePart(relative)
-      : mimeTypeForGltfPart(relative);
-  ctx.res.writeHead(200, {
-    "content-type": partMime,
-    "content-length": fileStat.size,
-    "cache-control": `private, max-age=${String(ASSET_CONTENT_CACHE_MAX_AGE_SECONDS)}`,
-    "access-control-allow-origin": "*",
-  });
-  createReadStream(absolute).pipe(ctx.res);
+      : record.metadata.kind === "aseprite"
+        ? mimeTypeForAsepritePart(relative)
+        : mimeTypeForGltfPart(relative);
+  await sendLocalFile(
+    ctx.req,
+    ctx.res,
+    absolute,
+    partMime,
+    ASSET_CONTENT_CACHE_MAX_AGE_SECONDS,
+  );
   return true;
 };
 
@@ -223,6 +224,60 @@ export const handleAssetMoveRoute: RouteHandler = async (ctx) => {
     assetId,
     destination,
   );
+  sendJson(ctx.res, 200, { ok: true, ...result });
+  return true;
+};
+
+export const handleAssetRestoreRoute: RouteHandler = async (ctx) => {
+  const match = /^\/assets\/([^/]+)\/restore$/.exec(ctx.url.pathname);
+  if (!match) {
+    return false;
+  }
+  if (ctx.method !== "POST") {
+    sendMethodNotAllowed(ctx.res);
+    return true;
+  }
+  const assetId = decodeURIComponent(match[1] ?? "");
+  const result = await ctx.deps.assetMutationService.restoreAsset(assetId);
+  sendJson(ctx.res, 200, { ok: true, ...result });
+  return true;
+};
+
+export const handleAssetDuplicateRoute: RouteHandler = async (ctx) => {
+  const match = /^\/assets\/([^/]+)\/duplicate$/.exec(ctx.url.pathname);
+  if (!match) {
+    return false;
+  }
+  if (ctx.method !== "POST") {
+    sendMethodNotAllowed(ctx.res);
+    return true;
+  }
+  const assetId = decodeURIComponent(match[1] ?? "");
+  const body = await readJsonBody(ctx.req);
+  const destination = readStringField(body, "destination");
+  const result = await ctx.deps.assetMutationService.duplicateAsset(
+    assetId,
+    destination,
+  );
+  sendJson(ctx.res, 200, { ok: true, ...result });
+  return true;
+};
+
+export const handleAssetFoldersRestoreRoute: RouteHandler = async (ctx) => {
+  if (ctx.url.pathname !== "/assets/folders/restore") {
+    return false;
+  }
+  if (ctx.method !== "POST") {
+    sendMethodNotAllowed(ctx.res);
+    return true;
+  }
+  const body = await readJsonBody(ctx.req);
+  const rawPath =
+    typeof body === "object" && body !== null && "path" in body
+      ? (body as { path: unknown }).path
+      : undefined;
+  const folderPath = parseDeletableAssetFolderPath(rawPath);
+  const result = await ctx.deps.assetMutationService.restoreFolder(folderPath);
   sendJson(ctx.res, 200, { ok: true, ...result });
   return true;
 };

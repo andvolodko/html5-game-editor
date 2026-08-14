@@ -107,11 +107,15 @@ export class SpriteSelectionGizmo {
     this.createFlipHandle("flipV");
   }
 
+  /**
+   * @param worldChromeScale Camera scale, or per-axis camera × node world
+   * scale so handles stay screen-constant while the object is scaled.
+   */
   layout(
     width: number,
     height: number,
     state?: SpriteGizmoLayoutState,
-    cameraScale = 1,
+    worldChromeScale: number | Vec2 = 1,
     features?: SpriteGizmoFeatures,
   ): void {
     this.width = width;
@@ -124,14 +128,26 @@ export class SpriteSelectionGizmo {
     this.showSize = features?.size !== false;
     this.showScale = features?.scale === true;
     this.showAnchor = features?.anchor !== false;
-    const inv = viewportChromeInvScale(cameraScale);
-    const rotateOffset = SPRITE_GIZMO_ROTATE_OFFSET * inv;
-    const flipOffset = SPRITE_GIZMO_FLIP_OFFSET * inv;
-    const flipGap = SPRITE_GIZMO_FLIP_GAP * inv;
-    const flipInset = SPRITE_GIZMO_FLIP_INSET * inv;
+    const scaleX =
+      typeof worldChromeScale === "number"
+        ? worldChromeScale
+        : worldChromeScale.x;
+    const scaleY =
+      typeof worldChromeScale === "number"
+        ? worldChromeScale
+        : worldChromeScale.y;
+    const inv = {
+      x: viewportChromeInvScale(scaleX),
+      y: viewportChromeInvScale(scaleY),
+    };
+    const invStroke = Math.min(inv.x, inv.y);
+    const rotateOffset = SPRITE_GIZMO_ROTATE_OFFSET * inv.y;
+    const flipOffset = SPRITE_GIZMO_FLIP_OFFSET * inv.y;
+    const flipGap = SPRITE_GIZMO_FLIP_GAP * inv.x;
+    const flipInset = SPRITE_GIZMO_FLIP_INSET * inv.x;
 
-    this.drawFrame(inv);
-    this.drawStem(inv, rotateOffset);
+    this.drawFrame(invStroke);
+    this.drawStem(invStroke, rotateOffset);
     for (const handle of SPRITE_SIZE_HANDLES) {
       const gfx = this.handles.get(handle);
       const pos = gizmoHandleLocalPosition(
@@ -147,7 +163,7 @@ export class SpriteSelectionGizmo {
         gfx.visible = this.showSize;
         gfx.eventMode = this.showSize ? "static" : "none";
         gfx.position.set(pos.x, pos.y);
-        gfx.scale.set(inv);
+        gfx.scale.set(inv.x, inv.y);
       }
     }
     for (const handle of SPRITE_SCALE_HANDLES) {
@@ -165,7 +181,7 @@ export class SpriteSelectionGizmo {
         gfx.visible = this.showScale;
         gfx.eventMode = this.showScale ? "static" : "none";
         gfx.position.set(pos.x, pos.y);
-        gfx.scale.set(inv);
+        gfx.scale.set(inv.x, inv.y);
         this.redrawScaleHandle(handle);
       }
     }
@@ -181,7 +197,7 @@ export class SpriteSelectionGizmo {
     );
     if (rotate) {
       rotate.position.set(rotatePos.x, rotatePos.y);
-      rotate.scale.set(inv);
+      rotate.scale.set(inv.x, inv.y);
     }
 
     const anchorGfx = this.handles.get("anchor");
@@ -190,7 +206,7 @@ export class SpriteSelectionGizmo {
       anchorGfx.eventMode = this.showAnchor ? "static" : "none";
       const pos = gizmoLocalFromAnchor(this.anchor, width, height);
       anchorGfx.position.set(pos.x, pos.y);
-      anchorGfx.scale.set(inv);
+      anchorGfx.scale.set(inv.x, inv.y);
     }
 
     this.redrawFlipHandle("flipH", this.flipX);
@@ -208,7 +224,7 @@ export class SpriteSelectionGizmo {
       );
       if (gfx) {
         gfx.position.set(pos.x, pos.y);
-        gfx.scale.set(inv);
+        gfx.scale.set(inv.x, inv.y);
       }
     }
   }

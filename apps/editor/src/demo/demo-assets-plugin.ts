@@ -3,12 +3,15 @@ import fs from "node:fs";
 import path from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Plugin, ResolvedConfig } from "vite";
+import {
+  isGeneratedTrashRelative,
+  parseDemoContentUrl,
+} from "./demo-content-paths";
 
-const DEMO_URL_PREFIX = "/demo/";
-const ASSETS_SEGMENT = "/assets/";
 const FORBIDDEN_STATUS = 403;
 const NOT_FOUND_STATUS = 404;
-const PROJECT_ID_PATTERN = /^[A-Za-z0-9._-]+$/;
+const ASSETS_ENTRY = "assets";
+const GENERATED_ENTRY = ".generated";
 
 const MIME_BY_EXTENSION: Readonly<Record<string, string>> = {
   ".png": "image/png",
@@ -50,27 +53,6 @@ function isInsideRoot(root: string, candidate: string): boolean {
   return relative !== "" && !relative.startsWith("..") && !path.isAbsolute(relative);
 }
 
-function parseDemoAssetUrl(
-  pathname: string,
-): { projectId: string; relative: string } | undefined {
-  if (!pathname.startsWith(DEMO_URL_PREFIX)) {
-    return undefined;
-  }
-  const rest = pathname.slice(DEMO_URL_PREFIX.length);
-  const assetsAt = rest.indexOf(ASSETS_SEGMENT);
-  if (assetsAt <= 0) {
-    return undefined;
-  }
-  const projectId = rest.slice(0, assetsAt);
-  if (!PROJECT_ID_PATTERN.test(projectId)) {
-    return undefined;
-  }
-  return {
-    projectId,
-    relative: rest.slice(assetsAt + ASSETS_SEGMENT.length),
-  };
-}
-
 function sendFile(res: ServerResponse, filePath: string): void {
   res.statusCode = 200;
   res.setHeader("Content-Type", mimeForFile(filePath));
@@ -79,7 +61,7 @@ function sendFile(res: ServerResponse, filePath: string): void {
 
 function listDemoGames(
   gamesRoot: string,
-): Array<{ id: string; assetsRoot: string }> {
+): Array<{ id: string; projectRoot: string }> {
   if (!fs.existsSync(gamesRoot)) {
     return [];
   }
@@ -91,14 +73,27 @@ function listDemoGames(
     )
     .map((entry) => ({
       id: entry.name,
-      assetsRoot: path.join(gamesRoot, entry.name, "assets"),
+      projectRoot: path.join(gamesRoot, entry.name),
     }))
-    .filter((game) => fs.existsSync(game.assetsRoot));
+    .filter((game) =>
+      fs.existsSync(path.join(game.projectRoot, ASSETS_ENTRY)),
+    );
+}
+
+function copyGeneratedTree(source: string, dest: string): void {
+  fs.mkdirSync(dest, { recursive: true });
+  fs.cpSync(source, dest, {
+    recursive: true,
+    filter(src) {
+      const relative = path.relative(source, src).replaceAll("\\", "/");
+      return relative === "" || !isGeneratedTrashRelative(relative);
+    },
+  });
 }
 
 function demoAssetsMiddleware(gamesRoot: string, base: string) {
   const games = new Map(
-    listDemoGames(gamesRoot).map((game) => [game.id, path.resolve(game.assetsRoot)]),
+    listDemoGames(gamesRoot).map((game) => [game.id, path.resolve(game.projectRoot)]),
   );
   return (req: IncomingMessage, res: ServerResponse, next: () => void): void => {
     const rawUrl = req.url ?? "";
@@ -106,7 +101,7 @@ function demoAssetsMiddleware(gamesRoot: string, base: string) {
       decodeURIComponent(rawUrl.split("?")[0] ?? ""),
       base,
     );
-    const parsed = parseDemoAssetUrl(pathname);
+    const parsed = parseDemoContentUrl(pathname);
     if (!parsed) {
       next();
       return;
@@ -140,8 +135,8 @@ function copyIndexTo404(outDir: string): void {
 }
 
 /**
- * Serves / copies each `games/<id>/assets` tree to `/demo/<id>/assets`
- * so the editor can switch projects without project-server.
+ * Serves / copies each game's `assets/` and `.generated/` trees under
+ * `/demo/<id>/` so the static editor can switch projects without project-server.
  */
 export function demoAssetsPlugin(gamesRoot: string): Plugin {
   let outDir = "dist";
@@ -160,9 +155,15 @@ export function demoAssetsPlugin(gamesRoot: string): Plugin {
     },
     closeBundle() {
       for (const game of listDemoGames(gamesRoot)) {
-        const dest = path.resolve(outDir, "demo", game.id, "assets");
-        fs.mkdirSync(dest, { recursive: true });
-        fs.cpSync(game.assetsRoot, dest, { recursive: true });
+        const destRoot = path.resolve(outDir, "demo", game.id);
+        const assetsSource = path.join(game.projectRoot, ASSETS_ENTRY);
+        const assetsDest = path.join(destRoot, ASSETS_ENTRY);
+        fs.mkdirSync(assetsDest, { recursive: true });
+        fs.cpSync(assetsSource, assetsDest, { recursive: true });
+        const generatedSource = path.join(game.projectRoot, GENERATED_ENTRY);
+        if (fs.existsSync(generatedSource)) {
+          copyGeneratedTree(generatedSource, path.join(destRoot, GENERATED_ENTRY));
+        }
       }
       copyIndexTo404(outDir);
     },

@@ -1,0 +1,275 @@
+{
+  "id": "scene_0c978032-b4c2-4eb5-bc34-ca9a5247e7ad",
+  "name": "aseprite",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "node_eb5107f3-c664-49f3-b623-70b2fbc0939f",
+      "name": "Particle FX",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_f9a87d4d-67a4-4b5d-894d-dfa4e5f7fc6c",
+          "position": {
+            "x": 140,
+            "y": 250
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_55ff7e14-66df-42a5-92f9-13ae766474aa",
+          "frames": [],
+          "assetId": "asset_f632db55-3491-4a72-b7a5-b62776a84c2b",
+          "animation": "Dust 1",
+          "animationSpeed": 0.2,
+          "loop": true,
+          "playing": true,
+          "anchor": {
+            "x": 0.45682783110196234,
+            "y": 0.48679073168446674
+          },
+          "width": 296.33495801553266,
+          "height": 254.7120216472851
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_de0bf8b6-71ca-497b-ab73-555e87f14892",
+      "name": "Particle FX",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_899cf771-21a4-44b8-b50e-94afe9247c47",
+          "position": {
+            "x": 340,
+            "y": 120
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_aa1807ac-edd6-474c-9a7d-6ba4972ca2aa",
+          "frames": [],
+          "assetId": "asset_f632db55-3491-4a72-b7a5-b62776a84c2b",
+          "animation": "Explosion 1",
+          "animationSpeed": 0.2,
+          "loop": true,
+          "playing": true,
+          "width": 286,
+          "height": 246.80001831054688
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_ab97d72b-1a1f-468b-ac05-bbab2a795ede",
+      "name": "Particle FX Copy",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_e663353d-b5ff-40ba-b7cf-1fc4ef9d4f21",
+          "position": {
+            "x": 150,
+            "y": 460
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_7610ae84-eb92-477b-8b31-e09e6c566656",
+          "frames": [],
+          "assetId": "asset_f632db55-3491-4a72-b7a5-b62776a84c2b",
+          "animation": "Dust 2",
+          "animationSpeed": 0.2,
+          "loop": true,
+          "playing": true,
+          "width": 286,
+          "height": 246.80001831054688
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_503e8c4b-8684-46ea-aadd-907cc6a0b511",
+      "name": "Archer",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_26ac75c6-687d-457e-b8af-d0cc80c3f14b",
+          "position": {
+            "x": 720,
+            "y": 530
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_7d0abda1-3b4c-493f-aadd-4e63d5e09d23",
+          "frames": [],
+          "assetId": "asset_4b9e8864-faf5-41b7-aeee-8ae7ee968111",
+          "animation": "Idle",
+          "animationSpeed": 0.2,
+          "loop": true,
+          "playing": true,
+          "anchor": {
+            "x": 0.5454970164666845,
+            "y": 0.6817274485022214
+          },
+          "width": 320.9688846127545,
+          "height": 285.01397988539617
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_3b397d75-176b-4b90-aa69-ba55a7cdd257",
+      "name": "Lancer",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_2850d96d-6dd0-45e9-96cf-4afb217795c3",
+          "position": {
+            "x": 1000,
+            "y": 840
+          },
+          "rotation": 178.25860013804714,
+          "scale": {
+            "x": 1,
+            "y": -1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_0dbb9686-6682-4f1c-9763-c8c8f60a1ac7",
+          "frames": [],
+          "assetId": "asset_4cc78f21-5f27-466b-a406-a4082f01a8ef",
+          "animation": "Idle",
+          "animationSpeed": 0.2,
+          "loop": true,
+          "playing": true,
+          "anchor": {
+            "x": 0.5139544929438227,
+            "y": 0.645275800730595
+          },
+          "width": 601.6522463319616,
+          "height": 516.0312227594757
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_622bb17e-d7a8-4525-9fc5-bb85d980a8e4",
+      "name": "Monk",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_8665f9ae-2365-4735-8218-75730db645da",
+          "position": {
+            "x": 1350,
+            "y": 260
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_3f51c6fb-7977-4ebc-a9cf-04b16c273668",
+          "frames": [],
+          "assetId": "asset_f0ae3bf0-4223-4b15-b79e-b6649ce4598a",
+          "animation": "Idle",
+          "animationSpeed": 0.2,
+          "loop": true,
+          "playing": true,
+          "width": 374.7537524570307,
+          "height": 361.2105892656318
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_f9cce92e-de45-4272-872e-af4f411c6c00",
+      "name": "Pawn",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_a81488cf-a6e0-4608-8674-fe8968f7eda7",
+          "position": {
+            "x": 1720,
+            "y": 190
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_29429c74-eeb1-4b86-a0f7-b647196f48b6",
+          "frames": [],
+          "assetId": "asset_dc88734f-2854-4f58-9721-c8bf36fdde1c",
+          "animation": "Idle",
+          "animationSpeed": 0.2,
+          "loop": true,
+          "playing": true,
+          "width": 480.0790499408695,
+          "height": 357.69230193117505
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_653395c6-8717-44c3-94d4-fc2d931ef297",
+      "name": "Warrior",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_a2cfdd34-6f4b-4777-a37e-f354b78d519d",
+          "position": {
+            "x": 1650,
+            "y": 750
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_83860494-e0e2-4a7a-aa9e-96c61d2206aa",
+          "frames": [],
+          "assetId": "asset_544ef966-497f-45ed-a86e-5bdb3a5c9d8e",
+          "animation": "Idle",
+          "animationSpeed": 0.2,
+          "loop": true,
+          "playing": true,
+          "width": 283.4281355485223,
+          "height": 288.0149617858433
+        }
+      ],
+      "children": []
+    }
+  ]
+}

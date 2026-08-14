@@ -9,6 +9,8 @@ import {
   addSceneRenderStats,
   EMPTY_SCENE_RENDER_STATS,
   flattenNodes,
+  flattenSubtree,
+  findNodeById,
   type SceneData,
   type SceneNodeData,
   type SceneRenderStats,
@@ -25,6 +27,7 @@ import {
   readTransform3D,
 } from "./script-scene-io.js";
 import { destroyNodeInScene, spawnModel3DInScene } from "./script-scene-spawn.js";
+import { cloneNamedNodeInScene } from "./script-scene-clone.js";
 
 const MS_PER_SECOND = 1000;
 
@@ -109,6 +112,10 @@ export class GameRuntime {
     const externalStopAudio = options.services?.stopAudio;
     const externalSpawnModel3D = options.services?.spawnModel3D;
     const externalDestroyNode = options.services?.destroyNode;
+    const externalCloneNodeByName = options.services?.cloneNodeByName;
+    const externalListChildNodes = options.services?.listChildNodes;
+    const externalSetNodeVisible = options.services?.setNodeVisible;
+    const externalSetNodeCursor = options.services?.setNodeCursor;
     const externalGetModel3DBoneWorldTransform =
       options.services?.getModel3DBoneWorldTransform;
     const services: ScriptRuntimeServices = {
@@ -207,12 +214,38 @@ export class GameRuntime {
         }
         return this.spawnModel3DNode(spawnOptions);
       },
+      cloneNodeByName: (sourceName, index, columns) => {
+        if (externalCloneNodeByName) {
+          return externalCloneNodeByName(sourceName, index, columns);
+        }
+        return this.cloneNamedNode(sourceName, index, columns);
+      },
       destroyNode: (nodeId) => {
         if (externalDestroyNode) {
           externalDestroyNode(nodeId);
           return;
         }
         this.destroySpawnedNode(nodeId);
+      },
+      listChildNodes: (nodeId) => {
+        if (externalListChildNodes) {
+          return externalListChildNodes(nodeId);
+        }
+        return this.listChildNodes(nodeId);
+      },
+      setNodeVisible: (nodeId, visible) => {
+        if (externalSetNodeVisible) {
+          externalSetNodeVisible(nodeId, visible);
+          return;
+        }
+        this.setNodeVisible(nodeId, visible);
+      },
+      setNodeCursor: (nodeId, cursor) => {
+        if (externalSetNodeCursor) {
+          externalSetNodeCursor(nodeId, cursor);
+          return;
+        }
+        this.setNodeCursor(nodeId, cursor);
       },
     };
     this.scriptHost = new ScriptHost(options.components, services);
@@ -238,19 +271,28 @@ export class GameRuntime {
 
   /**
    * Forward a renderer pointer event to scripts subscribed via `onNodePointerEvent`.
+   * Walks ancestors so a Button on a parent still receives child visual hits.
    * Also fans `pointertap` into legacy `onNodeClick` subscribers.
    */
   emitNodePointerEvent(nodeId: string, event: NodePointerEventName): void {
-    const set = this.nodePointerHandlers.get(
-      pointerSubscriptionKey(nodeId, event),
-    );
-    if (set) {
-      for (const handler of [...set]) {
-        handler();
+    let current: string | undefined = nodeId;
+    const visited = new Set<string>();
+    while (current !== undefined && !visited.has(current)) {
+      visited.add(current);
+      const set = this.nodePointerHandlers.get(
+        pointerSubscriptionKey(current, event),
+      );
+      if (set) {
+        for (const handler of [...set]) {
+          handler();
+        }
       }
-    }
-    if (event === "pointertap") {
-      this.emitNodeClick(nodeId);
+      if (event === "pointertap") {
+        this.emitNodeClick(current);
+      }
+      current = this.scene
+        ? findNodeById(this.scene, current)?.parentId
+        : undefined;
     }
   }
 
@@ -263,6 +305,11 @@ export class GameRuntime {
 
   registerRenderer(registration: RuntimeRendererRegistration): void {
     this.renderers.set(registration.layer.id, registration);
+  }
+
+  /** Drop renderer registrations. Call after destroying the previous stack. */
+  clearRenderers(): void {
+    this.renderers.clear();
   }
 
   loadScene(scene: SceneData): void {
@@ -506,6 +553,54 @@ export class GameRuntime {
       renderer.createNode(node);
     });
     return node.id;
+  }
+
+  private cloneNamedNode(
+    sourceName: string,
+    index: number,
+    columns?: number,
+  ): string | undefined {
+    if (!this.scene) {
+      return undefined;
+    }
+    const node = cloneNamedNodeInScene(
+      this.scene,
+      sourceName,
+      index,
+      columns,
+    );
+    if (!node) {
+      return undefined;
+    }
+    for (const created of flattenSubtree(node)) {
+      this.spawnedNodeIds.add(created.id);
+      this.forAcceptingRenderers(created, (renderer) => {
+        renderer.createNode(created);
+      });
+    }
+    return node.id;
+  }
+
+  private listChildNodes(
+    nodeId: string,
+  ): ReadonlyArray<{ id: string; name: string }> {
+    const node = this.scene ? findNodeById(this.scene, nodeId) : undefined;
+    if (!node) {
+      return [];
+    }
+    return node.children.map((child) => ({ id: child.id, name: child.name }));
+  }
+
+  private setNodeVisible(nodeId: string, visible: boolean): void {
+    for (const registration of this.renderers.values()) {
+      registration.renderer.setNodeVisible?.(nodeId, visible);
+    }
+  }
+
+  private setNodeCursor(nodeId: string, cursor: string): void {
+    for (const registration of this.renderers.values()) {
+      registration.renderer.setNodeCursor?.(nodeId, cursor);
+    }
   }
 
   private destroySpawnedNode(nodeId: string): void {

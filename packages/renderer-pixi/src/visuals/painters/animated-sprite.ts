@@ -9,7 +9,6 @@ import {
   anchoredBounds,
   destroyVisual,
   ensureChild,
-  localBoundsOf,
   missingTextureResult,
   resolveTexture,
   unassignedTextureResult,
@@ -18,11 +17,40 @@ import {
   EDITOR_CHROME_FILL,
   PLACEHOLDER_UNASSIGNED_TINT,
 } from "../../editor-chrome.js";
+import {
+  loadPixiSpritesheet,
+  spritesheetTextures,
+} from "../../load-pixi-spritesheet.js";
 
 export const animatedSpritePainter: PixiVisualPainter = {
   type: "AnimatedSprite",
   async paint(ctx): Promise<VisualPaintResult> {
     const data = ctx.data as AnimatedSpriteComponentData;
+    const aseprite = data.assetId
+      ? ctx.assetResolver?.resolveAsepriteUrls?.(data.assetId)
+      : undefined;
+    if (aseprite) {
+      try {
+        const sheet = await loadPixiSpritesheet(aseprite.jsonUrl);
+        const textures = spritesheetTextures(sheet, data.animation);
+        if (textures.length === 0) {
+          return missingTextureResult(
+            ctx,
+            data.type,
+            data.width ?? DEFAULT_SPRITE_SIZE,
+            data.height ?? DEFAULT_SPRITE_SIZE,
+          );
+        }
+        return paintAnimated(ctx, data, textures);
+      } catch {
+        return missingTextureResult(
+          ctx,
+          data.type,
+          data.width ?? DEFAULT_SPRITE_SIZE,
+          data.height ?? DEFAULT_SPRITE_SIZE,
+        );
+      }
+    }
     if (data.frames.length === 0) {
       return unassignedTextureResult(
         ctx,
@@ -45,35 +73,42 @@ export const animatedSpritePainter: PixiVisualPainter = {
       }
       textures.push(texture);
     }
-    ctx.hidePlaceholder();
-    destroyVisual(ctx.visual);
-    const view = new AnimatedSprite({
-      textures,
-      autoPlay: false,
-    });
-    view.animationSpeed = data.animationSpeed;
-    view.loop = data.loop;
-    view.anchor.set(data.anchor?.x ?? 0.5, data.anchor?.y ?? 0.5);
-    view.tint = data.tint ?? EDITOR_CHROME_FILL;
-    if (data.width !== undefined) {
-      view.width = data.width;
-    }
-    if (data.height !== undefined) {
-      view.height = data.height;
-    }
-    if (data.playing) {
-      view.play();
-    } else {
-      view.gotoAndStop(0);
-    }
-    ensureChild(ctx.visualsRoot, view);
-    view.visible = true;
-    const w = data.width ?? DEFAULT_SPRITE_SIZE;
-    const h = data.height ?? DEFAULT_SPRITE_SIZE;
-    return {
-      visual: view,
-      visualType: data.type,
-      bounds: localBoundsOf(view, anchoredBounds(w, h, data.anchor)),
-    };
+    return paintAnimated(ctx, data, textures);
   },
 };
+
+function paintAnimated(
+  ctx: Parameters<PixiVisualPainter["paint"]>[0],
+  data: AnimatedSpriteComponentData,
+  textures: Texture[],
+): VisualPaintResult {
+  ctx.hidePlaceholder();
+  destroyVisual(ctx.visual);
+  const view = new AnimatedSprite({
+    textures,
+    autoPlay: false,
+  });
+  view.animationSpeed = data.animationSpeed;
+  view.loop = data.loop;
+  view.anchor.set(data.anchor?.x ?? 0.5, data.anchor?.y ?? 0.5);
+  view.tint = data.tint ?? EDITOR_CHROME_FILL;
+  const nativeW = Math.max(1, textures[0]?.width ?? DEFAULT_SPRITE_SIZE);
+  const nativeH = Math.max(1, textures[0]?.height ?? DEFAULT_SPRITE_SIZE);
+  const w = data.width ?? nativeW;
+  const h = data.height ?? nativeH;
+  view.width = w;
+  view.height = h;
+  if (data.playing) {
+    view.play();
+  } else {
+    view.gotoAndStop(0);
+  }
+  ensureChild(ctx.visualsRoot, view);
+  view.visible = true;
+  return {
+    visual: view,
+    visualType: data.type,
+    bounds: anchoredBounds(w, h, data.anchor),
+    supportsSpriteGizmo: true,
+  };
+}

@@ -5,6 +5,7 @@ export { createId, assertId } from "./id.js";
 export {
   MOUSE_BUTTON_PRIMARY,
   MOUSE_BUTTON_MIDDLE,
+  MOUSE_BUTTON_SECONDARY,
 } from "./pointer-buttons.js";
 export {
   DEFAULT_PROJECT_SERVER_PORT,

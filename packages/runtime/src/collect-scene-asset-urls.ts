@@ -31,6 +31,13 @@ function addAssetUrls(
     return;
   }
 
+  const aseprite = resolver.resolveAsepriteUrls?.(assetId);
+  if (aseprite) {
+    addUrl(urls, aseprite.jsonUrl);
+    addUrl(urls, aseprite.imageUrl);
+    return;
+  }
+
   addUrl(urls, resolver.resolveUrl(assetId));
 }
 

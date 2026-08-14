@@ -1,5 +1,6 @@
 import { Assets } from "pixi.js";
 import type { AssetResolver } from "@game-editor/assets";
+import { loadPixiSpritesheet } from "./load-pixi-spritesheet.js";
 
 const TEXTURE_PARSER = "texture";
 
@@ -42,6 +43,12 @@ export async function preloadPixiSceneAsset(
       throwIfAborted(signal);
       await Assets.load(pageUrl);
     }
+    return;
+  }
+
+  const aseprite = resolver.resolveAsepriteUrls?.(assetId);
+  if (aseprite) {
+    await loadPixiSpritesheet(aseprite.jsonUrl);
     return;
   }
 

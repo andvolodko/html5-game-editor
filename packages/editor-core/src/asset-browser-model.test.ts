@@ -4,6 +4,7 @@ import {
   createGltfAssetRecord,
   createSpineAssetRecord,
   createTextureAssetRecord,
+  createAsepriteAssetRecord,
 } from "@game-editor/assets";
 import {
   ASSETS_ROOT_FOLDER,
@@ -108,6 +109,8 @@ describe("asset-browser-model", () => {
       contentUrl: (assetId: string) => `content/${assetId}`,
       spinePartUrl: (assetId: string, pageBasename: string) =>
         `spine/${assetId}/${pageBasename}`,
+      asepritePartUrl: (assetId: string, partBasename: string) =>
+        `aseprite/${assetId}/${partBasename}`,
     };
     expect(
       resolveAssetBrowserPreviewUrl(assets[0]!, resolvers),
@@ -161,5 +164,15 @@ describe("asset-browser-model", () => {
         resolvers,
       ),
     ).toBeUndefined();
+    expect(
+      resolveAssetBrowserPreviewUrl(
+        createAsepriteAssetRecord({
+          id: "asset_ase",
+          name: "hero",
+          path: "assets/hero.aseprite",
+        }),
+        resolvers,
+      ),
+    ).toBe("aseprite/asset_ase/hero.png");
   });
 });
