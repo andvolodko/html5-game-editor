@@ -1,5 +1,5 @@
 ---
-description: project-server filesystem and HTTP security invariants
+description: project-server filesystem and HTTP security invariants. Apply when editing apps/project-server.
 globs: "apps/project-server/**"
 alwaysApply: false
 ---

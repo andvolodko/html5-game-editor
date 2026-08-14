@@ -44,7 +44,7 @@ export class GltfAssetImporter implements AssetImporter {
       throw new ValidationError(`Invalid GLB file: ${file.fileName}`);
     }
 
-    const relativePath = context.allocateRelativePath(path.basename(file.fileName));
+    const relativePath = context.allocateRelativePath(file.fileName);
     const record = createGltfAssetRecord({
       name: path.basename(relativePath, path.extname(relativePath)),
       path: relativePath,

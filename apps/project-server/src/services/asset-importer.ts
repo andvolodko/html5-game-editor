@@ -9,11 +9,15 @@ export interface ImportPrepareContext {
   /** Normalized destination folder under assets/. */
   destinationFolder: string;
   /**
-   * Allocate a unique project-relative path for the desired basename.
+   * Allocate a unique project-relative path for the desired file name.
+   * Nested relative paths (from dropped folders) are preserved under the destination.
    * Updates uniqueness tracking for subsequent files in the same batch.
    */
   allocateRelativePath: (desiredFileName: string) => string;
-  /** Allocate a unique folder under the destination (for multi-file bundles). */
+  /**
+   * Allocate a unique folder under the destination (for multi-file bundles).
+   * Nested relative folder paths are preserved.
+   */
   allocateUniqueFolder: (desiredFolderName: string) => string;
 }
 

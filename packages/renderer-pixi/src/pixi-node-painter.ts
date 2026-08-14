@@ -2,6 +2,7 @@ import { Texture } from "pixi.js";
 import type { AssetResolver } from "@game-editor/assets";
 import {
   DEFAULT_SPRITE_SIZE,
+  DEFAULT_VISUAL_ANCHOR,
   getTransform2D,
   getVisualAnchorOrDefault,
   getVisualComponent,
@@ -10,6 +11,7 @@ import {
   visualComponentSupportsAnchor,
   visualComponentSupportsDisplaySize,
 } from "@game-editor/scene";
+import { computeGroupingContentBounds } from "./pixi-content-bounds.js";
 import { applyVisualDisplayLabel } from "./pixi-display-labels.js";
 import { clearVisual, paintVisualComponent } from "./visuals/index.js";
 import type { PixiRuntimeGraph, RuntimeNode } from "./pixi-runtime-nodes.js";
@@ -92,13 +94,13 @@ export class PixiNodePainter {
       clearVisual(runtime.visual);
       runtime.visual = undefined;
       runtime.visualType = undefined;
-      runtime.visualBounds = undefined;
       runtime.supportsSpriteGizmo = false;
       if (runtime.placeholder) {
         runtime.placeholder.visible = false;
       }
-      this.clearVisualsHitArea(runtime);
+      this.applyGroupingContentBounds(runtime);
       this.paintSelection(runtime);
+      this.refreshGroupingAncestors(runtime);
       return;
     }
 
@@ -192,6 +194,7 @@ export class PixiNodePainter {
     // Selection/gizmo depend on final bounds; paintSelection often runs before
     // this async paint resolves, so refresh once metrics are authoritative.
     this.paintSelection(runtime);
+    this.refreshGroupingAncestors(runtime);
   }
 
   paintSelection(runtime: RuntimeNode): void {
@@ -204,6 +207,9 @@ export class PixiNodePainter {
     }
     const selected = this.host.getSelectedNodeIds().has(runtime.node.id);
     const visual = getVisualComponent(runtime.node);
+    if (!visual) {
+      this.applyGroupingContentBounds(runtime);
+    }
     const cameraScale = this.host.getCameraScale();
     const nodeScale = localScaleTowardAncestor(
       runtime.container,
@@ -221,10 +227,10 @@ export class PixiNodePainter {
       return;
     }
 
-    // Full selection gizmo (rotate / flip / optional size+anchor) for every
-    // Pixi leaf visual with known bounds — not Sprite-only.
-    if (visual && runtime.gizmo && runtime.visualBounds) {
-      const displaySize = getVisualDisplaySize(visual);
+    // Full selection gizmo for leaf visuals and grouping nodes with content
+    // bounds (scale/rotate around Transform2D; size/anchor only on leaves).
+    if (runtime.gizmo && runtime.visualBounds) {
+      const displaySize = visual ? getVisualDisplaySize(visual) : undefined;
       const width =
         runtime.sizePreview?.width ??
         runtime.visualBounds.width ??
@@ -238,11 +244,17 @@ export class PixiNodePainter {
       const transform = getTransform2D(runtime.node);
       const flipX = (transform?.scale.x ?? 1) < 0;
       const flipY = (transform?.scale.y ?? 1) < 0;
-      const supportsAnchor = visualComponentSupportsAnchor(visual);
+      const supportsAnchor = visual
+        ? visualComponentSupportsAnchor(visual)
+        : false;
+      const supportsSize = visual
+        ? visualComponentSupportsDisplaySize(visual)
+        : false;
       const anchor =
-        runtime.anchorPreview ?? getVisualAnchorOrDefault(visual);
+        runtime.anchorPreview ??
+        (visual ? getVisualAnchorOrDefault(visual) : DEFAULT_VISUAL_ANCHOR);
       // Anchor-based visuals: derive center from size+anchor (preview-safe).
-      // Others: use live AABB center so mesh/graphics chrome stays aligned.
+      // Others (meshes, grouping AABB): live bounds center.
       const center = supportsAnchor
         ? visualCenterFromAnchor(anchor, width, height)
         : {
@@ -260,8 +272,8 @@ export class PixiNodePainter {
           y: cameraScale * nodeScale.y,
         },
         {
-          size: visualComponentSupportsDisplaySize(visual),
-          scale: !visualComponentSupportsDisplaySize(visual),
+          size: supportsSize,
+          scale: !supportsSize,
           anchor: supportsAnchor,
         },
       );
@@ -278,7 +290,7 @@ export class PixiNodePainter {
       });
       return;
     }
-    // Grouping nodes have no default bounds graphic — mark origin only.
+    // Empty grouping nodes have no content AABB — mark origin only.
     selection.circle(0, 0, EDITOR_GROUP_ORIGIN_MARKER_RADIUS * invStroke);
     selection.fill({
       color: EDITOR_CHROME_FILL,
@@ -294,6 +306,19 @@ export class PixiNodePainter {
     this.host.textureCache.evictStale((assetId) =>
       this.host.getAssetResolver()?.resolveUrl(assetId),
     );
+  }
+
+  /** Recompute a grouping node's content AABB and ancestor grouping bounds. */
+  refreshGroupingNode(nodeId: string): void {
+    const runtime = this.host.graph.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    this.applyGroupingContentBounds(runtime);
+    if (this.host.getSelectedNodeIds().has(runtime.node.id)) {
+      this.paintSelection(runtime);
+    }
+    this.refreshGroupingAncestors(runtime);
   }
 
   /**
@@ -319,6 +344,34 @@ export class PixiNodePainter {
       return;
     }
     runtime.visualsRoot.hitArea = undefined;
+  }
+
+  private applyGroupingContentBounds(runtime: RuntimeNode): void {
+    if (getVisualComponent(runtime.node)) {
+      return;
+    }
+    const bounds = computeGroupingContentBounds(runtime, this.host.graph);
+    runtime.visualBounds = bounds;
+    if (bounds) {
+      this.setVisualsHitArea(runtime, bounds);
+    } else {
+      this.clearVisualsHitArea(runtime);
+    }
+  }
+
+  private refreshGroupingAncestors(runtime: RuntimeNode): void {
+    let parentId = runtime.node.parentId;
+    while (parentId) {
+      const parent = this.host.graph.get(parentId);
+      if (!parent) {
+        break;
+      }
+      this.applyGroupingContentBounds(parent);
+      if (this.host.getSelectedNodeIds().has(parent.node.id)) {
+        this.paintSelection(parent);
+      }
+      parentId = parent.node.parentId;
+    }
   }
 
   private async loadTexture(assetId: string, url: string): Promise<Texture> {

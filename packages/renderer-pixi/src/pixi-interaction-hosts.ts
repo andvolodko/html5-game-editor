@@ -13,6 +13,7 @@ export interface InteractionHostSource {
   getRuntime(nodeId: string): RuntimeNode | undefined;
   getSnapGridSize(): number | undefined;
   getPointerHandlers(): PixiPointerHandlers | undefined;
+  pickNodeId?(clientX: number, clientY: number): string | undefined;
   previewNodePosition(nodeId: string, position: Vec2): void;
   previewSpriteSize(nodeId: string, width: number, height: number): void;
   previewNodeRotation(nodeId: string, rotationDegrees: number): void;
@@ -32,6 +33,7 @@ export function createNodeDragHost(source: InteractionHostSource): NodeDragHost 
     getSnapGridSize: () => source.getSnapGridSize(),
     previewNodePosition: (nodeId, position) =>
       source.previewNodePosition(nodeId, position),
+    pickNodeId: (clientX, clientY) => source.pickNodeId?.(clientX, clientY),
     onNodePointerDown: (nodeId, world) =>
       source.getPointerHandlers()?.onNodePointerDown?.(nodeId, world),
     onNodePointerMove: (nodeId, world) =>

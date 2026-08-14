@@ -19,12 +19,16 @@ export const GAME_INDEX_BACKGROUND_PLACEHOLDER = "{{background}}";
 /** Replaced with a JSON string of the hashed (or dev) entry URL. */
 export const GAME_ENTRY_URL_PLACEHOLDER = "__GAME_ENTRY_URL__";
 
+/** Placeholder for optional `public/` favicon `<link>` tags. */
+export const GAME_INDEX_FAVICON_PLACEHOLDER = "{{faviconLinks}}";
+
 /** Fallback `<title>` when project.json is missing. */
 export const DEFAULT_GAME_INDEX_TITLE = "Game";
 
 export interface RenderGameIndexHtmlOptions {
   title: string;
   background: string;
+  faviconLinks?: string;
 }
 
 function escapeHtml(text: string): string {
@@ -45,5 +49,6 @@ export function renderGameIndexHtml(
     .replaceAll(
       GAME_INDEX_BACKGROUND_PLACEHOLDER,
       escapeHtml(options.background),
-    );
+    )
+    .replaceAll(GAME_INDEX_FAVICON_PLACEHOLDER, options.faviconLinks ?? "");
 }

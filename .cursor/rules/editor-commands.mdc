@@ -1,5 +1,5 @@
 ---
-description: One editor command class per file under editor-core/commands
+description: One undoable command class per file under packages/editor-core/src/commands. Apply when adding or editing editor-core commands.
 globs: "packages/editor-core/**/*.ts"
 alwaysApply: false
 ---

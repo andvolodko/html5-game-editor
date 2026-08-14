@@ -7,10 +7,12 @@ import type {
 } from "@game-editor/game-components";
 import {
   addSceneRenderStats,
+  canMoveNode,
   EMPTY_SCENE_RENDER_STATS,
   flattenNodes,
   flattenSubtree,
   findNodeById,
+  moveNodeInScene,
   type SceneData,
   type SceneNodeData,
   type SceneRenderStats,
@@ -20,6 +22,7 @@ import { ScriptHost } from "./script-host.js";
 import {
   patchModel3DPlayback,
   patchNodeText,
+  patchSpriteAssetId,
   patchTransform2D,
   patchTransform3D,
   readModel3DPlayback,
@@ -104,12 +107,15 @@ export class GameRuntime {
     const externalGetModel3DAnimationDuration =
       options.services?.getModel3DAnimationDuration;
     const externalSetText = options.services?.setText;
+    const externalSetSpriteAssetId = options.services?.setSpriteAssetId;
+    const externalReparentNode = options.services?.reparentNode;
     const externalGetPerformanceStats = options.services?.getPerformanceStats;
     const externalResolveAssetUrl = options.services?.resolveAssetUrl;
     const externalListAllSceneAssetIds = options.services?.listAllSceneAssetIds;
     const externalPreloadSceneAsset = options.services?.preloadSceneAsset;
     const externalPlayAudio = options.services?.playAudio;
     const externalStopAudio = options.services?.stopAudio;
+    const externalSetAudioEnabled = options.services?.setAudioEnabled;
     const externalSpawnModel3D = options.services?.spawnModel3D;
     const externalDestroyNode = options.services?.destroyNode;
     const externalCloneNodeByName = options.services?.cloneNodeByName;
@@ -144,6 +150,7 @@ export class GameRuntime {
       preloadSceneAsset: externalPreloadSceneAsset,
       playAudio: externalPlayAudio,
       stopAudio: externalStopAudio,
+      setAudioEnabled: externalSetAudioEnabled,
       getTransform2D: (nodeId) => {
         if (externalGetTransform2D) {
           return externalGetTransform2D(nodeId);
@@ -201,6 +208,20 @@ export class GameRuntime {
           return;
         }
         this.writeText(nodeId, text);
+      },
+      setSpriteAssetId: (nodeId, assetId) => {
+        if (externalSetSpriteAssetId) {
+          externalSetSpriteAssetId(nodeId, assetId);
+          return;
+        }
+        this.writeSpriteAssetId(nodeId, assetId);
+      },
+      reparentNode: (nodeId, parentId, index) => {
+        if (externalReparentNode) {
+          externalReparentNode(nodeId, parentId, index);
+          return;
+        }
+        this.reparentLiveNode(nodeId, parentId, index);
       },
       getPerformanceStats: () => {
         if (externalGetPerformanceStats) {
@@ -511,6 +532,41 @@ export class GameRuntime {
     }
     this.forOwningRenderers(node, (renderer) => {
       renderer.updateNode(node);
+    });
+  }
+
+  private writeSpriteAssetId(nodeId: string, assetId: string): void {
+    const node = patchSpriteAssetId(this.scene, nodeId, assetId);
+    if (!node) {
+      return;
+    }
+    this.forOwningRenderers(node, (renderer) => {
+      renderer.updateNode(node);
+    });
+  }
+
+  private reparentLiveNode(
+    nodeId: string,
+    parentId: string | undefined,
+    index?: number,
+  ): void {
+    if (!this.scene || !canMoveNode(this.scene, nodeId, parentId)) {
+      return;
+    }
+    const siblings =
+      parentId === undefined
+        ? this.scene.nodes
+        : findNodeById(this.scene, parentId)?.children;
+    if (!siblings) {
+      return;
+    }
+    const insertIndex =
+      index === undefined
+        ? siblings.length
+        : Math.max(0, Math.min(Math.floor(index), siblings.length));
+    const moved = moveNodeInScene(this.scene, nodeId, parentId, insertIndex);
+    this.forOwningRenderers(moved.node, (renderer) => {
+      renderer.reparentNode(nodeId, parentId, moved.toIndex);
     });
   }
 

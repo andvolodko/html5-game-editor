@@ -24,6 +24,10 @@ import {
   installSantaWanderRuntime,
   santaWanderComponent,
 } from "./santa-wander.js";
+import {
+  audioContainerComponent,
+  installAudioContainerRuntime,
+} from "./audio-container.js";
 
 /** Registers shared + muonline-game script components into the catalog. */
 export function registerGameComponents(registry: ComponentRegistry): void {
@@ -33,6 +37,7 @@ export function registerGameComponents(registry: ComponentRegistry): void {
   registry.register(catapultIdleComponent);
   registry.register(catapultThrowComponent);
   registry.register(battlefieldCameraComponent);
+  registry.register(audioContainerComponent);
 }
 
 /** Bus events for Inspector dynamicEnum source `busEvents`. */
@@ -51,6 +56,7 @@ export function installMuonlineGameRuntime(registry: ComponentRegistry): void {
   installCatapultIdleRuntime(registry);
   installCatapultThrowRuntime(registry);
   installBattlefieldCameraRuntime(registry);
+  installAudioContainerRuntime(registry);
 }
 
 /** Standard hook discovered by the editor via import.meta.glob. */

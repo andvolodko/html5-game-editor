@@ -94,6 +94,7 @@ function hasDomTextSelection(): boolean {
 /**
  * Central editor shortcuts. Ignores editable DOM targets.
  * Returns disposer. Prefer a single binding from the shell/toolbar.
+ * Human-readable list: `docs/hotkeys.md`.
  */
 export function bindEditorHotkeys(
   host: EditorHotkeyHost,
@@ -118,12 +119,12 @@ export function bindEditorHotkeys(
       return;
     }
 
-    // Catalogue shortcuts are handled by AssetsPanel while it has focus.
-    if (isAssetsPanelKeyTarget(event.target)) {
+    if (mod && isChordLetter(event, "KeyZ", "z") && event.shiftKey) {
+      event.preventDefault();
+      host.redo();
       return;
     }
-
-    if (mod && isChordLetter(event, "KeyZ", "z") && event.shiftKey) {
+    if (mod && isChordLetter(event, "KeyY", "y") && !event.shiftKey && !event.altKey) {
       event.preventDefault();
       host.redo();
       return;
@@ -131,6 +132,12 @@ export function bindEditorHotkeys(
     if (mod && isChordLetter(event, "KeyZ", "z")) {
       event.preventDefault();
       host.undo();
+      return;
+    }
+
+    // Catalogue shortcuts are handled by AssetsPanel while it has focus.
+    // Undo/redo stay global so history works from that panel too.
+    if (isAssetsPanelKeyTarget(event.target)) {
       return;
     }
     if (mod && isChordLetter(event, "KeyD", "d")) {

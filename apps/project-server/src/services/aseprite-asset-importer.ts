@@ -1,4 +1,3 @@
-import path from "node:path";
 import {
   createAsepriteAssetRecord,
   getFileStem,
@@ -34,7 +33,7 @@ export class AsepriteAssetImporter implements AssetImporter {
       throw new ValidationError(`Empty Aseprite file: ${file.fileName}`);
     }
 
-    const relativePath = context.allocateRelativePath(path.basename(file.fileName));
+    const relativePath = context.allocateRelativePath(file.fileName);
     const record = createAsepriteAssetRecord({
       name: getFileStem(relativePath),
       path: relativePath,

@@ -494,6 +494,87 @@ describe("GameRuntime.loadScene", () => {
     expect(text).toMatchObject({ type: "Text", text: "hello" });
   });
 
+  it("exposes setSpriteAssetId and syncs Sprite nodes via updateNode", () => {
+    const renderer = createMockRenderer();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.SpritePainter",
+        displayName: "Sprite Painter",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            ctx.services.setSpriteAssetId?.(ctx.nodeId, "asset_face");
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+
+    const node = createSpriteNode("Card", { x: 0, y: 0 }, { assetId: "asset_back" });
+    node.components.push(createScriptComponent("test.SpritePainter"));
+    const scene = createEmptyScene("Sprite");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    runtime.tick(1 / 60);
+    expect(renderer.updateNode).toHaveBeenCalled();
+    expect(runtime.getScene()?.nodes[0]?.components).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ type: "Sprite", assetId: "asset_face" }),
+      ]),
+    );
+  });
+
+  it("exposes reparentNode and syncs renderers", () => {
+    const renderer = createMockRenderer();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.Reparenter",
+        displayName: "Reparenter",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            ctx.services.reparentNode?.("node_card", ctx.nodeId);
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+
+    const pile = createContainerNode("Pile");
+    pile.components.push(createScriptComponent("test.Reparenter"));
+    const card = createContainerNode("Card");
+    card.id = "node_card";
+    const scene = createEmptyScene("Reparent");
+    scene.nodes = [pile, card];
+    runtime.loadScene(scene);
+
+    runtime.tick(1 / 60);
+    expect(renderer.reparentNode).toHaveBeenCalledWith("node_card", pile.id, 0);
+    expect(runtime.getScene()?.nodes).toHaveLength(1);
+    expect(runtime.getScene()?.nodes[0]?.children[0]?.id).toBe("node_card");
+  });
+
   it("setTransform2D skips hybrid layers that do not own the node", () => {
     const background = createMockRenderer();
     const foreground = createMockRenderer();

@@ -8,7 +8,7 @@ PixiJS handles 2D. Three.js handles 3D. React is the editor shell. Games build i
 
 **[Live demo](https://andvolodko.github.io/html5-game-editor/)** — static GitHub Pages build of the editor (all `games/*` projects, no project-server). Scene edits stay in this browser (`localStorage`). Asset import needs a local `pnpm dev`.
 
-Playable standalone builds of every game are on the same site: **[demo games](https://andvolodko.github.io/html5-game-editor/games/)** ([Editor Features Demo](https://andvolodko.github.io/html5-game-editor/games/editor-features-demo/), [Example Game 2](https://andvolodko.github.io/html5-game-editor/games/example-game-2/), [MU Online](https://andvolodko.github.io/html5-game-editor/games/muonline-game/)).
+Playable standalone builds of every game are on the same site: **[demo games](https://andvolodko.github.io/html5-game-editor/games/)** ([Editor Features Demo](https://andvolodko.github.io/html5-game-editor/games/editor-features-demo/), [Example Game 2](https://andvolodko.github.io/html5-game-editor/games/example-game-2/), [MU Online](https://andvolodko.github.io/html5-game-editor/games/muonline-game/), [Solitaire](https://andvolodko.github.io/html5-game-editor/games/solitaire/)).
 
 > Status: active development. The foundation through hybrid rendering, assets, undo/redo, and playable demo games is in place. Collaboration, prefabs, and advanced tooling are still ahead.
 
@@ -26,6 +26,7 @@ Playable standalone builds of every game are on the same site: **[demo games](ht
 - [Static demo (GitHub Pages)](#static-demo-github-pages)
 - [Daily commands](#daily-commands)
 - [Using the editor](#using-the-editor)
+- [Hotkeys](#hotkeys)
 - [Working with games](#working-with-games)
 - [Script components](#script-components)
 - [Suggested next work](#suggested-next-work)
@@ -127,9 +128,10 @@ html5-game-editor/
 ├── games/
 │   ├── editor-features-demo/      # Hybrid Pixi + Three demo (port 5174)
 │   ├── example-game-2/    # Pixi-only demo (port 5175)
-│   └── muonline-game/     # Hybrid Three + Pixi HUD (port 5176)
-├── docs/screenshots/      # README captures
-├── PROJECT.md             # Architecture spec and invariants
+│   ├── muonline-game/     # Hybrid Three + Pixi HUD (port 5176)
+│   └── solitaire/         # Pixi-only solitaire (port 5177)
+├── docs/                  # Architecture details (see PROJECT.md)
+├── PROJECT.md             # Architecture entry point (invariants + doc index)
 └── pnpm-workspace.yaml
 ```
 
@@ -265,6 +267,7 @@ pnpm --filter @games/editor-features-demo dev
 pnpm --filter @games/editor-features-demo build
 pnpm --filter @games/example-game-2 dev
 pnpm --filter @games/muonline-game dev
+pnpm --filter @games/solitaire dev
 ```
 
 Game Vite configs import TypeScript from `@game-editor/project/vite`, so game scripts use `--configLoader runner`.
@@ -298,6 +301,21 @@ Typical loop:
 
 Meaningful edits go through commands so undo/redo stays consistent. Drag gestures commit **one** command on pointer-up, not one per mouse move.
 
+Keyboard shortcuts (undo/redo, save, duplicate, Assets keys, 3D gizmos): [`docs/hotkeys.md`](./docs/hotkeys.md).
+
+---
+
+## Hotkeys
+
+See **[`docs/hotkeys.md`](./docs/hotkeys.md)** for the full list. Common chords:
+
+| Action | Shortcut |
+| --- | --- |
+| Undo | Ctrl+Z (Cmd+Z on macOS) |
+| Redo | Ctrl+Y or Ctrl+Shift+Z |
+| Save | Ctrl+S |
+| Duplicate node | Ctrl+D |
+
 ---
 
 ## Working with games
@@ -329,7 +347,7 @@ games/editor-features-demo/
 }
 ```
 
-To add a new game, follow `.cursor/skills/create-game/SKILL.md` (or copy `games/example-game-2` for Pixi-only, `games/editor-features-demo` / `games/muonline-game` for hybrid). Give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D. Keep Pixi out if the game never uses 2D.
+To add a new game, follow `.cursor/skills/create-game/SKILL.md` (or copy `games/example-game-2` / `games/solitaire` for Pixi-only, `games/editor-features-demo` / `games/muonline-game` for hybrid). Give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D. Keep Pixi out if the game never uses 2D.
 
 ---
 
@@ -359,7 +377,7 @@ Shared components must stay runtime-safe: no React, Pixi, Three, or `editor-core
 
 ## Suggested next work
 
-The architecture spec in [`PROJECT.md`](./PROJECT.md) is larger than the current product. Highest-leverage additions:
+The architecture described in [`PROJECT.md`](./PROJECT.md) and [`docs/`](./docs/) is larger than the current product. Highest-leverage additions (also listed in [`docs/roadmap.md`](./docs/roadmap.md)):
 
 ### Editor & content pipeline
 
@@ -383,7 +401,7 @@ The architecture spec in [`PROJECT.md`](./PROJECT.md) is larger than the current
 - **Project-server auth** — CORS is `*` for local dev only; do not widen trust without an explicit product decision
 - **CI** — GitHub Actions (or equivalent) for `typecheck`, `test`, `lint`, and game builds
 - **Root scripts** — `dev:editor`, `build:games`, and a documented `create-game` scaffold
-- **Contributing guide** — a short CONTRIBUTING.md pointing at `PROJECT.md` invariants
+- **Contributing guide** — a short CONTRIBUTING.md pointing at `PROJECT.md` and `docs/`
 
 ### Quality
 
@@ -405,12 +423,20 @@ Do not mutate `PIXI.Sprite` or `THREE.Object3D` from React.
 
 | Doc | Use it for |
 | --- | --- |
-| [`PROJECT.md`](./PROJECT.md) | Vision, package boundaries, serialization, MVP phases, definition of done |
-| [`docs/aseprite.md`](./docs/aseprite.md) | Aseprite / LibreSprite pipeline, CLI detection, generated paths, runtime export |
-| `.cursor/rules/` | Package-specific invariants (editor UI, commands, server security, TypeScript) |
-| `.cursor/skills/create-game/` | How to scaffold a new `games/<name>` package |
-| `.cursor/skills/create-game-component/` | How to add a Script component |
-| `.cursor/skills/implement-editor-feature/` | How to land an editor feature without breaking undo, persistence, or tests |
+| [`PROJECT.md`](./PROJECT.md) | Orientation, critical invariants, and which detailed doc to open |
+| [`docs/architecture.md`](./docs/architecture.md) | Package boundaries, quality, errors, performance |
+| [`docs/scene-model.md`](./docs/scene-model.md) | Scene graph, components, serialization, prefabs |
+| [`docs/assets.md`](./docs/assets.md) | Asset database, import, atlas, generated files |
+| [`docs/editor.md`](./docs/editor.md) | Editor core, commands, undo, inspector, selection |
+| [`docs/runtime.md`](./docs/runtime.md) | Game runtime, independent builds, optional renderers |
+| [`docs/renderers.md`](./docs/renderers.md) | Pixi / Three adapters and hybrid layers |
+| [`docs/project-server.md`](./docs/project-server.md) | Filesystem API and path confinement |
+| [`docs/collaboration.md`](./docs/collaboration.md) | Resource locking and Git collaboration |
+| [`docs/roadmap.md`](./docs/roadmap.md) | MVP phases and planned work |
+| [`docs/hotkeys.md`](./docs/hotkeys.md) | Editor keyboard shortcuts |
+| [`docs/aseprite.md`](./docs/aseprite.md) | Aseprite / LibreSprite pipeline |
+| `.cursor/rules/` | Path-scoped constraints (editor UI, commands, server security, TypeScript) |
+| `.cursor/skills/` | Workflows: create-game, create-game-component, implement-editor-feature, architecture-change |
 
 ---
 

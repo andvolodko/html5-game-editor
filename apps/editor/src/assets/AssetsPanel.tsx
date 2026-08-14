@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import {
   ASSETS_ROOT_FOLDER,
+  collectDroppedFiles,
   decodeAssetDragPayload,
+  droppedFolderPaths,
   EDITOR_ASSET_MIME,
   importDroppedFiles,
   isChordLetter,
@@ -159,7 +161,13 @@ export function AssetsPanel() {
     try {
       const result = await importDroppedFiles(model.editor, [...files], destination);
       setImportMessage(result.message);
-      model.setExpanded((prev) => new Set(prev).add(destination));
+      model.setExpanded((prev) => {
+        const next = new Set(prev);
+        for (const folder of droppedFolderPaths([...files], destination)) {
+          next.add(folder);
+        }
+        return next;
+      });
     } catch (error) {
       setImportMessage(error instanceof Error ? error.message : "Import failed");
     }
@@ -185,6 +193,8 @@ export function AssetsPanel() {
   ): Promise<void> => {
     event.preventDefault();
     event.stopPropagation();
+    const droppedFiles = collectDroppedFiles(event.dataTransfer);
+    const assetRaw = event.dataTransfer.getData(EDITOR_ASSET_MIME);
     setDropFolder(null);
     setDropActive(false);
 
@@ -193,13 +203,13 @@ export function AssetsPanel() {
       return;
     }
 
-    if (event.dataTransfer.files.length > 0) {
-      void onDropFiles(event.dataTransfer.files, destination);
+    const files = await droppedFiles;
+    if (files.length > 0) {
+      void onDropFiles(files, destination);
       return;
     }
 
-    const raw = event.dataTransfer.getData(EDITOR_ASSET_MIME);
-    const payload = decodeAssetDragPayload(raw);
+    const payload = decodeAssetDragPayload(assetRaw);
     if (!payload) {
       return;
     }
@@ -250,9 +260,12 @@ export function AssetsPanel() {
         event.preventDefault();
         setDropActive(false);
         setDropFolder(null);
-        if (event.dataTransfer.files.length > 0) {
-          void onDropFiles(event.dataTransfer.files, model.importDestination);
-        }
+        const droppedFiles = collectDroppedFiles(event.dataTransfer);
+        void droppedFiles.then((files) => {
+          if (files.length > 0) {
+            void onDropFiles(files, model.importDestination);
+          }
+        });
       }}
       onClick={() => setContextMenu(null)}
     >

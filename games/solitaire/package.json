@@ -1,0 +1,30 @@
+{
+  "name": "@games/solitaire",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/main.ts",
+    "./components": "./src/components/index.ts"
+  },
+  "scripts": {
+    "dev": "vite --configLoader runner",
+    "build": "tsc -p tsconfig.json --noEmit && vite build --configLoader runner",
+    "preview": "vite preview --configLoader runner",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src --max-warnings=0",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@game-editor/game-components": "workspace:*",
+    "@game-editor/project": "workspace:*",
+    "@game-editor/renderer-pixi": "workspace:*",
+    "@game-editor/runtime": "workspace:*",
+    "@game-editor/scene": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "vite": "^7.0.6",
+    "vitest": "^3.2.4"
+  }
+}

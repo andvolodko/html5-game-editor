@@ -30,6 +30,7 @@ export function parseAssetImportMultipart(
     });
 
     let destination: string | undefined;
+    let relativePaths: string[] | undefined;
     const files: ImportFile[] = [];
     const pending: Promise<void>[] = [];
     let failed = false;
@@ -37,6 +38,9 @@ export function parseAssetImportMultipart(
     busboy.on("field", (name, value) => {
       if (name === "destination") {
         destination = value;
+      }
+      if (name === "relativePaths") {
+        relativePaths = parseRelativePathsField(value);
       }
     });
 
@@ -76,12 +80,47 @@ export function parseAssetImportMultipart(
           }
           resolve({
             ...(destination !== undefined ? { destination } : {}),
-            files,
+            files: applyRelativePaths(files, relativePaths),
           });
         })
         .catch(reject);
     });
 
     req.pipe(busboy);
+  });
+}
+
+function parseRelativePathsField(value: string): string[] | undefined {
+  try {
+    const parsed: unknown = JSON.parse(value);
+    if (!Array.isArray(parsed)) {
+      return undefined;
+    }
+    const paths: string[] = [];
+    for (const entry of parsed) {
+      if (typeof entry !== "string") {
+        return undefined;
+      }
+      paths.push(entry);
+    }
+    return paths;
+  } catch {
+    return undefined;
+  }
+}
+
+function applyRelativePaths(
+  files: ImportFile[],
+  relativePaths: string[] | undefined,
+): ImportFile[] {
+  if (!relativePaths || relativePaths.length !== files.length) {
+    return files;
+  }
+  return files.map((file, index) => {
+    const relative = relativePaths[index]?.replace(/\\/g, "/").trim();
+    if (!relative) {
+      return file;
+    }
+    return { ...file, fileName: relative };
   });
 }

@@ -1,5 +1,5 @@
 ---
-description: TypeScript conventions matching this monorepo’s actual patterns
+description: TypeScript conventions for this monorepo (strict mode, Zod boundaries, package imports, naming). Apply when editing .ts/.tsx files.
 globs: "**/*.ts,**/*.tsx"
 alwaysApply: false
 ---
@@ -23,8 +23,7 @@ alwaysApply: false
 * Relative imports inside packages/apps that emit Node ESM use the `.js` suffix (`./document-manager.js`). App/Vite consumers import workspace packages by name (`@game-editor/scene`), never by deep relative paths into another package’s `src`.
 * Import types with `import type { … }` when values are not needed (`verbatimModuleSyntax`).
 * Export public API through each package’s `src/index.ts` barrel. Do not reach into another package’s internal files.
-* Respect dependency direction: domain packages must not import `apps/*` or `editor-core`; `runtime` must not import editor packages; renderers stay out of serialized models.
-* Do not introduce import cycles. Split shared types into `@game-editor/scene` / `@game-editor/assets` / `@game-editor/shared` instead of crossing layers.
+* Respect package dependency direction (`.cursor/rules/core.mdc`). Do not introduce import cycles; split shared types into `@game-editor/scene` / `@game-editor/assets` / `@game-editor/shared` instead of crossing layers.
 
 ## Naming
 

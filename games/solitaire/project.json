@@ -1,0 +1,14 @@
+{
+  "name": "solitaire",
+  "version": 1,
+  "displayName": "Solitaire",
+  "renderers": [
+    "pixi"
+  ],
+  "startScene": "main",
+  "resolution": {
+    "width": 720,
+    "height": 1280
+  },
+  "background": "#0d4a2e"
+}

@@ -1,5 +1,5 @@
 ---
-description: Vitest conventions for domain, commands, server, and security tests
+description: Vitest conventions for domain, commands, server, and security tests. Apply when editing *.test.ts / *.test.tsx / spec files.
 globs: "**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx"
 alwaysApply: false
 ---

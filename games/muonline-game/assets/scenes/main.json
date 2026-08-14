@@ -2923,6 +2923,192 @@
         }
       ],
       "children": []
+    },
+    {
+      "id": "node_61a41877-defc-420d-805c-e7be802871ca",
+      "name": "audio",
+      "layer": "foreground",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_47ee3015-5ceb-4e8e-a48b-a31fcf1b6709",
+          "position": {
+            "x": 488,
+            "y": 560
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_4e8f1a2b-9c3d-4e5f-a617-8b9c0d1e2f30",
+          "scriptId": "muonline.AudioContainer",
+          "properties": {
+            "onChildName": "on",
+            "offChildName": "off",
+            "hoverChildName": "Hover"
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_ea0bb99a-8489-45dc-a996-0fb9fffc2b4e",
+          "name": "Graphics",
+          "parentId": "node_61a41877-defc-420d-805c-e7be802871ca",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_a145773d-caa6-45ec-beb4-9b04aa29c78e",
+              "position": {
+                "x": 152,
+                "y": 120
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 0.5920558279363676,
+                "y": 0.5983935707265922
+              }
+            },
+            {
+              "type": "Graphics",
+              "id": "comp_2d93f053-7e14-4f3c-911a-a93b13216ac6",
+              "shape": {
+                "type": "rectangle",
+                "width": 200,
+                "height": 100
+              },
+              "fillColor": 2764343,
+              "fillAlpha": 1,
+              "strokeColor": 1645343,
+              "strokeAlpha": 1,
+              "strokeWidth": 2
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_0f856d25-0b5b-49d8-b8a8-ba90a64a7422",
+          "name": "off",
+          "parentId": "node_61a41877-defc-420d-805c-e7be802871ca",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_0fc1cedc-c408-4ab2-bbcc-7ab09909289b",
+              "position": {
+                "x": 179,
+                "y": 123
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Sprite",
+              "id": "comp_20230f91-58b5-4ad3-8233-77df526c1ab9",
+              "assetId": "asset_2eab62b4-2014-4751-89bd-4230b22391c0",
+              "width": 44,
+              "height": 44
+            }
+          ],
+          "children": [
+            {
+              "id": "node_b7c8d9e0-f1a2-4b3c-8d4e-5f6a7b8c9d0e",
+              "name": "Hover",
+              "parentId": "node_0f856d25-0b5b-49d8-b8a8-ba90a64a7422",
+              "layer": "foreground",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_c8d9e0f1-a2b3-4c4d-9e5f-6a7b8c9d0e1f",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Sprite",
+                  "id": "comp_d9e0f1a2-b3c4-4d5e-af60-7b8c9d0e1f20",
+                  "assetId": "asset_42c55bf6-f89f-40d4-b3cb-340edb0ae23d",
+                  "width": 44,
+                  "height": 44
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_06668acd-1b03-4eec-90bc-07ef7d08fbdd",
+          "name": "on",
+          "parentId": "node_61a41877-defc-420d-805c-e7be802871ca",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_7608c58a-50ca-40fc-bc04-d8d44cc194f2",
+              "position": {
+                "x": 126,
+                "y": 123
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Sprite",
+              "id": "comp_9da77e57-a830-4db5-804d-b6700a1d6897",
+              "assetId": "asset_d0aa0b29-c19f-4845-9516-16e8913b6a7b",
+              "width": 44,
+              "height": 44
+            }
+          ],
+          "children": [
+            {
+              "id": "node_e0f1a2b3-c4d5-4e6f-b071-8c9d0e1f2031",
+              "name": "Hover",
+              "parentId": "node_06668acd-1b03-4eec-90bc-07ef7d08fbdd",
+              "layer": "foreground",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_f1a2b3c4-d5e6-4f70-c182-9d0e1f203142",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Sprite",
+                  "id": "comp_a2b3c4d5-e6f7-4081-d293-0e1f20314253",
+                  "assetId": "asset_ce3d5f6b-3aa7-41db-891f-5a4c1cdbcb46",
+                  "width": 44,
+                  "height": 44
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
     }
   ]
 }

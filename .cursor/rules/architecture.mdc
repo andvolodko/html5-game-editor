@@ -1,156 +1,27 @@
 ---
+description: Architectural and cross-package changes — dependency direction, editor/runtime boundaries, scene schema, persistence, renderer packages. Use when changing package boundaries, serialized formats, or multiple layers. Do not apply to localized UI, styling, or test-only edits.
+alwaysApply: false
+---
 
-description: Core architectural rules for the game editor, runtime, scene model and renderers
-alwaysApply: true
------------------
+# Architecture (on-demand)
 
-# Architecture Rules
+Consult `PROJECT.md` for orientation. Read only the detailed docs that match this change. Do not load unrelated documentation for localized work.
 
-Read `PROJECT.md` before implementing architectural or cross-package changes.
+For multi-package or schema/boundary changes, follow `.cursor/skills/architecture-change/SKILL.md`.
 
-## Critical invariants
+## Constraints beyond `.cursor/rules/core.mdc`
 
-Never violate these rules unless the user explicitly requests an architecture change.
+* Prefer component composition over node-type inheritance (`Node` + `Transform2D` + `Sprite`, not `SpriteButtonNode extends SpriteNode`).
+* Mutation path: UI → Command → domain model → renderer sync. Never React → `PIXI.*` / `THREE.*`.
+* Persisted scene/project/asset formats must stay versioned; incompatible changes need migrations.
+* Editable game content lives under `games/<name>/` (not a top-level `projects/` tree). `project-server` defaults to `games/editor-features-demo`; override with `PROJECT_ROOT`.
+* Renderer-specific code belongs in `renderer-pixi` or `renderer-three`. Games that do not use Three.js must not be forced to bundle it.
+* Aseprite sources stay under `assets/`; derived PNG/JSON under `.generated/`. Persist the source `assetId` (+ optional animation tag), never a generated path. See `docs/assets.md` and `docs/aseprite.md`.
 
-1. Runtime packages MUST NOT depend on editor packages.
-2. Serialized scene/domain models MUST NOT contain `PIXI.*` or `THREE.*` runtime objects.
-3. Renderer-specific implementation belongs in `renderer-pixi` or `renderer-three`.
-4. Persisted references to assets must use stable `assetId` values rather than filesystem paths.
-5. Persisted scene/project formats must be versioned.
-6. Browser filesystem operations must go through the project server.
-7. Filesystem operations must be constrained to the active project root.
-8. Each game must be independently buildable.
-9. Games that do not use Three.js must not be forced to bundle Three.js.
-10. React components must not become the canonical source of truth for scene/domain state.
+## Before coding an architectural change
 
-## Game projects
+1. Inspect existing packages and public APIs.
+2. Identify undo/redo, persistence/schema, renderer, and test implications.
+3. Do not start until the plan is coherent.
 
-Editable game content lives under `games/<name>/` (scenes, assets, `.project/`, `project.json`) alongside the buildable package — not in a separate top-level `projects/` tree. `project-server` defaults to `games/editor-features-demo`; override with `PROJECT_ROOT`.
-
-## Scene architecture
-
-Prefer component composition over deep inheritance.
-
-Prefer:
-
-```text
-Node
-├── Transform2D
-├── Sprite
-└── Button
-```
-
-over:
-
-```text
-SpriteButtonNode extends SpriteNode...
-```
-
-Scene data must remain:
-
-* serializable;
-* deterministic;
-* Git-friendly;
-* renderer-independent.
-
-## Editor mutations
-
-Any meaningful user mutation must be evaluated for undo/redo support.
-
-Prefer mutation flow:
-
-```text
-UI
-→ Command
-→ Domain model
-→ renderer synchronization
-```
-
-Avoid:
-
-```text
-React component
-→ directly mutates PIXI.Sprite / THREE.Object3D
-```
-
-Continuous interactions such as dragging must produce one command per completed interaction, not one command per pointer movement.
-
-## Asset architecture
-
-Scene nodes reference assets by stable ID.
-
-Do not persist paths such as:
-
-```ts
-"../../assets/button.png"
-```
-
-Persist:
-
-```ts
-"asset_123"
-```
-
-Asset path changes must be handled by AssetDatabase.
-
-Aseprite sources stay under `assets/`. Derived PNG/JSON live under `.generated/` (hidden from the Assets tree). Persist the source `assetId` (+ optional animation tag), never a generated path. CLI compile is editor/build-time only (`docs/aseprite.md`).
-
-## Package boundaries
-
-Before importing across packages:
-
-1. verify dependency direction;
-2. avoid cycles;
-3. avoid importing app code into packages;
-4. keep domain packages independent of UI frameworks.
-
-## TypeScript
-
-* Use strict TypeScript.
-* Avoid `any`.
-* Prefer `unknown` plus validation.
-* Prefer discriminated unions for serialized variants.
-* Public APIs require explicit types.
-* Do not hide type errors using assertions unless justified.
-
-## New features
-
-Before implementing a significant feature:
-
-1. inspect existing code;
-2. identify affected packages;
-3. describe the implementation plan;
-4. identify undo/redo implications;
-5. identify persistence/schema implications;
-6. identify renderer implications;
-7. identify tests.
-
-For architectural changes, do not start coding until the implementation plan is coherent.
-
-## Tests
-
-Core domain behavior should have tests.
-
-Especially test:
-
-* undo/redo;
-* serialization;
-* migrations;
-* asset references;
-* resource locking;
-* scene operations;
-* asset pipeline behavior.
-
-## Quality
-
-Avoid:
-
-* god classes (see `.cursor/rules/class-size.mdc` for size thresholds and split seams);
-* global mutable singletons;
-* uncontrolled event buses;
-* deep inheritance;
-* duplicate domain models;
-* silent error handling;
-* hidden cyclic dependencies.
-
-Prefer explicit, testable modules with clear ownership.
+Detailed docs: `docs/architecture.md`, plus the task-specific files listed in `PROJECT.md`.

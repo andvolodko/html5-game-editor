@@ -1,4 +1,4 @@
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
@@ -69,5 +69,20 @@ describe("gameIndexHtmlPlugin", () => {
     const gameRoot = mkdtempSync(path.join(tmpdir(), "game-index-html-"));
     const html = applyIndexHtmlPlugin(gameIndexHtmlPlugin({ gameRoot }));
     expect(html).toContain("<title>Game</title>");
+    expect(html).not.toContain('rel="icon"');
+  });
+
+  it("links favicon files from public/", () => {
+    const gameRoot = mkdtempSync(path.join(tmpdir(), "game-index-html-"));
+    mkdirSync(path.join(gameRoot, "public"));
+    writeFileSync(path.join(gameRoot, "public", "favicon.svg"), "<svg/>");
+    writeFileSync(path.join(gameRoot, "public", "favicon.png"), "");
+    const html = applyIndexHtmlPlugin(gameIndexHtmlPlugin({ gameRoot }));
+    expect(html).toContain(
+      '<link rel="icon" href="./favicon.svg" type="image/svg+xml" />',
+    );
+    expect(html).toContain(
+      '<link rel="icon" href="./favicon.png" type="image/png" sizes="32x32" />',
+    );
   });
 });

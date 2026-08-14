@@ -232,6 +232,11 @@ export interface ScriptRuntimeServices {
   playAudio?: (assetId: string, options?: PlayAudioOptions) => void;
   /** Stop looping audio started via `playAudio`. Omit `assetId` to stop all. */
   stopAudio?: (assetId?: string) => void;
+  /**
+   * Enable or mute gameplay audio.
+   * `true` also retries looping clips that the browser blocked before a user gesture.
+   */
+  setAudioEnabled?: (enabled: boolean) => void;
   /** Read the host node's Transform2D (undefined if missing). */
   getTransform2D?: (nodeId: string) => ScriptTransform2D | undefined;
   /**
@@ -271,6 +276,20 @@ export interface ScriptRuntimeServices {
    * Runtime-only; does not write scene files.
    */
   setText?: (nodeId: string, text: string) => void;
+  /**
+   * Set a Sprite node's catalogue `assetId` and sync renderers.
+   * Empty string clears the texture. Runtime-only; does not write scene files.
+   */
+  setSpriteAssetId?: (nodeId: string, assetId: string) => void;
+  /**
+   * Move a live node under a new parent (or scene root) at `index`.
+   * Runtime-only; does not write scene files. No-op when the move is invalid.
+   */
+  reparentNode?: (
+    nodeId: string,
+    parentId: string | undefined,
+    index?: number,
+  ) => void;
   /** Latest frame performance snapshot (undefined when host has none yet). */
   getPerformanceStats?: () => ScriptPerformanceStats | undefined;
   /**

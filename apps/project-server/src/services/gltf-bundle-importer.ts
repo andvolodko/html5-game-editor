@@ -17,6 +17,7 @@ import type {
   ImportPrepareContext,
   PreparedAssetImport,
 } from "./asset-importer.js";
+import { importBundleFolderHint } from "./import-path-allocator.js";
 
 function fileKey(file: ImportFile): string {
   return getFileBasename(file.fileName).toLowerCase();
@@ -100,7 +101,9 @@ export class GltfBundleImporter implements AssetBundleImporter {
     const gltfJson = parseGltfJsonBytes(root.bytes);
     const uris = collectGltfExternalUris(gltfJson);
     const animations = extractGltfAnimationNames(gltfJson);
-    const folder = context.allocateUniqueFolder(getFileStem(root.fileName));
+    const folder = context.allocateUniqueFolder(
+      importBundleFolderHint(root.fileName, getFileStem(root.fileName)),
+    );
     const rootRelative = `${folder}/${getFileBasename(root.fileName)}`;
     const written: Array<{ relativePath: string; bytes: Buffer }> = [
       { relativePath: rootRelative, bytes: Buffer.from(root.bytes) },

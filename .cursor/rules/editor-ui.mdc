@@ -1,5 +1,5 @@
 ---
-description: Editor React UI vs editor-core separation and viewport rules
+description: Editor React UI vs editor-core separation, selection, viewport, and dirty/undo rules. Apply when editing apps/editor or packages/editor-core.
 globs: "apps/editor/**,packages/editor-core/**"
 alwaysApply: false
 ---

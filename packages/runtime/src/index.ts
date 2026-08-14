@@ -19,3 +19,5 @@ export {
   sceneModulesById,
 } from "./load-game-project.js";
 export { GameScreenHost } from "./game-screen-host.js";
+export { bindPlaybackOverlayPointer } from "./playback-overlay-pointer.js";
+export type { PlaybackOverlayPointerOptions } from "./playback-overlay-pointer.js";

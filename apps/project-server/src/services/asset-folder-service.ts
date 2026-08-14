@@ -2,12 +2,10 @@ import { access, mkdir, readdir } from "node:fs/promises";
 import path from "node:path";
 import { DomainError, ValidationError } from "@game-editor/core";
 import type { ProjectService } from "./project-service.js";
-import { normalizeAssetDestination } from "./asset-path-utils.js";
+import { isValidAssetFolderSegment, normalizeAssetDestination } from "./asset-path-utils.js";
 
 export const ASSETS_ROOT_FOLDER = "assets";
 const SCENES_FOLDER = "assets/scenes";
-
-const FOLDER_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._ -]*$/;
 
 /**
  * Filesystem folders under assets/. Empty folders are first-class so the
@@ -65,7 +63,7 @@ export class AssetFolderService {
 }
 
 export function assertValidFolderSegment(segment: string): void {
-  if (!FOLDER_NAME_PATTERN.test(segment)) {
+  if (!isValidAssetFolderSegment(segment)) {
     throw new ValidationError(`Invalid folder name: ${segment}`);
   }
 }

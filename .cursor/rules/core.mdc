@@ -1,0 +1,19 @@
+---
+description: Critical repository invariants for almost every coding task
+alwaysApply: true
+---
+
+# Core invariants
+
+Consult `PROJECT.md` for repository orientation when needed. For architectural or cross-package changes, consult the relevant documentation linked from `PROJECT.md`. Do not load unrelated documentation for localized changes.
+
+1. Runtime packages must not depend on editor packages. Games must ship without editor code.
+2. Serialized scene/domain data must stay serializable, deterministic, Git-friendly, and renderer-independent.
+3. Never persist `PIXI.*` or `THREE.*` runtime instances in scene/domain models.
+4. Persisted asset references must use stable `assetId` values, not filesystem paths.
+5. Browser filesystem access must go through project-server. Constrain paths to the active project root.
+6. Preserve package dependency direction. Domain packages must not import apps or editor UI. Avoid cycles.
+7. User-visible editor mutations should go through commands so undo/redo works. One completed gesture = one command.
+8. React is a view layer. It must not be the source of truth for scene/domain state.
+9. Reuse existing architecture before introducing new abstractions. Do not make unrelated changes.
+10. After implementation, run the relevant tests and typecheck for affected packages.

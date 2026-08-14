@@ -20,6 +20,20 @@ Restate internally:
 
 Do not immediately generate code.
 
+Consult `PROJECT.md` for repository orientation when needed. Read **only** the docs that match this change. Do not load unrelated documentation for localized Inspector, UI, styling, or test-only work.
+
+| Layer | Doc |
+| --- | --- |
+| Scene / domain / serialization | `docs/scene-model.md` |
+| Assets | `docs/assets.md` |
+| Editor core / UI / commands | `docs/editor.md` |
+| Runtime / games | `docs/runtime.md` |
+| Pixi / Three | `docs/renderers.md` |
+| project-server | `docs/project-server.md` |
+| Collaboration | `docs/collaboration.md` |
+
+Cross-package or schema/boundary work: `.cursor/skills/architecture-change/SKILL.md`.
+
 ---
 
 ## Step 2 — Inspect existing implementation

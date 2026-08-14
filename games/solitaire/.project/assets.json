@@ -1,0 +1,745 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "asset_006a0a8f-4e48-4142-8051-4dbf8ccd3107",
+      "type": "audio",
+      "name": "card",
+      "path": "assets/audio/card.mp3",
+      "metadata": {
+        "kind": "audio",
+        "mimeType": "audio/mpeg"
+      }
+    },
+    {
+      "id": "asset_04e64951-3b53-4c07-8b2a-81bbd0a58f69",
+      "type": "texture",
+      "name": "spades_ace",
+      "path": "assets/SmallCards/spades_ace.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_069ebee7-f192-4337-aed1-ab1d10bce70d",
+      "type": "texture",
+      "name": "back01",
+      "path": "assets/SmallCards/back01.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_09c33794-0c7c-473b-a933-f6fe9f0c3224",
+      "type": "texture",
+      "name": "hearts_03",
+      "path": "assets/SmallCards/hearts_03.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0cdbfa68-a0af-425b-a99c-d6eecb764827",
+      "type": "texture",
+      "name": "hearts_jack",
+      "path": "assets/SmallCards/hearts_jack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_18774de7-9283-4b78-a75f-e86406d0bd4c",
+      "type": "texture",
+      "name": "spades_jack",
+      "path": "assets/SmallCards/spades_jack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_18a12912-0730-4af6-86e9-d9e79cab5d94",
+      "type": "texture",
+      "name": "diamonds_king",
+      "path": "assets/SmallCards/diamonds_king.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1910d7f7-9bd5-490f-99ac-e311ffb4916f",
+      "type": "texture",
+      "name": "spades_04",
+      "path": "assets/SmallCards/spades_04.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1b806e49-43fd-4a2a-9a6c-a02bfc679f9d",
+      "type": "texture",
+      "name": "clubs_jack",
+      "path": "assets/SmallCards/clubs_jack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_1cbfd2a6-4332-41f6-92a8-394bc00fd59a",
+      "type": "texture",
+      "name": "diamonds_03",
+      "path": "assets/SmallCards/diamonds_03.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_2037f68a-052d-4902-ba9f-01828c91430d",
+      "type": "texture",
+      "name": "spades_03",
+      "path": "assets/SmallCards/spades_03.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_26d876b1-227a-4575-baeb-1cddb80903e9",
+      "type": "texture",
+      "name": "hearts_09",
+      "path": "assets/SmallCards/hearts_09.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_29b041c5-eff2-41c5-80dd-1de29679a19a",
+      "type": "texture",
+      "name": "hearts_02",
+      "path": "assets/SmallCards/hearts_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_319eed40-d5e2-4517-bb9b-9312499e64cf",
+      "type": "texture",
+      "name": "diamonds_ace",
+      "path": "assets/SmallCards/diamonds_ace.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_3459d29e-0aa4-4cdd-a9cb-81373fb5eb0a",
+      "type": "texture",
+      "name": "clubs_02",
+      "path": "assets/SmallCards/clubs_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_367532e9-c606-496b-8be6-8676462f5504",
+      "type": "texture",
+      "name": "Joker1",
+      "path": "assets/SmallCards/Joker1.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_41048129-ce9a-4d87-803d-c4b276d002b7",
+      "type": "texture",
+      "name": "clubs_08",
+      "path": "assets/SmallCards/clubs_08.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_419d6bde-ade0-425f-81a6-a03f64dbe509",
+      "type": "texture",
+      "name": "Hover",
+      "path": "assets/ui/SoundOff/Hover.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 88,
+        "height": 88,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_42cece9d-802c-4f00-acb3-eea25f85a86a",
+      "type": "texture",
+      "name": "diamonds_jack",
+      "path": "assets/SmallCards/diamonds_jack.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_48849d48-960a-400b-a702-0cedc846d4db",
+      "type": "texture",
+      "name": "clubs_06",
+      "path": "assets/SmallCards/clubs_06.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5088b164-cd0d-4472-a95a-4a22a164b99f",
+      "type": "texture",
+      "name": "Hover",
+      "path": "assets/ui/SoundOn/Hover.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 88,
+        "height": 88,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5223b8a5-dc49-414a-be94-647848ba2447",
+      "type": "texture",
+      "name": "diamonds_07",
+      "path": "assets/SmallCards/diamonds_07.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_59716287-5878-4c71-93ad-f5ef00627207",
+      "type": "texture",
+      "name": "Joker2",
+      "path": "assets/SmallCards/Joker2.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_59f8d658-49cf-47da-890c-2d25bf6572a2",
+      "type": "texture",
+      "name": "back02",
+      "path": "assets/SmallCards/back02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5c051464-89ef-4a2f-9431-8c6132db90f5",
+      "type": "texture",
+      "name": "Default",
+      "path": "assets/ui/SoundOn/Default.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 88,
+        "height": 88,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5d002972-a196-4d54-a885-83bd6526f572",
+      "type": "texture",
+      "name": "spades_02",
+      "path": "assets/SmallCards/spades_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_5fd390f4-237b-4488-9bbf-74a7e6b481b2",
+      "type": "texture",
+      "name": "hearts_04",
+      "path": "assets/SmallCards/hearts_04.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_662273cf-fcae-413d-b54c-d952b178f6fe",
+      "type": "texture",
+      "name": "hearts_ace",
+      "path": "assets/SmallCards/hearts_ace.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_68ec3b04-f3fb-4af1-a8fe-09155185903c",
+      "type": "texture",
+      "name": "hearts_king",
+      "path": "assets/SmallCards/hearts_king.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6b14dcec-b436-4b50-bc06-cea44448cded",
+      "type": "texture",
+      "name": "clubs_ace",
+      "path": "assets/SmallCards/clubs_ace.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6c1d1f17-1ecf-4a4a-879d-5faa515acbf3",
+      "type": "texture",
+      "name": "diamonds_02",
+      "path": "assets/SmallCards/diamonds_02.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_6c3099d6-a15e-4d8d-8cd1-2925d4f04df6",
+      "type": "texture",
+      "name": "diamonds_06",
+      "path": "assets/SmallCards/diamonds_06.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_83ea3620-9fa8-4c0f-8590-b87c666ae1cc",
+      "type": "texture",
+      "name": "spades_queen",
+      "path": "assets/SmallCards/spades_queen.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_83f759ab-d48d-4e89-bff6-dd1f00476448",
+      "type": "texture",
+      "name": "spades_king",
+      "path": "assets/SmallCards/spades_king.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9a5e8beb-3d81-4e86-9a7a-16a8c4946308",
+      "type": "texture",
+      "name": "spades_06",
+      "path": "assets/SmallCards/spades_06.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_9f57f93d-b4b4-4a59-b456-ec8c7bfbde14",
+      "type": "texture",
+      "name": "hearts_05",
+      "path": "assets/SmallCards/hearts_05.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a509820f-f3c1-42f4-8510-26ef871bffb7",
+      "type": "texture",
+      "name": "clubs_03",
+      "path": "assets/SmallCards/clubs_03.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a7832882-f724-42a3-91d3-0a09c963229a",
+      "type": "texture",
+      "name": "diamonds_10",
+      "path": "assets/SmallCards/diamonds_10.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_aa15b54c-92b9-4aaa-a813-c843ec3fbcfa",
+      "type": "texture",
+      "name": "hearts_06",
+      "path": "assets/SmallCards/hearts_06.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_affd8c7a-ae73-4f52-8f75-2549f5b4329c",
+      "type": "texture",
+      "name": "diamonds_queen",
+      "path": "assets/SmallCards/diamonds_queen.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b67efe1b-2170-441f-bf5d-a814e0241b3a",
+      "type": "texture",
+      "name": "clubs_04",
+      "path": "assets/SmallCards/clubs_04.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_b92e897a-c22d-4d87-a648-536cfec3e65f",
+      "type": "texture",
+      "name": "spades_10",
+      "path": "assets/SmallCards/spades_10.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_bf759ecd-afd0-4265-bd8a-e62897a2eedc",
+      "type": "texture",
+      "name": "clubs_10",
+      "path": "assets/SmallCards/clubs_10.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c039fca7-04e1-4a76-9c99-40f69d97ac9c",
+      "type": "texture",
+      "name": "clubs_05",
+      "path": "assets/SmallCards/clubs_05.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c0603f96-c814-4209-8ba6-4f7a1e2b02cc",
+      "type": "texture",
+      "name": "spades_09",
+      "path": "assets/SmallCards/spades_09.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c1bcb636-1b2e-4ec5-876e-ba9283a16b5c",
+      "type": "texture",
+      "name": "diamonds_09",
+      "path": "assets/SmallCards/diamonds_09.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c3f603df-a2cf-427e-820a-cc7bfc9c83b8",
+      "type": "texture",
+      "name": "diamonds_05",
+      "path": "assets/SmallCards/diamonds_05.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c6b54e1b-9b36-4c56-968e-4bb88fc0277e",
+      "type": "audio",
+      "name": "bg_loop",
+      "path": "assets/audio/bg_loop.mp3",
+      "metadata": {
+        "kind": "audio",
+        "mimeType": "audio/mpeg"
+      }
+    },
+    {
+      "id": "asset_c6dc0b25-25cb-4706-8608-886fb267e44f",
+      "type": "texture",
+      "name": "diamonds_08",
+      "path": "assets/SmallCards/diamonds_08.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_c937a087-e9f7-4407-bd7f-83cd4ace876c",
+      "type": "texture",
+      "name": "diamonds_04",
+      "path": "assets/SmallCards/diamonds_04.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cdf144c6-5118-46b9-9624-21c16e5a45cf",
+      "type": "texture",
+      "name": "hearts_08",
+      "path": "assets/SmallCards/hearts_08.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_cf9de76b-aee5-4bb0-9d0f-970d793b0998",
+      "type": "texture",
+      "name": "clubs_queen",
+      "path": "assets/SmallCards/clubs_queen.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d0945c81-2c67-4e2b-9fce-4ca89db27a77",
+      "type": "texture",
+      "name": "hearts_07",
+      "path": "assets/SmallCards/hearts_07.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d9fe6aa3-fb1b-473e-aaa4-51d93fbe7a93",
+      "type": "texture",
+      "name": "hearts_queen",
+      "path": "assets/SmallCards/hearts_queen.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_dd66f20d-45bb-43d9-a66c-3dbfc64d0c32",
+      "type": "texture",
+      "name": "spades_07",
+      "path": "assets/SmallCards/spades_07.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e4989990-6a79-4e94-ab38-a67f16c1fc5c",
+      "type": "texture",
+      "name": "Default",
+      "path": "assets/ui/SoundOff/Default.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 88,
+        "height": 88,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e8b2d15b-e83d-4aa9-97ed-e6f7dab11636",
+      "type": "texture",
+      "name": "clubs_07",
+      "path": "assets/SmallCards/clubs_07.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_e9063bf2-ef9f-48c6-a461-246689e6133a",
+      "type": "texture",
+      "name": "hearts_10",
+      "path": "assets/SmallCards/hearts_10.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_ed7f97e7-8421-4cf2-901d-f669f0305250",
+      "type": "texture",
+      "name": "clubs_king",
+      "path": "assets/SmallCards/clubs_king.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_f24488c3-eb67-4162-a200-3701323076b2",
+      "type": "texture",
+      "name": "clubs_09",
+      "path": "assets/SmallCards/clubs_09.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_fadef31d-5fc4-4a0c-b253-64e794623c09",
+      "type": "texture",
+      "name": "spades_08",
+      "path": "assets/SmallCards/spades_08.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_fedc464e-f360-4650-9da3-7684bad0b430",
+      "type": "texture",
+      "name": "spades_05",
+      "path": "assets/SmallCards/spades_05.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 66,
+        "height": 96,
+        "mimeType": "image/png"
+      }
+    }
+  ]
+}

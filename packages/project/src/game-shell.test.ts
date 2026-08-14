@@ -7,6 +7,7 @@ import {
   GAME_ENTRY_MODULE_SRC,
   GAME_ENTRY_URL_PLACEHOLDER,
   GAME_INDEX_BACKGROUND_PLACEHOLDER,
+  GAME_INDEX_FAVICON_PLACEHOLDER,
   GAME_INDEX_TITLE_PLACEHOLDER,
   GAME_LOADING_ELEMENT_ID,
   GAME_LOADING_PERCENT_ELEMENT_ID,
@@ -31,6 +32,7 @@ describe("game index.html template", () => {
     expect(template).toContain(`src="${GAME_ENTRY_MODULE_SRC}"`);
     expect(template).toContain(GAME_INDEX_TITLE_PLACEHOLDER);
     expect(template).toContain(GAME_INDEX_BACKGROUND_PLACEHOLDER);
+    expect(template).toContain(GAME_INDEX_FAVICON_PLACEHOLDER);
     expect(template).toContain(GAME_ENTRY_URL_PLACEHOLDER);
   });
 
@@ -43,6 +45,7 @@ describe("game index.html template", () => {
     expect(html).toContain("background: #1c2a4a");
     expect(html).not.toContain(GAME_INDEX_TITLE_PLACEHOLDER);
     expect(html).not.toContain(GAME_INDEX_BACKGROUND_PLACEHOLDER);
+    expect(html).not.toContain(GAME_INDEX_FAVICON_PLACEHOLDER);
     expect(html).toContain(`id="${GAME_MOUNT_ELEMENT_ID}"`);
   });
 

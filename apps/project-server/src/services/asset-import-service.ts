@@ -16,10 +16,8 @@ import type {
   PreparedAssetImport,
 } from "./asset-importer.js";
 import type { AsepriteCompileService } from "./aseprite-compile-service.js";
-import {
-  allocateUniqueFileName,
-  normalizeAssetDestination,
-} from "./asset-path-utils.js";
+import { normalizeAssetDestination } from "./asset-path-utils.js";
+import { ImportPathAllocator } from "./import-path-allocator.js";
 
 const SCENES_FOLDER = "assets/scenes";
 
@@ -58,53 +56,19 @@ export class AssetImportService {
     const errors: Array<{ fileName: string; message: string }> = [];
     const prepared: PreparedAssetImport[] = [];
 
-    const existingNames = new Set<string>();
-    const existingFolders = new Set<string>();
+    const allocator = new ImportPathAllocator(destination);
     for (const asset of database.getAll()) {
       for (const assetPath of ownedAssetPaths(asset)) {
-        const dir = path.posix.dirname(assetPath);
-        if (dir === destination) {
-          existingNames.add(path.posix.basename(assetPath).toLowerCase());
-        }
-        if (dir === destination || dir.startsWith(`${destination}/`)) {
-          const rest =
-            dir === destination ? "" : dir.slice(destination.length + 1);
-          const first = rest.split("/")[0];
-          if (first) {
-            existingFolders.add(first.toLowerCase());
-          }
-        }
+        allocator.registerExistingAssetPath(assetPath);
       }
     }
 
-    const allocateRelativePath = (desiredFileName: string): string => {
-      const uniqueName = allocateUniqueFileName(
-        path.basename(desiredFileName),
-        existingNames,
-      );
-      existingNames.add(uniqueName.toLowerCase());
-      return path.posix.join(destination, uniqueName);
-    };
-
-    const allocateUniqueFolder = (desiredFolderName: string): string => {
-      const sanitized = path.basename(desiredFolderName);
-      let candidate = sanitized;
-      let index = 1;
-      while (
-        existingFolders.has(candidate.toLowerCase()) ||
-        existingNames.has(candidate.toLowerCase())
-      ) {
-        candidate = `${sanitized}-${String(index)}`;
-        index += 1;
-      }
-      existingFolders.add(candidate.toLowerCase());
-      return path.posix.join(destination, candidate);
-    };
-
     const context = {
       destinationFolder: destination,
-      allocateRelativePath,
-      allocateUniqueFolder,
+      allocateRelativePath: (desiredFileName: string) =>
+        allocator.allocateRelativePath(desiredFileName),
+      allocateUniqueFolder: (desiredFolderName: string) =>
+        allocator.allocateUniqueFolder(desiredFolderName),
     };
 
     let remaining: readonly ImportFile[] = files;

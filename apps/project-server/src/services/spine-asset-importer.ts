@@ -22,6 +22,7 @@ import type {
   ImportPrepareContext,
   PreparedAssetImport,
 } from "./asset-importer.js";
+import { importBundleFolderHint } from "./import-path-allocator.js";
 
 function fileKey(file: ImportFile): string {
   return getFileBasename(file.fileName).toLowerCase();
@@ -133,7 +134,9 @@ export class SpineAssetImporter implements AssetBundleImporter {
       animations = meta.animations;
     }
 
-    const folder = context.allocateUniqueFolder(stem);
+    const folder = context.allocateUniqueFolder(
+      importBundleFolderHint(skeleton.fileName, stem),
+    );
     const skeletonName = getFileBasename(skeleton.fileName);
     const atlasName = getFileBasename(atlas.fileName);
     const relativeSkeleton = path.posix.join(folder, skeletonName);

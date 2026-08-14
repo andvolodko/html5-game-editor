@@ -114,4 +114,23 @@ describe("AssetImportService + SpineAssetImporter", () => {
       await rm(root, { recursive: true, force: true });
     }
   });
+
+  it("preserves dropped folder hierarchy for a spine set", async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "game-editor-spine-"));
+    try {
+      const importer = createImportService(root);
+      const result = await importer.importFiles(
+        [
+          { fileName: "characters/hero/hero.json", bytes: spineJson() },
+          { fileName: "characters/hero/hero.atlas", bytes: spineAtlas() },
+          { fileName: "characters/hero/hero.png", bytes: tinyPng() },
+        ],
+        "assets",
+      );
+      expect(result.imported).toHaveLength(1);
+      expect(result.imported[0]?.path).toBe("assets/characters/hero/hero.json");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
 });

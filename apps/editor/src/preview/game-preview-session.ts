@@ -17,6 +17,7 @@ import {
   type SceneData,
 } from "@game-editor/scene";
 import {
+  bindPlaybackOverlayPointer,
   collectSceneAssetIds,
   createGltfClipScriptLookups,
   createHtmlAudioPlayer,
@@ -164,6 +165,7 @@ export class GamePreviewSession {
         playAudio: (assetId, playOptions) =>
           audioPlayer.play(assetId, playOptions),
         stopAudio: (assetId) => audioPlayer.stop(assetId),
+        setAudioEnabled: (enabled) => audioPlayer.setEnabled(enabled),
         ...createGltfClipScriptLookups(
           () => runtimeRef.current?.getScene(),
           {
@@ -366,40 +368,25 @@ async function mountPreviewRenderers(args: {
       accepts: nodeBelongsToPixiForeground,
     });
 
-    let downNodeId: string | undefined;
-    const onPointerDown = (event: PointerEvent) => {
-      downNodeId = pickHybridNodeId(stack, event.clientX, event.clientY);
-      if (downNodeId) {
-        runtime.emitNodePointerEvent(downNodeId, "pointerdown");
-      }
-    };
-    const onPointerUp = (event: PointerEvent) => {
-      const nodeId = pickHybridNodeId(stack, event.clientX, event.clientY);
-      if (nodeId) {
-        runtime.emitNodePointerEvent(nodeId, "pointerup");
-        if (nodeId === downNodeId) {
-          runtime.emitNodePointerEvent(nodeId, "pointertap");
+    const unbindOverlayPointer = bindPlaybackOverlayPointer({
+      host: stack.hosts.inputHost,
+      pick: (x, y) => pickHybridNodeId(stack, x, y),
+      cursorFor: (nodeId) => {
+        if (!nodeId) {
+          return "";
         }
-      }
-      downNodeId = undefined;
-    };
-    const onPointerMove = (event: PointerEvent) => {
-      const nodeId = pickHybridNodeId(stack, event.clientX, event.clientY);
-      stack.hosts.inputHost.style.cursor =
-        (nodeId
-          ? (stack.pixiForeground.getNodeCursor?.(nodeId) ??
-            stack.pixiBackground.getNodeCursor?.(nodeId))
-          : undefined) ?? "";
-    };
-    stack.hosts.inputHost.addEventListener("pointerdown", onPointerDown);
-    stack.hosts.inputHost.addEventListener("pointerup", onPointerUp);
-    stack.hosts.inputHost.addEventListener("pointermove", onPointerMove);
+        return (
+          stack.pixiForeground.getNodeCursor?.(nodeId) ??
+          stack.pixiBackground.getNodeCursor?.(nodeId) ??
+          ""
+        );
+      },
+      emit: (nodeId, event) => runtime.emitNodePointerEvent(nodeId, event),
+    });
 
     return {
       destroy: async () => {
-        stack.hosts.inputHost.removeEventListener("pointerdown", onPointerDown);
-        stack.hosts.inputHost.removeEventListener("pointerup", onPointerUp);
-        stack.hosts.inputHost.removeEventListener("pointermove", onPointerMove);
+        unbindOverlayPointer();
         await stack.destroy();
       },
     };

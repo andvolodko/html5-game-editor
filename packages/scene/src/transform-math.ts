@@ -19,20 +19,28 @@ export function identityAff2(): Aff2 {
   return { a: 1, b: 0, c: 0, d: 1, tx: 0, ty: 0 };
 }
 
-export function aff2FromTransform2D(transform: Transform2DComponentData): Aff2 {
-  const rad = (transform.rotation * Math.PI) / 180;
+export function aff2FromPose(
+  position: Vec2,
+  rotationDegrees: number,
+  scale: Vec2,
+): Aff2 {
+  const rad = (rotationDegrees * Math.PI) / 180;
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
-  const sx = transform.scale.x;
-  const sy = transform.scale.y;
+  const sx = scale.x;
+  const sy = scale.y;
   return {
     a: cos * sx,
     b: sin * sx,
     c: -sin * sy,
     d: cos * sy,
-    tx: transform.position.x,
-    ty: transform.position.y,
+    tx: position.x,
+    ty: position.y,
   };
+}
+
+export function aff2FromTransform2D(transform: Transform2DComponentData): Aff2 {
+  return aff2FromPose(transform.position, transform.rotation, transform.scale);
 }
 
 export function multiplyAff2(parent: Aff2, local: Aff2): Aff2 {

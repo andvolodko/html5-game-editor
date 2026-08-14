@@ -4,6 +4,7 @@ import {
   type AssetDatabaseData,
   type AssetRecord,
 } from "@game-editor/assets";
+import { droppedFileUploadName } from "./collect-dropped-files.js";
 
 export interface AssetListResult {
   database: AssetDatabaseData;
@@ -96,6 +97,10 @@ export function createFetchAssetApiClient(
     async importAssets(files, destination = "assets") {
       const form = new FormData();
       form.set("destination", destination);
+      form.set(
+        "relativePaths",
+        JSON.stringify(files.map((file) => droppedFileUploadName(file))),
+      );
       for (const file of files) {
         form.append("files", file, file.name);
       }

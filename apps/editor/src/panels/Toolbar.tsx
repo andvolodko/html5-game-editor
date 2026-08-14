@@ -315,6 +315,7 @@ export function Toolbar() {
         >
           <MenuItem
             disabled={!canUndo}
+            shortcut="Ctrl+Z"
             onClick={() => {
               editor.undo();
               closeMenus();
@@ -324,6 +325,7 @@ export function Toolbar() {
           </MenuItem>
           <MenuItem
             disabled={!canRedo}
+            shortcut="Ctrl+Y"
             onClick={() => {
               editor.redo();
               closeMenus();

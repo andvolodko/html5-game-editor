@@ -11,7 +11,7 @@ description: >-
 
 Scaffold a new workspace package under `games/<id>/`. Do **not** invent a parallel `projects/` tree. Do **not** copy `node_modules`, `dist`, or demo binary assets.
 
-After the package exists, add Script components with `.cursor/skills/create-game-component/SKILL.md`.
+After the package exists, add Script components with `.cursor/skills/create-game-component/SKILL.md`. Runtime and renderer-dependency details: `docs/runtime.md`.
 
 ## 1. Name and renderer
 

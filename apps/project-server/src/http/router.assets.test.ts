@@ -173,6 +173,38 @@ describe("assets HTTP routes", () => {
     expect(bytes.equals(tinyPng())).toBe(true);
   });
 
+  it("preserves nested folders from multipart filenames", async () => {
+    const multipart = buildMultipart(
+      {
+        destination: "assets",
+        relativePaths: JSON.stringify(["dropped-ui/hud/health.png"]),
+      },
+      [
+        {
+          field: "files",
+          fileName: "health.png",
+          bytes: tinyPng(),
+          mime: "image/png",
+        },
+      ],
+    );
+    const imported = await fetch(`${baseUrl}/assets/import`, {
+      method: "POST",
+      headers: { "content-type": multipart.contentType },
+      body: multipart.body,
+    });
+    const importJson = (await imported.json()) as {
+      ok: boolean;
+      imported: Array<{ path: string }>;
+      folders: string[];
+    };
+    expect(imported.status).toBe(200);
+    expect(importJson.imported[0]?.path).toBe("assets/dropped-ui/hud/health.png");
+    expect(importJson.folders).toEqual(
+      expect.arrayContaining(["assets", "assets/dropped-ui", "assets/dropped-ui/hud"]),
+    );
+  });
+
   it("imports audio and serves content with audio MIME", async () => {
     const audioBytes = Buffer.from("RIFF....WAVEfmt ");
     const multipart = buildMultipart(

@@ -11,7 +11,11 @@ import {
   nodeBelongsToThree,
   type SceneData,
 } from "@game-editor/scene";
-import type { GameRuntime, LoadedGameProject } from "@game-editor/runtime";
+import {
+  bindPlaybackOverlayPointer,
+  type GameRuntime,
+  type LoadedGameProject,
+} from "@game-editor/runtime";
 
 export interface MountedGameRenderers {
   destroy(): Promise<void>;
@@ -157,34 +161,26 @@ export async function mountMuonlineGameRenderers(args: {
       accepts: nodeBelongsToPixiForeground,
     });
 
-    let downId: string | undefined;
-    const pick = (x: number, y: number) =>
-      pixiFg.pickNodeId(x, y) ??
-      three.pickNodeId(x, y) ??
-      pixiBg.pickNodeId(x, y);
-    const onDown = (event: PointerEvent) => {
-      downId = pick(event.clientX, event.clientY);
-      if (downId) {
-        runtime.emitNodePointerEvent(downId, "pointerdown");
-      }
-    };
-    const onUp = (event: PointerEvent) => {
-      const id = pick(event.clientX, event.clientY);
-      if (id) {
-        runtime.emitNodePointerEvent(id, "pointerup");
-        if (id === downId) {
-          runtime.emitNodePointerEvent(id, "pointertap");
+    const unbindOverlayPointer = bindPlaybackOverlayPointer({
+      host: inputHost,
+      pick: (x, y) =>
+        pixiFg.pickNodeId(x, y) ??
+        three.pickNodeId(x, y) ??
+        pixiBg.pickNodeId(x, y),
+      cursorFor: (nodeId) => {
+        if (!nodeId) {
+          return "";
         }
-      }
-      downId = undefined;
-    };
-    inputHost.addEventListener("pointerdown", onDown);
-    inputHost.addEventListener("pointerup", onUp);
+        return (
+          pixiFg.getNodeCursor?.(nodeId) ?? pixiBg.getNodeCursor?.(nodeId) ?? ""
+        );
+      },
+      emit: (nodeId, event) => runtime.emitNodePointerEvent(nodeId, event),
+    });
 
     return {
       destroy: async () => {
-        inputHost.removeEventListener("pointerdown", onDown);
-        inputHost.removeEventListener("pointerup", onUp);
+        unbindOverlayPointer();
         await Promise.all([
           pixiBg.destroy(),
           three.destroy(),

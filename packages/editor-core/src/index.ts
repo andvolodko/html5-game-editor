@@ -198,6 +198,17 @@ export type {
   EditorFolderDragPayload,
 } from "./asset-workflows.js";
 export {
+  collectDroppedFiles,
+  collectFilesFromDroppedEntries,
+  droppedFileUploadName,
+  droppedFolderPaths,
+} from "./collect-dropped-files.js";
+export type {
+  DroppedFsEntry,
+  DroppedFileEntry,
+  DroppedDirectoryEntry,
+} from "./collect-dropped-files.js";
+export {
   PROJECT_SERVER_OFFLINE_MESSAGE,
   formatEditorApiError,
   formatEditorApiErrorMessage,

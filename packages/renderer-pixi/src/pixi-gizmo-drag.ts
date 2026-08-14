@@ -1,6 +1,7 @@
 import type { Application, Container } from "pixi.js";
 import type { FederatedPointerEvent } from "pixi.js";
 import {
+  DEFAULT_VISUAL_ANCHOR,
   anchorFromGizmoLocal,
   getTransform2D,
   getVisualAnchorOrDefault,
@@ -70,7 +71,8 @@ export interface GizmoDragHost {
 }
 
 /**
- * Selection gizmo resize/scale/rotate/anchor drag + flip click for Pixi leaf visuals.
+ * Selection gizmo resize/scale/rotate/anchor drag + flip click.
+ * Works for leaf visuals and Transform2D grouping nodes (scale/rotate/flip).
  * Visual chrome lives in SpriteSelectionGizmo.
  */
 export class PixiGizmoDragController {
@@ -100,11 +102,11 @@ export class PixiGizmoDragController {
     ) {
       return;
     }
-    const visual = getVisualComponent(runtime.node);
     const transform = getTransform2D(runtime.node);
-    if (!visual || !transform) {
+    if (!transform) {
       return;
     }
+    const visual = getVisualComponent(runtime.node);
 
     host.onNodePointerDown?.(runtime.node.id, {
       x: transform.position.x,
@@ -124,7 +126,7 @@ export class PixiGizmoDragController {
       return;
     }
 
-    const displaySize = getVisualDisplaySize(visual);
+    const displaySize = visual ? getVisualDisplaySize(visual) : undefined;
     const startWidth =
       runtime.sizePreview?.width ??
       displaySize?.width ??
@@ -145,7 +147,7 @@ export class PixiGizmoDragController {
       : { x: 0, y: 0 };
 
     if (handle === "anchor") {
-      if (!visualComponentSupportsAnchor(visual)) {
+      if (!visual || !visualComponentSupportsAnchor(visual)) {
         return;
       }
       const startAnchor = getVisualAnchorOrDefault(visual);
@@ -257,10 +259,17 @@ export class PixiGizmoDragController {
       return;
     }
 
-    if (isSpriteSizeHandle(handle) && !visualComponentSupportsDisplaySize(visual)) {
+    if (
+      isSpriteSizeHandle(handle) &&
+      (!visual || !visualComponentSupportsDisplaySize(visual))
+    ) {
       return;
     }
-    if (isSpriteScaleHandle(handle) && visualComponentSupportsDisplaySize(visual)) {
+    if (
+      isSpriteScaleHandle(handle) &&
+      visual &&
+      visualComponentSupportsDisplaySize(visual)
+    ) {
       return;
     }
 
@@ -273,7 +282,9 @@ export class PixiGizmoDragController {
       x: parentPoint.x - runtime.container.position.x,
       y: parentPoint.y - runtime.container.position.y,
     };
-    const startAnchor = getVisualAnchorOrDefault(visual);
+    const startAnchor = visual
+      ? getVisualAnchorOrDefault(visual)
+      : DEFAULT_VISUAL_ANCHOR;
     const startScale = { ...transform.scale };
     const startScaleAxis = isSpriteScaleHandle(handle)
       ? parentAxisDistance(

@@ -2,9 +2,7 @@ import type { Application } from "pixi.js";
 import type { FederatedPointerEvent } from "pixi.js";
 import { MOUSE_BUTTON_MIDDLE } from "@game-editor/shared";
 import type { RuntimeNode } from "./pixi-runtime-nodes.js";
-
-/** Max screen-space movement (px) still counted as a click, not a drag. */
-const CLICK_MAX_MOVE_PX = 8;
+import { POINTER_CLICK_MAX_MOVE_PX } from "./pixi-pointer-constants.js";
 
 /** Playback pointer events emitted to the host (mirrors script NodePointerEventName). */
 export type PlaybackPointerEventName =
@@ -60,7 +58,10 @@ export class PixiNodeClickController {
         emit("pointerup");
         const dx = upEvent.global.x - startX;
         const dy = upEvent.global.y - startY;
-        if (dx * dx + dy * dy > CLICK_MAX_MOVE_PX * CLICK_MAX_MOVE_PX) {
+        if (
+          dx * dx + dy * dy >
+          POINTER_CLICK_MAX_MOVE_PX * POINTER_CLICK_MAX_MOVE_PX
+        ) {
           return;
         }
         emit("pointertap");

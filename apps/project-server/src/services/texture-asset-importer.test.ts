@@ -87,4 +87,34 @@ describe("AssetImportService + TextureAssetImporter", () => {
       await rm(root, { recursive: true, force: true });
     }
   });
+
+  it("preserves dropped folder hierarchy", async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "game-editor-assets-"));
+    try {
+      const importer = createImportService(root);
+      const result = await importer.importFiles(
+        [
+          { fileName: "ui/hud/health.png", bytes: tinyPng() },
+          { fileName: "ui/button.png", bytes: tinyPng() },
+        ],
+        "assets",
+      );
+      expect(result.imported.map((asset) => asset.path).sort()).toEqual([
+        "assets/ui/button.png",
+        "assets/ui/hud/health.png",
+      ]);
+      const health = await readFile(
+        path.join(root, "assets", "ui", "hud", "health.png"),
+      );
+      expect(health.byteLength).toBeGreaterThan(0);
+
+      const duplicate = await importer.importFiles(
+        [{ fileName: "ui/button.png", bytes: tinyPng() }],
+        "assets",
+      );
+      expect(duplicate.imported[0]?.path).toBe("assets/ui/button-1.png");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
 });

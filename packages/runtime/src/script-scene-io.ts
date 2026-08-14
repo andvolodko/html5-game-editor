@@ -11,6 +11,7 @@ import {
   getBitmapText,
   getHTMLText,
   getModel3D,
+  getSprite,
   getText,
   getTransform2D,
   getTransform3D,
@@ -168,5 +169,23 @@ export function patchNodeText(
     return undefined;
   }
   textComp.text = text;
+  return node;
+}
+
+export function patchSpriteAssetId(
+  scene: SceneData | undefined,
+  nodeId: string,
+  assetId: string,
+): SceneNodeData | undefined {
+  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const sprite = node ? getSprite(node) : undefined;
+  if (!node || !sprite) {
+    return undefined;
+  }
+  if (assetId.length === 0) {
+    delete sprite.assetId;
+  } else {
+    sprite.assetId = assetId;
+  }
   return node;
 }

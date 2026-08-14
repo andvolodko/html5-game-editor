@@ -1,0 +1,1216 @@
+{
+  "id": "scene_644ae399-f0f4-41a0-b4a0-cff603aaa043",
+  "name": "Main Scene",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "node_0043928b-5f96-442f-984e-df811cda5401",
+      "name": "Board",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_7cffe8f5-ccfc-49dd-a54a-a554492a6cd1",
+          "position": {
+            "x": 0,
+            "y": 22
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_c41dde0e-dbd8-4dc6-92e1-d70a08711f2d",
+          "scriptId": "solitaire.KlondikeBoard",
+          "properties": {
+            "cardTemplateName": "CardTemplate",
+            "drawCount": "1",
+            "backAssetId": "asset_069ebee7-f192-4337-aed1-ab1d10bce70d",
+            "cardClickAssetId": "asset_006a0a8f-4e48-4142-8051-4dbf8ccd3107"
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_67f1d71e-323f-4b05-8a07-c67e583c3829",
+          "name": "Title",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_9956b1bb-f153-4e31-84c6-669069dcf758",
+              "position": {
+                "x": 360,
+                "y": 2
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_4debb86b-35da-4087-8b78-2a75e0108f04",
+              "text": "Solitaire",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": 15263976,
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": false,
+                "dropShadowColor": 0,
+                "dropShadowAlpha": 1,
+                "dropShadowBlur": 0,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              },
+              "anchor": {
+                "x": 0.5,
+                "y": 0
+              }
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_017e775a-5afc-44a4-afd7-d2cb987f5e56",
+          "name": "Status",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_9c23dc9e-3652-4541-ab94-a3931400297d",
+              "position": {
+                "x": 381,
+                "y": 1144
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_ee6e2b30-e0be-4f63-88eb-13fb1407e65c",
+              "text": "Tap a card or the stock",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 22,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": 15263976,
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": false,
+                "dropShadowColor": 0,
+                "dropShadowAlpha": 1,
+                "dropShadowBlur": 0,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              },
+              "anchor": {
+                "x": 0.5,
+                "y": 0.5
+              }
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_51a46ea7-2ab5-4632-ac72-fec0e922295e",
+          "name": "Stock",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_9baee90d-d494-4f66-a268-7eaf1c9a8e8d",
+              "position": {
+                "x": 63,
+                "y": 128
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_814e84fc-5658-4f94-beb9-7a6bc890ef57",
+              "name": "Slot",
+              "parentId": "node_51a46ea7-2ab5-4632-ac72-fec0e922295e",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_16ea741c-09fc-4c6b-ae94-658edbdbb75e",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_41d791a2-24c5-4b68-819d-017059e9a4c5",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_df029e8f-1293-4cb8-bba9-def4ce45c116",
+          "name": "Waste",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_c8ed27ef-af69-4f11-a13e-0293a7854e23",
+              "position": {
+                "x": 162,
+                "y": 128
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_4a918d52-f274-4bdf-98d7-16b10b056866",
+              "name": "Slot",
+              "parentId": "node_df029e8f-1293-4cb8-bba9-def4ce45c116",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_c6b9e4cb-c3e7-47cc-8d30-348171020c5d",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_5849989a-43ef-4b26-b0ec-a7a12b1d1999",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_ac9eca34-ec8d-4510-aef7-8cff31d30a1c",
+          "name": "Foundation0",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_5b2bf4f4-dcd0-4934-8ce3-7b8754031612",
+              "position": {
+                "x": 360,
+                "y": 128
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_23889c16-f9ff-482c-a85f-5fab2116f5a7",
+              "name": "Slot",
+              "parentId": "node_ac9eca34-ec8d-4510-aef7-8cff31d30a1c",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_1e9d5e00-6e2b-4996-8ac5-fed43e91f03d",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_388dc082-8abf-4d14-89c6-8e47d655b782",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_9f3b5c7c-31d7-442c-b846-6dffe43b770e",
+          "name": "Foundation1",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_605af90b-6de4-4907-ac10-2af5a4352fb8",
+              "position": {
+                "x": 459,
+                "y": 128
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_c16c7ba9-da0f-4a03-b97f-bea3f2d890a3",
+              "name": "Slot",
+              "parentId": "node_9f3b5c7c-31d7-442c-b846-6dffe43b770e",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_337fdcac-55af-401d-8c33-0287fb0fa686",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_dc78a6b6-9089-40c1-b9eb-be3609f25539",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_3f48ad75-eaed-4fbe-afb1-264e94d7c112",
+          "name": "Foundation2",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_fcc9d3c6-7bda-40bf-84e3-608cf4445227",
+              "position": {
+                "x": 558,
+                "y": 128
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_27a45a5e-43ff-4502-9e02-e7e6c1f07d1c",
+              "name": "Slot",
+              "parentId": "node_3f48ad75-eaed-4fbe-afb1-264e94d7c112",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_0fe12ea9-907f-4d02-b194-ded222f1b174",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_c1c50d0b-6789-4bfa-a72f-e57c583f9503",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_eba0521f-1eac-4a14-b860-1c2ac6c6a37d",
+          "name": "Foundation3",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_aa6114fe-2303-4f0a-9d6c-5c4d29d2ea5e",
+              "position": {
+                "x": 658,
+                "y": 128
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_c8499aa8-145a-42dc-89ba-a0332f2b2e35",
+              "name": "Slot",
+              "parentId": "node_eba0521f-1eac-4a14-b860-1c2ac6c6a37d",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_e4cbb7ab-9452-455e-bb6c-479de6969e86",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_e758e976-7ea0-4fb8-aff4-97c0c513a0db",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_9349aec6-548a-4a2c-9c47-749331568a73",
+          "name": "Tableau0",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_4b2b8c38-8593-4161-84b0-44f191455d5b",
+              "position": {
+                "x": 63,
+                "y": 300
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_a1b5ca5d-3d99-482c-b76f-c79476007148",
+              "name": "Slot",
+              "parentId": "node_9349aec6-548a-4a2c-9c47-749331568a73",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_40310ccb-f313-44a4-8350-73d5d5419211",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_505c5d2a-fc07-46c1-bb94-e487c1ee6612",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_58084baa-781d-4ba8-a329-f5924fec44fd",
+          "name": "Tableau1",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_6f4f5c9a-07b2-4095-bff1-292845fd51fb",
+              "position": {
+                "x": 162,
+                "y": 300
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_1928a2a9-eaaa-4bcc-a726-9f0d1a7e3604",
+              "name": "Slot",
+              "parentId": "node_58084baa-781d-4ba8-a329-f5924fec44fd",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_27d05e0a-a883-4a01-b86e-e13cc65af079",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_9b9caf0d-7382-467f-a4f1-22a1c3e1e3a9",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_85a6975c-ef29-40ac-af9e-322867373283",
+          "name": "Tableau2",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_e22cf58d-fe77-410e-9d20-a5c87801124c",
+              "position": {
+                "x": 261,
+                "y": 300
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_a85cbb18-cd6f-4afb-aea0-167c993d15f1",
+              "name": "Slot",
+              "parentId": "node_85a6975c-ef29-40ac-af9e-322867373283",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_e65ab3c3-4b9e-45b7-884c-2c1200ae85f0",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_aaae3d07-1ddf-47f3-8cfc-39b90827f558",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_c50e4dbf-1410-4825-868f-e2d827e978a3",
+          "name": "Tableau3",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_381dc166-0464-4e32-b0fd-61f6831fabdd",
+              "position": {
+                "x": 360,
+                "y": 300
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_517088ab-3a96-4d21-8446-12f0b41fdb52",
+              "name": "Slot",
+              "parentId": "node_c50e4dbf-1410-4825-868f-e2d827e978a3",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_45a903d5-543c-4a3f-b23f-77da46ce5b85",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_c166d738-e40b-4010-b822-39b51433a535",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_253545cb-6091-4710-abb1-a20005234105",
+          "name": "Tableau4",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_797aa7e7-2cfc-4353-81c3-5dfeb82fe994",
+              "position": {
+                "x": 459,
+                "y": 300
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_c93fe0fc-5b87-4bdd-ba8b-2a434dbf1f37",
+              "name": "Slot",
+              "parentId": "node_253545cb-6091-4710-abb1-a20005234105",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_3771b180-0088-4102-b0e6-47b03870a036",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_40177113-c6b6-408e-8c30-a5dc4a1e2857",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_0cfd107b-e7fc-4113-9a77-a1879df0abb4",
+          "name": "Tableau5",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_5717496b-d9fd-4111-a9ff-d065dd8e1de4",
+              "position": {
+                "x": 558,
+                "y": 300
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_9f7d1347-9397-4521-bb9a-f58afaff8b00",
+              "name": "Slot",
+              "parentId": "node_0cfd107b-e7fc-4113-9a77-a1879df0abb4",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_c96fee91-3bf9-4f88-adda-d0fa15993125",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_627ef8c8-c888-4df2-85fe-d73436f9ba55",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_a773d80d-d7dd-4393-a55c-83c91a8ee4d6",
+          "name": "Tableau6",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_a94faa37-b33f-42fa-8f36-1045e7d90bb5",
+              "position": {
+                "x": 658,
+                "y": 300
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_60cead9a-9128-4628-a3cf-bc7d67562afb",
+              "name": "Slot",
+              "parentId": "node_a773d80d-d7dd-4393-a55c-83c91a8ee4d6",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_9c1239b9-6e75-4622-9522-8c96912c3833",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Graphics",
+                  "id": "comp_19389a50-043e-41d1-83b6-d54abf668a2c",
+                  "shape": {
+                    "type": "rounded-rectangle",
+                    "width": 89,
+                    "height": 130,
+                    "radius": 8
+                  },
+                  "fillColor": 668452,
+                  "fillAlpha": 0.55,
+                  "strokeColor": 2984538,
+                  "strokeAlpha": 0.9,
+                  "strokeWidth": 2
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_e2108c99-64d9-4e41-8b50-9f3837412048",
+          "name": "CardTemplate",
+          "parentId": "node_0043928b-5f96-442f-984e-df811cda5401",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_d2d6bf10-0334-4923-aa42-60dd8d3d0fbd",
+              "position": {
+                "x": -400,
+                "y": -400
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1.35,
+                "y": 1.35
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "node_f931a990-6967-4073-995b-7aaa3534082a",
+              "name": "Face",
+              "parentId": "node_e2108c99-64d9-4e41-8b50-9f3837412048",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_0df05b9f-82df-4b77-b84e-636352a199b5",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Sprite",
+                  "id": "comp_1373a6e3-3c07-467d-b9f6-26c5a0c32b48",
+                  "assetId": "asset_662273cf-fcae-413d-b54c-d952b178f6fe",
+                  "width": 66,
+                  "height": 96,
+                  "anchor": {
+                    "x": 0.5,
+                    "y": 0.5
+                  }
+                }
+              ],
+              "children": []
+            },
+            {
+              "id": "node_6b412283-95c9-4125-b40a-83d976c4b578",
+              "name": "Back",
+              "parentId": "node_e2108c99-64d9-4e41-8b50-9f3837412048",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_89c7ed38-f2c1-42fe-8f1b-68067068bba2",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Sprite",
+                  "id": "comp_8fdf7912-aee0-43b8-98c6-e3ce46db5e8e",
+                  "assetId": "asset_069ebee7-f192-4337-aed1-ab1d10bce70d",
+                  "width": 66,
+                  "height": 96,
+                  "anchor": {
+                    "x": 0.5,
+                    "y": 0.5
+                  }
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "node_a5d99ed9-9827-463a-bca1-71f0e28ab4ed",
+      "name": "Bgm",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_d516fe99-ba87-4990-bc39-a6d4252c3398",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_f7dd0d50-80e0-40d1-8abf-5f9c7d9b5f07",
+          "scriptId": "shared.BackgroundAudio",
+          "properties": {
+            "audioAssetId": "asset_c6b54e1b-9b36-4c56-968e-4bb88fc0277e",
+            "volume": 0.25
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_74720050-0981-49b8-9c5b-ce277beafb35",
+      "name": "audio",
+      "layer": "foreground",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_a6269612-7c5c-48d0-917a-34b2b76bd280",
+          "position": {
+            "x": 595,
+            "y": 35
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_80f0ef5f-9dcd-4ada-b244-21906816c4e7",
+          "scriptId": "solitaire.AudioContainer",
+          "properties": {
+            "onChildName": "on",
+            "offChildName": "off",
+            "hoverChildName": "Hover"
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_1723874e-1e9d-43e7-8ec5-5a0db4c9d733",
+          "name": "Graphics",
+          "parentId": "node_74720050-0981-49b8-9c5b-ce277beafb35",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_d90b852b-9829-4091-9bc3-76e92ba00e1b",
+              "position": {
+                "x": 39,
+                "y": 6
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 0.7,
+                "y": 0.6
+              }
+            },
+            {
+              "type": "Graphics",
+              "id": "comp_febd2121-88e9-4383-849e-3c3879c6e9ef",
+              "shape": {
+                "type": "rectangle",
+                "width": 200,
+                "height": 100
+              },
+              "fillColor": 2764343,
+              "fillAlpha": 1,
+              "strokeColor": 1645343,
+              "strokeAlpha": 1,
+              "strokeWidth": 2
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_01656c8b-276a-4952-94e9-3026cf3b2cc5",
+          "name": "off",
+          "parentId": "node_74720050-0981-49b8-9c5b-ce277beafb35",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_d9f1a042-a223-4543-9da7-c29d513b4324",
+              "position": {
+                "x": 68,
+                "y": 8
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Sprite",
+              "id": "comp_46a4e123-d633-4e16-9809-5ca10c15075e",
+              "assetId": "asset_e4989990-6a79-4e94-ab38-a67f16c1fc5c",
+              "width": 44,
+              "height": 44
+            }
+          ],
+          "children": [
+            {
+              "id": "node_5d246c75-903b-40bb-b1e1-d75e433af6ce",
+              "name": "Hover",
+              "parentId": "node_01656c8b-276a-4952-94e9-3026cf3b2cc5",
+              "layer": "foreground",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_fc8b1b7f-b40e-4d90-bd10-330c195bcad2",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Sprite",
+                  "id": "comp_9ca58589-b49f-4683-8bd5-e58955bed7e6",
+                  "assetId": "asset_419d6bde-ade0-425f-81a6-a03f64dbe509",
+                  "width": 44,
+                  "height": 44
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "node_e94a2df6-4861-4af0-a515-c4b9e37fc853",
+          "name": "on",
+          "parentId": "node_74720050-0981-49b8-9c5b-ce277beafb35",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_76eaaea1-ebf2-4ed2-a121-8bef8f5992d0",
+              "position": {
+                "x": 8,
+                "y": 8
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Sprite",
+              "id": "comp_2654de6d-d509-4c11-8c27-5206bd018e8b",
+              "assetId": "asset_5c051464-89ef-4a2f-9431-8c6132db90f5",
+              "width": 44,
+              "height": 44
+            }
+          ],
+          "children": [
+            {
+              "id": "node_d5e79df9-ed6d-49f2-bf23-b8b7f05bff90",
+              "name": "Hover",
+              "parentId": "node_e94a2df6-4861-4af0-a515-c4b9e37fc853",
+              "layer": "foreground",
+              "components": [
+                {
+                  "type": "Transform2D",
+                  "id": "comp_abe54f79-8595-40c9-bfd1-06ebd7dd0a5a",
+                  "position": {
+                    "x": 0,
+                    "y": 0
+                  },
+                  "rotation": 0,
+                  "scale": {
+                    "x": 1,
+                    "y": 1
+                  }
+                },
+                {
+                  "type": "Sprite",
+                  "id": "comp_8b7ed555-c9a8-405c-a8fa-5f2964d61622",
+                  "assetId": "asset_5088b164-cd0d-4472-a95a-4a22a164b99f",
+                  "width": 44,
+                  "height": 44
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

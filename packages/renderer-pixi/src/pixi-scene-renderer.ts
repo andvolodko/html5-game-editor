@@ -326,8 +326,12 @@ export class PixiSceneRenderer implements SceneRenderer {
   }
 
   destroyNode(nodeId: string): void {
+    const parentId = this.graph.get(nodeId)?.node.parentId;
     const destroyed = this.graph.destroyNode(nodeId);
     this.syncStats.destroyed += destroyed;
+    if (parentId) {
+      this.painter.refreshGroupingNode(parentId);
+    }
   }
 
   clear(): void {
@@ -371,7 +375,23 @@ export class PixiSceneRenderer implements SceneRenderer {
 
   setSelectedNodeIds(nodeIds: readonly string[]): void {
     this.selectedNodeIds = new Set(nodeIds);
+    this.syncGroupingChildHits();
     this.render();
+  }
+
+  /**
+   * Selected grouping nodes swallow descendant hits so move/scale/rotate
+   * apply to the container. Children become hittable again when deselected.
+   */
+  private syncGroupingChildHits(): void {
+    for (const runtime of this.graph.values()) {
+      if (!runtime.editable || !runtime.childrenRoot) {
+        continue;
+      }
+      const grouping = getVisualComponent(runtime.node) === undefined;
+      runtime.childrenRoot.interactiveChildren =
+        !grouping || !this.selectedNodeIds.has(runtime.node.id);
+    }
   }
 
   previewNodePosition(nodeId: string, position: Vec2): void {
@@ -506,8 +526,15 @@ export class PixiSceneRenderer implements SceneRenderer {
     parentId: string | undefined,
     index: number,
   ): void {
+    const oldParentId = this.graph.get(nodeId)?.node.parentId;
     this.graph.reparentNode(nodeId, parentId, index);
     this.syncStats.reparented += 1;
+    if (oldParentId) {
+      this.painter.refreshGroupingNode(oldParentId);
+    }
+    if (parentId) {
+      this.painter.refreshGroupingNode(parentId);
+    }
   }
 
   getRuntimeContainer(nodeId: string): Container | undefined {
@@ -554,6 +581,7 @@ export class PixiSceneRenderer implements SceneRenderer {
       getRuntime: (nodeId) => this.graph.get(nodeId),
       getSnapGridSize: () => this.snapGridSize,
       getPointerHandlers: () => this.pointerHandlers,
+      pickNodeId: (clientX, clientY) => this.pickNodeId(clientX, clientY),
       previewNodePosition: (nodeId, position) =>
         this.preview.previewNodePosition(nodeId, position),
       previewSpriteSize: (nodeId, width, height) =>

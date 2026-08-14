@@ -1,6 +1,6 @@
 ---
-description: Keep classes and modules focused; split god objects before adding features
-alwaysApply: true
+description: Split oversized TypeScript modules and classes. Use when adding features to large files, extracting helpers, reviewing god objects, or a module exceeds ~300–500 lines with mixed responsibilities.
+alwaysApply: false
 ---
 
 # Class and module size

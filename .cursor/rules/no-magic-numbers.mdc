@@ -1,5 +1,5 @@
 ---
-description: Prefer named constants over unexplained numeric literals
+description: Prefer named constants over unexplained numeric literals in TypeScript. Apply when editing .ts/.tsx behavior code.
 globs: "**/*.ts,**/*.tsx"
 alwaysApply: false
 ---

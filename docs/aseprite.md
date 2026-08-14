@@ -4,7 +4,7 @@ Editor support for Aseprite / LibreSprite source files (`.aseprite`, `.ase`).
 
 The source file is the catalogue record. Compiled PNG + PixiJS JSON are derived artifacts. Scene files store a stable `assetId` and optional animation tag name — never a `.generated/` path.
 
-Operator overview also lives in the root [`README.md`](../README.md#aseprite-assets). Architecture invariants: [`PROJECT.md`](../PROJECT.md) §§14–18, 48.
+Operator overview also lives in the root [`README.md`](../README.md#aseprite-assets). Asset-database and generated-file invariants: [`docs/assets.md`](./assets.md).
 
 ## Pipeline
 

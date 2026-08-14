@@ -83,6 +83,27 @@ export class PixiRuntimeGraph {
     return this.nodes.get(nodeId);
   }
 
+  /** Direct scene children, in childrenRoot sibling order. */
+  listDirectChildren(parentId: string): RuntimeNode[] {
+    const parent = this.nodes.get(parentId);
+    const childrenRoot = parent?.childrenRoot;
+    if (!childrenRoot) {
+      return [];
+    }
+    const result: RuntimeNode[] = [];
+    for (const child of childrenRoot.children) {
+      if (!(child instanceof Container)) {
+        continue;
+      }
+      const childId = this.containerToNodeId.get(child);
+      const runtime = childId ? this.nodes.get(childId) : undefined;
+      if (runtime) {
+        result.push(runtime);
+      }
+    }
+    return result;
+  }
+
   values(): IterableIterator<RuntimeNode> {
     return this.nodes.values();
   }

@@ -14,6 +14,18 @@
       }
     },
     {
+      "id": "asset_2eab62b4-2014-4751-89bd-4230b22391c0",
+      "type": "texture",
+      "name": "Default",
+      "path": "assets/ui/SoundOff/Default.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 88,
+        "height": 88,
+        "mimeType": "image/png"
+      }
+    },
+    {
       "id": "asset_3d0615e3-3edd-4ddd-bf05-15f97bc5e95c",
       "type": "gltf",
       "name": "Model_Npc_Catapult_Att",
@@ -26,6 +38,18 @@
           "Model_Npc_Catapult_Att_action_0",
           "Model_Npc_Catapult_Att_action_1"
         ]
+      }
+    },
+    {
+      "id": "asset_42c55bf6-f89f-40d4-b3cb-340edb0ae23d",
+      "type": "texture",
+      "name": "Hover",
+      "path": "assets/ui/SoundOff/Hover.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 88,
+        "height": 88,
+        "mimeType": "image/png"
       }
     },
     {
@@ -142,6 +166,30 @@
         "mimeType": "model/gltf-binary",
         "format": "glb",
         "animations": []
+      }
+    },
+    {
+      "id": "asset_ce3d5f6b-3aa7-41db-891f-5a4c1cdbcb46",
+      "type": "texture",
+      "name": "Hover",
+      "path": "assets/ui/SoundOn/Hover.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 88,
+        "height": 88,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_d0aa0b29-c19f-4845-9516-16e8913b6a7b",
+      "type": "texture",
+      "name": "Default",
+      "path": "assets/ui/SoundOn/Default.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 88,
+        "height": 88,
+        "mimeType": "image/png"
       }
     },
     {

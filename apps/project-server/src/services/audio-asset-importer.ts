@@ -34,7 +34,7 @@ export class AudioAssetImporter implements AssetImporter {
       throw new ValidationError(`Empty audio file: ${file.fileName}`);
     }
 
-    const relativePath = context.allocateRelativePath(path.basename(file.fileName));
+    const relativePath = context.allocateRelativePath(file.fileName);
     const record = createAudioAssetRecord({
       name: path.basename(relativePath, path.extname(relativePath)),
       path: relativePath,

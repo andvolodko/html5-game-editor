@@ -1,8 +1,9 @@
 import type { Application, Container } from "pixi.js";
 import type { FederatedPointerEvent } from "pixi.js";
-import { getTransform2D, type Vec2 } from "@game-editor/scene";
+import { getTransform2D, getVisualComponent, type Vec2 } from "@game-editor/scene";
 import { MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_SECONDARY } from "@game-editor/shared";
 import type { RuntimeNode } from "./pixi-runtime-nodes.js";
+import { POINTER_CLICK_MAX_MOVE_PX } from "./pixi-pointer-constants.js";
 import { snapPositionToGrid } from "./snap-to-grid.js";
 
 interface DragState {
@@ -12,6 +13,8 @@ interface DragState {
   offsetY: number;
   startPosition: Vec2;
   currentPosition: Vec2;
+  startGlobalX: number;
+  startGlobalY: number;
 }
 
 export interface NodeDragHost {
@@ -22,6 +25,7 @@ export interface NodeDragHost {
   /** When set and positive, node-move positions are quantized to this world size. */
   getSnapGridSize?(): number | undefined;
   previewNodePosition(nodeId: string, position: Vec2): void;
+  pickNodeId?(clientX: number, clientY: number): string | undefined;
   onNodePointerDown?(nodeId: string, world: Vec2): void;
   onNodePointerMove?(nodeId: string, world: Vec2): void;
   onNodePointerUp?(nodeId: string, start: Vec2, end: Vec2): void;
@@ -77,6 +81,8 @@ export class PixiNodeDragController {
         offsetY: local.y - transform.position.y,
         startPosition: { ...transform.position },
         currentPosition: { ...transform.position },
+        startGlobalX: event.global.x,
+        startGlobalY: event.global.y,
       };
       live.container.cursor = "grabbing";
 
@@ -108,6 +114,28 @@ export class PixiNodeDragController {
         this.drag = undefined;
         live.container.cursor = "grab";
         appOff();
+        if (
+          shouldSelectDescendantOnClick(
+            host,
+            finished,
+            upEvent.global.x,
+            upEvent.global.y,
+          )
+        ) {
+          host.previewNodePosition(finished.nodeId, finished.startPosition);
+          const picked = host.pickNodeId?.(upEvent.clientX, upEvent.clientY);
+          if (
+            picked &&
+            picked !== finished.nodeId &&
+            isNodeDescendant(host, picked, finished.nodeId)
+          ) {
+            host.onNodePointerDown?.(picked, {
+              x: upEvent.global.x,
+              y: upEvent.global.y,
+            });
+          }
+          return;
+        }
         host.onNodePointerUp?.(
           finished.nodeId,
           finished.startPosition,
@@ -131,4 +159,34 @@ export class PixiNodeDragController {
       app.stage.on("pointerupoutside", onUp);
     });
   }
+}
+
+function shouldSelectDescendantOnClick(
+  host: NodeDragHost,
+  drag: DragState,
+  globalX: number,
+  globalY: number,
+): boolean {
+  const runtime = host.getRuntime(drag.nodeId);
+  if (!runtime || getVisualComponent(runtime.node)) {
+    return false;
+  }
+  const dx = globalX - drag.startGlobalX;
+  const dy = globalY - drag.startGlobalY;
+  return dx * dx + dy * dy <= POINTER_CLICK_MAX_MOVE_PX * POINTER_CLICK_MAX_MOVE_PX;
+}
+
+function isNodeDescendant(
+  host: NodeDragHost,
+  nodeId: string,
+  ancestorId: string,
+): boolean {
+  let currentId: string | undefined = host.getRuntime(nodeId)?.node.parentId;
+  while (currentId) {
+    if (currentId === ancestorId) {
+      return true;
+    }
+    currentId = host.getRuntime(currentId)?.node.parentId;
+  }
+  return false;
 }

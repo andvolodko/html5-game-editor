@@ -44,7 +44,7 @@ export class TextureAssetImporter implements AssetImporter {
       throw new ValidationError(`Missing image dimensions for ${file.fileName}`);
     }
 
-    const relativePath = context.allocateRelativePath(path.basename(file.fileName));
+    const relativePath = context.allocateRelativePath(file.fileName);
     const record = createTextureAssetRecord({
       name: path.basename(relativePath, path.extname(relativePath)),
       path: relativePath,
