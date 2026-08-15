@@ -11,7 +11,6 @@ import {
   deleteValueAtPath,
   getValueAtPath,
   isPlainObject,
-  prefabValuesEqual,
   setValueAtPath,
 } from "./property-path.js";
 import { findInstanceNodeBySourceId, getPrefabInstanceOverrides } from "./queries.js";

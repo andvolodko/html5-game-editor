@@ -76,6 +76,7 @@ import {
 import {
   DocumentManager,
   hasUnsavedChanges,
+  type DocumentContentSnapshot,
   type DocumentDirtyState,
 } from "./document-manager.js";
 import type { SceneApiClient, SceneListEntry } from "./scene-api-client.js";
@@ -274,7 +275,7 @@ export class Editor {
   }
 
   restorePrefabSceneSession(
-    session: { sceneFileId: string; snapshot: import("./document-manager.js").DocumentContentSnapshot } | undefined,
+    session: { sceneFileId: string; snapshot: DocumentContentSnapshot } | undefined,
   ): void {
     const sceneFileId = session?.sceneFileId ?? this.sceneFileId;
     this.sceneFileId = sceneFileId;

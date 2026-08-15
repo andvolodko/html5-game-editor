@@ -48,7 +48,7 @@ export function setValueAtPath(
       if (!isPlainObject(existing) && !Array.isArray(existing)) {
         current[arrayIndex] = nextIsIndex ? [] : {};
       }
-      const created = current[arrayIndex];
+      const created: unknown = current[arrayIndex];
       if (!isPlainObject(created) && !Array.isArray(created)) {
         return;
       }
@@ -59,7 +59,7 @@ export function setValueAtPath(
     if (!isPlainObject(existing) && !Array.isArray(existing)) {
       current[part] = nextIsIndex ? [] : {};
     }
-    const created = current[part];
+    const created: unknown = current[part];
     if (!isPlainObject(created) && !Array.isArray(created)) {
       return;
     }
