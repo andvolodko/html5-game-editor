@@ -4,7 +4,7 @@ import {
   createAsepriteAssetRecord,
   createTextureAssetRecord,
 } from "@game-editor/assets";
-import { createEmptyScene } from "@game-editor/scene";
+import { createContainerNode, createEmptyScene, PREFAB_SCHEMA_VERSION } from "@game-editor/scene";
 import { DomainError } from "@game-editor/core";
 import { foldersFromAssetDatabase } from "./folders-from-assets";
 import { createDemoEditorClients } from "./create-demo-clients";
@@ -129,6 +129,33 @@ describe("DemoProjectStore", () => {
     expect(() => store.deleteScene(START_SCENE_ID)).toThrow(/at least one scene/);
   });
 
+  it("creates and restores prefab assets in demo storage", () => {
+    const storage = memoryStorage();
+    const store = new DemoProjectStore([fixtureSnapshot()], storage);
+    const root = createContainerNode("Button");
+    const path = store.allocatePrefabPath("Button");
+    expect(path).toBe("assets/prefabs/Button.prefab.json");
+    const asset = {
+      id: "asset_prefab_demo",
+      type: "prefab" as const,
+      name: "Button",
+      path,
+      metadata: { kind: "prefab" as const, prefabId: "prefab_demo" },
+    };
+    store.addPrefabAsset(asset, {
+      version: PREFAB_SCHEMA_VERSION,
+      id: "prefab_demo",
+      name: "Button",
+      root,
+    });
+    expect(store.getPrefab("asset_prefab_demo")?.name).toBe("Button");
+    const restored = new DemoProjectStore([fixtureSnapshot()], storage);
+    expect(restored.assets.assets.some((entry) => entry.id === "asset_prefab_demo")).toBe(
+      true,
+    );
+    expect(restored.getPrefab("asset_prefab_demo")?.root.name).toBe("Button");
+  });
+
   it("keeps scene edits isolated per project", () => {
     const storage = memoryStorage();
     const store = new DemoProjectStore(
@@ -206,6 +233,26 @@ describe("createDemoEditorClients", () => {
     await expect(clients.projectApi.openProject("missing")).rejects.toMatchObject({
       code: "PROJECT_NOT_FOUND",
     });
+  });
+
+  it("creates a prefab through the demo API", async () => {
+    const snapshot = fixtureSnapshot();
+    const clients = createDemoEditorClients([snapshot], {
+      assetBaseUrl: "/demo/",
+      catalogs: { "editor-features-demo": { components: [], busEvents: [] } },
+    });
+    const created = await clients.prefabApi.createPrefab({
+      name: "Widget",
+      root: createContainerNode("Widget"),
+    });
+    expect(created.asset.type).toBe("prefab");
+    expect(created.prefab.root.name).toBe("Widget");
+    const listed = await clients.assetApi.listAssets();
+    expect(listed.database.assets.some((asset) => asset.id === created.asset.id)).toBe(
+      true,
+    );
+    const loaded = await clients.prefabApi.loadPrefab(created.asset.id);
+    expect(loaded.id).toBe(created.prefab.id);
   });
 
   it("clears persisted demo edits", () => {

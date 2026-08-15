@@ -31,6 +31,8 @@ import {
   DirectionalLightInspector,
 } from "./ThreeLightInspector";
 import { ScriptComponentsInspector } from "./ScriptComponentsInspector";
+import { PrefabInspectorSection } from "./PrefabInspectorSection";
+import { isInspectorPropertyOverridden } from "./prefab-override-flag";
 import {
   formatInspectorNumber,
   resolveInspectorNumber,
@@ -419,6 +421,8 @@ export function InspectorPanel() {
     <div className="panel">
       <p className="panel-hint">Inspector · {node.name}</p>
 
+      <PrefabInspectorSection node={node} />
+
       {transform ? (
         <section className="inspector-section">
           <h3>2D Layer</h3>
@@ -457,7 +461,19 @@ export function InspectorPanel() {
                 ["Skew Y (°)", "skewY"],
               ] as const
             ).map(([label, key]) => (
-              <label key={key}>
+              <label
+                key={key}
+                className={
+                  isInspectorPropertyOverridden(
+                    scene,
+                    node,
+                    transform.id,
+                    transform2DOverridePath(key),
+                  )
+                    ? "inspector-field-overridden"
+                    : undefined
+                }
+              >
                 {label}
                 <input
                   value={draft[key]}
@@ -635,4 +651,25 @@ export function InspectorPanel() {
       <ScriptComponentsInspector node={node} />
     </div>
   );
+}
+
+function transform2DOverridePath(
+  key: "x" | "y" | "rotation" | "scaleX" | "scaleY" | "skewX" | "skewY",
+): string {
+  if (key === "x" || key === "y") {
+    return `position.${key}`;
+  }
+  if (key === "scaleX") {
+    return "scale.x";
+  }
+  if (key === "scaleY") {
+    return "scale.y";
+  }
+  if (key === "skewX") {
+    return "skew.x";
+  }
+  if (key === "skewY") {
+    return "skew.y";
+  }
+  return "rotation";
 }

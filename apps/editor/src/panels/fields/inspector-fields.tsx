@@ -21,11 +21,13 @@ export function NumberField({
   value,
   onCommit,
   integer,
+  overridden,
 }: {
   label: string;
   value: number;
   onCommit: (value: number) => void;
   integer?: boolean;
+  overridden?: boolean;
 }) {
   const [draft, setDraft] = useState(displayInspectorNumber(value, integer));
   useEffect(
@@ -55,7 +57,7 @@ export function NumberField({
     onCommit(next);
   };
   return (
-    <label>
+    <label className={overridden ? "inspector-field-overridden" : undefined}>
       {label}
       <input
         value={draft}
@@ -76,11 +78,13 @@ export function TextAreaField({
   value,
   onCommit,
   rows = 3,
+  overridden,
 }: {
   label: string;
   value: string;
   onCommit: (value: string) => void;
   rows?: number;
+  overridden?: boolean;
 }) {
   const [draft, setDraft] = useState(value);
   useEffect(() => setDraft(value), [value]);
@@ -91,7 +95,7 @@ export function TextAreaField({
     onCommit(draft);
   };
   return (
-    <label>
+    <label className={overridden ? "inspector-field-overridden" : undefined}>
       {label}
       <textarea
         rows={rows}
@@ -107,10 +111,12 @@ export function StringField({
   label,
   value,
   onCommit,
+  overridden,
 }: {
   label: string;
   value: string;
   onCommit: (value: string) => void;
+  overridden?: boolean;
 }) {
   const [draft, setDraft] = useState(value);
   useEffect(() => setDraft(value), [value]);
@@ -121,7 +127,7 @@ export function StringField({
     onCommit(draft);
   };
   return (
-    <label>
+    <label className={overridden ? "inspector-field-overridden" : undefined}>
       {label}
       <input
         value={draft}
@@ -262,14 +268,16 @@ export function ColorField({
   label,
   value,
   onCommit,
+  overridden,
 }: {
   label: string;
   value: number;
   onCommit: (value: number) => void;
+  overridden?: boolean;
 }) {
   const hex = `#${value.toString(16).padStart(6, "0")}`;
   return (
-    <label>
+    <label className={overridden ? "inspector-field-overridden" : undefined}>
       {label}
       <input
         type="color"

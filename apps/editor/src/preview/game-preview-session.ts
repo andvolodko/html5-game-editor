@@ -14,6 +14,7 @@ import {
   nodeBelongsToPixiBackground,
   nodeBelongsToPixiForeground,
   nodeBelongsToThree,
+  type PrefabCatalog,
   type SceneData,
 } from "@game-editor/scene";
 import {
@@ -49,6 +50,8 @@ export interface GamePreviewStartOptions {
   listScenes?: () => Promise<readonly SceneData[]>;
   /** Scene file id being started (Assets id, not SceneData.id). */
   sceneId: string;
+  /** Prefab documents keyed by catalogue assetId. */
+  prefabs?: PrefabCatalog;
   /** Fires after the preview actually displays a scene (start or changeScene). */
   onSceneChange?: (scene: SceneData, sceneId: string) => void;
 }
@@ -132,6 +135,7 @@ export class GamePreviewSession {
 
     const runtime = new GameRuntime({
       components,
+      prefabs: options.prefabs,
       services: {
         bus,
         changeScene: async (sceneId) => {
@@ -153,7 +157,7 @@ export class GamePreviewSession {
           if (token !== this.startToken) {
             return [];
           }
-          return collectSceneAssetIds(scenes);
+          return collectSceneAssetIds(scenes, options.prefabs);
         },
         preloadSceneAsset: async (assetId, signal) => {
           if (options.assetResolver.resolveGltfUrls?.(assetId)) {

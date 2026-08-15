@@ -25,6 +25,7 @@ export function Toolbar() {
   const activeProjectId = useEditorState((ed) =>
     ed.project.getActiveProjectId(),
   );
+  const documentMode = useEditorState((ed) => ed.prefabs.getMode());
   const dirty = useEditorState((ed) => ed.getDirtyState());
   const saveError = useEditorState((ed) => ed.getSaveError());
   const canUndo = useEditorState((ed) => ed.commands.canUndo);
@@ -105,7 +106,14 @@ export function Toolbar() {
     setStatus(null);
     void editor
       .saveScene()
-      .then(() => setStatus(`Saved ${editor.getSceneFileId()}.json`))
+      .then(() => {
+        const mode = editor.prefabs.getMode();
+        setStatus(
+          mode.kind === "prefab"
+            ? `Saved prefab ${mode.assetId}`
+            : `Saved ${editor.getSceneFileId()}.json`,
+        );
+      })
       .catch((error: unknown) => {
         setStatus(error instanceof Error ? error.message : "Save failed");
       })
@@ -294,6 +302,20 @@ export function Toolbar() {
           >
             Reset Layout
           </MenuItem>
+          {documentMode.kind === "prefab" ? (
+            <MenuItem
+              onClick={() => {
+                closeMenus();
+                void editor.closePrefab().catch((error: unknown) => {
+                  setStatus(
+                    error instanceof Error ? error.message : "Close prefab failed",
+                  );
+                });
+              }}
+            >
+              Close Prefab
+            </MenuItem>
+          ) : null}
           {demo ? (
             <MenuItem
               onClick={() => {
@@ -386,7 +408,26 @@ export function Toolbar() {
             <span className="toolbar-sep">·</span>
           </>
         ) : null}
-        <span>{scene.name}</span>
+        <span>
+          {documentMode.kind === "prefab"
+            ? `Prefab > ${scene.name.replace(/^Prefab:\s*/, "")}`
+            : scene.name}
+        </span>
+        {documentMode.kind === "prefab" ? (
+          <button
+            type="button"
+            className="toolbar-prefab-close"
+            onClick={() => {
+              void editor.closePrefab().catch((error: unknown) => {
+                setStatus(
+                  error instanceof Error ? error.message : "Close prefab failed",
+                );
+              });
+            }}
+          >
+            Close Prefab
+          </button>
+        ) : null}
         <span className="toolbar-sep">·</span>
         <span>{dirtyLabel}</span>
         {saveError ? (

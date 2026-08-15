@@ -7,7 +7,14 @@ import {
   parseProjectData,
   type ProjectData,
 } from "@game-editor/project";
-import { parseSceneData, type SceneData } from "@game-editor/scene";
+import {
+  parsePrefabData,
+  parseSceneData,
+  resolveScenePrefabs,
+  type PrefabCatalog,
+  type PrefabData,
+  type SceneData,
+} from "@game-editor/scene";
 
 export interface LoadedGameProject {
   project: ProjectData;
@@ -16,6 +23,7 @@ export interface LoadedGameProject {
   scenes: Readonly<Record<string, SceneData>>;
   assets: AssetDatabase;
   assetResolver: AssetResolver;
+  prefabs: PrefabCatalog;
 }
 
 export interface ResolveGameProjectInput {
@@ -30,6 +38,11 @@ export interface ResolveGameProjectInput {
   scenes: Readonly<Record<string, unknown>>;
   /** URL prefix for static asset paths (default "/"). */
   baseUrl?: string;
+  /**
+   * Prefab JSON keyed by project-relative path
+   * (e.g. `assets/prefabs/ui-button.prefab.json`).
+   */
+  prefabsByPath?: Readonly<Record<string, unknown>>;
 }
 
 /**
@@ -44,17 +57,72 @@ export function resolveGameProject(
   for (const [sceneId, raw] of Object.entries(input.scenes)) {
     scenes[sceneId] = parseSceneData(raw);
   }
-  const scene = scenes[project.startScene];
-  if (scene === undefined) {
+  if (scenes[project.startScene] === undefined) {
     throw new Error(
       `Start scene "${project.startScene}" was not found in bundled scenes`,
     );
   }
   const assets = AssetDatabase.fromUnknown(input.assets);
+  const prefabs = buildPrefabCatalog(assets, input.prefabsByPath ?? {});
+  const resolvedScenes: Record<string, SceneData> = {};
+  for (const [sceneId, parsed] of Object.entries(scenes)) {
+    resolvedScenes[sceneId] = resolveScenePrefabs(parsed, prefabs).scene;
+  }
+  const resolvedStart = resolvedScenes[project.startScene];
+  if (resolvedStart === undefined) {
+    throw new Error(
+      `Start scene "${project.startScene}" was not found in bundled scenes`,
+    );
+  }
   const assetResolver = createStaticAssetResolver(assets, {
     baseUrl: input.baseUrl,
   });
-  return { project, scene, scenes, assets, assetResolver };
+  return {
+    project,
+    scene: resolvedStart,
+    scenes: resolvedScenes,
+    assets,
+    assetResolver,
+    prefabs,
+  };
+}
+
+export function buildPrefabCatalog(
+  assets: AssetDatabase,
+  prefabsByPath: Readonly<Record<string, unknown>>,
+): PrefabCatalog {
+  const catalog = new Map<string, PrefabData>();
+  for (const record of assets.getAll()) {
+    if (record.type !== "prefab") {
+      continue;
+    }
+    const raw = prefabsByPath[record.path];
+    if (raw === undefined) {
+      continue;
+    }
+    catalog.set(record.id, parsePrefabData(raw));
+  }
+  return catalog;
+}
+
+/**
+ * Collects Vite `import.meta.glob` prefab modules keyed by project-relative path.
+ * Expects keys like `../assets/prefabs/ui-button.prefab.json`.
+ */
+export function prefabModulesByPath(
+  modules: Readonly<Record<string, unknown>>,
+): Record<string, unknown> {
+  const prefabs: Record<string, unknown> = {};
+  for (const [modulePath, data] of Object.entries(modules)) {
+    const normalized = modulePath.replaceAll("\\", "/");
+    const marker = "/assets/";
+    const index = normalized.lastIndexOf(marker);
+    if (index < 0) {
+      continue;
+    }
+    prefabs[`assets/${normalized.slice(index + marker.length)}`] = data;
+  }
+  return prefabs;
 }
 
 /**

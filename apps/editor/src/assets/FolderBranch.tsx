@@ -180,6 +180,13 @@ export function FolderBranch(props: FolderBranchProps) {
                 onSelect={() =>
                   model.setSelection({ kind: "asset", id: entry.asset.id })
                 }
+                onActivate={
+                  entry.asset.type === "prefab"
+                    ? () => {
+                        void model.editor.openPrefab(entry.asset.id);
+                      }
+                    : undefined
+                }
                 onStartRename={() =>
                   model.setRenaming({ kind: "asset", id: entry.asset.id })
                 }

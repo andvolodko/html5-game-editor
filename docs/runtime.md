@@ -67,6 +67,14 @@ Games that never use 2D must not depend on Pixi. `project.json` `renderers` and 
 
 ---
 
+## Prefabs
+
+`resolveGameProject` accepts `prefabsByPath` (project-relative `.prefab.json` modules) and builds a catalog keyed by catalogue `assetId`. Every bundled scene is resolved before it reaches `GameRuntime` / renderer adapters.
+
+`GameRuntime.loadScene` also resolves prefab instances so standalone games and editor preview stay consistent. `collectSceneAssetIds` walks prefab documents with a visited set so indirect textures/scripts/Spine/glTF references are preloaded and cycles cannot loop.
+
+Do not import editor packages from this resolution path.
+
 ## Script components
 
 Game behaviours live under `games/<name>/src/components` or `packages/game-components`. They use `defineComponent` plus an OOP class that implements `ScriptInstance`. Class instances are not persisted in scene JSON.

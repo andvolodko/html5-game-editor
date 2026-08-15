@@ -24,11 +24,53 @@ export function cloneNodeSubtree(source: SceneNodeData): SceneNodeData {
     if (parentId !== undefined) {
       cloned.parentId = parentId;
     }
+    if (node.layer !== undefined) {
+      cloned.layer = node.layer;
+    }
+    if (node.prefab !== undefined) {
+      const componentSources: Record<string, string> = {};
+      for (let index = 0; index < node.components.length; index += 1) {
+        const previous = node.components[index];
+        const next = cloned.components[index];
+        if (previous === undefined || next === undefined) {
+          continue;
+        }
+        const sourceId = node.prefab.componentSources[previous.id] ?? previous.id;
+        componentSources[next.id] = sourceId;
+      }
+      cloned.prefab = {
+        ...node.prefab,
+        componentSources,
+        overrides: node.prefab.overrides
+          ? JSON.parse(JSON.stringify(node.prefab.overrides)) as typeof node.prefab.overrides
+          : undefined,
+      };
+    }
     cloned.children = node.children.map((child) => walk(child, id));
     return cloned;
   };
 
-  return walk(source, source.parentId);
+  const cloned = walk(source, source.parentId);
+  remintPrefabInstanceIdsInPlace(cloned);
+  return cloned;
+}
+
+function remintPrefabInstanceIdsInPlace(root: SceneNodeData): void {
+  const remapped = new Map<string, string>();
+  const visit = (node: SceneNodeData): void => {
+    if (node.prefab) {
+      let nextId = remapped.get(node.prefab.instanceId);
+      if (nextId === undefined) {
+        nextId = createId("pinst");
+        remapped.set(node.prefab.instanceId, nextId);
+      }
+      node.prefab = { ...node.prefab, instanceId: nextId };
+    }
+    for (const child of node.children) {
+      visit(child);
+    }
+  };
+  visit(root);
 }
 
 /** Container-like node: Transform2D only (grouping). */

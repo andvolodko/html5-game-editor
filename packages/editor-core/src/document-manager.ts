@@ -9,6 +9,7 @@ import {
   insertNodeInScene,
   moveNodeInScene,
   detachNodeFromScene,
+  getNodeLocation,
   type ComponentData,
   type Model3DComponentData,
   type SceneData,
@@ -18,9 +19,18 @@ import {
   type Transform2DComponentData,
   type Transform3DComponentData,
   type VisualComponentData,
+  type PrefabInstanceLink,
+  type PrefabOverride,
 } from "@game-editor/scene";
 
 export type DocumentDirtyState = "clean" | "dirty" | "saving" | "save-error";
+
+export interface DocumentContentSnapshot {
+  scene: SceneData;
+  savedSnapshot: string;
+  dirtyState: DocumentDirtyState;
+  saveError: string | undefined;
+}
 
 /** True when leaving/reloading the document would discard unpersisted edits. */
 export function hasUnsavedChanges(state: DocumentDirtyState): boolean {
@@ -88,6 +98,24 @@ export class DocumentManager {
     };
   }
 
+  captureSnapshot(): DocumentContentSnapshot {
+    return {
+      scene: JSON.parse(JSON.stringify(this.scene)) as SceneData,
+      savedSnapshot: this.savedSnapshot,
+      dirtyState: this.dirtyState,
+      saveError: this.saveError,
+    };
+  }
+
+  restoreSnapshot(snapshot: DocumentContentSnapshot): void {
+    this.scene = snapshot.scene;
+    this.savedSnapshot = snapshot.savedSnapshot;
+    this.dirtyState = snapshot.dirtyState;
+    this.saveError = snapshot.saveError;
+    this.revision += 1;
+    this.emit({ kind: "reload" });
+  }
+
   /** Replace the whole document (e.g. load). Marks clean. */
   replaceScene(scene: SceneData): void {
     this.scene = scene;
@@ -113,6 +141,55 @@ export class DocumentManager {
   ): void {
     insertNodeInScene(this.scene, node, parentId, index);
     this.afterContentMutation({ kind: "create", nodeId: node.id });
+  }
+
+  /**
+   * Replace a node object in-place (same parent/index). Used by unpack / prefab refresh.
+   * Emits destroy + create so the viewport rebuilds the subtree once.
+   */
+  replaceNodeSubtree(nodeId: string, next: SceneNodeData): void {
+    const location = getNodeLocation(this.scene, nodeId);
+    if (!location) {
+      throw new Error(`DocumentManager: unknown node ${nodeId}`);
+    }
+    detachNodeFromScene(this.scene, nodeId);
+    this.emit({ kind: "destroy", nodeId });
+    insertNodeInScene(this.scene, next, location.parentId, location.index);
+    this.afterContentMutation({ kind: "create", nodeId: next.id });
+  }
+
+  setPrefabLink(nodeId: string, prefab: PrefabInstanceLink | undefined): void {
+    const node = findNodeById(this.scene, nodeId);
+    if (!node) {
+      throw new Error(`DocumentManager: unknown node ${nodeId}`);
+    }
+    if (prefab === undefined) {
+      delete node.prefab;
+    } else {
+      node.prefab = prefab;
+    }
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "metadata",
+    });
+  }
+
+  setPrefabOverrides(nodeId: string, overrides: PrefabOverride[]): void {
+    const node = findNodeById(this.scene, nodeId);
+    if (!node?.prefab) {
+      throw new Error(`DocumentManager: node ${nodeId} is not a prefab instance`);
+    }
+    if (overrides.length === 0) {
+      delete node.prefab.overrides;
+    } else {
+      node.prefab.overrides = overrides;
+    }
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "metadata",
+    });
   }
 
   removeNode(nodeId: string): boolean {

@@ -230,6 +230,9 @@ function assetMetadataEquivalent(
       left.format === right.format
     );
   }
+  if (left.kind === "prefab" && right.kind === "prefab") {
+    return left.prefabId === right.prefabId;
+  }
   return false;
 }
 

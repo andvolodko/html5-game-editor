@@ -117,6 +117,7 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
           components: editor.components,
           projectId: editor.project.getActiveProjectId(),
           loadSceneById: async (sceneId) => resolvePreviewScene(editor, sceneId),
+          prefabs: editor.prefabs.getCatalog(),
           listScenes: async () => {
             const currentId = editor.getSceneFileId();
             const entries = await editor.listScenes();

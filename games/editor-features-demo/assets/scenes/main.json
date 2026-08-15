@@ -289,6 +289,318 @@
         }
       ],
       "children": []
+    },
+    {
+      "id": "node_prefab_inst_btn_play",
+      "name": "Button Play",
+      "prefab": {
+        "prefabAssetId": "asset_prefab_ui_button",
+        "instanceId": "pinst_btn_play",
+        "sourceNodeId": "node_prefab_ui_button_root",
+        "componentSources": {
+          "comp_inst_btn_play_t2d": "comp_prefab_ui_button_t2d"
+        },
+        "isRoot": true,
+        "overrides": [
+          {
+            "kind": "property",
+            "sourceNodeId": "node_prefab_ui_button_label",
+            "componentId": "comp_prefab_ui_button_text",
+            "propertyPath": "text",
+            "value": "Play"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_prefab_ui_button_root",
+            "componentId": "comp_prefab_ui_button_t2d",
+            "propertyPath": "position",
+            "value": {
+              "x": 80,
+              "y": 520
+            }
+          }
+        ]
+      },
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_inst_btn_play_t2d",
+          "position": {
+            "x": 80,
+            "y": 520
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_prefab_inst_btn_play_bg",
+          "name": "Background",
+          "parentId": "node_prefab_inst_btn_play",
+          "prefab": {
+            "prefabAssetId": "asset_prefab_ui_button",
+            "instanceId": "pinst_btn_play",
+            "sourceNodeId": "node_prefab_ui_button_sprite",
+            "componentSources": {
+              "comp_inst_btn_play_bg_t2d": "comp_prefab_ui_button_sprite_t2d",
+              "comp_inst_btn_play_bg_sprite": "comp_prefab_ui_button_sprite"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_inst_btn_play_bg_t2d",
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Sprite",
+              "id": "comp_inst_btn_play_bg_sprite",
+              "assetId": "asset_2b4a0046-3eed-402f-bf60-3c93d8cb1393",
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_prefab_inst_btn_play_label",
+          "name": "Label",
+          "parentId": "node_prefab_inst_btn_play",
+          "prefab": {
+            "prefabAssetId": "asset_prefab_ui_button",
+            "instanceId": "pinst_btn_play",
+            "sourceNodeId": "node_prefab_ui_button_label",
+            "componentSources": {
+              "comp_inst_btn_play_label_t2d": "comp_prefab_ui_button_label_t2d",
+              "comp_inst_btn_play_text": "comp_prefab_ui_button_text"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_inst_btn_play_label_t2d",
+              "position": {
+                "x": 6,
+                "y": 18
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_inst_btn_play_text",
+              "text": "Play",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 16,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": 16777215,
+                "fillAlpha": 1,
+                "align": "center",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": false,
+                "dropShadowColor": 0,
+                "dropShadowAlpha": 1,
+                "dropShadowBlur": 0,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "node_prefab_inst_btn_settings",
+      "name": "Button Settings",
+      "prefab": {
+        "prefabAssetId": "asset_prefab_ui_button",
+        "instanceId": "pinst_btn_settings",
+        "sourceNodeId": "node_prefab_ui_button_root",
+        "componentSources": {
+          "comp_inst_btn_settings_t2d": "comp_prefab_ui_button_t2d"
+        },
+        "isRoot": true,
+        "overrides": [
+          {
+            "kind": "property",
+            "sourceNodeId": "node_prefab_ui_button_label",
+            "componentId": "comp_prefab_ui_button_text",
+            "propertyPath": "text",
+            "value": "Settings"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_prefab_ui_button_root",
+            "componentId": "comp_prefab_ui_button_t2d",
+            "propertyPath": "position",
+            "value": {
+              "x": 280,
+              "y": 520
+            }
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_prefab_ui_button_sprite",
+            "componentId": "comp_prefab_ui_button_sprite",
+            "propertyPath": "tint",
+            "value": 16750848
+          }
+        ]
+      },
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_inst_btn_settings_t2d",
+          "position": {
+            "x": 280,
+            "y": 520
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_prefab_inst_btn_settings_bg",
+          "name": "Background",
+          "parentId": "node_prefab_inst_btn_settings",
+          "prefab": {
+            "prefabAssetId": "asset_prefab_ui_button",
+            "instanceId": "pinst_btn_settings",
+            "sourceNodeId": "node_prefab_ui_button_sprite",
+            "componentSources": {
+              "comp_inst_btn_settings_bg_t2d": "comp_prefab_ui_button_sprite_t2d",
+              "comp_inst_btn_settings_bg_sprite": "comp_prefab_ui_button_sprite"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_inst_btn_settings_bg_t2d",
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Sprite",
+              "id": "comp_inst_btn_settings_bg_sprite",
+              "assetId": "asset_2b4a0046-3eed-402f-bf60-3c93d8cb1393",
+              "width": 64,
+              "height": 64,
+              "tint": 16750848
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_prefab_inst_btn_settings_label",
+          "name": "Label",
+          "parentId": "node_prefab_inst_btn_settings",
+          "prefab": {
+            "prefabAssetId": "asset_prefab_ui_button",
+            "instanceId": "pinst_btn_settings",
+            "sourceNodeId": "node_prefab_ui_button_label",
+            "componentSources": {
+              "comp_inst_btn_settings_label_t2d": "comp_prefab_ui_button_label_t2d",
+              "comp_inst_btn_settings_text": "comp_prefab_ui_button_text"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_inst_btn_settings_label_t2d",
+              "position": {
+                "x": 6,
+                "y": 18
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_inst_btn_settings_text",
+              "text": "Settings",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 16,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": 16777215,
+                "fillAlpha": 1,
+                "align": "center",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": false,
+                "dropShadowColor": 0,
+                "dropShadowAlpha": 1,
+                "dropShadowBlur": 0,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
     }
   ]
 }

@@ -1,12 +1,16 @@
 import {
   AssetDatabase,
   computeAssetDatabaseRevision,
+  createPrefabAssetRecord,
   createStaticAssetResolver,
 } from "@game-editor/assets";
-import { createEmptyScene } from "@game-editor/scene";
+import { createEmptyScene, parsePrefabData, PREFAB_SCHEMA_VERSION } from "@game-editor/scene";
+import { createId } from "@game-editor/shared";
+import { DomainError } from "@game-editor/core";
 import type {
   AssetApiClient,
   ComponentCatalogApiClient,
+  PrefabApiClient,
   ProjectApiClient,
   SceneApiClient,
 } from "@game-editor/editor-core";
@@ -24,6 +28,7 @@ export interface DemoEditorClients {
   assetApi: AssetApiClient;
   projectApi: ProjectApiClient;
   componentCatalogApi: ComponentCatalogApiClient;
+  prefabApi: PrefabApiClient;
 }
 
 export interface CreateDemoEditorClientsOptions {
@@ -151,5 +156,35 @@ export function createDemoEditorClients(
     },
   };
 
-  return { sceneApi, assetApi, projectApi, componentCatalogApi };
+  const prefabApi: PrefabApiClient = {
+    async createPrefab(input) {
+      const prefab = parsePrefabData({
+        version: PREFAB_SCHEMA_VERSION,
+        id: createId("prefab"),
+        name: input.name.trim() || "Prefab",
+        root: input.root,
+      });
+      const path = store.allocatePrefabPath(prefab.name, input.destination);
+      const asset = createPrefabAssetRecord({
+        name: prefab.name,
+        path,
+        prefabId: prefab.id,
+      });
+      store.addPrefabAsset(asset, prefab);
+      resolver = resolverForActive();
+      return { asset, prefab };
+    },
+    async savePrefab(assetId, prefab) {
+      return store.savePrefab(assetId, prefab);
+    },
+    async loadPrefab(assetId) {
+      const prefab = store.getPrefab(assetId);
+      if (!prefab) {
+        throw new DomainError("PREFAB_NOT_FOUND", `Prefab asset not found: ${assetId}`);
+      }
+      return prefab;
+    },
+  };
+
+  return { sceneApi, assetApi, projectApi, componentCatalogApi, prefabApi };
 }

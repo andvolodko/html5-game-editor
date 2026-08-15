@@ -22,6 +22,8 @@ interface AssetRecord {
 
 Possible types: `texture`, `spritesheet`, `aseprite`, `model3d`, `audio`, `font`, `webfont`, `spine`, `environment`, `scene`, `prefab`.
 
+`prefab` records point at a `.prefab.json` document. Metadata stores `prefabId` (the document id). Scenes reference the catalogue `assetId`, never the file path. Rename/move keeps `assetId` stable.
+
 `aseprite` records point at the source `.aseprite` / `.ase` path. Derived PNG/JSON live under `.generated/` and are not catalogue entries. Scenes must store the Aseprite `assetId` (and optional tag `animation`), never a generated filesystem path.
 
 Asset IDs remain stable after rename, move, or folder restructuring. Scenes reference IDs. Path changes are handled by AssetDatabase.
@@ -64,6 +66,7 @@ GLB/GLTF          → Model3D component
 .aseprite / .ase  → Sprite (one frame) or AnimatedSprite (tags / multiple frames)
 .xml / .fnt + pages → BitmapText component
 TTF/OTF/WOFF/WOFF2 → Text component (webfont)
+Prefab             → instantiate prefab (one undo step)
 ```
 
 Drop coordinates must be converted from viewport coordinates into scene/world coordinates. Creating an object through drag-and-drop MUST use the command system so it can be undone.

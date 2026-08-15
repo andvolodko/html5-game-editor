@@ -13,6 +13,8 @@ import {
   flattenSubtree,
   findNodeById,
   moveNodeInScene,
+  resolveScenePrefabs,
+  type PrefabCatalog,
   type SceneData,
   type SceneNodeData,
   type SceneRenderStats,
@@ -61,6 +63,8 @@ export interface GameRuntimeOptions {
    * until `setChangeSceneHandler` is called.
    */
   services?: ScriptRuntimeServices;
+  /** Prefab documents keyed by catalogue assetId. */
+  prefabs?: PrefabCatalog;
 }
 
 /**
@@ -81,6 +85,7 @@ export class GameRuntime {
   private lastRenderPassMs = 0;
   private lastFrameDt = 0;
   private readonly spawnedNodeIds = new Set<string>();
+  private prefabs: PrefabCatalog;
   private performanceStats: ScriptPerformanceStats = {
     frameTimeMs: 0,
     fps: 0,
@@ -270,6 +275,11 @@ export class GameRuntime {
       },
     };
     this.scriptHost = new ScriptHost(options.components, services);
+    this.prefabs = options.prefabs ?? new Map();
+  }
+
+  setPrefabCatalog(prefabs: PrefabCatalog): void {
+    this.prefabs = prefabs;
   }
 
   getBus(): EventBus {
@@ -335,8 +345,12 @@ export class GameRuntime {
 
   loadScene(scene: SceneData): void {
     this.spawnedNodeIds.clear();
-    this.scene = scene;
-    const nodes = flattenNodes(scene);
+    const { scene: resolved, warnings } = resolveScenePrefabs(scene, this.prefabs);
+    for (const warning of warnings) {
+      console.warn(`[prefab] ${warning.message}`);
+    }
+    this.scene = resolved;
+    const nodes = flattenNodes(resolved);
     for (const registration of this.renderers.values()) {
       registration.renderer.clear();
       for (const node of nodes) {
@@ -346,7 +360,7 @@ export class GameRuntime {
         registration.renderer.createNode(node);
       }
     }
-    this.scriptHost.attachScene(scene);
+    this.scriptHost.attachScene(resolved);
   }
 
   getScene(): SceneData | undefined {

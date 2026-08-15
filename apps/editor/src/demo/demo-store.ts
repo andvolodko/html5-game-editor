@@ -1,17 +1,24 @@
 import { DomainError } from "@game-editor/core";
 import {
   parseAssetDatabase,
+  parseAssetRecord,
   type AssetDatabaseData,
+  type AssetRecord,
 } from "@game-editor/assets";
 import {
   parseProjectData,
   type ProjectData,
 } from "@game-editor/project";
-import { parseSceneData, type SceneData } from "@game-editor/scene";
+import {
+  parsePrefabData,
+  parseSceneData,
+  type PrefabData,
+  type SceneData,
+} from "@game-editor/scene";
 import { SCENES_FOLDER, isValidSceneFileId } from "@game-editor/editor-core";
 
 export const DEMO_STORAGE_KEY = "html5-game-editor.demo.v1";
-export const DEMO_STORAGE_SCHEMA_VERSION = 2;
+export const DEMO_STORAGE_SCHEMA_VERSION = 3;
 export const DEMO_UNAVAILABLE_CODE = "DEMO_UNAVAILABLE";
 export const DEFAULT_DEMO_PROJECT_ID = "editor-features-demo";
 
@@ -20,6 +27,8 @@ export interface DemoSnapshot {
   project: ProjectData;
   assets: AssetDatabaseData;
   scenes: Readonly<Record<string, SceneData>>;
+  /** Bundled prefab documents keyed by catalogue assetId. */
+  prefabs?: Readonly<Record<string, PrefabData>>;
 }
 
 export interface DemoProjectSummary {
@@ -38,10 +47,18 @@ export interface DemoStorage {
 interface DemoPersistedProject {
   project: unknown;
   scenes: Record<string, unknown>;
+  createdPrefabAssets?: unknown[];
+  prefabOverlays?: Record<string, unknown>;
 }
 
 interface DemoPersistedV2 {
   version: 2;
+  activeProjectId: string;
+  projects: Record<string, DemoPersistedProject>;
+}
+
+interface DemoPersistedV3 {
+  version: 3;
   activeProjectId: string;
   projects: Record<string, DemoPersistedProject>;
 }
@@ -54,9 +71,10 @@ interface DemoPersistedV1 {
 
 interface DemoProjectState {
   readonly projectId: string;
-  readonly assets: AssetDatabaseData;
+  assets: AssetDatabaseData;
   project: ProjectData;
   scenes: Map<string, SceneData>;
+  prefabs: Map<string, PrefabData>;
 }
 
 export function throwDemoUnavailable(action: string): never {
@@ -126,6 +144,7 @@ export class DemoProjectStore {
         assets: parseAssetDatabase(structuredClone(snapshot.assets)),
         project: structuredClone(snapshot.project),
         scenes: cloneSceneMap(snapshot.scenes),
+        prefabs: clonePrefabMap(snapshot.prefabs ?? {}),
       });
     }
     const restored = this.readPersisted();
@@ -138,6 +157,8 @@ export class DemoProjectStore {
         }
         state.project = overlay.project;
         state.scenes = cloneSceneMap(overlay.scenes);
+        mergeCreatedPrefabAssets(state, overlay.createdPrefabAssets);
+        applyPrefabOverlays(state, overlay.prefabOverlays);
       }
       if (this.states.has(restored.activeProjectId)) {
         this.activeId = restored.activeProjectId;
@@ -272,6 +293,48 @@ export class DemoProjectStore {
     this.persist();
   }
 
+  getPrefab(assetId: string): PrefabData | undefined {
+    const prefab = this.active().prefabs.get(assetId);
+    return prefab === undefined ? undefined : structuredClone(prefab);
+  }
+
+  savePrefab(assetId: string, prefab: PrefabData): PrefabData {
+    const parsed = parsePrefabData(prefab);
+    this.active().prefabs.set(assetId, parsed);
+    this.persist();
+    return structuredClone(parsed);
+  }
+
+  addPrefabAsset(asset: AssetRecord, prefab: PrefabData): void {
+    const state = this.active();
+    if (state.assets.assets.some((existing) => existing.id === asset.id)) {
+      throw new DomainError("ASSET_EXISTS", `Asset ${asset.id} already exists`);
+    }
+    state.assets = {
+      ...state.assets,
+      assets: [...state.assets.assets, asset],
+    };
+    state.prefabs.set(asset.id, parsePrefabData(prefab));
+    this.persist();
+  }
+
+  allocatePrefabPath(stem: string, destination?: string): string {
+    const sanitized = stem.trim().replace(/[^A-Za-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "");
+    const base = sanitized.length > 0 ? sanitized : "Prefab";
+    const folder =
+      destination && destination.length > 0
+        ? destination.replace(/\/$/, "")
+        : "assets/prefabs";
+    const used = new Set(this.active().assets.assets.map((asset) => asset.path));
+    let relative = `${folder}/${base}.prefab.json`;
+    let suffix = 2;
+    while (used.has(relative)) {
+      relative = `${folder}/${base}-${String(suffix)}.prefab.json`;
+      suffix += 1;
+    }
+    return relative;
+  }
+
   private active(): DemoProjectState {
     const state = this.states.get(this.activeId);
     if (!state) {
@@ -290,14 +353,18 @@ export class DemoProjectStore {
     if (!this.storage) {
       return;
     }
-    const projects: DemoPersistedV2["projects"] = {};
+    const projects: DemoPersistedV3["projects"] = {};
     for (const state of this.states.values()) {
       projects[state.projectId] = {
         project: state.project,
         scenes: Object.fromEntries(state.scenes),
+        createdPrefabAssets: state.assets.assets.filter(
+          (asset) => asset.type === "prefab",
+        ),
+        prefabOverlays: Object.fromEntries(state.prefabs),
       };
     }
-    const payload: DemoPersistedV2 = {
+    const payload: DemoPersistedV3 = {
       version: DEMO_STORAGE_SCHEMA_VERSION,
       activeProjectId: this.activeId,
       projects,
@@ -306,7 +373,18 @@ export class DemoProjectStore {
   }
 
   private readPersisted():
-    | { activeProjectId: string; projects: Record<string, { project: ProjectData; scenes: Record<string, SceneData> }> }
+    | {
+        activeProjectId: string;
+        projects: Record<
+          string,
+          {
+            project: ProjectData;
+            scenes: Record<string, SceneData>;
+            createdPrefabAssets?: AssetRecord[];
+            prefabOverlays?: Record<string, PrefabData>;
+          }
+        >;
+      }
     | undefined {
     if (!this.storage) {
       return undefined;
@@ -316,7 +394,7 @@ export class DemoProjectStore {
       return undefined;
     }
     try {
-      const parsed = JSON.parse(raw) as DemoPersistedV1 | DemoPersistedV2;
+      const parsed = JSON.parse(raw) as DemoPersistedV1 | DemoPersistedV2 | DemoPersistedV3;
       if (parsed.version === 1) {
         const scenes = parsePersistedScenes(parsed.scenes);
         if (Object.keys(scenes).length === 0) {
@@ -332,11 +410,18 @@ export class DemoProjectStore {
           },
         };
       }
-      if (parsed.version !== DEMO_STORAGE_SCHEMA_VERSION) {
+      if (parsed.version !== 2 && parsed.version !== 3) {
         return undefined;
       }
-      const projects: Record<string, { project: ProjectData; scenes: Record<string, SceneData> }> =
-        {};
+      const projects: Record<
+        string,
+        {
+          project: ProjectData;
+          scenes: Record<string, SceneData>;
+          createdPrefabAssets?: AssetRecord[];
+          prefabOverlays?: Record<string, PrefabData>;
+        }
+      > = {};
       for (const [id, overlay] of Object.entries(parsed.projects)) {
         const scenes = parsePersistedScenes(overlay.scenes);
         if (Object.keys(scenes).length === 0) {
@@ -345,6 +430,8 @@ export class DemoProjectStore {
         projects[id] = {
           project: parseProjectData(overlay.project),
           scenes,
+          createdPrefabAssets: parsePersistedPrefabAssets(overlay.createdPrefabAssets),
+          prefabOverlays: parsePersistedPrefabs(overlay.prefabOverlays),
         };
       }
       if (Object.keys(projects).length === 0) {
@@ -355,4 +442,76 @@ export class DemoProjectStore {
       return undefined;
     }
   }
+}
+
+function clonePrefabMap(
+  prefabs: Readonly<Record<string, PrefabData>>,
+): Map<string, PrefabData> {
+  return new Map(
+    Object.entries(prefabs).map(([id, prefab]) => [id, structuredClone(prefab)]),
+  );
+}
+
+function mergeCreatedPrefabAssets(
+  state: DemoProjectState,
+  created: readonly AssetRecord[] | undefined,
+): void {
+  if (created === undefined || created.length === 0) {
+    return;
+  }
+  const existing = new Set(state.assets.assets.map((asset) => asset.id));
+  const extra = created.filter((asset) => !existing.has(asset.id));
+  if (extra.length === 0) {
+    return;
+  }
+  state.assets = {
+    ...state.assets,
+    assets: [...state.assets.assets, ...extra],
+  };
+}
+
+function applyPrefabOverlays(
+  state: DemoProjectState,
+  overlays: Readonly<Record<string, PrefabData>> | undefined,
+): void {
+  if (overlays === undefined) {
+    return;
+  }
+  for (const [assetId, prefab] of Object.entries(overlays)) {
+    state.prefabs.set(assetId, structuredClone(prefab));
+  }
+}
+
+function parsePersistedPrefabAssets(
+  raw: unknown[] | undefined,
+): AssetRecord[] | undefined {
+  if (raw === undefined) {
+    return undefined;
+  }
+  const assets: AssetRecord[] = [];
+  for (const entry of raw) {
+    try {
+      assets.push(parseAssetRecord(entry));
+    } catch {
+      // Skip invalid overlay records.
+    }
+  }
+  return assets;
+}
+
+function parsePersistedPrefabs(
+  raw: Record<string, unknown> | undefined,
+): Record<string, PrefabData> | undefined {
+  if (raw === undefined) {
+    return undefined;
+  }
+  const prefabs: Record<string, PrefabData> = {};
+  for (const [id, value] of Object.entries(raw)) {
+    try {
+      prefabs[id] = parsePrefabData(value);
+    } catch {
+      // Skip invalid overlay documents.
+    }
+  }
+  return prefabs;
 }

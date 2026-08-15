@@ -503,7 +503,11 @@ export {
 
 } from "./node-ops.js";
 
-export { collectReferencedAssetIds } from "./asset-refs.js";
+export {
+  collectReferencedAssetIds,
+  collectNodeReferencedAssetIds,
+  collectPrefabDocumentAssetIds,
+} from "./asset-refs.js";
 
 export {
   IDENTITY_POSITION_2D,
@@ -557,5 +561,77 @@ export {
   DEFAULT_AMBIENT_LIGHT_COLOR,
   DEFAULT_AMBIENT_LIGHT_INTENSITY,
 } from "./defaults.js";
+
+export type {
+  PrefabPropertyOverride,
+  PrefabNameOverride,
+  PrefabLayerOverride,
+  PrefabOverride,
+  PrefabInstanceLink,
+  PrefabData,
+  PrefabCatalog,
+  PrefabResolveWarningCode,
+  PrefabResolveWarning,
+  PrefabResolveResult,
+  InstantiatePrefabOptions,
+  InstantiatePrefabResult,
+  CreatePrefabFromSubtreeResult,
+} from "./prefab/index.js";
+export {
+  PREFAB_SCHEMA_VERSION,
+  PREFAB_MAX_NESTING_DEPTH,
+  prefabPropertyOverrideSchema,
+  prefabNameOverrideSchema,
+  prefabLayerOverrideSchema,
+  prefabOverrideSchema,
+  prefabInstanceLinkSchema,
+  prefabDataSchema,
+  parsePrefabData,
+  isCurrentPrefabSchemaVersion,
+  serializePrefabData,
+  cloneSerializableNode,
+  remintPrefabInstanceIds,
+  cloneComponentWithNewId,
+  createPrefabInstanceLink,
+  getPrefabLink,
+  isPrefabInstanceRoot,
+  isInheritedPrefabNode,
+  isLocalPrefabChild,
+  findPrefabInstanceRoot,
+  getPrefabInstanceOverrides,
+  sourceComponentIdFor,
+  sceneComponentIdForSource,
+  collectPrefabInstanceNodes,
+  findInstanceNodeBySourceId,
+  collectPrefabAssetIdsFromNodes,
+  sortPrefabOverrides,
+  findPropertyOverride,
+  isPropertyOverridden,
+  upsertPrefabOverride,
+  removePrefabOverride,
+  applyPropertyOverrideToComponent,
+  revertPropertyOnComponent,
+  computePrefabOverrides,
+  applyOverridesToInstance,
+  applySourceValueToPrefabNode,
+  applyNameOrLayerToPrefabNode,
+  findPrefabSourceNode,
+  instantiatePrefab,
+  instantiateFromSource,
+  resolvePrefabInstance,
+  resolveScenePrefabs,
+  instantiatePrefabResolved,
+  applyOverridesToPrefabAsset,
+  createEmptyPrefabId,
+  expandPrefabSourceTree,
+  unpackPrefabInstance,
+  createPrefabFromSubtree,
+  getValueAtPath,
+  setValueAtPath,
+  deleteValueAtPath,
+  collectChangedPropertyPaths,
+  prefabValuesEqual,
+  cloneJson,
+} from "./prefab/index.js";
 
 

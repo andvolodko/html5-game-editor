@@ -1,6 +1,7 @@
 import {
   compactTextStyleFill,
   DEFAULT_TEXT_FILL,
+  findNodeById,
   TEXT_ALIGN_OPTIONS,
   TEXT_BASELINE_OPTIONS,
   TEXT_FONT_STYLE_OPTIONS,
@@ -12,6 +13,7 @@ import {
   type TextStyleData,
   type VisualComponentData,
 } from "@game-editor/scene";
+import { isInspectorPropertyOverridden } from "../prefab-override-flag";
 import {
   AssetSelectField,
   BooleanField,
@@ -78,19 +80,27 @@ function FillStopsField({
 export function TextStyleFields({
   visual,
   commit,
+  nodeId,
 }: {
   visual: StyledTextVisual;
   commit: VisualCommit;
+  nodeId: string;
 }) {
   const patchStyle = (partial: Partial<TextStyleData>) =>
     commit({ style: { ...visual.style, ...partial } });
   const editor = useEditor();
+  const scene = editor.getScene();
+  const node = findNodeById(scene, nodeId);
 
   return (
     <>
       <TextAreaField
         label="Text"
         value={visual.text}
+        overridden={
+          node !== undefined &&
+          isInspectorPropertyOverridden(scene, node, visual.id, "text")
+        }
         onCommit={(text) => commit({ text })}
       />
       <AssetSelectField

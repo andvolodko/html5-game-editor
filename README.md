@@ -10,7 +10,7 @@ PixiJS handles 2D. Three.js handles 3D. React is the editor shell. Games build i
 
 Playable standalone builds of every game are on the same site: **[demo games](https://andvolodko.github.io/html5-game-editor/games/)** ([Editor Features Demo](https://andvolodko.github.io/html5-game-editor/games/editor-features-demo/), [Example Game 2](https://andvolodko.github.io/html5-game-editor/games/example-game-2/), [MU Online](https://andvolodko.github.io/html5-game-editor/games/muonline-game/), [Solitaire](https://andvolodko.github.io/html5-game-editor/games/solitaire/)).
 
-> Status: active development. The foundation through hybrid rendering, assets, undo/redo, and playable demo games is in place. Collaboration, prefabs, and advanced tooling are still ahead.
+> Status: active development. The foundation through hybrid rendering, assets, undo/redo, prefabs, and playable demo games is in place. Collaboration and advanced tooling are still ahead.
 
 ---
 
@@ -381,7 +381,7 @@ The architecture described in [`PROJECT.md`](./PROJECT.md) and [`docs/`](./docs/
 
 ### Editor & content pipeline
 
-- **Prefabs** — reusable node subgraphs with instance overrides
+- **Prefab variants & structural overrides** — property overrides, unpack, and nested resolution are in; variants and delete/reparent of inherited children are not
 - **Spritesheet / atlas generation** — Aseprite/LibreSprite compile is in; still needed: pack loose PNGs and a BitmapText font importer
 - **Timeline & animation** — clip editing for Spine, AnimatedSprite, and glTF animations
 - **Particles, masks, filters** — Pixi ParticleContainer is deferred; masks/filters are still design-only

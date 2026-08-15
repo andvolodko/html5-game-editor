@@ -6679,6 +6679,26 @@
         "mimeType": "font/otf",
         "format": "otf"
       }
+    },
+    {
+      "id": "asset_prefab_ui_button",
+      "type": "prefab",
+      "name": "UI Button",
+      "path": "assets/prefabs/ui-button.prefab.json",
+      "metadata": {
+        "kind": "prefab",
+        "prefabId": "prefab_ui_button"
+      }
+    },
+    {
+      "id": "asset_prefab_character",
+      "type": "prefab",
+      "name": "Character",
+      "path": "assets/prefabs/character.prefab.json",
+      "metadata": {
+        "kind": "prefab",
+        "prefabId": "prefab_character"
+      }
     }
   ]
 }

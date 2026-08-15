@@ -11,6 +11,7 @@ Orientation: [`PROJECT.md`](../PROJECT.md). Asset pipeline: [`assets.md`](./asse
 * project filesystem;
 * asset import, deletion, move, rename;
 * scene loading/saving;
+* prefab create/load/save (`POST /prefabs`, `GET|PUT /prefabs/:assetId`);
 * asset processing;
 * spritesheet generation;
 * Aseprite / LibreSprite compile (editor-only CLI);

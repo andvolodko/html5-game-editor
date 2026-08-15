@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { createEmptyScene, getModel3D, getSpine, getSprite, getAnimatedSprite, getBitmapText, getText, getTransform3D, findNodeById } from "@game-editor/scene";
+import { createEmptyScene, createSpriteNode, getModel3D, getSpine, getSprite, getAnimatedSprite, getBitmapText, getText, getTransform3D, findNodeById, PREFAB_SCHEMA_VERSION } from "@game-editor/scene";
 import {
   createAudioAssetRecord,
   createGltfAssetRecord,
@@ -8,6 +8,7 @@ import {
   createAsepriteAssetRecord,
   createBitmapFontAssetRecord,
   createWebFontAssetRecord,
+  createPrefabAssetRecord,
   type AssetDatabaseData,
 } from "@game-editor/assets";
 import {
@@ -158,6 +159,31 @@ describe("asset workflows", () => {
     expect(getSprite(node!)?.assetId).toBe("asset_icon");
     expect(getSprite(node!)?.width).toBe(16);
     expect(getSprite(node!)?.height).toBe(16);
+  });
+
+  it("dropAssetOntoScene instantiates a prefab from the catalog", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const prefabRoot = createSpriteNode("Icon", { x: 0, y: 0 }, {
+      assetId: "asset_tex",
+    });
+    editor.prefabs.set("asset_prefab", {
+      version: PREFAB_SCHEMA_VERSION,
+      id: "prefab_icon",
+      name: "Icon",
+      root: prefabRoot,
+    });
+    editor.assets.getDatabase().add(
+      createPrefabAssetRecord({
+        id: "asset_prefab",
+        name: "Icon",
+        path: "assets/prefabs/icon.prefab.json",
+        prefabId: "prefab_icon",
+      }),
+    );
+    const nodeId = dropAssetOntoScene(editor, "asset_prefab", { x: 12, y: 24 });
+    const node = findNodeById(editor.getScene(), nodeId);
+    expect(node?.prefab?.prefabAssetId).toBe("asset_prefab");
+    expect(node?.prefab?.isRoot).toBe(true);
   });
 
   it("dropAssetOntoScene rejects audio assets", () => {

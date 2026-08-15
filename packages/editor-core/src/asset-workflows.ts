@@ -2,6 +2,7 @@ import { isSpineImportFile, isBitmapFontImportFile, isSupportedAsepriteFile, isS
 import type { Vec2 } from "@game-editor/scene";
 import { isScenesFolderOrDescendant } from "./asset-browser-model.js";
 import type { Editor } from "./editor.js";
+import { InstantiatePrefabCommand } from "./commands/instantiate-prefab-command.js";
 
 export interface ImportDroppedFilesResult {
   importedCount: number;
@@ -90,6 +91,20 @@ export function dropAssetOntoScene(
   }
   if (asset?.type === "audio") {
     throw new Error("Audio assets cannot be dropped onto the scene yet");
+  }
+  if (asset?.type === "prefab") {
+    const prefab = editor.prefabs.get(assetId);
+    if (!prefab) {
+      throw new Error(`Prefab asset ${assetId} is not loaded yet`);
+    }
+    const command = new InstantiatePrefabCommand(editor.document, editor.selection, {
+      prefab,
+      prefabAssetId: assetId,
+      position2D: position,
+      catalog: editor.prefabs.getCatalog(),
+    });
+    editor.execute(command);
+    return command.createdNodeId;
   }
   return editor.createSpriteFromAsset(assetId, position);
 }

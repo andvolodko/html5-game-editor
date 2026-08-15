@@ -9,6 +9,7 @@ export const assetTypeSchema = z.enum([
   "aseprite",
   "font",
   "webfont",
+  "prefab",
 ]);
 
 export const textureAssetMetadataSchema = z.object({
@@ -75,6 +76,11 @@ export const webFontAssetMetadataSchema = z.object({
   format: z.enum(["ttf", "otf", "woff", "woff2"]),
 });
 
+export const prefabAssetMetadataSchema = z.object({
+  kind: z.literal("prefab"),
+  prefabId: z.string().min(1),
+});
+
 export const assetMetadataSchema = z.discriminatedUnion("kind", [
   textureAssetMetadataSchema,
   spineAssetMetadataSchema,
@@ -83,6 +89,7 @@ export const assetMetadataSchema = z.discriminatedUnion("kind", [
   asepriteAssetMetadataSchema,
   bitmapFontAssetMetadataSchema,
   webFontAssetMetadataSchema,
+  prefabAssetMetadataSchema,
 ]);
 
 const assetRecordObjectSchema = z.object({

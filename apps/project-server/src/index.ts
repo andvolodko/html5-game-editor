@@ -23,6 +23,7 @@ import { AssetFolderService } from "./services/asset-folder-service.js";
 import { AssetMutationService } from "./services/asset-mutation-service.js";
 import { AssetSyncService } from "./services/asset-sync-service.js";
 import { ComponentCatalogService } from "./services/component-catalog-service.js";
+import { PrefabFileService } from "./services/prefab-file-service.js";
 import { createRouter } from "./http/router.js";
 import { sendNoContent } from "./http/responses.js";
 import { DEFAULT_PROJECT_SERVER_PORT } from "@game-editor/shared";
@@ -81,6 +82,10 @@ const assetSyncService = new AssetSyncService(
   asepriteCompileService,
 );
 const componentCatalogService = new ComponentCatalogService(projectService);
+const prefabFileService = new PrefabFileService(
+  projectService,
+  assetDatabaseStore,
+);
 
 const router = createRouter({
   projectService,
@@ -93,6 +98,7 @@ const router = createRouter({
   assetSyncService,
   projectCatalogService,
   componentCatalogService,
+  prefabFileService,
 });
 
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {

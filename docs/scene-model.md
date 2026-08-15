@@ -124,15 +124,46 @@ Scene JSON should be deterministic and human-diff-friendly. Avoid unnecessary pr
 
 ## Prefabs
 
-Architecture must allow prefabs later. A prefab is a reusable serialized node hierarchy:
+A prefab is a versioned, engine-neutral document whose `root` reuses the same serializable node/component types as scenes:
 
-```text
-prefabs/
-├── spin-button.prefab.json
-├── paytable.prefab.json
-└── character.prefab.json
+```ts
+interface PrefabData {
+  version: number; // PREFAB_SCHEMA_VERSION
+  id: string;      // prefab_…
+  name: string;
+  root: SceneNodeData;
+}
 ```
 
-Prefab design should eventually support instances, overrides, and nested prefabs. Do not implement complex prefab inheritance in MVP unless explicitly requested.
+Catalogue records use `type: "prefab"` and a stable `assetId`. Scene instances never store filesystem paths.
+
+Instance metadata lives on `SceneNodeData.prefab` (optional; existing scenes stay valid):
+
+```ts
+interface PrefabInstanceLink {
+  prefabAssetId: string;
+  instanceId: string;
+  sourceNodeId: string;
+  componentSources: Record<string, string>; // scene comp id → source comp id
+  isRoot?: boolean;
+  overrides?: PrefabOverride[];
+}
+```
+
+Prefab source node IDs and scene instance node IDs are distinct. Mapping is via `sourceNodeId` + `componentSources`.
+
+Resolution (`resolveScenePrefabs` / `resolvePrefabInstance` in `packages/scene/src/prefab/`) is a pure domain step:
+
+```text
+Serialized scene + prefab catalog
+        ↓
+Resolved scene graph
+        ↓
+Runtime / renderer adapters
+```
+
+Pixi and Three adapters must not inspect prefab metadata. Missing prefabs keep the last-known baked tree and emit a warning. Nested prefabs resolve with cycle/depth guards.
+
+**MVP limitation:** inherited prefab children cannot be deleted, duplicated, or reparented. Add local children, or Unpack first. Property overrides, Apply/Revert, and regular Unpack are supported.
 
 Script component class instances and functions must never be persisted in scene JSON. See `.cursor/skills/create-game-component/SKILL.md`.

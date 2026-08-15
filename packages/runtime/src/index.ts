@@ -17,6 +17,8 @@ export type {
 export {
   resolveGameProject,
   sceneModulesById,
+  prefabModulesByPath,
+  buildPrefabCatalog,
 } from "./load-game-project.js";
 export { GameScreenHost } from "./game-screen-host.js";
 export { bindPlaybackOverlayPointer } from "./playback-overlay-pointer.js";

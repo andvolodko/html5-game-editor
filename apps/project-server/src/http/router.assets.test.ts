@@ -19,6 +19,7 @@ import { AssetImportService } from "../services/asset-import-service.js";
 import { AssetFolderService } from "../services/asset-folder-service.js";
 import { AssetMutationService } from "../services/asset-mutation-service.js";
 import { AssetSyncService } from "../services/asset-sync-service.js";
+import { PrefabFileService } from "../services/prefab-file-service.js";
 import { createRouter } from "./router.js";
 
 function tinyPng(): Buffer {
@@ -85,6 +86,10 @@ describe("assets HTTP routes", () => {
       registry,
     );
     const sceneFileService = new SceneFileService(projectService);
+    const prefabFileService = new PrefabFileService(
+      projectService,
+      assetDatabaseStore,
+    );
     const router = createRouter({
       projectService,
       sceneFileService,
@@ -101,6 +106,7 @@ describe("assets HTTP routes", () => {
         assetFolderService,
       ),
       assetSyncService,
+      prefabFileService,
     });
 
     server = createServer((req: IncomingMessage, res: ServerResponse) => {

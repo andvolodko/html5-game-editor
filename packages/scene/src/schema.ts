@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { SCENE_SCHEMA_VERSION, type SceneData, type SceneNodeData } from "./types.js";
 import { withSceneParseDefaults } from "./scene-parse-defaults.js";
+import { prefabInstanceLinkSchema } from "./prefab/link-schema.js";
 import {
   TEXT_ALIGN_OPTIONS,
   TEXT_BASELINE_OPTIONS,
@@ -338,6 +339,7 @@ export const sceneNodeSchema: z.ZodType<SceneNodeData> = z.lazy(() =>
     name: z.string().min(1),
     parentId: z.string().min(1).optional(),
     layer: z.enum(["background", "foreground"]).optional(),
+    prefab: prefabInstanceLinkSchema.optional(),
     components: z.array(componentSchema),
     children: z.array(sceneNodeSchema),
   }),
