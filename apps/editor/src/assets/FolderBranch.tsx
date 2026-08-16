@@ -2,6 +2,7 @@ import {
   isScenesFolder,
   isScenesFolderOrDescendant,
 } from "@game-editor/editor-core";
+import { MOUSE_BUTTON_PRIMARY } from "@game-editor/shared";
 import { AssetRow } from "./AssetRow";
 import { InlineRename } from "./InlineRename";
 import { SceneRow } from "./SceneRow";
@@ -38,8 +39,7 @@ export function FolderBranch(props: FolderBranchProps) {
   } = props;
   const expanded = model.expanded.has(path);
   const entries = model.entriesForFolder(path);
-  const selected =
-    model.selection?.kind === "folder" && model.selection.path === path;
+  const selected = model.isSelected({ kind: "folder", path });
   const renaming =
     model.renaming?.kind === "folder" && model.renaming.path === path;
   const isDropTarget = dropFolder === path;
@@ -59,7 +59,12 @@ export function FolderBranch(props: FolderBranchProps) {
           .join(" ")}
         style={{ paddingLeft: treeIndentPadding(depth) }}
         data-folder-path={path}
-        onClick={() => model.setSelection({ kind: "folder", path })}
+        onPointerDown={(event) => {
+          if (event.button !== MOUSE_BUTTON_PRIMARY) {
+            return;
+          }
+          model.selectItem({ kind: "folder", path }, event);
+        }}
         onContextMenu={(event) => onContextMenu(event, path)}
         onDragOver={(event) => {
           if (!acceptsDrops) {
@@ -89,6 +94,7 @@ export function FolderBranch(props: FolderBranchProps) {
           type="button"
           className="hierarchy-expand"
           aria-label={expanded ? "Collapse" : "Expand"}
+          onPointerDown={(event) => event.stopPropagation()}
           onClick={(event) => {
             event.stopPropagation();
             model.toggleExpanded(path);
@@ -140,16 +146,13 @@ export function FolderBranch(props: FolderBranchProps) {
                   id={entry.id}
                   depth={depth + 1}
                   active={model.activeSceneId === entry.id}
-                  selected={
-                    model.selection?.kind === "scene" &&
-                    model.selection.id === entry.id
-                  }
+                  selected={model.isSelected({ kind: "scene", id: entry.id })}
                   renaming={
                     model.renaming?.kind === "scene" &&
                     model.renaming.id === entry.id
                   }
-                  onSelect={() =>
-                    model.setSelection({ kind: "scene", id: entry.id })
+                  onSelect={(event) =>
+                    model.selectItem({ kind: "scene", id: entry.id }, event)
                   }
                   onOpen={() => {
                     void model.openScene(entry.id);
@@ -167,10 +170,10 @@ export function FolderBranch(props: FolderBranchProps) {
                 key={entry.asset.id}
                 asset={entry.asset}
                 depth={depth + 1}
-                selected={
-                  model.selection?.kind === "asset" &&
-                  model.selection.id === entry.asset.id
-                }
+                selected={model.isSelected({
+                  kind: "asset",
+                  id: entry.asset.id,
+                })}
                 renaming={
                   model.renaming?.kind === "asset" &&
                   model.renaming.id === entry.asset.id
@@ -178,9 +181,10 @@ export function FolderBranch(props: FolderBranchProps) {
                 previewUrl={model.contentUrl(entry.asset)}
                 dropTarget={false}
                 editing={model.openPrefabAssetId === entry.asset.id}
-                onSelect={() =>
-                  model.setSelection({ kind: "asset", id: entry.asset.id })
+                onSelect={(event) =>
+                  model.selectItem({ kind: "asset", id: entry.asset.id }, event)
                 }
+                getDragAssetIds={model.assetIdsForDrag}
                 onActivate={
                   entry.asset.type === "prefab"
                     ? () => {

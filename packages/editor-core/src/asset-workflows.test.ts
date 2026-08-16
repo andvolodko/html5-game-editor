@@ -22,8 +22,16 @@ import {
 describe("asset workflows", () => {
   it("encodes and decodes drag payloads", () => {
     const raw = encodeAssetDragPayload({ assetId: "asset_1" });
-    expect(decodeAssetDragPayload(raw)).toEqual({ assetId: "asset_1" });
+    expect(decodeAssetDragPayload(raw)).toEqual({
+      assetId: "asset_1",
+      assetIds: ["asset_1"],
+    });
     expect(decodeAssetDragPayload("not-json")).toBeUndefined();
+    expect(
+      decodeAssetDragPayload(
+        JSON.stringify({ assetId: "asset_1", assetIds: ["asset_1", "asset_2"] }),
+      ),
+    ).toEqual({ assetId: "asset_1", assetIds: ["asset_1", "asset_2"] });
   });
 
   it("dropAssetOntoScene creates a sprite via command with texture size override", () => {

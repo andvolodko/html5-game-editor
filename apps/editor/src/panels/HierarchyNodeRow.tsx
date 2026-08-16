@@ -9,7 +9,7 @@ export interface HierarchyNodeRowProps {
   depth: number;
   expanded: ReadonlySet<string>;
   selectedIds: readonly string[];
-  draggingId: string | undefined;
+  draggingIds: readonly string[];
   dropIndicator: HierarchyDropIndicator;
   renamingId: string | undefined;
   onToggle: (nodeId: string) => void;
@@ -27,7 +27,7 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
     depth,
     expanded,
     selectedIds,
-    draggingId,
+    draggingIds,
     dropIndicator,
     renamingId,
     onToggle,
@@ -72,7 +72,7 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
         className={[
           "hierarchy-row",
           isSelected ? "selected" : "",
-          draggingId === node.id ? "dragging" : "",
+          draggingIds.includes(node.id) ? "dragging" : "",
           indicatorClass,
         ]
           .filter(Boolean)
@@ -91,7 +91,7 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
             return;
           }
           onSelect(node.id, event);
-          if (event.ctrlKey || event.metaKey) {
+          if (event.ctrlKey || event.metaKey || event.shiftKey) {
             return;
           }
           onDragStart(node.id, event.clientX, event.clientY);
@@ -157,7 +157,7 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
               depth={depth + 1}
               expanded={expanded}
               selectedIds={selectedIds}
-              draggingId={draggingId}
+              draggingIds={draggingIds}
               dropIndicator={dropIndicator}
               renamingId={renamingId}
               onToggle={onToggle}

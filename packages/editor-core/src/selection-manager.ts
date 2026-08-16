@@ -1,3 +1,8 @@
+import {
+  applyListSelection,
+  type ListSelectionModifiers,
+} from "./list-selection.js";
+
 type Listener = () => void;
 
 /**
@@ -16,6 +21,8 @@ export type EditorSelection =
 export class SelectionManager {
   private selectedNodeIds: string[] = [];
   private sceneSelected = false;
+  /** Shift-range origin (last non-shift click / toggle). */
+  private anchorNodeId: string | undefined;
   private readonly listeners = new Set<Listener>();
 
   getSelection(): EditorSelection {
@@ -48,12 +55,35 @@ export class SelectionManager {
     }
     this.sceneSelected = true;
     this.selectedNodeIds = [];
+    this.anchorNodeId = undefined;
     this.emit();
   }
 
   setSelection(nodeIds: readonly string[]): void {
     this.sceneSelected = false;
     this.selectedNodeIds = [...nodeIds];
+    this.anchorNodeId = nodeIds[nodeIds.length - 1];
+    this.emit();
+  }
+
+  /**
+   * Hierarchy / viewport list click: Shift range, Ctrl toggle, Ctrl+Shift add range.
+   */
+  applyVisibleListClick(
+    orderedVisibleIds: readonly string[],
+    clickedId: string,
+    modifiers: ListSelectionModifiers,
+  ): void {
+    const next = applyListSelection(
+      orderedVisibleIds,
+      this.selectedNodeIds,
+      clickedId,
+      modifiers,
+      this.anchorNodeId,
+    );
+    this.sceneSelected = false;
+    this.selectedNodeIds = next.selected;
+    this.anchorNodeId = next.anchor;
     this.emit();
   }
 
@@ -66,6 +96,7 @@ export class SelectionManager {
     } else {
       this.selectedNodeIds = [...this.selectedNodeIds, nodeId];
     }
+    this.anchorNodeId = nodeId;
     this.emit();
   }
 
@@ -90,6 +121,7 @@ export class SelectionManager {
     }
     this.sceneSelected = false;
     this.selectedNodeIds = [];
+    this.anchorNodeId = undefined;
     this.emit();
   }
 

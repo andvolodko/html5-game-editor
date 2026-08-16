@@ -2,9 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import {
   ASSETS_ROOT_FOLDER,
   collectDroppedFiles,
+  assetIdsFromDragPayload,
   decodeAssetDragPayload,
   droppedFolderPaths,
   EDITOR_ASSET_MIME,
+  isFolderOrDescendant,
+  parentFolder,
+  rootMostFolderPaths,
   importDroppedFiles,
   isChordLetter,
   isScenesFolder,
@@ -25,8 +29,8 @@ const ASSET_CATALOGUE_POLL_MS = 2500;
 
 /** Catalogue copy buffer for Assets panel Ctrl+C / Ctrl+V. */
 type CatalogueClipboard =
-  | { kind: "asset"; id: string }
-  | { kind: "scene"; id: string };
+  | { kind: "assets"; ids: readonly string[] }
+  | { kind: "scenes"; ids: readonly string[] };
 
 function isTextEditingTarget(target: EventTarget | null): boolean {
   return (
@@ -72,23 +76,33 @@ export function AssetsPanel() {
 
       const mod = event.ctrlKey || event.metaKey;
       if (mod && isChordLetter(event, "KeyC", "c") && !event.shiftKey && !event.altKey) {
-        if (model.selection?.kind === "asset") {
+        const assetIds = model.selectedItems
+          .filter((item) => item.kind === "asset")
+          .map((item) => item.id);
+        const sceneIds = model.selectedItems
+          .filter((item) => item.kind === "scene")
+          .map((item) => item.id);
+        if (assetIds.length > 0) {
           event.preventDefault();
-          copiedCatalogueRef.current = { kind: "asset", id: model.selection.id };
-        } else if (model.selection?.kind === "scene") {
+          copiedCatalogueRef.current = { kind: "assets", ids: assetIds };
+        } else if (sceneIds.length > 0) {
           event.preventDefault();
-          copiedCatalogueRef.current = { kind: "scene", id: model.selection.id };
+          copiedCatalogueRef.current = { kind: "scenes", ids: sceneIds };
         }
         return;
       }
       if (mod && isChordLetter(event, "KeyV", "v") && !event.shiftKey && !event.altKey) {
         const copied = copiedCatalogueRef.current;
-        if (copied?.kind === "asset") {
+        if (copied?.kind === "assets") {
           event.preventDefault();
-          void model.duplicateAsset(copied.id, model.importDestination);
-        } else if (copied?.kind === "scene") {
+          for (const id of copied.ids) {
+            void model.duplicateAsset(id, model.importDestination);
+          }
+        } else if (copied?.kind === "scenes") {
           event.preventDefault();
-          void model.duplicateScene(copied.id);
+          for (const id of copied.ids) {
+            void model.duplicateScene(id);
+          }
         }
         return;
       }
@@ -115,24 +129,11 @@ export function AssetsPanel() {
         return;
       }
 
-      if (model.selection?.kind === "asset") {
-        event.preventDefault();
-        void model.removeAsset(model.selection.id);
+      if (model.selectedItems.length === 0) {
         return;
       }
-      if (model.selection?.kind === "scene") {
-        event.preventDefault();
-        void model.removeScene(model.selection.id);
-        return;
-      }
-      if (
-        model.selection?.kind === "folder" &&
-        model.selection.path !== ASSETS_ROOT_FOLDER &&
-        !isScenesFolderOrDescendant(model.selection.path)
-      ) {
-        event.preventDefault();
-        void model.removeFolder(model.selection.path);
-      }
+      event.preventDefault();
+      void removeSelectedCatalogueItems(model);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -213,7 +214,7 @@ export function AssetsPanel() {
     if (!payload) {
       return;
     }
-    await model.moveAsset(payload.assetId, destination);
+    await model.moveAssets(assetIdsFromDragPayload(payload), destination);
   };
 
   return (
@@ -382,16 +383,13 @@ export function AssetsPanel() {
                   id={scene.id}
                   depth={0}
                   active={model.activeSceneId === scene.id}
-                  selected={
-                    model.selection?.kind === "scene" &&
-                    model.selection.id === scene.id
-                  }
+                  selected={model.isSelected({ kind: "scene", id: scene.id })}
                   renaming={
                     model.renaming?.kind === "scene" &&
                     model.renaming.id === scene.id
                   }
-                  onSelect={() =>
-                    model.setSelection({ kind: "scene", id: scene.id })
+                  onSelect={(event) =>
+                    model.selectItem({ kind: "scene", id: scene.id }, event)
                   }
                   onOpen={() => {
                     void model.openScene(scene.id);
@@ -403,7 +401,9 @@ export function AssetsPanel() {
                   onContextMenu={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    model.setSelection({ kind: "scene", id: scene.id });
+                    if (!model.isSelected({ kind: "scene", id: scene.id })) {
+                      model.setSelection({ kind: "scene", id: scene.id });
+                    }
                     setContextMenu({
                       x: event.clientX,
                       y: event.clientY,
@@ -418,10 +418,7 @@ export function AssetsPanel() {
                   key={asset.id}
                   asset={asset}
                   depth={0}
-                  selected={
-                    model.selection?.kind === "asset" &&
-                    model.selection.id === asset.id
-                  }
+                  selected={model.isSelected({ kind: "asset", id: asset.id })}
                   renaming={
                     model.renaming?.kind === "asset" &&
                     model.renaming.id === asset.id
@@ -429,7 +426,10 @@ export function AssetsPanel() {
                   previewUrl={model.contentUrl(asset)}
                   dropTarget={false}
                   editing={model.openPrefabAssetId === asset.id}
-                  onSelect={() => model.setSelection({ kind: "asset", id: asset.id })}
+                  onSelect={(event) =>
+                    model.selectItem({ kind: "asset", id: asset.id }, event)
+                  }
+                  getDragAssetIds={model.assetIdsForDrag}
                   onActivate={
                     asset.type === "prefab"
                       ? () => {
@@ -447,7 +447,9 @@ export function AssetsPanel() {
                   onContextMenu={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    model.setSelection({ kind: "asset", id: asset.id });
+                    if (!model.isSelected({ kind: "asset", id: asset.id })) {
+                      model.setSelection({ kind: "asset", id: asset.id });
+                    }
                     setContextMenu({
                       x: event.clientX,
                       y: event.clientY,
@@ -472,7 +474,9 @@ export function AssetsPanel() {
             onContextMenu={(event, path) => {
               event.preventDefault();
               event.stopPropagation();
-              model.setSelection({ kind: "folder", path });
+              if (!model.isSelected({ kind: "folder", path })) {
+                model.setSelection({ kind: "folder", path });
+              }
               setContextMenu({
                 x: event.clientX,
                 y: event.clientY,
@@ -483,7 +487,9 @@ export function AssetsPanel() {
             onAssetContextMenu={(event, assetId) => {
               event.preventDefault();
               event.stopPropagation();
-              model.setSelection({ kind: "asset", id: assetId });
+              if (!model.isSelected({ kind: "asset", id: assetId })) {
+                model.setSelection({ kind: "asset", id: assetId });
+              }
               setContextMenu({
                 x: event.clientX,
                 y: event.clientY,
@@ -494,7 +500,9 @@ export function AssetsPanel() {
             onSceneContextMenu={(event, sceneId) => {
               event.preventDefault();
               event.stopPropagation();
-              model.setSelection({ kind: "scene", id: sceneId });
+              if (!model.isSelected({ kind: "scene", id: sceneId })) {
+                model.setSelection({ kind: "scene", id: sceneId });
+              }
               setContextMenu({
                 x: event.clientX,
                 y: event.clientY,
@@ -562,4 +570,44 @@ export function AssetsPanel() {
       {unsaved.dialog}
     </div>
   );
+}
+
+async function removeSelectedCatalogueItems(
+  model: ReturnType<typeof useAssetBrowserModel>,
+): Promise<void> {
+  const folderPaths = rootMostFolderPaths(
+    model.selectedItems
+      .filter((item) => item.kind === "folder")
+      .map((item) => item.path)
+      .filter(
+        (path) =>
+          path !== ASSETS_ROOT_FOLDER && !isScenesFolderOrDescendant(path),
+      ),
+  );
+  const assetsToRemove = model.selectedItems
+    .filter((item) => item.kind === "asset")
+    .map((item) => item.id)
+    .filter((assetId) => {
+      const asset = model.editor.assets.get(assetId);
+      if (!asset) {
+        return false;
+      }
+      const folder = parentFolder(asset.path);
+      return !folderPaths.some(
+        (path) => path === folder || isFolderOrDescendant(path, folder),
+      );
+    });
+  const scenesToRemove = model.selectedItems
+    .filter((item) => item.kind === "scene")
+    .map((item) => item.id);
+
+  for (const path of folderPaths) {
+    await model.removeFolder(path);
+  }
+  for (const assetId of assetsToRemove) {
+    await model.removeAsset(assetId);
+  }
+  for (const sceneId of scenesToRemove) {
+    await model.removeScene(sceneId);
+  }
 }

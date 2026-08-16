@@ -5,9 +5,11 @@ import {
   createTransform2D,
 } from "@game-editor/scene";
 import {
+  hierarchyDragNodeIds,
   isNoOpMove,
   placementFromRowOffset,
   resolveHierarchyDrop,
+  resolveHierarchyMultiDrop,
 } from "./hierarchy-dnd.js";
 import { Editor, MoveNodeCommand } from "./index.js";
 
@@ -86,6 +88,105 @@ describe("resolveHierarchyDrop", () => {
     expect(placementFromRowOffset(2, 20)).toBe("before");
     expect(placementFromRowOffset(10, 20)).toBe("inside");
     expect(placementFromRowOffset(18, 20)).toBe("after");
+  });
+});
+
+describe("resolveHierarchyMultiDrop", () => {
+  it("moves root-most nodes in tree order as consecutive siblings", () => {
+    const { scene, game, ui } = sceneWithTree();
+    const extra = createSpriteNode("Extra", { x: 300, y: 0 });
+    extra.components = [createTransform2D({ position: { x: 300, y: 0 } })];
+    scene.nodes.push(extra);
+
+    const moves = resolveHierarchyMultiDrop({
+      scene,
+      draggedIds: [extra.id, ui.id],
+      targetId: game.id,
+      placement: "inside",
+    });
+    expect(moves?.map((move) => move.nodeId)).toEqual([ui.id, extra.id]);
+    expect(moves?.[0]).toEqual({
+      nodeId: ui.id,
+      toParentId: game.id,
+      toIndex: 2,
+    });
+    expect(moves?.[1]).toEqual({
+      nodeId: extra.id,
+      toParentId: game.id,
+      toIndex: 3,
+    });
+  });
+
+  it("drops parent+child as the parent only", () => {
+    const { scene, game, reels, ui } = sceneWithTree();
+    const moves = resolveHierarchyMultiDrop({
+      scene,
+      draggedIds: [game.id, reels.id],
+      targetId: ui.id,
+      placement: "after",
+    });
+    expect(moves?.map((move) => move.nodeId)).toEqual([game.id]);
+  });
+
+  it("stacks a sibling after a no-op first node", () => {
+    const { scene, game, ui } = sceneWithTree();
+    const other = createSpriteNode("Other", { x: 250, y: 0 });
+    other.components = [createTransform2D({ position: { x: 250, y: 0 } })];
+    const extra = createSpriteNode("Extra", { x: 300, y: 0 });
+    extra.components = [createTransform2D({ position: { x: 300, y: 0 } })];
+    scene.nodes.push(other, extra);
+
+    // ui is already immediately after game — first move is a no-op; extra still
+    // stacks after ui ( ahead of `other` ).
+    const moves = resolveHierarchyMultiDrop({
+      scene,
+      draggedIds: [ui.id, extra.id],
+      targetId: game.id,
+      placement: "after",
+    });
+    expect(moves?.map((move) => move.nodeId)).toEqual([extra.id]);
+    expect(moves?.[0]).toEqual({
+      nodeId: extra.id,
+      toParentId: undefined,
+      toIndex: 2,
+    });
+  });
+});
+
+describe("hierarchyDragNodeIds", () => {
+  it("drags the whole selection when the grabbed node is selected", () => {
+    expect(hierarchyDragNodeIds("b", ["a", "b", "c"])).toEqual(["a", "b", "c"]);
+    expect(hierarchyDragNodeIds("z", ["a", "b"])).toEqual(["z"]);
+  });
+});
+
+describe("Editor.moveNodes", () => {
+  it("moves several nodes as one undo step", () => {
+    const { scene, game, ui } = sceneWithTree();
+    const extra = createSpriteNode("Extra", { x: 300, y: 0 });
+    extra.components = [createTransform2D({ position: { x: 300, y: 0 } })];
+    scene.nodes.push(extra);
+    const editor = new Editor({ scene });
+    const moves = resolveHierarchyMultiDrop({
+      scene: editor.getScene(),
+      draggedIds: [ui.id, extra.id],
+      targetId: game.id,
+      placement: "inside",
+    });
+    expect(moves).toBeDefined();
+    editor.moveNodes(moves!);
+    expect(editor.getScene().nodes[0]?.children.map((node) => node.name)).toEqual([
+      "Reels",
+      "Effects",
+      "UI",
+      "Extra",
+    ]);
+    editor.undo();
+    expect(editor.getScene().nodes.map((node) => node.name)).toEqual([
+      "Game",
+      "UI",
+      "Extra",
+    ]);
   });
 });
 

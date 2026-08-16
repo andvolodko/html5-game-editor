@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  assetIdsFromDragPayload,
   decodeAssetDragPayload,
   dropAssetOntoScene,
   EDITOR_ASSET_MIME,
+  MULTI_ASSET_SCENE_DROP_OFFSET,
 } from "@game-editor/editor-core";
 import {
   clampSnapGridSize,
@@ -224,23 +226,30 @@ export function ScenePanel({
           showPixiChrome && snapToGrid
             ? snapPositionToGrid(world, snapGridSize)
             : world;
-        const asset = editor.assets.get(payload.assetId);
-        if (asset?.type === "prefab") {
-          void editor
-            .instantiatePrefabFromAsset(payload.assetId, position)
-            .catch((error: unknown) => {
-              editor.console.log({
-                level: "error",
-                category: "prefab",
-                message:
-                  error instanceof Error
-                    ? error.message
-                    : "Instantiate prefab failed",
+        const assetIds = assetIdsFromDragPayload(payload);
+        for (const [index, assetId] of assetIds.entries()) {
+          const offset = index * MULTI_ASSET_SCENE_DROP_OFFSET;
+          const placed = {
+            x: position.x + offset,
+            y: position.y + offset,
+          };
+          if (editor.assets.get(assetId)?.type === "prefab") {
+            void editor
+              .instantiatePrefabFromAsset(assetId, placed)
+              .catch((error: unknown) => {
+                editor.console.log({
+                  level: "error",
+                  category: "prefab",
+                  message:
+                    error instanceof Error
+                      ? error.message
+                      : "Instantiate prefab failed",
+                });
               });
-            });
-          return;
+            continue;
+          }
+          dropAssetOntoScene(editor, assetId, placed);
         }
-        dropAssetOntoScene(editor, payload.assetId, position);
       }}
     >
       <div className="scene-toolbar" role="toolbar" aria-label="Scene preview">

@@ -21,6 +21,13 @@ export type {
 export { KEYBOARD_NUDGE_PIXELS, arrowNudgeDelta, isAssetsPanelKeyTarget } from "./editor-hotkeys.js";
 export { SelectionManager } from "./selection-manager.js";
 export type { EditorSelection } from "./selection-manager.js";
+export {
+  applyListSelection,
+  idsBetweenInclusive,
+  isToggleSelectionKey,
+} from "./list-selection.js";
+export type { ListSelectionModifiers } from "./list-selection.js";
+export { flattenVisibleNodeIds } from "./hierarchy-visible.js";
 export { EditorViewportController } from "./viewport-controller.js";
 export {
   CreateSpriteCommand,
@@ -199,12 +206,15 @@ export type {
 export {
   importDroppedFiles,
   dropAssetOntoScene,
+  dropAssetsOntoScene,
   EDITOR_ASSET_MIME,
   EDITOR_FOLDER_MIME,
   encodeAssetDragPayload,
   decodeAssetDragPayload,
+  assetIdsFromDragPayload,
   encodeFolderDragPayload,
   decodeFolderDragPayload,
+  MULTI_ASSET_SCENE_DROP_OFFSET,
 } from "./asset-workflows.js";
 export type {
   ImportDroppedFilesResult,
@@ -249,7 +259,17 @@ export type {
   AssetBrowserPreviewResolvers,
 } from "./asset-browser-model.js";
 export {
+  assetBrowserItemKey,
+  parseAssetBrowserItemKey,
+  assetBrowserItemsEqual,
+  flattenVisibleBrowserItems,
+  rootMostFolderPaths,
+} from "./asset-browser-selection.js";
+export type { AssetBrowserSelectionItem } from "./asset-browser-selection.js";
+export {
   resolveHierarchyDrop,
+  resolveHierarchyMultiDrop,
+  hierarchyDragNodeIds,
   isNoOpMove,
   placementFromRowOffset,
   toPostDetachIndex,
@@ -259,4 +279,5 @@ export {
 export type {
   HierarchyDropPlacement,
   HierarchyDropTarget,
+  HierarchyMultiMove,
 } from "./hierarchy-dnd.js";

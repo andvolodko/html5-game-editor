@@ -1,7 +1,10 @@
 import {
   canMoveNode,
   findNodeById,
+  flattenNodes,
   getNodeLocation,
+  moveNodeInScene,
+  normalizeRootMostNodeIds,
   type SceneData,
 } from "@game-editor/scene";
 
@@ -78,6 +81,97 @@ export function resolveHierarchyDrop(input: {
   }
 
   return { toParentId, toIndex };
+}
+
+export interface HierarchyMultiMove {
+  nodeId: string;
+  toParentId: string | undefined;
+  toIndex: number;
+}
+
+function dropDestinationParentId(input: {
+  scene: SceneData;
+  targetId?: string;
+  placement: HierarchyDropPlacement | "root";
+}): string | undefined {
+  if (input.placement === "root" || input.targetId === undefined) {
+    return undefined;
+  }
+  if (input.placement === "inside") {
+    return input.targetId;
+  }
+  return getNodeLocation(input.scene, input.targetId)?.parentId;
+}
+
+/**
+ * Resolve a multi-node hierarchy drop. Root-most ids only (parent+child → parent).
+ * Nodes are applied in current tree order so sibling order is preserved.
+ * Subsequent nodes stack after the previous dragged node.
+ */
+export function resolveHierarchyMultiDrop(input: {
+  scene: SceneData;
+  draggedIds: readonly string[];
+  targetId?: string;
+  placement: HierarchyDropPlacement | "root";
+}): HierarchyMultiMove[] | undefined {
+  const order = flattenNodes(input.scene).map((node) => node.id);
+  const roots = normalizeRootMostNodeIds(input.scene, input.draggedIds).sort(
+    (left, right) => order.indexOf(left) - order.indexOf(right),
+  );
+  if (roots.length === 0) {
+    return undefined;
+  }
+
+  const working = structuredClone(input.scene) as SceneData;
+  const moves: HierarchyMultiMove[] = [];
+  let placement = input.placement;
+  let targetId = input.targetId;
+
+  for (const draggedId of roots) {
+    if (targetId !== undefined && draggedId === targetId) {
+      continue;
+    }
+    const destParentId = dropDestinationParentId({
+      scene: working,
+      targetId,
+      placement,
+    });
+    if (!canMoveNode(working, draggedId, destParentId)) {
+      continue;
+    }
+    const resolved =
+      placement === "root" || targetId === undefined
+        ? resolveHierarchyDrop({
+            scene: working,
+            draggedId,
+            placement: "root",
+          })
+        : resolveHierarchyDrop({
+            scene: working,
+            draggedId,
+            targetId,
+            placement,
+          });
+    if (resolved) {
+      moves.push({ nodeId: draggedId, ...resolved });
+      moveNodeInScene(working, draggedId, resolved.toParentId, resolved.toIndex);
+    }
+    targetId = draggedId;
+    placement = "after";
+  }
+
+  return moves.length > 0 ? moves : undefined;
+}
+
+/** Ids to drag: the whole selection when the grabbed node is selected. */
+export function hierarchyDragNodeIds(
+  grabbedId: string,
+  selectedIds: readonly string[],
+): string[] {
+  if (selectedIds.includes(grabbedId)) {
+    return [...selectedIds];
+  }
+  return [grabbedId];
 }
 
 /**

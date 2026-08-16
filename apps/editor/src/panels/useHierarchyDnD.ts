@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import {
+  hierarchyDragNodeIds,
   placementFromRowOffset,
-  resolveHierarchyDrop,
+  resolveHierarchyMultiDrop,
 } from "@game-editor/editor-core";
 import type { Editor } from "@game-editor/editor-core";
 import type { HierarchyDropIndicator } from "./hierarchy-types";
@@ -12,22 +13,22 @@ export function useHierarchyDnD(
   editor: Editor,
   treeRef: RefObject<HTMLDivElement | null>,
 ): {
-  draggingId: string | undefined;
+  draggingIds: readonly string[];
   dropIndicator: HierarchyDropIndicator;
   onDragStart: (nodeId: string, clientX: number, clientY: number) => void;
 } {
-  const [draggingId, setDraggingId] = useState<string | undefined>();
+  const [draggingIds, setDraggingIds] = useState<readonly string[]>([]);
   const [dropIndicator, setDropIndicator] =
     useState<HierarchyDropIndicator>(null);
-  const draggingIdRef = useRef<string | undefined>(undefined);
+  const draggingIdsRef = useRef<readonly string[]>([]);
   const dropIndicatorRef = useRef<HierarchyDropIndicator>(null);
   const pendingDragRef = useRef<
-    { nodeId: string; x: number; y: number } | undefined
+    { nodeIds: readonly string[]; x: number; y: number } | undefined
   >(undefined);
 
   useEffect(() => {
-    draggingIdRef.current = draggingId;
-  }, [draggingId]);
+    draggingIdsRef.current = draggingIds;
+  }, [draggingIds]);
 
   useEffect(() => {
     dropIndicatorRef.current = dropIndicator;
@@ -36,17 +37,17 @@ export function useHierarchyDnD(
   useEffect(() => {
     const onMove = (event: PointerEvent) => {
       const pending = pendingDragRef.current;
-      if (pending && !draggingIdRef.current) {
+      if (pending && draggingIdsRef.current.length === 0) {
         const dx = event.clientX - pending.x;
         const dy = event.clientY - pending.y;
         if (dx * dx + dy * dy >= DRAG_THRESHOLD_PX * DRAG_THRESHOLD_PX) {
           pendingDragRef.current = undefined;
-          setDraggingId(pending.nodeId);
+          setDraggingIds(pending.nodeIds);
         }
         return;
       }
 
-      if (!draggingIdRef.current) {
+      if (draggingIdsRef.current.length === 0) {
         return;
       }
 
@@ -69,8 +70,7 @@ export function useHierarchyDnD(
         return;
       }
       const targetId = row.dataset.nodeId;
-      const dragId = draggingIdRef.current;
-      if (!targetId || targetId === dragId) {
+      if (!targetId || draggingIdsRef.current.includes(targetId)) {
         setDropIndicator(null);
         return;
       }
@@ -84,34 +84,30 @@ export function useHierarchyDnD(
 
     const onUp = () => {
       pendingDragRef.current = undefined;
-      const dragId = draggingIdRef.current;
+      const dragIds = draggingIdsRef.current;
       const indicator = dropIndicatorRef.current;
-      setDraggingId(undefined);
+      setDraggingIds([]);
       setDropIndicator(null);
-      if (!dragId || !indicator) {
+      if (dragIds.length === 0 || !indicator) {
         return;
       }
       const resolved =
         indicator.placement === "root"
-          ? resolveHierarchyDrop({
+          ? resolveHierarchyMultiDrop({
               scene: editor.getScene(),
-              draggedId: dragId,
+              draggedIds: dragIds,
               placement: "root",
             })
-          : resolveHierarchyDrop({
+          : resolveHierarchyMultiDrop({
               scene: editor.getScene(),
-              draggedId: dragId,
+              draggedIds: dragIds,
               targetId: indicator.targetId,
               placement: indicator.placement,
             });
       if (!resolved) {
         return;
       }
-      try {
-        editor.moveNode(dragId, resolved.toParentId, resolved.toIndex);
-      } catch {
-        // Domain rejected; ignore.
-      }
+      editor.moveNodes(resolved);
     };
 
     window.addEventListener("pointermove", onMove);
@@ -123,8 +119,15 @@ export function useHierarchyDnD(
   }, [editor, treeRef]);
 
   const onDragStart = (nodeId: string, clientX: number, clientY: number) => {
-    pendingDragRef.current = { nodeId, x: clientX, y: clientY };
+    pendingDragRef.current = {
+      nodeIds: hierarchyDragNodeIds(
+        nodeId,
+        editor.selection.getSelectedNodeIds(),
+      ),
+      x: clientX,
+      y: clientY,
+    };
   };
 
-  return { draggingId, dropIndicator, onDragStart };
+  return { draggingIds, dropIndicator, onDragStart };
 }

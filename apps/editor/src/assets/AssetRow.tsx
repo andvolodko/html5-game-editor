@@ -4,6 +4,7 @@ import {
   EDITOR_ASSET_MIME,
   encodeAssetDragPayload,
 } from "@game-editor/editor-core";
+import { MOUSE_BUTTON_PRIMARY } from "@game-editor/shared";
 import { InlineRename } from "./InlineRename";
 import { treeIndentPadding } from "../ui/tree-indent";
 
@@ -15,7 +16,8 @@ interface AssetRowProps {
   previewUrl: string | undefined;
   dropTarget: boolean;
   editing?: boolean;
-  onSelect: () => void;
+  onSelect: (event: React.MouseEvent) => void;
+  getDragAssetIds: (assetId: string) => readonly string[];
   onActivate?: () => void;
   onStartRename: () => void;
   onCommitRename: (name: string) => void;
@@ -32,6 +34,7 @@ function AssetRowComponent({
   dropTarget,
   editing = false,
   onSelect,
+  getDragAssetIds,
   onActivate,
   onStartRename,
   onCommitRename,
@@ -49,13 +52,24 @@ function AssetRowComponent({
         .join(" ")}
       style={{ paddingLeft: treeIndentPadding(depth) }}
       draggable={!renaming}
-      onClick={onSelect}
+      onPointerDown={(event) => {
+        if (event.button !== MOUSE_BUTTON_PRIMARY) {
+          return;
+        }
+        onSelect(event);
+      }}
       onDoubleClick={onActivate ?? onStartRename}
       onContextMenu={onContextMenu}
       onDragStart={(event) => {
+        if (event.shiftKey || event.ctrlKey || event.metaKey) {
+          event.preventDefault();
+          return;
+        }
+        const assetIds = getDragAssetIds(asset.id);
+        const primaryId = assetIds[0] ?? asset.id;
         event.dataTransfer.setData(
           EDITOR_ASSET_MIME,
-          encodeAssetDragPayload({ assetId: asset.id }),
+          encodeAssetDragPayload({ assetId: primaryId, assetIds }),
         );
         event.dataTransfer.effectAllowed = "copyMove";
       }}
@@ -119,6 +133,7 @@ function assetRowPropsEqual(
     prev.depth === next.depth &&
     prev.selected === next.selected &&
     prev.onActivate === next.onActivate &&
+    prev.getDragAssetIds === next.getDragAssetIds &&
     prev.renaming === next.renaming &&
     prev.previewUrl === next.previewUrl &&
     prev.dropTarget === next.dropTarget &&

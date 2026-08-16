@@ -44,4 +44,25 @@ describe("SelectionManager", () => {
     expect(selection.isSceneSelected()).toBe(false);
     expect(selection.getSelectedNodeIds()).toEqual(["node_a"]);
   });
+
+  it("applies Shift range and Ctrl toggle from a visible list", () => {
+    const selection = new SelectionManager();
+    const visible = ["a", "b", "c", "d"];
+    selection.applyVisibleListClick(visible, "b", {
+      shiftKey: false,
+      toggleKey: false,
+    });
+    selection.applyVisibleListClick(visible, "d", {
+      shiftKey: true,
+      toggleKey: false,
+    });
+    expect(selection.getSelectedNodeIds()).toEqual(["b", "c", "d"]);
+
+    selection.applyVisibleListClick(visible, "a", {
+      shiftKey: false,
+      toggleKey: true,
+    });
+    expect(selection.getSelectedNodeIds()).toEqual(["b", "c", "d", "a"]);
+    expect(selection.getPrimaryNodeId()).toBe("a");
+  });
 });

@@ -65,6 +65,24 @@ export async function importDroppedFiles(
 /**
  * Application workflow: Asset Browser drag → Scene drop → create command.
  */
+export function dropAssetsOntoScene(
+  editor: Editor,
+  assetIds: readonly string[],
+  position: Vec2,
+): string[] {
+  const created: string[] = [];
+  for (const [index, assetId] of assetIds.entries()) {
+    const offset = index * MULTI_ASSET_SCENE_DROP_OFFSET;
+    created.push(
+      dropAssetOntoScene(editor, assetId, {
+        x: position.x + offset,
+        y: position.y + offset,
+      }),
+    );
+  }
+  return created;
+}
+
 export function dropAssetOntoScene(
   editor: Editor,
   assetId: string,
@@ -113,7 +131,22 @@ export const EDITOR_ASSET_MIME = "application/x-game-editor-asset";
 export const EDITOR_FOLDER_MIME = "application/x-game-editor-folder";
 
 export interface EditorAssetDragPayload {
+  /** Primary / first dragged asset (backward compatible). */
   assetId: string;
+  /** All dragged assets when multi-select is active. */
+  assetIds?: readonly string[];
+}
+
+/** Pixels to offset each extra asset when several are dropped on the scene. */
+export const MULTI_ASSET_SCENE_DROP_OFFSET = 24;
+
+export function assetIdsFromDragPayload(
+  payload: EditorAssetDragPayload,
+): string[] {
+  if (payload.assetIds && payload.assetIds.length > 0) {
+    return [...payload.assetIds];
+  }
+  return [payload.assetId];
 }
 
 export interface EditorFolderDragPayload {
@@ -121,7 +154,22 @@ export interface EditorFolderDragPayload {
 }
 
 export function encodeAssetDragPayload(payload: EditorAssetDragPayload): string {
-  return JSON.stringify(payload);
+  const assetIds =
+    payload.assetIds && payload.assetIds.length > 0
+      ? [...payload.assetIds]
+      : [payload.assetId];
+  return JSON.stringify({
+    assetId: payload.assetId,
+    assetIds,
+  });
+}
+
+function readAssetIds(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+  const ids = value.filter((entry): entry is string => typeof entry === "string");
+  return ids.length > 0 ? ids : undefined;
 }
 
 export function decodeAssetDragPayload(
@@ -135,7 +183,9 @@ export function decodeAssetDragPayload(
       "assetId" in parsed &&
       typeof (parsed as { assetId: unknown }).assetId === "string"
     ) {
-      return { assetId: (parsed as { assetId: string }).assetId };
+      const assetId = (parsed as { assetId: string }).assetId;
+      const assetIds = readAssetIds((parsed as { assetIds?: unknown }).assetIds);
+      return assetIds ? { assetId, assetIds } : { assetId };
     }
   } catch {
     return undefined;

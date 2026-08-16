@@ -1,7 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  assetIdsFromDragPayload,
   decodeAssetDragPayload,
   EDITOR_ASSET_MIME,
+  flattenVisibleNodeIds,
+  isToggleSelectionKey,
 } from "@game-editor/editor-core";
 import {
   findNodeById,
@@ -36,9 +39,14 @@ export function HierarchyPanel() {
   const treeRef = useRef<HTMLDivElement | null>(null);
 
   const { setSelectedAssetId } = useAssetPreviewSelection();
-  const { draggingId, dropIndicator, onDragStart } = useHierarchyDnD(
+  const { draggingIds, dropIndicator, onDragStart } = useHierarchyDnD(
     editor,
     treeRef,
+  );
+  const visibleNodeIds = useMemo(
+    () =>
+      sceneExpanded ? flattenVisibleNodeIds(scene.nodes, expanded) : [],
+    [scene, sceneExpanded, expanded],
   );
   const { renamingTarget, setRenamingTarget } = useHierarchyRename(
     editor,
@@ -109,11 +117,19 @@ export function HierarchyPanel() {
   };
 
   const selectClick = (nodeId: string, event: React.MouseEvent) => {
-    if (event.ctrlKey || event.metaKey) {
-      editor.toggleNodeSelection(nodeId);
+    const toggleKey = isToggleSelectionKey(event);
+    if (
+      !toggleKey &&
+      !event.shiftKey &&
+      selected.includes(nodeId) &&
+      selected.length > 1
+    ) {
       return;
     }
-    editor.selectNodes([nodeId]);
+    editor.selectFromVisibleList(visibleNodeIds, nodeId, {
+      shiftKey: event.shiftKey,
+      toggleKey,
+    });
   };
 
   const closeMenu = () => setContextMenu(null);
@@ -260,26 +276,28 @@ export function HierarchyPanel() {
           if (!payload) {
             return;
           }
-          const asset = editor.assets.get(payload.assetId);
-          if (asset?.type !== "prefab") {
-            return;
-          }
           const row = (event.target as HTMLElement | null)?.closest("[data-node-id]");
           const targetId =
             row instanceof HTMLElement ? row.dataset.nodeId : undefined;
           const parentId = resolvePrefabDropParent(editor.getScene(), targetId);
-          void editor
-            .instantiatePrefabFromAsset(payload.assetId, undefined, parentId)
-            .catch((error: unknown) => {
-              editor.console.log({
-                level: "error",
-                category: "prefab",
-                message:
-                  error instanceof Error
-                    ? error.message
-                    : "Instantiate prefab failed",
+          for (const assetId of assetIdsFromDragPayload(payload)) {
+            const asset = editor.assets.get(assetId);
+            if (asset?.type !== "prefab") {
+              continue;
+            }
+            void editor
+              .instantiatePrefabFromAsset(assetId, undefined, parentId)
+              .catch((error: unknown) => {
+                editor.console.log({
+                  level: "error",
+                  category: "prefab",
+                  message:
+                    error instanceof Error
+                      ? error.message
+                      : "Instantiate prefab failed",
+                });
               });
-            });
+          }
         }}
         onContextMenu={(event) => {
           event.preventDefault();
@@ -369,7 +387,7 @@ export function HierarchyPanel() {
                   depth={1}
                   expanded={expanded}
                   selectedIds={selected}
-                  draggingId={draggingId}
+                  draggingIds={draggingIds}
                   dropIndicator={dropIndicator}
                   renamingId={
                     renamingTarget !== undefined && renamingTarget !== "scene"

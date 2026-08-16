@@ -6,6 +6,7 @@ import {
   SCENES_FOLDER,
   filterAssetsByQuery,
   filterScenesByQuery,
+  flattenVisibleBrowserItems,
   folderLabel,
   isScenesFolder,
   isScenesFolderOrDescendant,
@@ -15,16 +16,14 @@ import {
   parentFolder,
   resolveAssetBrowserPreviewUrl,
   uniquePanelErrorMessages,
+  type AssetBrowserSelectionItem,
 } from "@game-editor/editor-core";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
 import { useAssetPreviewSelection } from "./asset-preview-selection";
+import { useAssetBrowserSelection } from "./useAssetBrowserSelection";
 
-export type BrowserSelection =
-  | { kind: "asset"; id: string }
-  | { kind: "folder"; path: string }
-  | { kind: "scene"; id: string }
-  | undefined;
+export type BrowserSelection = AssetBrowserSelectionItem | undefined;
 
 export type RenameTarget =
   | { kind: "asset"; id: string }
@@ -56,7 +55,6 @@ export function useAssetBrowserModel(options?: {
   const storeVersion = useEditorState((ed) => ed.getStoreVersion());
 
   const [query, setQuery] = useState("");
-  const [selection, setSelection] = useState<BrowserSelection>();
   const { setSelectedAssetId } = useAssetPreviewSelection();
   const [renaming, setRenaming] = useState<RenameTarget>();
   const [expanded, setExpanded] = useState<Set<string>>(
@@ -69,12 +67,6 @@ export function useAssetBrowserModel(options?: {
   const [scenesError, setScenesError] = useState<string | null>(null);
 
   const searching = query.trim().length > 0;
-
-  useEffect(() => {
-    if (selection?.kind === "asset") {
-      setSelectedAssetId(selection.id);
-    }
-  }, [selection, setSelectedAssetId]);
 
   const refreshScenes = useCallback(async () => {
     try {
@@ -110,15 +102,6 @@ export function useAssetBrowserModel(options?: {
     });
   }, [editor, openPrefabAssetId]);
 
-  useEffect(() => {
-    if (selection?.kind !== "scene") {
-      return;
-    }
-    if (!scenes.some((scene) => scene.id === selection.id)) {
-      setSelection(undefined);
-    }
-  }, [scenes, selection]);
-
   const searchAssets = useMemo(() => {
     if (!searching) {
       return [];
@@ -132,6 +115,45 @@ export function useAssetBrowserModel(options?: {
     }
     return filterScenesByQuery(scenes, query);
   }, [scenes, query, searching]);
+
+  const visibleItems = useMemo((): AssetBrowserSelectionItem[] => {
+    if (searching) {
+      return [
+        ...searchScenes.map((scene) => ({ kind: "scene" as const, id: scene.id })),
+        ...searchAssets.map((asset) => ({ kind: "asset" as const, id: asset.id })),
+      ];
+    }
+    return flattenVisibleBrowserItems(assets, knownFolders, scenes, expanded);
+  }, [
+    searching,
+    searchScenes,
+    searchAssets,
+    assets,
+    knownFolders,
+    scenes,
+    expanded,
+  ]);
+
+  const {
+    selectedItems,
+    selection,
+    setSelection,
+    replaceSelection,
+    selectItem,
+    isSelected,
+    assetIdsForDrag,
+    retainExisting,
+  } = useAssetBrowserSelection(visibleItems);
+
+  useEffect(() => {
+    if (selection?.kind === "asset") {
+      setSelectedAssetId(selection.id);
+    }
+  }, [selection, setSelectedAssetId]);
+
+  useEffect(() => {
+    retainExisting(assets, knownFolders, scenes);
+  }, [assets, knownFolders, scenes, retainExisting]);
 
   const rootEntries = useMemo(
     () => listFolderEntries(assets, ASSETS_ROOT_FOLDER, knownFolders, scenes),
@@ -236,12 +258,28 @@ export function useAssetBrowserModel(options?: {
       }
       await editor.assets.moveAsset(assetId, destination);
       setExpanded((prev) => new Set(prev).add(destination));
-      setSelection({ kind: "asset", id: assetId });
       return true;
     } catch (err) {
       setFolderMessage(err instanceof Error ? err.message : "Move failed");
       return false;
     }
+  };
+
+  const moveAssets = async (
+    assetIds: readonly string[],
+    destination: string,
+  ): Promise<boolean> => {
+    let ok = true;
+    for (const assetId of assetIds) {
+      const moved = await moveAsset(assetId, destination);
+      if (!moved) {
+        ok = false;
+      }
+    }
+    if (assetIds.length > 0) {
+      replaceSelection(assetIds.map((id) => ({ kind: "asset" as const, id })));
+    }
+    return ok;
   };
 
   const duplicateAsset = async (
@@ -270,9 +308,6 @@ export function useAssetBrowserModel(options?: {
     setFolderMessage(null);
     try {
       await editor.deleteAsset(assetId);
-      setSelection((prev) =>
-        prev?.kind === "asset" && prev.id === assetId ? undefined : prev,
-      );
       setRenaming((prev) =>
         prev?.kind === "asset" && prev.id === assetId ? undefined : prev,
       );
@@ -301,18 +336,6 @@ export function useAssetBrowserModel(options?: {
         }
         return next;
       });
-      setSelection((prev) => {
-        if (prev?.kind === "folder" && (prev.path === folderPath || prev.path.startsWith(`${folderPath}/`))) {
-          return undefined;
-        }
-        if (prev?.kind === "asset") {
-          const asset = editor.assets.get(prev.id);
-          if (!asset) {
-            return undefined;
-          }
-        }
-        return prev;
-      });
       setRenaming(undefined);
       return true;
     } catch (err) {
@@ -336,11 +359,9 @@ export function useAssetBrowserModel(options?: {
         return false;
       }
       await editor.deleteSceneFile(sceneId, fallback.id);
-      setSelection((prev) =>
-        prev?.kind === "scene" && prev.id === sceneId
-          ? { kind: "scene", id: fallback.id }
-          : prev,
-      );
+      if (selection?.kind === "scene" && selection.id === sceneId) {
+        setSelection({ kind: "scene", id: fallback.id });
+      }
       setRenaming(undefined);
       await refreshScenes();
       return true;
@@ -496,8 +517,12 @@ export function useAssetBrowserModel(options?: {
     query,
     setQuery,
     searching,
+    selectedItems,
     selection,
     setSelection,
+    selectItem,
+    isSelected,
+    assetIdsForDrag,
     renaming,
     setRenaming,
     expanded,
@@ -516,6 +541,7 @@ export function useAssetBrowserModel(options?: {
     renameFolder,
     renameScene,
     moveAsset,
+    moveAssets,
     duplicateAsset,
     removeAsset,
     removeFolder,

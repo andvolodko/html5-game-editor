@@ -81,6 +81,8 @@ import {
 } from "./document-manager.js";
 import type { SceneApiClient, SceneListEntry } from "./scene-api-client.js";
 import { SelectionManager } from "./selection-manager.js";
+import type { ListSelectionModifiers } from "./list-selection.js";
+import type { HierarchyMultiMove } from "./hierarchy-dnd.js";
 import { EditorViewportController } from "./viewport-controller.js";
 import {
   AssetManager,
@@ -616,6 +618,41 @@ export class Editor {
     }
   }
 
+  /**
+   * Reparent/reorder several nodes as one undo step.
+   * `moves` must already be post-detach (from `resolveHierarchyMultiDrop`).
+   */
+  moveNodes(moves: readonly HierarchyMultiMove[]): void {
+    if (moves.length === 0) {
+      return;
+    }
+    if (moves.length === 1) {
+      const only = moves[0];
+      if (!only) {
+        return;
+      }
+      this.moveNode(only.nodeId, only.toParentId, only.toIndex);
+      return;
+    }
+    try {
+      const commands = moves.map(
+        (move) =>
+          new MoveNodeCommand(this.document, {
+            nodeId: move.nodeId,
+            toParentId: move.toParentId,
+            toIndex: move.toIndex,
+          }),
+      );
+      this.execute(new CompositeCommand("MoveNodes", commands));
+    } catch (error) {
+      this.console.log({
+        level: "warn",
+        category: "prefab",
+        message: error instanceof Error ? error.message : "Move failed",
+      });
+    }
+  }
+
   setTransform2D(nodeId: string, patch: Transform2DPatch): void {
     this.execute(new SetTransform2DCommand(this.document, nodeId, patch));
   }
@@ -816,6 +853,14 @@ export class Editor {
 
   selectNodes(nodeIds: readonly string[]): void {
     this.selection.setSelection(nodeIds);
+  }
+
+  selectFromVisibleList(
+    orderedVisibleIds: readonly string[],
+    clickedId: string,
+    modifiers: ListSelectionModifiers,
+  ): void {
+    this.selection.applyVisibleListClick(orderedVisibleIds, clickedId, modifiers);
   }
 
   selectScene(): void {

@@ -36,8 +36,11 @@ These run unless focus is in a text field or the Assets panel.
 | Delete selected node(s) | Delete |
 | Rename selected node | F2 |
 | Nudge selected node(s) 1 px | Arrow keys |
+| Toggle node in selection | Ctrl+click |
+| Select visible range | Shift+click |
+| Add visible range to selection | Ctrl+Shift+click |
 
-Ctrl+C is skipped when the DOM has a text selection so the browser can copy that text.
+Ctrl+C is skipped when the DOM has a text selection so the browser can copy that text. Drag a selected Hierarchy row to move the whole selection.
 
 ## Assets panel (panel focused)
 
@@ -46,7 +49,12 @@ Ctrl+C is skipped when the DOM has a text selection so the browser can copy that
 | Copy selected asset or scene (catalogue) | Ctrl+C |
 | Paste / duplicate into the current folder | Ctrl+V |
 | Rename asset, scene, or folder | F2 |
-| Delete asset, scene, or folder | Delete or Backspace |
+| Delete selected asset(s), scene(s), or folder(s) | Delete or Backspace |
+| Toggle item in selection | Ctrl+click |
+| Select visible range | Shift+click |
+| Add visible range to selection | Ctrl+Shift+click |
+
+Drag selected assets to move them together onto a folder or into the scene.
 
 ## 3D viewport (Three / hybrid scenes)
 

@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { MOUSE_BUTTON_PRIMARY } from "@game-editor/shared";
 import { InlineRename } from "./InlineRename";
 import { treeIndentPadding } from "../ui/tree-indent";
 
@@ -8,7 +9,7 @@ export interface SceneRowProps {
   active: boolean;
   selected: boolean;
   renaming: boolean;
-  onSelect: () => void;
+  onSelect: (event: React.MouseEvent) => void;
   onOpen: () => void;
   onCommitRename: (name: string) => void;
   onCancelRename: () => void;
@@ -37,7 +38,12 @@ function SceneRowComponent({
         .filter(Boolean)
         .join(" ")}
       style={{ paddingLeft: treeIndentPadding(depth) }}
-      onClick={onSelect}
+      onPointerDown={(event) => {
+        if (event.button !== MOUSE_BUTTON_PRIMARY) {
+          return;
+        }
+        onSelect(event);
+      }}
       onDoubleClick={() => {
         if (renaming) {
           return;
