@@ -82,7 +82,7 @@ export function useSceneViewport(args: {
         return;
       }
       stashPreviewCamera(viewport, stashedCameraRef);
-      framePrefabContents(viewport, editor.getScene());
+      framePrefabContentsWhenReady(viewport, editor.getScene());
       previousAssetId = assetId;
     });
   }, [editor]);
@@ -156,7 +156,7 @@ export function useSceneViewport(args: {
       editor.attachRenderer(created.documentRenderer);
       created.setSelectedNodeIds(editor.selection.getSelectedNodeIds());
       if (editor.prefabs.getMode().kind === "prefab") {
-        framePrefabContents(created, editor.getScene());
+        framePrefabContentsWhenReady(created, editor.getScene());
       }
     });
 
@@ -250,6 +250,16 @@ function restorePreviewCamera(
   const primary = primaryPixi(viewport);
   primary?.setViewportCamera(camera);
   copyPreviewCamera(viewport, primary);
+}
+
+function framePrefabContentsWhenReady(
+  viewport: SceneViewportHandle | null,
+  scene: SceneData,
+): void {
+  framePrefabContents(viewport, scene);
+  requestAnimationFrame(() => {
+    framePrefabContents(viewport, scene);
+  });
 }
 
 function framePrefabContents(
