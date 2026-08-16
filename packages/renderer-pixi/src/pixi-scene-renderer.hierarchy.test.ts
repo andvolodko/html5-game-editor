@@ -202,4 +202,27 @@ describe("PixiSceneRenderer incremental hierarchy", () => {
       expect(gizmo?.visible).toBe(true);
     }
   });
+
+  it("does not reject when a node is destroyed and recreated during paint", async () => {
+    const host = { appendChild() {} } as unknown as HTMLElement;
+    const renderer = new PixiSceneRenderer({
+      canvasParent: host,
+      headless: true,
+    });
+    await renderer.whenReady();
+
+    const node = createSpriteNode("Sprite", { x: 0, y: 0 }, {
+      width: 64,
+      height: 64,
+    });
+    renderer.createNode(node);
+    const firstContainer = renderer.getRuntimeContainer(node.id)!;
+    renderer.destroyNode(node.id);
+    renderer.createNode(node);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(firstContainer.destroyed).toBe(true);
+    expect(renderer.getRuntimeContainer(node.id)?.destroyed).toBe(false);
+    await renderer.destroy();
+  });
 });

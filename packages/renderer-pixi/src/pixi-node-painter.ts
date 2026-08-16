@@ -71,7 +71,7 @@ export class PixiNodePainter {
     }
     this.paintInFlight.set(runtime, true);
     try {
-      while (this.host.graph.has(runtime.node.id)) {
+      while (this.isLiveRuntime(runtime)) {
         const started = this.paintEpoch.get(runtime) ?? 0;
         await this.paintVisualsPass(runtime);
         if ((this.paintEpoch.get(runtime) ?? 0) === started) {
@@ -168,7 +168,7 @@ export class PixiNodePainter {
       },
     });
 
-    if (!this.host.graph.has(runtime.node.id)) {
+    if (!this.isLiveRuntime(runtime)) {
       return;
     }
 
@@ -332,6 +332,9 @@ export class PixiNodePainter {
     if (runtime.visualsRoot === runtime.container) {
       return;
     }
+    if (runtime.container.destroyed || runtime.visualsRoot.destroyed) {
+      return;
+    }
     runtime.visualsRoot.hitArea = hitAreaFromBounds(
       bounds,
       this.host.getCameraScale(),
@@ -372,6 +375,11 @@ export class PixiNodePainter {
       }
       parentId = parent.node.parentId;
     }
+  }
+
+  /** Same node id can be recreated while an async paint is in flight. */
+  private isLiveRuntime(runtime: RuntimeNode): boolean {
+    return this.host.graph.get(runtime.node.id) === runtime;
   }
 
   private async loadTexture(assetId: string, url: string): Promise<Texture> {
