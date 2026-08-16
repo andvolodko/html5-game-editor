@@ -10,7 +10,7 @@ PixiJS handles 2D. Three.js handles 3D. React is the editor shell. Games build i
 
 Playable standalone builds of every game are on the same site: **[demo games](https://andvolodko.github.io/html5-game-editor/games/)** ([Editor Features Demo](https://andvolodko.github.io/html5-game-editor/games/editor-features-demo/), [Example Game 2](https://andvolodko.github.io/html5-game-editor/games/example-game-2/), [MU Online](https://andvolodko.github.io/html5-game-editor/games/muonline-game/), [Solitaire](https://andvolodko.github.io/html5-game-editor/games/solitaire/)).
 
-> Status: active development. The foundation through hybrid rendering, assets, undo/redo, and playable demo games is in place. Collaboration, prefabs, and advanced tooling are still ahead.
+> Status: active development. The foundation through hybrid rendering, assets, undo/redo, prefabs, and playable demo games is in place. Collaboration and advanced tooling are still ahead.
 
 ---
 
@@ -145,7 +145,7 @@ Editable game content lives **next to the buildable package** under `games/<name
 
 - Node.js **≥ 20**
 - [pnpm](https://pnpm.io/) **10.33+** (see `packageManager` in the root `package.json`)
-- Optional: [Aseprite](https://www.aseprite.org/) or free [LibreSprite](https://github.com/LibreSprite/LibreSprite) CLI — only needed to compile `.aseprite` source files in the editor (see [Aseprite assets](#aseprite-assets))
+- Aseprite compile: `pnpm install` downloads a packaged [LibreSprite](https://github.com/LibreSprite/LibreSprite) CLI for Windows x64, Linux x64, and macOS arm64. You can still use a system [Aseprite](https://www.aseprite.org/) / LibreSprite install instead (see [Aseprite assets](#aseprite-assets)).
 
 ```bash
 pnpm install
@@ -197,18 +197,21 @@ Compile is editor/build-time only. The project server looks up an executable in 
 1. `ASEPRITE` environment variable (full path to `aseprite` / `libresprite`)
 2. `PATH` (`aseprite`, `Aseprite.exe`, `libresprite`, `libresprite.exe`)
 3. Well-known install folders (Program Files, Steam, `%LOCALAPPDATA%\Programs\Aseprite`, `%LOCALAPPDATA%\Programs\LibreSprite`, macOS `/Applications`, `/usr/bin`)
+4. Packaged LibreSprite from `pnpm install` (`apps/project-server/vendor/libresprite`)
+
+`pnpm install` (project-server `postinstall`) downloads LibreSprite **v1.1** for Windows x64, Linux x64, and macOS arm64 (~50MB). CI skips that download (`CI=true`); generated PNG/JSON stay committed so Pages builds do not need the CLI. Re-run `pnpm install-libresprite` if the download was skipped or failed.
 
 If nothing is found, the editor stays up and the asset shows:
 
 ```text
 Aseprite CLI was not found.
 
-Install Aseprite or the free LibreSprite fork, and make sure `aseprite` or `libresprite` is available in PATH (or set the ASEPRITE environment variable).
+Run `pnpm install-libresprite`, or install Aseprite / LibreSprite and make sure `aseprite` or `libresprite` is available in PATH (or set the ASEPRITE environment variable).
 ```
 
 Restart `pnpm dev` after installing a CLI so the server picks it up.
 
-**LibreSprite** (free) is enough for spritesheet + tag export. A Windows build can live at:
+**LibreSprite** (free) is enough for spritesheet + tag export. The packaged copy lives under `apps/project-server/vendor/libresprite` (gitignored). A manual Windows install can also live at:
 
 ```text
 %LOCALAPPDATA%\Programs\LibreSprite\libresprite.exe
@@ -381,7 +384,7 @@ The architecture described in [`PROJECT.md`](./PROJECT.md) and [`docs/`](./docs/
 
 ### Editor & content pipeline
 
-- **Prefabs** — reusable node subgraphs with instance overrides
+- **Prefab variants & structural overrides** — property overrides, unpack, and nested resolution are in; variants and delete/reparent of inherited children are not
 - **Spritesheet / atlas generation** — Aseprite/LibreSprite compile is in; still needed: pack loose PNGs and a BitmapText font importer
 - **Timeline & animation** — clip editing for Spine, AnimatedSprite, and glTF animations
 - **Particles, masks, filters** — Pixi ParticleContainer is deferred; masks/filters are still design-only

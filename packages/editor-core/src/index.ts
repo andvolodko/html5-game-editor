@@ -59,6 +59,11 @@ export {
   SetScriptPropertiesCommand,
   createDeleteSelectionCommand,
   createResetNodeTransformCommand,
+  InstantiatePrefabCommand,
+  UnpackPrefabCommand,
+  RevertPrefabOverridesCommand,
+  ConvertSubtreeToPrefabInstanceCommand,
+  RefreshPrefabInstancesCommand,
 } from "./commands/index.js";
 export type {
   Transform2DPatch,
@@ -141,6 +146,15 @@ export {
   isValidSceneFileId,
 } from "./scene-api-client.js";
 export type { SceneApiClient, SceneListEntry } from "./scene-api-client.js";
+export { createFetchPrefabApiClient } from "./prefab-api-client.js";
+export type { PrefabApiClient, PrefabCreateResult } from "./prefab-api-client.js";
+export { PrefabManager } from "./prefab-manager.js";
+export type { EditorDocumentMode } from "./prefab-manager.js";
+export {
+  PREFAB_INHERITED_LOCKED_CODE,
+  PREFAB_INHERITED_LOCKED_MESSAGE,
+  isPrefabStructureEditAllowed,
+} from "./prefab-structure.js";
 export {
   AssetManager,
   createFetchAssetApiClient,

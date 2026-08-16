@@ -8,6 +8,7 @@ import {
   GameScreenHost,
   collectSceneAssetIds,
   createHtmlAudioPlayer,
+  prefabModulesByPath,
   resolveGameProject,
   sceneModulesById,
   type LoadedGameProject,
@@ -28,6 +29,10 @@ import {
 import { mountEditorFeaturesDemoRenderers } from "./mount-renderers.js";
 
 const sceneModules = import.meta.glob("../assets/scenes/*.json", {
+  eager: true,
+  import: "default",
+});
+const prefabModules = import.meta.glob("../assets/prefabs/**/*.prefab.json", {
   eager: true,
   import: "default",
 });
@@ -58,6 +63,10 @@ const session: {
 };
 
 function readScene(sceneId: string): SceneData {
+  const resolved = session.loaded?.scenes[sceneId];
+  if (resolved) {
+    return resolved;
+  }
   const raw = scenesById[sceneId];
   if (raw === undefined) {
     throw new Error(`Unknown scene "${sceneId}"`);
@@ -109,7 +118,7 @@ session.runtime = new GameRuntime({
       if (!loaded) {
         return [];
       }
-      return collectSceneAssetIds(Object.values(loaded.scenes));
+      return collectSceneAssetIds(Object.values(loaded.scenes), loaded.prefabs);
     },
     preloadSceneAsset: async (assetId, signal) => {
       const resolver = session.loaded?.assetResolver;
@@ -134,6 +143,7 @@ async function boot(): Promise<void> {
     project: projectJson,
     assets: assetsJson,
     scenes: scenesById,
+    prefabsByPath: prefabModulesByPath(prefabModules),
     baseUrl: import.meta.env.BASE_URL,
   });
 
@@ -147,6 +157,7 @@ async function boot(): Promise<void> {
   if (!runtime) {
     throw new Error("GameRuntime missing");
   }
+  runtime.setPrefabCatalog(session.loaded.prefabs);
 
   session.renderers = await mountEditorFeaturesDemoRenderers({
     frame: screen.frame,

@@ -802,6 +802,103 @@ button.active {
   white-space: nowrap;
 }
 
+.hierarchy-prefab-badge,
+.hierarchy-prefab-link {
+  margin-left: 0.4rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  opacity: 0.85;
+}
+
+.hierarchy-prefab-badge {
+  text-transform: uppercase;
+}
+
+.inspector-field-overridden {
+  position: relative;
+}
+
+.inspector-field-overridden::before {
+  content: "";
+  position: absolute;
+  left: -0.45rem;
+  top: 0.55rem;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.inspector-prefab-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.35rem 0 0.55rem;
+}
+
+.inspector-prefab-actions button {
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--text);
+  background: var(--bg-elevated, #1a1f2b);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.2rem 0.45rem;
+}
+
+.inspector-prefab-actions button:disabled {
+  opacity: 0.45;
+}
+
+.prefab-override-list {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.prefab-override-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.prefab-override-list li span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prefab-override-list button {
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1rem 0.35rem;
+}
+
+.prefab-missing {
+  color: #e8b86d;
+}
+
+.toolbar-prefab-close {
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1rem 0.4rem;
+  margin-left: 0.35rem;
+}
+
 .hierarchy-rename-input {
   flex: 1;
   min-width: 0;
@@ -1163,6 +1260,13 @@ button.active {
 .asset-row-icon.aseprite {
   background: #2a3140;
   border: 1px solid #c9a227;
+}
+
+.asset-row-icon.prefab {
+  background: #2a3140;
+  border: 1px solid var(--accent);
+  transform: rotate(45deg);
+  border-radius: 2px;
 }
 
 .asset-live-preview {

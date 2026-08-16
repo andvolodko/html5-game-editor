@@ -11,6 +11,7 @@ import {
   multiplyAff2,
   type Transform2DComponentData,
 } from "@game-editor/scene";
+import { assertPrefabStructureEditAllowed } from "../prefab-structure.js";
 import type { DocumentManager } from "../document-manager.js";
 import { cloneTransform2D } from "./clone-transform-2d.js";
 
@@ -45,6 +46,7 @@ export class MoveNodeCommand implements Command {
     if (!location) {
       throw new Error(`MoveNodeCommand: unknown node ${args.nodeId}`);
     }
+    assertPrefabStructureEditAllowed(scene, args.nodeId);
     if (!canMoveNode(scene, args.nodeId, args.toParentId)) {
       throw new Error(
         `MoveNodeCommand: invalid move of ${args.nodeId} under ${args.toParentId ?? "root"}`,

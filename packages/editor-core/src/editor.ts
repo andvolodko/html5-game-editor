@@ -16,10 +16,12 @@ import {
   getTransform2D,
   getVisualComponent,
   parseSceneData,
+  resolveScenePrefabs,
   type SceneData,
   type SceneRenderer,
   type SceneRendererKind,
   type Vec2,
+  type Vec3,
 } from "@game-editor/scene";
 import {
   CreateSpriteCommand,
@@ -74,6 +76,7 @@ import {
 import {
   DocumentManager,
   hasUnsavedChanges,
+  type DocumentContentSnapshot,
   type DocumentDirtyState,
 } from "./document-manager.js";
 import type { SceneApiClient, SceneListEntry } from "./scene-api-client.js";
@@ -106,6 +109,19 @@ import {
 } from "./editor-scene-persistence.js";
 import { RenameRequestBus, type RenameRequestListener } from "./rename-request-bus.js";
 import { EditorConsole } from "./editor-console.js";
+import { PrefabManager } from "./prefab-manager.js";
+import type { PrefabApiClient } from "./prefab-api-client.js";
+import {
+  applyPrefabOverrides,
+  createPrefabFromSelectedNode,
+  instantiatePrefabFromAsset,
+  openPrefabDocument,
+  closePrefabDocument,
+  reportPrefabWorkflowError,
+  revertPrefabOverrides,
+  saveOpenPrefabDocument,
+  unpackPrefabInstance,
+} from "./editor-prefab-workflows.js";
 
 export type { RenameRequestTarget } from "./rename-request-bus.js";
 export { isChordLetter } from "./editor-hotkeys.js";
@@ -120,6 +136,7 @@ export interface EditorOptions {
   assetApi?: AssetApiClient;
   projectApi?: ProjectApiClient;
   componentCatalogApi?: ComponentCatalogApiClient;
+  prefabApi?: PrefabApiClient;
 }
 
 /**
@@ -137,6 +154,7 @@ export class Editor {
   readonly components: ComponentRegistry;
   /** Structured log for the Console panel (not scene/document state). */
   readonly console: EditorConsole;
+  readonly prefabs: PrefabManager;
   /** Bus event ids for dynamicEnum source `busEvents` (set when loading game catalog). */
   private busEvents: readonly BusEventDefinition[] = [];
 
@@ -162,6 +180,12 @@ export class Editor {
     this.project = new ProjectManager(options.projectApi);
     this.components = new ComponentRegistry();
     this.console = new EditorConsole();
+    this.prefabs = new PrefabManager();
+    this.prefabs.setApi(options.prefabApi);
+    this.prefabs.setMode({
+      kind: "scene",
+      sceneFileId: options.sceneFileId ?? "main",
+    });
     this.sceneFileId = options.sceneFileId ?? "main";
     this.sceneApi = options.sceneApi;
     this.componentCatalogApi = options.componentCatalogApi;
@@ -201,12 +225,86 @@ export class Editor {
     this.componentCatalogApi = client;
   }
 
+  setPrefabApi(client: PrefabApiClient): void {
+    this.prefabs.setApi(client);
+  }
+
+  instantiatePrefabFromAsset(
+    assetId: string,
+    position?: Vec2,
+    parentId?: string,
+  ): Promise<string> {
+    return instantiatePrefabFromAsset(this, assetId, {
+      ...(position !== undefined ? { position2D: position } : {}),
+      parentId,
+    });
+  }
+
+  instantiatePrefabAt3D(
+    assetId: string,
+    position: Vec3,
+    parentId?: string,
+  ): Promise<string> {
+    return instantiatePrefabFromAsset(this, assetId, {
+      position3D: position,
+      parentId,
+    });
+  }
+
+  createPrefabFromNode(nodeId: string): Promise<string> {
+    return createPrefabFromSelectedNode(this, nodeId);
+  }
+
+  unpackPrefab(nodeId: string): void {
+    unpackPrefabInstance(this, nodeId);
+  }
+
+  revertPrefabOverrides(nodeId: string, overrideIndex?: number): void {
+    revertPrefabOverrides(this, nodeId, overrideIndex);
+  }
+
+  applyPrefabOverrides(nodeId: string, overrideIndex?: number): Promise<void> {
+    return applyPrefabOverrides(this, nodeId, overrideIndex);
+  }
+
+  openPrefab(assetId: string): Promise<void> {
+    return openPrefabDocument(this, assetId).catch((error: unknown) => {
+      reportPrefabWorkflowError(this, "Open Prefab failed", error);
+      throw error;
+    });
+  }
+
+  closePrefab(): Promise<void> {
+    return closePrefabDocument(this).catch((error: unknown) => {
+      reportPrefabWorkflowError(this, "Close Prefab failed", error);
+      throw error;
+    });
+  }
+
+  restorePrefabSceneSession(
+    session: { sceneFileId: string; snapshot: DocumentContentSnapshot } | undefined,
+  ): void {
+    const sceneFileId = session?.sceneFileId ?? this.sceneFileId;
+    this.sceneFileId = sceneFileId;
+    this.prefabs.setMode({ kind: "scene", sceneFileId });
+    if (session) {
+      this.document.restoreSnapshot(session.snapshot);
+      this.commands.clear();
+      this.selection.clear();
+    }
+    this.emit();
+  }
+
   setScene(scene: SceneData, options?: { preserveUndo?: boolean }): void {
     this.selection.clear();
     if (!options?.preserveUndo) {
       this.commands.clear();
     }
-    this.document.replaceScene(scene);
+    const resolved =
+      this.prefabs.getMode().kind === "prefab"
+        ? scene
+        : resolveScenePrefabs(scene, this.prefabs.getCatalog()).scene;
+    this.document.replaceScene(resolved);
   }
 
   attachRenderer(renderer: SceneRenderer): void {
@@ -226,8 +324,7 @@ export class Editor {
 
   execute(command: Command): void {
     this.commands.execute(command);
-    this.document.syncDirtyFromContent();
-    this.emit();
+    this.afterDocumentCommand();
   }
 
   undo(): boolean {
@@ -244,8 +341,7 @@ export class Editor {
     }
     const did = this.commands.undo();
     if (did) {
-      this.document.syncDirtyFromContent();
-      this.emit();
+      this.afterDocumentCommand();
     }
     return did;
   }
@@ -264,8 +360,7 @@ export class Editor {
     }
     const did = this.commands.redo();
     if (did) {
-      this.document.syncDirtyFromContent();
-      this.emit();
+      this.afterDocumentCommand();
     }
     return did;
   }
@@ -422,13 +517,22 @@ export class Editor {
     if (!id) {
       return undefined;
     }
-    const command = new DuplicateNodeCommand(
-      this.document,
-      this.selection,
-      id,
-    );
-    this.execute(command);
-    return command.createdNodeId;
+    try {
+      const command = new DuplicateNodeCommand(
+        this.document,
+        this.selection,
+        id,
+      );
+      this.execute(command);
+      return command.createdNodeId;
+    } catch (error) {
+      this.console.log({
+        level: "warn",
+        category: "prefab",
+        message: error instanceof Error ? error.message : "Duplicate failed",
+      });
+      return undefined;
+    }
   }
 
   /** Copy selected root-most nodes into the editor clipboard. */
@@ -472,7 +576,15 @@ export class Editor {
   }
 
   deleteNode(nodeId: string): void {
-    this.execute(new DeleteNodeCommand(this.document, this.selection, nodeId));
+    try {
+      this.execute(new DeleteNodeCommand(this.document, this.selection, nodeId));
+    } catch (error) {
+      this.console.log({
+        level: "warn",
+        category: "prefab",
+        message: error instanceof Error ? error.message : "Delete failed",
+      });
+    }
   }
 
   /**
@@ -484,16 +596,24 @@ export class Editor {
     toIndex: number,
     options?: { preserveWorldTransform?: boolean },
   ): void {
-    this.execute(
-      new MoveNodeCommand(this.document, {
-        nodeId,
-        toParentId,
-        toIndex,
-        ...(options?.preserveWorldTransform !== undefined
-          ? { preserveWorldTransform: options.preserveWorldTransform }
-          : {}),
-      }),
-    );
+    try {
+      this.execute(
+        new MoveNodeCommand(this.document, {
+          nodeId,
+          toParentId,
+          toIndex,
+          ...(options?.preserveWorldTransform !== undefined
+            ? { preserveWorldTransform: options.preserveWorldTransform }
+            : {}),
+        }),
+      );
+    } catch (error) {
+      this.console.log({
+        level: "warn",
+        category: "prefab",
+        message: error instanceof Error ? error.message : "Move failed",
+      });
+    }
   }
 
   setTransform2D(nodeId: string, patch: Transform2DPatch): void {
@@ -736,10 +856,17 @@ export class Editor {
   }
 
   async saveScene(sceneFileId = this.sceneFileId): Promise<void> {
+    if (this.prefabs.getMode().kind === "prefab") {
+      return saveOpenPrefabDocument(this);
+    }
     return saveSceneDocument(this.persistenceHost(), sceneFileId);
   }
 
   async loadScene(sceneFileId = this.sceneFileId): Promise<void> {
+    if (this.prefabs.getMode().kind === "prefab") {
+      await closePrefabDocument(this);
+    }
+    this.prefabs.setMode({ kind: "scene", sceneFileId });
     return loadSceneDocument(this.persistenceHost(), sceneFileId);
   }
 
@@ -906,6 +1033,7 @@ export class Editor {
   async openProject(projectId: string): Promise<void> {
     const { project } = await this.project.openProject(projectId);
     await this.assets.refresh({ force: true });
+    await this.prefabs.refreshFromAssets(this.assets);
     await this.loadScene(project.startScene);
   }
 
@@ -915,6 +1043,7 @@ export class Editor {
   async bootstrapActiveProject(): Promise<void> {
     const project = await this.project.refresh();
     await this.assets.refresh({ force: true });
+    await this.prefabs.refreshFromAssets(this.assets);
     await this.loadScene(project.startScene);
   }
 
@@ -1054,12 +1183,20 @@ export class Editor {
           ? await this.commands.undoAsync()
           : await this.commands.redoAsync();
       if (did) {
-        this.document.syncDirtyFromContent();
+        this.afterDocumentCommand();
       }
     } finally {
       this.historyBusy = false;
       this.emit();
     }
+  }
+
+  private afterDocumentCommand(): void {
+    if (this.prefabs.getMode().kind !== "prefab") {
+      this.prefabs.syncOverrides(this.document);
+    }
+    this.document.syncDirtyFromContent();
+    this.emit();
   }
 
   private emit(): void {

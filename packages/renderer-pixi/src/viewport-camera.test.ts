@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  cameraToCenterWorld,
+  cameraToFrameWorldRect,
   clampViewportScale,
   panByScreenDelta,
   screenToWorld,
@@ -65,5 +67,22 @@ describe("viewport camera math", () => {
       maxX: 150,
       maxY: 75,
     });
+  });
+
+  it("centers a world point in the screen", () => {
+    expect(cameraToCenterWorld({ x: 0, y: 0 }, 800, 600, 1)).toEqual({
+      pan: { x: 400, y: 300 },
+      scale: 1,
+    });
+  });
+
+  it("frames a small rect without zooming in past 100%", () => {
+    const camera = cameraToFrameWorldRect(
+      { minX: -32, minY: -32, maxX: 32, maxY: 32 },
+      800,
+      600,
+    );
+    expect(camera.scale).toBe(1);
+    expect(camera.pan).toEqual({ x: 400, y: 300 });
   });
 });

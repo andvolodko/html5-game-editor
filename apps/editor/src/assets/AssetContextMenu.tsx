@@ -3,6 +3,7 @@ import {
   isScenesFolder,
   isScenesFolderOrDescendant,
 } from "@game-editor/editor-core";
+import { useEditor } from "../editor-context";
 import { EditorContextMenu } from "../ui/EditorContextMenu";
 
 export type AssetContextMenuState =
@@ -26,6 +27,8 @@ export function AssetContextMenu({
   onDuplicateScene,
   onNewScene,
   onNewFolder,
+  onOpenPrefab,
+  onInstantiatePrefab,
 }: {
   menu: Exclude<AssetContextMenuState, null>;
   onClose: () => void;
@@ -40,7 +43,13 @@ export function AssetContextMenu({
   onDuplicateScene: (id: string) => void;
   onNewScene: () => void;
   onNewFolder: (folderPath?: string) => void;
+  onOpenPrefab: (id: string) => void;
+  onInstantiatePrefab: (id: string) => void;
 }) {
+  const editor = useEditor();
+  const prefabAsset =
+    menu.kind === "asset" ? editor.assets.get(menu.id) : undefined;
+  const isPrefab = prefabAsset?.type === "prefab";
   const canRemoveFolder =
     menu.kind === "folder" &&
     menu.path !== ASSETS_ROOT_FOLDER &&
@@ -50,6 +59,32 @@ export function AssetContextMenu({
     <EditorContextMenu x={menu.x} y={menu.y}>
       {menu.kind === "asset" ? (
         <>
+          {isPrefab ? (
+            <>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenPrefab(menu.id);
+                    onClose();
+                  }}
+                >
+                  Open
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onInstantiatePrefab(menu.id);
+                    onClose();
+                  }}
+                >
+                  Instantiate
+                </button>
+              </li>
+            </>
+          ) : null}
           <li>
             <button
               type="button"

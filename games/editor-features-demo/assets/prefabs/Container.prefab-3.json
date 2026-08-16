@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "id": "prefab_b04f669c-5bad-41c9-824a-63b533b70ef5",
+  "name": "Container",
+  "root": {
+    "id": "node_3fab68d2-416d-4184-af68-3e702d815279",
+    "name": "Container Copy",
+    "components": [
+      {
+        "type": "Transform2D",
+        "id": "comp_5a1c4f4c-b963-4dc0-b3e4-3ddbe94bbb82",
+        "position": {
+          "x": -43.48760736891404,
+          "y": -182.31346770314428
+        },
+        "rotation": 0,
+        "scale": {
+          "x": 1,
+          "y": 1
+        }
+      }
+    ],
+    "children": [
+      {
+        "id": "node_f10cc237-29fa-4cf6-a2b5-a50e1eeb6624",
+        "name": "Graphics",
+        "parentId": "node_3fab68d2-416d-4184-af68-3e702d815279",
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_b440ce88-3f4d-4186-b5ee-34c1f146a162",
+            "position": {
+              "x": 737.5726323522193,
+              "y": 223.21365192155292
+            },
+            "rotation": 0,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "Graphics",
+            "id": "comp_d73b09ad-b0b4-4d76-bf57-6e71a6c20364",
+            "shape": {
+              "type": "circle",
+              "radius": 50
+            },
+            "fillColor": 11739939,
+            "fillAlpha": 1,
+            "strokeColor": 0,
+            "strokeAlpha": 0,
+            "strokeWidth": 0
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "node_97a1ffa4-a703-4663-85f5-9e8d990d8c34",
+        "name": "Sprite",
+        "parentId": "node_3fab68d2-416d-4184-af68-3e702d815279",
+        "prefab": {
+          "prefabAssetId": "asset_1aa00dd9-379e-421e-95b5-704ccbc55b00",
+          "instanceId": "pinst_c426fc54-841c-42dd-b991-27a5f0d425e2",
+          "sourceNodeId": "node_9fa191cc-7360-4e18-aae0-553122af3a3c",
+          "componentSources": {
+            "comp_2f7760c5-c847-4622-a73a-75d2939a1c13": "comp_c654913c-2c4a-4089-9552-7f906b3614e1",
+            "comp_7e5be2be-d44b-4823-b8d4-33ea17aa831e": "comp_cb59d740-9cdf-4b38-92fe-4fad2cc592c1"
+          }
+        },
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_2f7760c5-c847-4622-a73a-75d2939a1c13",
+            "position": {
+              "x": 670,
+              "y": 200
+            },
+            "rotation": -18.516133011613384,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "Sprite",
+            "id": "comp_7e5be2be-d44b-4823-b8d4-33ea17aa831e",
+            "width": 64,
+            "height": 64
+          }
+        ],
+        "children": []
+      }
+    ]
+  }
+}

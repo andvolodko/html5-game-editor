@@ -5,6 +5,7 @@ import {
   selectionAfterDelete,
   type SceneNodeData,
 } from "@game-editor/scene";
+import { assertPrefabStructureEditAllowed } from "../prefab-structure.js";
 import type { DocumentManager } from "../document-manager.js";
 import type {
   EditorSelection,
@@ -31,6 +32,7 @@ export class DeleteNodeCommand implements Command {
     if (!location || !node) {
       throw new Error(`DeleteNodeCommand: unknown node ${nodeId}`);
     }
+    assertPrefabStructureEditAllowed(scene, nodeId);
     this.parentId = location.parentId;
     this.index = location.index;
     this.node = node;

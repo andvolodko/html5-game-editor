@@ -14,7 +14,9 @@ interface AssetRowProps {
   renaming: boolean;
   previewUrl: string | undefined;
   dropTarget: boolean;
+  editing?: boolean;
   onSelect: () => void;
+  onActivate?: () => void;
   onStartRename: () => void;
   onCommitRename: (name: string) => void;
   onCancelRename: () => void;
@@ -28,7 +30,9 @@ function AssetRowComponent({
   renaming,
   previewUrl,
   dropTarget,
+  editing = false,
   onSelect,
+  onActivate,
   onStartRename,
   onCommitRename,
   onCancelRename,
@@ -46,7 +50,7 @@ function AssetRowComponent({
       style={{ paddingLeft: treeIndentPadding(depth) }}
       draggable={!renaming}
       onClick={onSelect}
-      onDoubleClick={onStartRename}
+      onDoubleClick={onActivate ?? onStartRename}
       onContextMenu={onContextMenu}
       onDragStart={(event) => {
         event.dataTransfer.setData(
@@ -76,6 +80,7 @@ function AssetRowComponent({
       ) : (
         <span className="hierarchy-label">{asset.name}</span>
       )}
+      {editing ? <span className="asset-badge">open</span> : null}
     </div>
   );
 }
@@ -99,6 +104,9 @@ function assetRowIconClass(type: AssetRecord["type"]): string {
   if (type === "aseprite") {
     return "asset-row-icon aseprite";
   }
+  if (type === "prefab") {
+    return "asset-row-icon prefab";
+  }
   return "asset-row-icon texture";
 }
 
@@ -110,9 +118,11 @@ function assetRowPropsEqual(
     prev.asset === next.asset &&
     prev.depth === next.depth &&
     prev.selected === next.selected &&
+    prev.onActivate === next.onActivate &&
     prev.renaming === next.renaming &&
     prev.previewUrl === next.previewUrl &&
-    prev.dropTarget === next.dropTarget
+    prev.dropTarget === next.dropTarget &&
+    prev.editing === next.editing
   );
 }
 

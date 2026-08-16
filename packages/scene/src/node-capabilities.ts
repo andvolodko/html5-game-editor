@@ -131,6 +131,9 @@ export function threeTypeToNodeTypeId(type: LeafThreeComponentType): string {
 
 /** Hierarchy icon glyph for a node (plain text, not emoji). */
 export function getNodeTypeIcon(node: SceneNodeData): string {
+  if (node.prefab?.isRoot === true) {
+    return "◇";
+  }
   const threeLeaf = getLeafThreeType(node);
   if (threeLeaf) {
     switch (threeLeaf) {

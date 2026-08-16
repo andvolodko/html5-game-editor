@@ -177,8 +177,18 @@ export function FolderBranch(props: FolderBranchProps) {
                 }
                 previewUrl={model.contentUrl(entry.asset)}
                 dropTarget={false}
+                editing={model.openPrefabAssetId === entry.asset.id}
                 onSelect={() =>
                   model.setSelection({ kind: "asset", id: entry.asset.id })
+                }
+                onActivate={
+                  entry.asset.type === "prefab"
+                    ? () => {
+                        void model.editor.openPrefab(entry.asset.id).catch(
+                          () => undefined,
+                        );
+                      }
+                    : undefined
                 }
                 onStartRename={() =>
                   model.setRenaming({ kind: "asset", id: entry.asset.id })

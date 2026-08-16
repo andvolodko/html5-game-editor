@@ -4,9 +4,11 @@ import type { FederatedPointerEvent } from "pixi.js";
 import type { Vec2 } from "@game-editor/scene";
 import { MOUSE_BUTTON_MIDDLE } from "@game-editor/shared";
 import {
+  cameraToFrameWorldRect,
   createDefaultViewportCamera,
   panByScreenDelta,
   type ViewportCameraState,
+  type WorldRect,
   VIEWPORT_SCALE_STEP,
   zoomAtScreenPoint,
 } from "./viewport-camera.js";
@@ -142,6 +144,26 @@ export class ViewportCameraController {
 
   reset(): void {
     this.setState(createDefaultViewportCamera());
+  }
+
+  replaceState(state: ViewportCameraState): void {
+    this.setState({
+      scale: state.scale,
+      pan: { x: state.pan.x, y: state.pan.y },
+    });
+  }
+
+  frameWorldRect(rect: WorldRect, padding?: number): void {
+    const width = this.app?.screen.width ?? 1;
+    const height = this.app?.screen.height ?? 1;
+    this.setState(
+      cameraToFrameWorldRect(
+        rect,
+        width > 1 ? width : 800,
+        height > 1 ? height : 600,
+        padding,
+      ),
+    );
   }
 
   /**

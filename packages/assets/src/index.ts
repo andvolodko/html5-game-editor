@@ -9,6 +9,7 @@ export type {
   AsepriteTagDirection,
   BitmapFontAssetMetadata,
   WebFontAssetMetadata,
+  PrefabAssetMetadata,
   AssetMetadata,
   AssetRecord,
   AssetDatabaseData,
@@ -24,6 +25,7 @@ export {
   asepriteTagMetadataSchema,
   bitmapFontAssetMetadataSchema,
   webFontAssetMetadataSchema,
+  prefabAssetMetadataSchema,
   assetMetadataSchema,
   assetRecordSchema,
   assetDatabaseSchema,
@@ -41,6 +43,7 @@ export {
   createAsepriteAssetRecord,
   createBitmapFontAssetRecord,
   createWebFontAssetRecord,
+  createPrefabAssetRecord,
   normalizeProjectRelativePath,
   humanizeAssetNodeName,
 } from "./factories.js";

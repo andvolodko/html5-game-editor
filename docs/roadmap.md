@@ -56,7 +56,7 @@ See [`collaboration.md`](./collaboration.md).
 
 ## Phase 6 — Advanced Editor
 
-* prefabs;
+* prefabs (instances, property overrides, prefab edit mode — shipped; variants and inherited structural edits still open);
 * animation;
 * custom inspectors;
 * layout persistence;

@@ -1,6 +1,6 @@
 import { parseAssetDatabase, createEmptyAssetDatabase } from "@game-editor/assets";
 import { parseProjectData } from "@game-editor/project";
-import { parseSceneData, type SceneData } from "@game-editor/scene";
+import { parsePrefabData, parseSceneData, type PrefabData, type SceneData } from "@game-editor/scene";
 import type { ComponentCatalogData } from "@game-editor/game-components";
 import {
   projectIdFromGlobPath,
@@ -20,6 +20,10 @@ const assetsModules = import.meta.glob(
 );
 const sceneModules = import.meta.glob(
   "../../../../games/*/assets/scenes/*.json",
+  { eager: true, import: "default" },
+);
+const prefabModules = import.meta.glob(
+  "../../../../games/*/assets/prefabs/**/*.prefab.json",
   { eager: true, import: "default" },
 );
 const catalogModules = import.meta.glob<{
@@ -71,13 +75,15 @@ export function loadBundledDemoSnapshots(): DemoSnapshot[] {
     if (scenes[project.startScene] === undefined) {
       continue;
     }
+    const database = parseAssetDatabase(
+      assets.get(projectId) ?? createEmptyAssetDatabase(),
+    );
     snapshots.push({
       projectId,
       project,
-      assets: parseAssetDatabase(
-        assets.get(projectId) ?? createEmptyAssetDatabase(),
-      ),
+      assets: database,
       scenes,
+      prefabs: prefabsForProject(projectId, database, prefabModules),
     });
   }
   snapshots.sort((left, right) => left.projectId.localeCompare(right.projectId));
@@ -97,4 +103,36 @@ export function loadDemoComponentCatalogs(): Record<string, ComponentCatalogData
     catalogs[projectId] = catalogModule.getComponentCatalog();
   }
   return catalogs;
+}
+
+function prefabsForProject(
+  projectId: string,
+  assets: ReturnType<typeof parseAssetDatabase>,
+  modules: Readonly<Record<string, unknown>>,
+): Record<string, PrefabData> {
+  const byPath = new Map<string, unknown>();
+  for (const [modulePath, raw] of Object.entries(modules)) {
+    if (projectIdFromGlobPath(modulePath) !== projectId) {
+      continue;
+    }
+    const normalized = modulePath.replaceAll("\\", "/");
+    const marker = "/assets/";
+    const index = normalized.lastIndexOf(marker);
+    if (index < 0) {
+      continue;
+    }
+    byPath.set(`assets/${normalized.slice(index + marker.length)}`, raw);
+  }
+  const prefabs: Record<string, PrefabData> = {};
+  for (const record of assets.assets) {
+    if (record.type !== "prefab") {
+      continue;
+    }
+    const raw = byPath.get(record.path);
+    if (raw === undefined) {
+      continue;
+    }
+    prefabs[record.id] = parsePrefabData(raw);
+  }
+  return prefabs;
 }

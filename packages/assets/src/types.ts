@@ -11,7 +11,8 @@ export type AssetType =
   | "gltf"
   | "aseprite"
   | "font"
-  | "webfont";
+  | "webfont"
+  | "prefab";
 
 export interface TextureAssetMetadata {
   kind: "texture";
@@ -96,6 +97,12 @@ export interface WebFontAssetMetadata {
   format: "ttf" | "otf" | "woff" | "woff2";
 }
 
+export interface PrefabAssetMetadata {
+  kind: "prefab";
+  /** Prefab document id (`prefab_…`), distinct from the catalogue assetId. */
+  prefabId: string;
+}
+
 export type AssetMetadata =
   | TextureAssetMetadata
   | SpineAssetMetadata
@@ -103,7 +110,8 @@ export type AssetMetadata =
   | GltfAssetMetadata
   | AsepriteAssetMetadata
   | BitmapFontAssetMetadata
-  | WebFontAssetMetadata;
+  | WebFontAssetMetadata
+  | PrefabAssetMetadata;
 
 /**
  * Stable asset identity. Scenes must reference `id`, never raw filesystem paths.

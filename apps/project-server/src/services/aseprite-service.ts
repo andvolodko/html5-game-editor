@@ -1,16 +1,21 @@
-import { access, constants } from "node:fs/promises";
+import { access, constants, readFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { homedir } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { DomainError } from "@game-editor/core";
 
 const execFileAsync = promisify(execFile);
 
 export const ASEPRITE_CLI_MISSING_MESSAGE =
-  "Aseprite CLI was not found.\n\nInstall Aseprite or the free LibreSprite fork, and make sure `aseprite` or `libresprite` is available in PATH (or set the ASEPRITE environment variable).";
+  "Aseprite CLI was not found.\n\nRun `pnpm install-libresprite`, or install Aseprite / LibreSprite and make sure `aseprite` or `libresprite` is available in PATH (or set the ASEPRITE environment variable).";
+
+export const PACKAGED_LIBRESPRITE_DIR = "vendor/libresprite";
+export const PACKAGED_LIBRESPRITE_CLI_PATH_FILE = "cli-path";
 
 export const ASEPRITE_CLI_TIMEOUT_MS = 60_000;
+const PATH_LOOKUP_TIMEOUT_MS = 5_000;
 
 export interface AsepriteCliRunner {
   run(
@@ -21,6 +26,12 @@ export interface AsepriteCliRunner {
 
 export interface AsepriteExecutableLookup {
   resolve(): Promise<string | undefined>;
+}
+
+export interface PathAsepriteExecutableLookupOptions {
+  packageRoot?: string;
+  skipPath?: boolean;
+  skipWellKnown?: boolean;
 }
 
 function whichCommand(): string {
@@ -88,6 +99,19 @@ function wellKnownPaths(): string[] {
   ];
 }
 
+function defaultProjectServerRoot(): string {
+  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+}
+
+function isPathInside(root: string, candidate: string): boolean {
+  const resolvedRoot = path.resolve(root);
+  const resolvedCandidate = path.resolve(candidate);
+  return (
+    resolvedCandidate === resolvedRoot ||
+    resolvedCandidate.startsWith(resolvedRoot + path.sep)
+  );
+}
+
 async function isExecutable(filePath: string): Promise<boolean> {
   try {
     await access(filePath, constants.X_OK);
@@ -103,31 +127,69 @@ async function isExecutable(filePath: string): Promise<boolean> {
 }
 
 export class PathAsepriteExecutableLookup implements AsepriteExecutableLookup {
+  private readonly packageRoot: string;
+  private readonly skipPath: boolean;
+  private readonly skipWellKnown: boolean;
+
+  constructor(options: PathAsepriteExecutableLookupOptions = {}) {
+    this.packageRoot = options.packageRoot ?? defaultProjectServerRoot();
+    this.skipPath = options.skipPath === true;
+    this.skipWellKnown = options.skipWellKnown === true;
+  }
+
   async resolve(): Promise<string | undefined> {
     const fromEnv = process.env.ASEPRITE;
     if (fromEnv && (await isExecutable(fromEnv))) {
       return fromEnv;
     }
 
-    for (const name of candidateNames()) {
-      try {
-        const { stdout } = await execFileAsync(whichCommand(), [name], {
-          timeout: 5_000,
-          windowsHide: true,
-        });
-        const first = stdout
-          .split(/\r?\n/)
-          .map((line) => line.trim())
-          .find((line) => line.length > 0);
-        if (first && (await isExecutable(first))) {
-          return first;
+    if (!this.skipPath) {
+      for (const name of candidateNames()) {
+        try {
+          const { stdout } = await execFileAsync(whichCommand(), [name], {
+            timeout: PATH_LOOKUP_TIMEOUT_MS,
+            windowsHide: true,
+          });
+          const first = stdout
+            .split(/\r?\n/)
+            .map((line) => line.trim())
+            .find((line) => line.length > 0);
+          if (first && (await isExecutable(first))) {
+            return first;
+          }
+        } catch {
+          // Not on PATH.
         }
-      } catch {
-        // Not on PATH.
       }
     }
 
-    for (const candidate of wellKnownPaths()) {
+    if (!this.skipWellKnown) {
+      for (const candidate of wellKnownPaths()) {
+        if (await isExecutable(candidate)) {
+          return candidate;
+        }
+      }
+    }
+
+    return this.resolvePackaged();
+  }
+
+  private async resolvePackaged(): Promise<string | undefined> {
+    const vendor = path.join(this.packageRoot, PACKAGED_LIBRESPRITE_DIR);
+    const marker = path.join(vendor, PACKAGED_LIBRESPRITE_CLI_PATH_FILE);
+    try {
+      const relative = (await readFile(marker, "utf8")).trim();
+      if (relative.length > 0 && !path.isAbsolute(relative)) {
+        const resolved = path.resolve(vendor, relative);
+        if (isPathInside(vendor, resolved) && (await isExecutable(resolved))) {
+          return resolved;
+        }
+      }
+    } catch {
+      // No packaged install, or marker unreadable.
+    }
+    for (const name of candidateNames()) {
+      const candidate = path.join(vendor, name);
       if (await isExecutable(candidate)) {
         return candidate;
       }

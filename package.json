@@ -14,7 +14,8 @@
     "build:pages": "pnpm build:demo && node scripts/assemble-github-pages.mjs",
     "test": "pnpm -r --if-present run test",
     "typecheck": "pnpm -r --if-present run typecheck",
-    "lint": "pnpm -r --if-present run lint"
+    "lint": "pnpm -r --if-present run lint",
+    "install-libresprite": "pnpm --filter @game-editor/project-server install-libresprite"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

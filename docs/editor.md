@@ -73,7 +73,9 @@ interface Command {
 
 Command manager: `undoStack` / `redoStack`. All user-editing operations should eventually go through commands.
 
-Examples: `CreateNodeCommand`, `DeleteNodeCommand`, `MoveNodeCommand`, `ReparentNodeCommand`, `SetPropertyCommand`, `AddComponentCommand`, `RemoveComponentCommand`, `DuplicateNodeCommand`, `CompositeCommand`.
+Examples: `CreateNodeCommand`, `DeleteNodeCommand`, `MoveNodeCommand`, `ReparentNodeCommand`, `SetPropertyCommand`, `AddComponentCommand`, `RemoveComponentCommand`, `DuplicateNodeCommand`, `InstantiatePrefabCommand`, `UnpackPrefabCommand`, `RevertPrefabOverridesCommand`, `CompositeCommand`.
+
+Prefab instance roots can be opened as an isolated document (`EditorDocumentMode` `scene` | `prefab`). Save in prefab mode writes the prefab asset, not the stashed scene. After each document command, `PrefabManager.syncOverrides` diffs instances against the catalog so Inspector fields stay generic.
 
 Commands implement `Command` from `@game-editor/commands` and mutate through `DocumentManager` / `SelectionManager` — never Pixi/Three objects or React state. One command class per file under `packages/editor-core/src/commands/`.
 

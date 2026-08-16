@@ -11,6 +11,7 @@ import {
   type SpineAssetMetadata,
   type TextureAssetMetadata,
   type WebFontAssetMetadata,
+  type PrefabAssetMetadata,
 } from "./types.js";
 import { generatedAsepriteOutputPaths } from "./aseprite-extensions.js";
 
@@ -165,6 +166,25 @@ export function createWebFontAssetRecord(input: {
   return {
     id: input.id ?? createId("asset"),
     type: "webfont",
+    name: input.name,
+    path: normalizeProjectRelativePath(input.path),
+    metadata,
+  };
+}
+
+export function createPrefabAssetRecord(input: {
+  name: string;
+  path: string;
+  prefabId: string;
+  id?: string;
+}): AssetRecord {
+  const metadata: PrefabAssetMetadata = {
+    kind: "prefab",
+    prefabId: input.prefabId,
+  };
+  return {
+    id: input.id ?? createId("asset"),
+    type: "prefab",
     name: input.name,
     path: normalizeProjectRelativePath(input.path),
     metadata,

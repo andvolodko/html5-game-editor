@@ -12,3 +12,5 @@ coverage
 **/.project/aseprite-cache.json
 **/.generated/asset-trash/
 **/.generated/folder-trash/
+# LibreSprite CLI downloaded by project-server postinstall / pnpm install-libresprite
+apps/project-server/vendor/

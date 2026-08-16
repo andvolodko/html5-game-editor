@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "id": "prefab_dfca9090-ab5b-4064-bc33-685bff615782",
+  "name": "Container",
+  "root": {
+    "id": "node_d4b67bcd-dc61-48cf-b270-717b54fa8af9",
+    "name": "Container",
+    "components": [
+      {
+        "type": "Transform2D",
+        "id": "comp_7984f78c-05d0-4b74-97a7-8f18d16e18eb",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "rotation": 0,
+        "scale": {
+          "x": 1,
+          "y": 1
+        }
+      }
+    ],
+    "children": [
+      {
+        "id": "node_f33e2ea0-a51b-4af3-a77c-8046682f3996",
+        "name": "Sprite",
+        "parentId": "node_d4b67bcd-dc61-48cf-b270-717b54fa8af9",
+        "prefab": {
+          "prefabAssetId": "asset_1aa00dd9-379e-421e-95b5-704ccbc55b00",
+          "instanceId": "pinst_c426fc54-841c-42dd-b991-27a5f0d425e2",
+          "sourceNodeId": "node_9fa191cc-7360-4e18-aae0-553122af3a3c",
+          "componentSources": {
+            "comp_4912a3f1-b4ec-4cd1-8f52-a3e66a0ecd3b": "comp_c654913c-2c4a-4089-9552-7f906b3614e1",
+            "comp_1561b1a7-86c2-43f1-88ab-f7e28a91ad68": "comp_cb59d740-9cdf-4b38-92fe-4fad2cc592c1"
+          }
+        },
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_4912a3f1-b4ec-4cd1-8f52-a3e66a0ecd3b",
+            "position": {
+              "x": 670,
+              "y": 200
+            },
+            "rotation": -18.516133011613384,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "Sprite",
+            "id": "comp_1561b1a7-86c2-43f1-88ab-f7e28a91ad68",
+            "width": 64,
+            "height": 64
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "node_af1462bf-3952-4122-94df-33aa3052434a",
+        "name": "Graphics",
+        "parentId": "node_d4b67bcd-dc61-48cf-b270-717b54fa8af9",
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_e73af9f2-77f5-4779-b311-dcc15c9faf30",
+            "position": {
+              "x": 858,
+              "y": 163
+            },
+            "rotation": 0,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "Graphics",
+            "id": "comp_9544632a-4578-4b3a-b0e1-0504a4e0806a",
+            "shape": {
+              "type": "circle",
+              "radius": 50
+            },
+            "fillColor": 11739939,
+            "fillAlpha": 1,
+            "strokeColor": 0,
+            "strokeAlpha": 0,
+            "strokeWidth": 0
+          }
+        ],
+        "children": []
+      }
+    ]
+  }
+}

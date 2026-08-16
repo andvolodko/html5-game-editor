@@ -14,8 +14,14 @@ export function localScaleTowardAncestor(
   let y = 1;
   let current: Container | null = from;
   while (current && current !== ancestor) {
-    x *= current.scale.x;
-    y *= current.scale.y;
+    // Pixi nulls `scale` on destroy(); in-flight paints can still walk a
+    // stale container after clear / destroy+recreate of the same node id.
+    const scale = current.scale;
+    if (!scale) {
+      break;
+    }
+    x *= scale.x;
+    y *= scale.y;
     current = current.parent;
   }
   return { x, y };

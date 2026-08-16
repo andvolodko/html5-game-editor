@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "id": "prefab_3c7752ca-b77c-4e0a-a865-667f72dfacbc",
+  "name": "Container",
+  "root": {
+    "id": "node_67e6fbd9-2466-42ed-8124-0032010d5205",
+    "name": "Container",
+    "components": [
+      {
+        "type": "Transform2D",
+        "id": "comp_8ef81a13-3572-4841-935d-d595468691a1",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "rotation": 0,
+        "scale": {
+          "x": 1,
+          "y": 1
+        }
+      }
+    ],
+    "children": [
+      {
+        "id": "node_12d2233e-f7c6-4492-be74-f8b04226ce4e",
+        "name": "Sprite",
+        "parentId": "node_67e6fbd9-2466-42ed-8124-0032010d5205",
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_4b0f5574-24f5-4385-bf35-fe5850ec9232",
+            "position": {
+              "x": 670,
+              "y": 200
+            },
+            "rotation": -18.516133011613384,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "Sprite",
+            "id": "comp_99dc5058-47c3-46db-a658-c7f6fdb83504",
+            "width": 64,
+            "height": 64
+          }
+        ],
+        "children": []
+      }
+    ]
+  }
+}

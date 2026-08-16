@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "id": "prefab_06e5d962-a513-480e-9b54-e3f673343e60",
+  "name": "Simple Mesh",
+  "root": {
+    "id": "node_31649ce9-1c55-4a06-86c2-1c22af959e1c",
+    "name": "Simple Mesh Copy",
+    "components": [
+      {
+        "type": "Transform2D",
+        "id": "comp_8f52df1c-d165-4884-823e-0e0cc4680a4f",
+        "position": {
+          "x": 432.4405559860577,
+          "y": -36.73506067429814
+        },
+        "rotation": 0,
+        "scale": {
+          "x": 1.7820919530101629,
+          "y": 1
+        }
+      },
+      {
+        "type": "MeshSimple",
+        "id": "comp_4a1981d7-90ea-4f88-9745-37700849ca4c",
+        "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+        "vertices": [
+          -50,
+          -50,
+          50,
+          -50,
+          50,
+          50,
+          -50,
+          50
+        ],
+        "uvs": [
+          0,
+          0,
+          1,
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        "indices": [
+          0,
+          1,
+          2,
+          0,
+          2,
+          3
+        ],
+        "autoUpdate": true
+      }
+    ],
+    "children": []
+  }
+}

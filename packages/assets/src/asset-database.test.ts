@@ -5,6 +5,7 @@ import {
   createBitmapFontAssetRecord,
   createTextureAssetRecord,
   createWebFontAssetRecord,
+  createPrefabAssetRecord,
   humanizeAssetNodeName,
   parseAssetDatabase,
   parseAssetRecord,
@@ -194,6 +195,21 @@ describe("AssetDatabase", () => {
     if (parsed.metadata.kind === "webfont") {
       expect(parsed.metadata.fontFamily).toBe("ChaChicle");
       expect(parsed.metadata.format).toBe("ttf");
+    }
+  });
+
+  it("round-trips a prefab asset record", () => {
+    const record = createPrefabAssetRecord({
+      id: "asset_prefab",
+      name: "Player",
+      path: "assets/prefabs/Player.prefab.json",
+      prefabId: "prefab_player",
+    });
+    const parsed = parseAssetRecord(record);
+    expect(parsed.type).toBe("prefab");
+    expect(parsed.metadata.kind).toBe("prefab");
+    if (parsed.metadata.kind === "prefab") {
+      expect(parsed.metadata.prefabId).toBe("prefab_player");
     }
   });
 

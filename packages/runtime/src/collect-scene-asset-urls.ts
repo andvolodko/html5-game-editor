@@ -1,5 +1,9 @@
 import type { AssetResolver } from "@game-editor/assets";
-import { collectReferencedAssetIds, type SceneData } from "@game-editor/scene";
+import {
+  collectReferencedAssetIds,
+  type PrefabCatalog,
+  type SceneData,
+} from "@game-editor/scene";
 
 function addUrl(urls: Set<string>, value: string | undefined): void {
   if (value !== undefined && value.length > 0) {
@@ -51,10 +55,13 @@ function addAssetUrls(
 }
 
 /** Unique catalogue assetIds referenced by any of the scenes. */
-export function collectSceneAssetIds(scenes: Iterable<SceneData>): string[] {
+export function collectSceneAssetIds(
+  scenes: Iterable<SceneData>,
+  prefabs?: PrefabCatalog,
+): string[] {
   const assetIds = new Set<string>();
   for (const scene of scenes) {
-    for (const assetId of collectReferencedAssetIds(scene)) {
+    for (const assetId of collectReferencedAssetIds(scene, prefabs)) {
       assetIds.add(assetId);
     }
   }
@@ -68,9 +75,10 @@ export function collectSceneAssetIds(scenes: Iterable<SceneData>): string[] {
 export function collectSceneAssetUrls(
   scenes: Iterable<SceneData>,
   resolver: AssetResolver,
+  prefabs?: PrefabCatalog,
 ): string[] {
   const urls = new Set<string>();
-  for (const assetId of collectSceneAssetIds(scenes)) {
+  for (const assetId of collectSceneAssetIds(scenes, prefabs)) {
     addAssetUrls(urls, resolver, assetId);
   }
   return [...urls].sort();

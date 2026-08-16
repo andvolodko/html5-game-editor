@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import type { Editor } from "@game-editor/editor-core";
+import type { ViewportCameraState } from "@game-editor/renderer-pixi";
 import {
+  collectSceneContentBounds2D,
   findNodeById,
   getNodeLayer,
   getSceneRendererKind,
   getTransform2D,
+  type SceneData,
 } from "@game-editor/scene";
 import {
   createSceneViewport,
@@ -50,6 +53,7 @@ export function useSceneViewport(args: {
   const snapGridSizeRef = useRef(snapGridSize);
   const showPixiLayersRef = useRef(showPixiLayers);
   const showThreeLayersRef = useRef(showThreeLayers);
+  const stashedCameraRef = useRef<ViewportCameraState | undefined>(undefined);
   snapToGridRef.current = snapToGrid;
   snapGridSizeRef.current = snapGridSize;
   showPixiLayersRef.current = showPixiLayers;
@@ -58,6 +62,28 @@ export function useSceneViewport(args: {
   useEffect(() => {
     return editor.subscribeViewportRemount(() => {
       setViewportGeneration((generation) => generation + 1);
+    });
+  }, [editor]);
+
+  useEffect(() => {
+    const initialMode = editor.prefabs.getMode();
+    let previousAssetId =
+      initialMode.kind === "prefab" ? initialMode.assetId : undefined;
+    return editor.subscribe(() => {
+      const mode = editor.prefabs.getMode();
+      const assetId = mode.kind === "prefab" ? mode.assetId : undefined;
+      if (assetId === previousAssetId) {
+        return;
+      }
+      const viewport = viewportRef.current;
+      if (assetId === undefined) {
+        restorePreviewCamera(viewport, stashedCameraRef);
+        previousAssetId = undefined;
+        return;
+      }
+      stashPreviewCamera(viewport, stashedCameraRef);
+      framePrefabContentsWhenReady(viewport, editor.getScene());
+      previousAssetId = assetId;
     });
   }, [editor]);
 
@@ -129,6 +155,9 @@ export function useSceneViewport(args: {
 
       editor.attachRenderer(created.documentRenderer);
       created.setSelectedNodeIds(editor.selection.getSelectedNodeIds());
+      if (editor.prefabs.getMode().kind === "prefab") {
+        framePrefabContentsWhenReady(created, editor.getScene());
+      }
     });
 
     return () => {
@@ -186,4 +215,87 @@ export function useSceneViewport(args: {
   }, [threeViewMode]);
 
   return viewportRef;
+}
+
+function primaryPixi(viewport: SceneViewportHandle | null) {
+  return viewport?.pixi ?? viewport?.pixiBackground;
+}
+
+function stashPreviewCamera(
+  viewport: SceneViewportHandle | null,
+  stash: { current: ViewportCameraState | undefined },
+): void {
+  if (stash.current !== undefined) {
+    return;
+  }
+  const camera = primaryPixi(viewport)?.getViewportCamera();
+  if (!camera) {
+    return;
+  }
+  stash.current = {
+    scale: camera.scale,
+    pan: { x: camera.pan.x, y: camera.pan.y },
+  };
+}
+
+function restorePreviewCamera(
+  viewport: SceneViewportHandle | null,
+  stash: { current: ViewportCameraState | undefined },
+): void {
+  const camera = stash.current;
+  stash.current = undefined;
+  if (!camera) {
+    return;
+  }
+  const primary = primaryPixi(viewport);
+  primary?.setViewportCamera(camera);
+  copyPreviewCamera(viewport, primary);
+}
+
+function framePrefabContentsWhenReady(
+  viewport: SceneViewportHandle | null,
+  scene: SceneData,
+): void {
+  framePrefabContents(viewport, scene);
+  requestAnimationFrame(() => {
+    framePrefabContents(viewport, scene);
+  });
+}
+
+function framePrefabContents(
+  viewport: SceneViewportHandle | null,
+  scene: SceneData,
+): void {
+  const primary = primaryPixi(viewport);
+  if (!primary) {
+    return;
+  }
+  const bounds = collectSceneContentBounds2D(scene);
+  primary.frameWorldRect(
+    bounds
+      ? {
+          minX: bounds.x,
+          minY: bounds.y,
+          maxX: bounds.x + bounds.width,
+          maxY: bounds.y + bounds.height,
+        }
+      : { minX: 0, minY: 0, maxX: 0, maxY: 0 },
+  );
+  copyPreviewCamera(viewport, primary);
+}
+
+function copyPreviewCamera(
+  viewport: SceneViewportHandle | null,
+  source: ReturnType<typeof primaryPixi>,
+): void {
+  if (!viewport || !source) {
+    return;
+  }
+  const state = source.getViewportCamera();
+  if (viewport.pixiBackground && viewport.pixiBackground !== source) {
+    viewport.pixiBackground.applyViewportCamera(state);
+  }
+  if (viewport.pixiForeground && viewport.pixiForeground !== source) {
+    viewport.pixiForeground.applyViewportCamera(state);
+  }
 }

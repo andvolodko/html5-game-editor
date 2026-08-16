@@ -1,5 +1,10 @@
 import type { Editor } from "@game-editor/editor-core";
-import { DEFAULT_SPRITE_SIZE, type VisualComponentData } from "@game-editor/scene";
+import {
+  DEFAULT_SPRITE_SIZE,
+  findNodeById,
+  type VisualComponentData,
+} from "@game-editor/scene";
+import { isInspectorPropertyOverridden } from "../prefab-override-flag";
 import { rasterAssetDisplaySize } from "@game-editor/assets";
 import {
   AssetSelectField,
@@ -16,10 +21,12 @@ export function SpriteFields({
   visual,
   commit,
   editor,
+  nodeId,
 }: {
   visual: Extract<VisualComponentData, { type: "Sprite" }>;
   commit: VisualCommit;
   editor: Editor;
+  nodeId: string;
 }) {
   return (
     <>
@@ -49,6 +56,7 @@ export function SpriteFields({
       <ColorField
         label="Tint"
         value={visual.tint ?? 0xffffff}
+        overridden={isSpriteTintOverridden(editor, nodeId, visual.id)}
         onCommit={(tint) => commit({ tint })}
       />
     </>
@@ -210,4 +218,17 @@ export function AnimatedSpriteFields({
       />
     </>
   );
+}
+
+function isSpriteTintOverridden(
+  editor: Editor,
+  nodeId: string,
+  componentId: string,
+): boolean {
+  const scene = editor.getScene();
+  const node = findNodeById(scene, nodeId);
+  if (!node) {
+    return false;
+  }
+  return isInspectorPropertyOverridden(scene, node, componentId, "tint");
 }

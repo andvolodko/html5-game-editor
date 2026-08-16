@@ -7,6 +7,7 @@ import {
   getNodeLocation,
   type SceneNodeData,
 } from "@game-editor/scene";
+import { assertPrefabStructureEditAllowed } from "../prefab-structure.js";
 import type { DocumentManager } from "../document-manager.js";
 import type {
   EditorSelection,
@@ -31,6 +32,7 @@ export class DuplicateNodeCommand implements Command {
     if (!source || !location) {
       throw new Error(`DuplicateNodeCommand: unknown node ${sourceNodeId}`);
     }
+    assertPrefabStructureEditAllowed(scene, sourceNodeId);
     this.clone = cloneNodeSubtree(source);
     this.clone.name = allocateDuplicateName(
       source.name,

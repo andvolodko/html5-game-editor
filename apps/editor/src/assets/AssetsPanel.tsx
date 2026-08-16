@@ -428,7 +428,15 @@ export function AssetsPanel() {
                   }
                   previewUrl={model.contentUrl(asset)}
                   dropTarget={false}
+                  editing={model.openPrefabAssetId === asset.id}
                   onSelect={() => model.setSelection({ kind: "asset", id: asset.id })}
+                  onActivate={
+                    asset.type === "prefab"
+                      ? () => {
+                          void model.editor.openPrefab(asset.id).catch(() => undefined);
+                        }
+                      : undefined
+                  }
                   onStartRename={() =>
                     model.setRenaming({ kind: "asset", id: asset.id })
                   }
@@ -525,6 +533,21 @@ export function AssetsPanel() {
           }}
           onNewScene={() => {
             void model.createScene();
+          }}
+          onOpenPrefab={(id) => {
+            void model.editor.openPrefab(id).catch(() => undefined);
+          }}
+          onInstantiatePrefab={(id) => {
+            void model.editor.instantiatePrefabFromAsset(id).catch((error: unknown) => {
+              model.editor.console.log({
+                level: "error",
+                category: "prefab",
+                message:
+                  error instanceof Error
+                    ? error.message
+                    : "Instantiate prefab failed",
+              });
+            });
           }}
           onNewFolder={(folderPath) => {
             if (folderPath) {

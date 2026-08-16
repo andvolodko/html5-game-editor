@@ -224,6 +224,22 @@ export function ScenePanel({
           showPixiChrome && snapToGrid
             ? snapPositionToGrid(world, snapGridSize)
             : world;
+        const asset = editor.assets.get(payload.assetId);
+        if (asset?.type === "prefab") {
+          void editor
+            .instantiatePrefabFromAsset(payload.assetId, position)
+            .catch((error: unknown) => {
+              editor.console.log({
+                level: "error",
+                category: "prefab",
+                message:
+                  error instanceof Error
+                    ? error.message
+                    : "Instantiate prefab failed",
+              });
+            });
+          return;
+        }
         dropAssetOntoScene(editor, payload.assetId, position);
       }}
     >

@@ -22,6 +22,8 @@ interface AssetRecord {
 
 Possible types: `texture`, `spritesheet`, `aseprite`, `model3d`, `audio`, `font`, `webfont`, `spine`, `environment`, `scene`, `prefab`.
 
+`prefab` records point at a `.prefab.json` document. Metadata stores `prefabId` (the document id). Scenes reference the catalogue `assetId`, never the file path. Rename/move keeps `assetId` stable.
+
 `aseprite` records point at the source `.aseprite` / `.ase` path. Derived PNG/JSON live under `.generated/` and are not catalogue entries. Scenes must store the Aseprite `assetId` (and optional tag `animation`), never a generated filesystem path.
 
 Asset IDs remain stable after rename, move, or folder restructuring. Scenes reference IDs. Path changes are handled by AssetDatabase.
@@ -64,6 +66,7 @@ GLB/GLTF          → Model3D component
 .aseprite / .ase  → Sprite (one frame) or AnimatedSprite (tags / multiple frames)
 .xml / .fnt + pages → BitmapText component
 TTF/OTF/WOFF/WOFF2 → Text component (webfont)
+Prefab             → instantiate prefab (one undo step)
 ```
 
 Drop coordinates must be converted from viewport coordinates into scene/world coordinates. Creating an object through drag-and-drop MUST use the command system so it can be undone.
@@ -101,7 +104,7 @@ Webfonts are single TTF/OTF/WOFF/WOFF2 files (`webfont` catalogue type, distinct
 
 Shipping a game that uses the Spine runtime requires a Spine Editor license (Esoteric Software). The importer does not gate on that license.
 
-Aseprite compile is an **editor/build-time** dependency. Detect `aseprite` or the free `libresprite` CLI behind `AsepriteService` (PATH, `ASEPRITE` env, well-known install folders). Do not call `child_process` from the Assets UI. Missing CLI must not crash the editor. Games ship only generated PNG/JSON; players do not need Aseprite. Details: [`aseprite.md`](./aseprite.md).
+Aseprite compile is an **editor/build-time** dependency. Detect `aseprite` or the free `libresprite` CLI behind `AsepriteService` (PATH, `ASEPRITE` env, well-known install folders, then the LibreSprite copy downloaded by `pnpm install`). Do not call `child_process` from the Assets UI. Missing CLI must not crash the editor. Games ship only generated PNG/JSON; players do not need Aseprite. Details: [`aseprite.md`](./aseprite.md).
 
 ---
 

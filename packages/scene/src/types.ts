@@ -1,3 +1,14 @@
+import type { PrefabInstanceLink } from "./prefab/types.js";
+
+export type {
+  PrefabInstanceLink,
+  PrefabOverride,
+  PrefabPropertyOverride,
+  PrefabNameOverride,
+  PrefabLayerOverride,
+  PrefabData,
+} from "./prefab/types.js";
+
 export interface Vec2 {
 
   x: number;
@@ -202,6 +213,12 @@ export interface SceneNodeData {
    * Ignored for Transform3D nodes. Default `"background"`.
    */
   layer?: "background" | "foreground";
+
+  /**
+   * Present on nodes that belong to a prefab instance.
+   * Omitted on ordinary scene nodes and local children.
+   */
+  prefab?: PrefabInstanceLink;
 
   components: ComponentData[];
 

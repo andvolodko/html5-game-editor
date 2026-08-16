@@ -135,7 +135,18 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
             }}
           />
         ) : (
-          <span className="hierarchy-label">{node.name}</span>
+          <span className="hierarchy-label">
+            {node.name}
+            {node.prefab?.isRoot === true ? (
+              <span className="hierarchy-prefab-badge" title="Prefab instance">
+                prefab
+              </span>
+            ) : node.prefab ? (
+              <span className="hierarchy-prefab-link" title="Inherited prefab node">
+                ↻
+              </span>
+            ) : null}
+          </span>
         )}
       </div>
       {hasChildren && isExpanded

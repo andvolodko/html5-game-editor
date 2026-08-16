@@ -59,7 +59,14 @@ function VisualFields({
 
   switch (visual.type) {
     case "Sprite":
-      return <SpriteFields visual={visual} commit={commit} editor={editor} />;
+      return (
+        <SpriteFields
+          visual={visual}
+          commit={commit}
+          editor={editor}
+          nodeId={nodeId}
+        />
+      );
     case "NineSliceSprite":
       return <NineSliceFields visual={visual} commit={commit} />;
     case "TilingSprite":
@@ -68,7 +75,9 @@ function VisualFields({
       return <GraphicsFields visual={visual} commit={commit} />;
     case "Text":
     case "HTMLText":
-      return <TextStyleFields visual={visual} commit={commit} />;
+      return (
+        <TextStyleFields visual={visual} commit={commit} nodeId={nodeId} />
+      );
     case "BitmapText":
       return <BitmapTextFields visual={visual} commit={commit} />;
     case "MeshSimple":

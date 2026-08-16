@@ -142,4 +142,15 @@ describe("localScaleTowardAncestor", () => {
       y: 3,
     });
   });
+
+  it("returns identity scale when a container was destroyed", () => {
+    const world = new Container();
+    const child = new Container();
+    child.scale.set(2, 3);
+    world.addChild(child);
+    child.destroy();
+
+    expect(child.scale).toBeNull();
+    expect(localScaleTowardAncestor(child, world)).toEqual({ x: 1, y: 1 });
+  });
 });

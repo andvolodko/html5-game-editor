@@ -51,6 +51,8 @@ export {
 export {
   clampViewportScale,
   createDefaultViewportCamera,
+  cameraToCenterWorld,
+  cameraToFrameWorldRect,
   DEFAULT_VIEWPORT_SCALE,
   MIN_VIEWPORT_SCALE,
   MAX_VIEWPORT_SCALE,
