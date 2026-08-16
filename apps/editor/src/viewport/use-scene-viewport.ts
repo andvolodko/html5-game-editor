@@ -62,10 +62,9 @@ export function useSceneViewport(args: {
   }, [editor]);
 
   useEffect(() => {
+    const initialMode = editor.prefabs.getMode();
     let previousAssetId =
-      editor.prefabs.getMode().kind === "prefab"
-        ? editor.prefabs.getMode().assetId
-        : undefined;
+      initialMode.kind === "prefab" ? initialMode.assetId : undefined;
     return editor.subscribe(() => {
       const mode = editor.prefabs.getMode();
       const assetId = mode.kind === "prefab" ? mode.assetId : undefined;
