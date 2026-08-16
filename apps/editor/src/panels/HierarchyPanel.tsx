@@ -5,6 +5,7 @@ import {
 } from "@game-editor/editor-core";
 import {
   findNodeById,
+  flattenNodes,
   getAncestorIds,
   nodeCanHaveChildren,
   type SceneData,
@@ -22,6 +23,7 @@ import { useHierarchyRename } from "./useHierarchyRename";
 export function HierarchyPanel() {
   const editor = useEditor();
   const scene = useEditorState((ed) => ed.getScene());
+  const documentMode = useEditorState((ed) => ed.prefabs.getMode());
   const selected = useEditorState((ed) => ed.selection.getSelectedNodeIds());
   const sceneSelected = useEditorState((ed) => ed.selection.isSceneSelected());
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
@@ -46,6 +48,20 @@ export function HierarchyPanel() {
   );
 
   const primaryId = selected[selected.length - 1];
+
+  useEffect(() => {
+    if (documentMode.kind !== "prefab") {
+      return;
+    }
+    setSceneExpanded(true);
+    setExpanded(
+      new Set(
+        flattenNodes(scene)
+          .filter((node) => node.children.length > 0)
+          .map((node) => node.id),
+      ),
+    );
+  }, [documentMode, scene]);
 
   useEffect(() => {
     if (!primaryId) {

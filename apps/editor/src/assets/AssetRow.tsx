@@ -14,6 +14,7 @@ interface AssetRowProps {
   renaming: boolean;
   previewUrl: string | undefined;
   dropTarget: boolean;
+  editing?: boolean;
   onSelect: () => void;
   onActivate?: () => void;
   onStartRename: () => void;
@@ -29,6 +30,7 @@ function AssetRowComponent({
   renaming,
   previewUrl,
   dropTarget,
+  editing = false,
   onSelect,
   onActivate,
   onStartRename,
@@ -78,6 +80,7 @@ function AssetRowComponent({
       ) : (
         <span className="hierarchy-label">{asset.name}</span>
       )}
+      {editing ? <span className="asset-badge">open</span> : null}
     </div>
   );
 }
@@ -118,7 +121,8 @@ function assetRowPropsEqual(
     prev.onActivate === next.onActivate &&
     prev.renaming === next.renaming &&
     prev.previewUrl === next.previewUrl &&
-    prev.dropTarget === next.dropTarget
+    prev.dropTarget === next.dropTarget &&
+    prev.editing === next.editing
   );
 }
 

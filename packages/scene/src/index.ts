@@ -410,6 +410,7 @@ export type { Aff2 } from "./transform-math.js";
 export { transformLocalAabb, unionLocalAabb } from "./local-aabb.js";
 
 export type { LocalAabb } from "./local-aabb.js";
+export { collectSceneContentBounds2D } from "./content-bounds-2d.js";
 
 export {
 

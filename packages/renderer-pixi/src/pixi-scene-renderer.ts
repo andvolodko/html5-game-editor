@@ -22,7 +22,7 @@ import { PixiNodeDragController } from "./pixi-node-drag.js";
 import { PixiNodeClickController } from "./pixi-node-click.js";
 import { PixiGizmoDragController } from "./pixi-gizmo-drag.js";
 import { ViewportCameraController } from "./viewport-camera-controller.js";
-import type { ViewportCameraState } from "./viewport-camera.js";
+import type { ViewportCameraState, WorldRect } from "./viewport-camera.js";
 import { ScreenGuidesOverlay } from "./screen-guides.js";
 import { DEFAULT_SNAP_GRID_SIZE } from "./snap-to-grid.js";
 import { DEFAULT_EDITOR_BACKGROUND } from "./editor-chrome.js";
@@ -211,6 +211,14 @@ export class PixiSceneRenderer implements SceneRenderer {
 
   resetViewportCamera(): void {
     this.camera.reset();
+  }
+
+  setViewportCamera(state: Readonly<ViewportCameraState>): void {
+    this.camera.replaceState(state);
+  }
+
+  frameWorldRect(rect: WorldRect, padding?: number): void {
+    this.camera.frameWorldRect(rect, padding);
   }
 
   /** Copy preview camera (hybrid layer sync). Does not emit subscribe events. */

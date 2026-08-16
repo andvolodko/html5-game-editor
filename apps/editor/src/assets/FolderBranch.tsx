@@ -177,6 +177,7 @@ export function FolderBranch(props: FolderBranchProps) {
                 }
                 previewUrl={model.contentUrl(entry.asset)}
                 dropTarget={false}
+                editing={model.openPrefabAssetId === entry.asset.id}
                 onSelect={() =>
                   model.setSelection({ kind: "asset", id: entry.asset.id })
                 }

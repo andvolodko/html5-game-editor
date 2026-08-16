@@ -180,6 +180,10 @@ export async function openPrefabDocument(editor: Editor, assetId: string): Promi
   });
   const scene = createPrefabEditScene(editor.getScene(), prefab);
   editor.setScene(scene);
+  editor.console.log({
+    category: "prefab",
+    message: `Opened prefab "${prefab.name}"`,
+  });
   const rootId = scene.nodes[0]?.id;
   if (rootId) {
     editor.selectNodes([rootId]);

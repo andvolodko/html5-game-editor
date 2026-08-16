@@ -428,6 +428,7 @@ export function AssetsPanel() {
                   }
                   previewUrl={model.contentUrl(asset)}
                   dropTarget={false}
+                  editing={model.openPrefabAssetId === asset.id}
                   onSelect={() => model.setSelection({ kind: "asset", id: asset.id })}
                   onActivate={
                     asset.type === "prefab"

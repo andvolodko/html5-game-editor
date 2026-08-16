@@ -141,3 +141,46 @@ export function panByScreenDelta(
     },
   };
 }
+
+/** Place a world point at the center of the screen. */
+export function cameraToCenterWorld(
+  world: Vec2,
+  screenWidth: number,
+  screenHeight: number,
+  scale = DEFAULT_VIEWPORT_SCALE,
+): ViewportCameraState {
+  const nextScale = clampViewportScale(scale);
+  return {
+    scale: nextScale,
+    pan: {
+      x: screenWidth / 2 - world.x * nextScale,
+      y: screenHeight / 2 - world.y * nextScale,
+    },
+  };
+}
+
+/**
+ * Frame a world rectangle in the viewport. Never zooms in past 100% so a
+ * small prefab stays readable without filling the canvas.
+ */
+export function cameraToFrameWorldRect(
+  rect: WorldRect,
+  screenWidth: number,
+  screenHeight: number,
+  padding = 0.25,
+): ViewportCameraState {
+  const width = Math.max(rect.maxX - rect.minX, 1);
+  const height = Math.max(rect.maxY - rect.minY, 1);
+  const center = {
+    x: (rect.minX + rect.maxX) / 2,
+    y: (rect.minY + rect.maxY) / 2,
+  };
+  const paddedWidth = width * (1 + padding);
+  const paddedHeight = height * (1 + padding);
+  const fit = Math.min(
+    screenWidth / paddedWidth,
+    screenHeight / paddedHeight,
+    DEFAULT_VIEWPORT_SCALE,
+  );
+  return cameraToCenterWorld(center, screenWidth, screenHeight, fit);
+}

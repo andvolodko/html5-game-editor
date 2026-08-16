@@ -12,6 +12,7 @@ import {
   isValidSceneFileId,
   joinAssetFolder,
   listFolderEntries,
+  parentFolder,
   resolveAssetBrowserPreviewUrl,
   uniquePanelErrorMessages,
 } from "@game-editor/editor-core";
@@ -45,7 +46,13 @@ export function useAssetBrowserModel(options?: {
   const knownFolders = useEditorState((ed) => ed.assets.getFolders());
   const status = useEditorState((ed) => ed.assets.getStatus());
   const error = useEditorState((ed) => ed.assets.getError());
-  const activeSceneId = useEditorState((ed) => ed.getSceneFileId());
+  const activeSceneId = useEditorState((ed) =>
+    ed.prefabs.getMode().kind === "scene" ? ed.getSceneFileId() : undefined,
+  );
+  const openPrefabAssetId = useEditorState((ed) => {
+    const mode = ed.prefabs.getMode();
+    return mode.kind === "prefab" ? mode.assetId : undefined;
+  });
   const storeVersion = useEditorState((ed) => ed.getStoreVersion());
 
   const [query, setQuery] = useState("");
@@ -82,6 +89,26 @@ export function useAssetBrowserModel(options?: {
   useEffect(() => {
     void refreshScenes();
   }, [refreshScenes, storeVersion, activeSceneId]);
+
+  useEffect(() => {
+    if (openPrefabAssetId === undefined) {
+      return;
+    }
+    const asset = editor.assets.get(openPrefabAssetId);
+    if (!asset) {
+      return;
+    }
+    const folder = parentFolder(asset.path);
+    setExpanded((previous) => {
+      if (previous.has(folder) && previous.has(ASSETS_ROOT_FOLDER)) {
+        return previous;
+      }
+      const next = new Set(previous);
+      next.add(ASSETS_ROOT_FOLDER);
+      next.add(folder);
+      return next;
+    });
+  }, [editor, openPrefabAssetId]);
 
   useEffect(() => {
     if (selection?.kind !== "scene") {
@@ -463,6 +490,7 @@ export function useAssetBrowserModel(options?: {
     scenesError,
     panelErrors,
     activeSceneId,
+    openPrefabAssetId,
     status,
     error,
     query,
