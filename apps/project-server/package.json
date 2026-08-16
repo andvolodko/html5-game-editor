@@ -9,7 +9,9 @@
     "start": "tsx src/index.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "lint": "eslint src --max-warnings=0"
+    "lint": "eslint src --max-warnings=0",
+    "install-libresprite": "node scripts/install-libresprite.mjs",
+    "postinstall": "node scripts/install-libresprite.mjs --optional"
   },
   "dependencies": {
     "@game-editor/assets": "workspace:*",

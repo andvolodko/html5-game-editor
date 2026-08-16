@@ -104,7 +104,7 @@ Webfonts are single TTF/OTF/WOFF/WOFF2 files (`webfont` catalogue type, distinct
 
 Shipping a game that uses the Spine runtime requires a Spine Editor license (Esoteric Software). The importer does not gate on that license.
 
-Aseprite compile is an **editor/build-time** dependency. Detect `aseprite` or the free `libresprite` CLI behind `AsepriteService` (PATH, `ASEPRITE` env, well-known install folders). Do not call `child_process` from the Assets UI. Missing CLI must not crash the editor. Games ship only generated PNG/JSON; players do not need Aseprite. Details: [`aseprite.md`](./aseprite.md).
+Aseprite compile is an **editor/build-time** dependency. Detect `aseprite` or the free `libresprite` CLI behind `AsepriteService` (PATH, `ASEPRITE` env, well-known install folders, then the LibreSprite copy downloaded by `pnpm install`). Do not call `child_process` from the Assets UI. Missing CLI must not crash the editor. Games ship only generated PNG/JSON; players do not need Aseprite. Details: [`aseprite.md`](./aseprite.md).
 
 ---
 

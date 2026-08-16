@@ -50,8 +50,11 @@ Lookup order:
 1. `ASEPRITE` environment variable (absolute path to `aseprite` or `libresprite`)
 2. `PATH` (`aseprite`, `Aseprite.exe`, `libresprite`, `libresprite.exe`)
 3. Well-known folders (Program Files, Steam, `%LOCALAPPDATA%\Programs\Aseprite`, `%LOCALAPPDATA%\Programs\LibreSprite`, macOS `/Applications`, `/usr/bin`)
+4. Packaged LibreSprite from `pnpm install` (`apps/project-server/vendor/libresprite`)
 
-Aseprite is paid. The free [LibreSprite](https://github.com/LibreSprite/LibreSprite) fork is enough for packed spritesheet + tag export. Official Windows zip: [LibreSprite releases](https://github.com/LibreSprite/LibreSprite/releases). A typical path:
+`pnpm install` runs project-server `postinstall`, which downloads LibreSprite **v1.1** (~50MB) for Windows x64, Linux x64, and macOS arm64. Set `SKIP_LIBRESPRITE_INSTALL=1` to skip. GitHub Actions sets `CI=true`, so CI does not download the CLI (generated PNG/JSON are committed). If the download failed or you skipped it, run `pnpm install-libresprite` from the repo root.
+
+Aseprite is paid. The free [LibreSprite](https://github.com/LibreSprite/LibreSprite) fork is enough for packed spritesheet + tag export. Official Windows zip: [LibreSprite releases](https://github.com/LibreSprite/LibreSprite/releases). A typical system path:
 
 ```text
 %LOCALAPPDATA%\Programs\LibreSprite\libresprite.exe
@@ -64,7 +67,7 @@ Missing CLI does not crash the editor. The asset record stores `compileError` an
 ```text
 Aseprite CLI was not found.
 
-Install Aseprite or the free LibreSprite fork, and make sure `aseprite` or `libresprite` is available in PATH (or set the ASEPRITE environment variable).
+Run `pnpm install-libresprite`, or install Aseprite / LibreSprite and make sure `aseprite` or `libresprite` is available in PATH (or set the ASEPRITE environment variable).
 ```
 
 Export flags (same for Aseprite and LibreSprite):

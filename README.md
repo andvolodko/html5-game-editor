@@ -145,7 +145,7 @@ Editable game content lives **next to the buildable package** under `games/<name
 
 - Node.js **≥ 20**
 - [pnpm](https://pnpm.io/) **10.33+** (see `packageManager` in the root `package.json`)
-- Optional: [Aseprite](https://www.aseprite.org/) or free [LibreSprite](https://github.com/LibreSprite/LibreSprite) CLI — only needed to compile `.aseprite` source files in the editor (see [Aseprite assets](#aseprite-assets))
+- Aseprite compile: `pnpm install` downloads a packaged [LibreSprite](https://github.com/LibreSprite/LibreSprite) CLI for Windows x64, Linux x64, and macOS arm64. You can still use a system [Aseprite](https://www.aseprite.org/) / LibreSprite install instead (see [Aseprite assets](#aseprite-assets)).
 
 ```bash
 pnpm install
@@ -197,18 +197,21 @@ Compile is editor/build-time only. The project server looks up an executable in 
 1. `ASEPRITE` environment variable (full path to `aseprite` / `libresprite`)
 2. `PATH` (`aseprite`, `Aseprite.exe`, `libresprite`, `libresprite.exe`)
 3. Well-known install folders (Program Files, Steam, `%LOCALAPPDATA%\Programs\Aseprite`, `%LOCALAPPDATA%\Programs\LibreSprite`, macOS `/Applications`, `/usr/bin`)
+4. Packaged LibreSprite from `pnpm install` (`apps/project-server/vendor/libresprite`)
+
+`pnpm install` (project-server `postinstall`) downloads LibreSprite **v1.1** for Windows x64, Linux x64, and macOS arm64 (~50MB). CI skips that download (`CI=true`); generated PNG/JSON stay committed so Pages builds do not need the CLI. Re-run `pnpm install-libresprite` if the download was skipped or failed.
 
 If nothing is found, the editor stays up and the asset shows:
 
 ```text
 Aseprite CLI was not found.
 
-Install Aseprite or the free LibreSprite fork, and make sure `aseprite` or `libresprite` is available in PATH (or set the ASEPRITE environment variable).
+Run `pnpm install-libresprite`, or install Aseprite / LibreSprite and make sure `aseprite` or `libresprite` is available in PATH (or set the ASEPRITE environment variable).
 ```
 
 Restart `pnpm dev` after installing a CLI so the server picks it up.
 
-**LibreSprite** (free) is enough for spritesheet + tag export. A Windows build can live at:
+**LibreSprite** (free) is enough for spritesheet + tag export. The packaged copy lives under `apps/project-server/vendor/libresprite` (gitignored). A manual Windows install can also live at:
 
 ```text
 %LOCALAPPDATA%\Programs\LibreSprite\libresprite.exe
