@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "id": "prefab_dd7a7c17-5f13-4812-8cc9-8c47905391bc",
+  "name": "Container",
+  "root": {
+    "id": "node_111538de-ae12-48a8-9dc3-396868ddeef8",
+    "name": "Container Copy",
+    "components": [
+      {
+        "type": "Transform2D",
+        "id": "comp_92985424-3879-4faa-88c3-cecefd8bf05e",
+        "position": {
+          "x": -28.327726863061685,
+          "y": -156.41863860909905
+        },
+        "rotation": 0,
+        "scale": {
+          "x": 1,
+          "y": 1
+        }
+      }
+    ],
+    "children": [
+      {
+        "id": "node_ee0b5d88-0bdf-42c1-8c3c-c89c240d06ae",
+        "name": "Sprite",
+        "parentId": "node_111538de-ae12-48a8-9dc3-396868ddeef8",
+        "prefab": {
+          "prefabAssetId": "asset_fbe96ff3-5a35-4d8f-bb38-a617ca950122",
+          "instanceId": "pinst_186640b6-b4bf-4bf3-9ce5-865cfd05aeac",
+          "sourceNodeId": "node_f33e2ea0-a51b-4af3-a77c-8046682f3996",
+          "componentSources": {
+            "comp_dc91264c-bbbf-4dc8-85ee-8eb6b21a21f4": "comp_4912a3f1-b4ec-4cd1-8f52-a3e66a0ecd3b",
+            "comp_ecfc6781-3499-48a7-9669-a36330831077": "comp_1561b1a7-86c2-43f1-88ab-f7e28a91ad68"
+          }
+        },
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_dc91264c-bbbf-4dc8-85ee-8eb6b21a21f4",
+            "position": {
+              "x": 670,
+              "y": 200
+            },
+            "rotation": -18.516133011613384,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "Sprite",
+            "id": "comp_ecfc6781-3499-48a7-9669-a36330831077",
+            "width": 64,
+            "height": 64
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "node_25cf9666-1bc1-4be6-8e45-1df28e36f90a",
+        "name": "2222",
+        "parentId": "node_111538de-ae12-48a8-9dc3-396868ddeef8",
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_f4073725-7c64-4557-a7ce-dfd954ad0571",
+            "position": {
+              "x": 537.9277196517164,
+              "y": 283.0186330077716
+            },
+            "rotation": 0,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "Sprite",
+            "id": "comp_f39981cd-a3a6-458b-8175-b3f3dc1430da",
+            "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+            "width": 68.80004703051281,
+            "height": 52.799986093255995
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "node_0263881f-3208-4b3f-b7ca-a62bd9943a27",
+        "name": "2222 Copy",
+        "parentId": "node_111538de-ae12-48a8-9dc3-396868ddeef8",
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_1d2078da-f0b0-43bc-b0ed-1faf679cfc50",
+            "position": {
+              "x": 535.527695300362,
+              "y": 215.01863519679614
+            },
+            "rotation": 0,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "Sprite",
+            "id": "comp_7333da87-a416-42b1-8758-5ab49945fadf",
+            "assetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+            "width": 68.80004703051281,
+            "height": 52.799986093255995
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "node_c8245209-01a1-42ea-b82d-53aa85020d5d",
+        "name": "Graphics",
+        "parentId": "node_111538de-ae12-48a8-9dc3-396868ddeef8",
+        "prefab": {
+          "prefabAssetId": "asset_fbe96ff3-5a35-4d8f-bb38-a617ca950122",
+          "instanceId": "pinst_186640b6-b4bf-4bf3-9ce5-865cfd05aeac",
+          "sourceNodeId": "node_af1462bf-3952-4122-94df-33aa3052434a",
+          "componentSources": {
+            "comp_7089b98e-004f-4b2d-b8ab-31fc3565efaa": "comp_e73af9f2-77f5-4779-b311-dcc15c9faf30",
+            "comp_a567236f-c4e7-47f5-99aa-49dd84f7cbf3": "comp_9544632a-4578-4b3a-b0e1-0504a4e0806a"
+          }
+        },
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_7089b98e-004f-4b2d-b8ab-31fc3565efaa",
+            "position": {
+              "x": 649.8978046118496,
+              "y": 278.18220289840434
+            },
+            "rotation": 0,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "Graphics",
+            "id": "comp_a567236f-c4e7-47f5-99aa-49dd84f7cbf3",
+            "shape": {
+              "type": "circle",
+              "radius": 50
+            },
+            "fillColor": 11739939,
+            "fillAlpha": 1,
+            "strokeColor": 0,
+            "strokeAlpha": 0,
+            "strokeWidth": 0
+          }
+        ],
+        "children": []
+      }
+    ]
+  }
+}

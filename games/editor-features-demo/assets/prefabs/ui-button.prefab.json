@@ -58,8 +58,8 @@
             "type": "Transform2D",
             "id": "comp_prefab_ui_button_label_t2d",
             "position": {
-              "x": 6,
-              "y": 18
+              "x": 0.8159821213584024,
+              "y": -0.4321147265792433
             },
             "rotation": 0,
             "scale": {
