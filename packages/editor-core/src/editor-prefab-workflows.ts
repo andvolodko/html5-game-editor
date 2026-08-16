@@ -1,13 +1,21 @@
 import { createPrefabAssetRecord } from "@game-editor/assets";
 import {
+  applyOverridesToPrefabAsset,
+  cloneJson,
+  cloneSerializableNode,
   createEmptyScene,
   createPrefabFromSubtree,
   findNodeById,
   flattenSubtree,
+  getSceneRendererKind,
+  getTransform2D,
+  getTransform3D,
   isPrefabInstanceRoot,
   PREFAB_SCHEMA_VERSION,
+  resolveScenePrefabs,
   SCENE_SCHEMA_VERSION,
   type PrefabData,
+  type SceneData,
   type SceneNodeData,
   type Vec2,
   type Vec3,
@@ -19,7 +27,6 @@ import { InstantiatePrefabCommand } from "./commands/instantiate-prefab-command.
 import { RefreshPrefabInstancesCommand } from "./commands/refresh-prefab-instances-command.js";
 import { RevertPrefabOverridesCommand } from "./commands/revert-prefab-overrides-command.js";
 import { UnpackPrefabCommand } from "./commands/unpack-prefab-command.js";
-import { applyOverridesToPrefabAsset } from "@game-editor/scene";
 
 export async function instantiatePrefabFromAsset(
   editor: Editor,
@@ -171,10 +178,12 @@ export async function openPrefabDocument(editor: Editor, assetId: string): Promi
     assetId,
     prefabId: record?.metadata.kind === "prefab" ? record.metadata.prefabId : prefab.id,
   });
-  const scene = createEmptyScene(`Prefab: ${prefab.name}`);
-  scene.version = SCENE_SCHEMA_VERSION;
-  scene.nodes = [prefab.root];
+  const scene = createPrefabEditScene(editor.getScene(), prefab);
   editor.setScene(scene);
+  const rootId = scene.nodes[0]?.id;
+  if (rootId) {
+    editor.selectNodes([rootId]);
+  }
 }
 
 export async function closePrefabDocument(editor: Editor): Promise<void> {
@@ -185,7 +194,26 @@ export async function closePrefabDocument(editor: Editor): Promise<void> {
     await saveOpenPrefabDocument(editor);
   }
   const session = editor.prefabs.takeSceneSession();
-  editor.restorePrefabSceneSession(session);
+  if (!session) {
+    editor.restorePrefabSceneSession(undefined);
+    return;
+  }
+  const original = session.snapshot.scene;
+  const { scene: resolved } = resolveScenePrefabs(
+    cloneJson(original),
+    editor.prefabs.getCatalog(),
+  );
+  const instancesChanged = JSON.stringify(original) !== JSON.stringify(resolved);
+  editor.restorePrefabSceneSession({
+    ...session,
+    snapshot: {
+      ...session.snapshot,
+      scene: instancesChanged ? resolved : original,
+    },
+  });
+  if (instancesChanged) {
+    editor.document.syncDirtyFromContent();
+  }
 }
 
 export async function saveOpenPrefabDocument(editor: Editor): Promise<void> {
@@ -202,7 +230,7 @@ export async function saveOpenPrefabDocument(editor: Editor): Promise<void> {
     version: existing?.version ?? PREFAB_SCHEMA_VERSION,
     id: existing?.id ?? mode.prefabId,
     name: existing?.name ?? root.name,
-    root,
+    root: cloneSerializableNode(root),
   };
   editor.prefabs.set(mode.assetId, prefab);
   const api = editor.prefabs.getApi();
@@ -210,6 +238,57 @@ export async function saveOpenPrefabDocument(editor: Editor): Promise<void> {
     await api.savePrefab(mode.assetId, prefab);
   }
   editor.document.markSaved();
+}
+
+export function reportPrefabWorkflowError(
+  editor: Editor,
+  fallback: string,
+  error: unknown,
+): void {
+  editor.console.log({
+    level: "error",
+    category: "prefab",
+    message: error instanceof Error ? error.message : fallback,
+  });
+}
+
+function createPrefabEditScene(host: SceneData, prefab: PrefabData): SceneData {
+  const root = cloneSerializableNode(prefab.root);
+  const renderer = rendererForPrefabDocument(host, root);
+  const scene = createEmptyScene(
+    `Prefab: ${prefab.name}`,
+    renderer === undefined ? undefined : { renderer },
+  );
+  scene.version = SCENE_SCHEMA_VERSION;
+  scene.nodes = [root];
+  return scene;
+}
+
+function rendererForPrefabDocument(
+  host: SceneData,
+  root: SceneNodeData,
+): SceneData["renderer"] {
+  const hostKind = getSceneRendererKind(host);
+  let has2d = false;
+  let has3d = false;
+  for (const node of flattenSubtree(root)) {
+    if (getTransform2D(node)) {
+      has2d = true;
+    }
+    if (getTransform3D(node)) {
+      has3d = true;
+    }
+  }
+  if (has2d && has3d) {
+    return "hybrid";
+  }
+  if (has3d && hostKind === "pixi") {
+    return "three";
+  }
+  if (has2d && hostKind === "three") {
+    return "pixi";
+  }
+  return host.renderer;
 }
 
 function assignInstancePrefabAssetId(root: SceneNodeData, assetId: string): void {

@@ -62,6 +62,23 @@ export function useSceneViewport(args: {
   }, [editor]);
 
   useEffect(() => {
+    let previousAssetId =
+      editor.prefabs.getMode().kind === "prefab"
+        ? editor.prefabs.getMode().assetId
+        : undefined;
+    return editor.subscribe(() => {
+      const mode = editor.prefabs.getMode();
+      const assetId = mode.kind === "prefab" ? mode.assetId : undefined;
+      if (assetId === undefined || assetId === previousAssetId) {
+        previousAssetId = assetId;
+        return;
+      }
+      previousAssetId = assetId;
+      resetPreviewCameras(viewportRef.current);
+    });
+  }, [editor]);
+
+  useEffect(() => {
     const host = hostRef.current;
     if (!host) {
       return;
@@ -129,6 +146,9 @@ export function useSceneViewport(args: {
 
       editor.attachRenderer(created.documentRenderer);
       created.setSelectedNodeIds(editor.selection.getSelectedNodeIds());
+      if (editor.prefabs.getMode().kind === "prefab") {
+        resetPreviewCameras(created);
+      }
     });
 
     return () => {
@@ -186,4 +206,10 @@ export function useSceneViewport(args: {
   }, [threeViewMode]);
 
   return viewportRef;
+}
+
+function resetPreviewCameras(viewport: SceneViewportHandle | null): void {
+  viewport?.pixi?.resetViewportCamera();
+  viewport?.pixiBackground?.resetViewportCamera();
+  viewport?.pixiForeground?.resetViewportCamera();
 }

@@ -117,6 +117,7 @@ import {
   instantiatePrefabFromAsset,
   openPrefabDocument,
   closePrefabDocument,
+  reportPrefabWorkflowError,
   revertPrefabOverrides,
   saveOpenPrefabDocument,
   unpackPrefabInstance,
@@ -267,11 +268,17 @@ export class Editor {
   }
 
   openPrefab(assetId: string): Promise<void> {
-    return openPrefabDocument(this, assetId);
+    return openPrefabDocument(this, assetId).catch((error: unknown) => {
+      reportPrefabWorkflowError(this, "Open Prefab failed", error);
+      throw error;
+    });
   }
 
   closePrefab(): Promise<void> {
-    return closePrefabDocument(this);
+    return closePrefabDocument(this).catch((error: unknown) => {
+      reportPrefabWorkflowError(this, "Close Prefab failed", error);
+      throw error;
+    });
   }
 
   restorePrefabSceneSession(
@@ -1185,7 +1192,9 @@ export class Editor {
   }
 
   private afterDocumentCommand(): void {
-    this.prefabs.syncOverrides(this.document);
+    if (this.prefabs.getMode().kind !== "prefab") {
+      this.prefabs.syncOverrides(this.document);
+    }
     this.document.syncDirtyFromContent();
     this.emit();
   }

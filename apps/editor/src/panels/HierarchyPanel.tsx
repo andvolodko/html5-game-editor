@@ -172,7 +172,7 @@ export function HierarchyPanel() {
       const node = findNodeById(editor.getScene(), nodeId);
       const assetId = node?.prefab?.prefabAssetId;
       if (assetId) {
-        void editor.openPrefab(assetId);
+        void editor.openPrefab(assetId).catch(() => undefined);
       }
       return;
     }

@@ -39,7 +39,7 @@ export function PrefabInspectorSection({ node }: { node: SceneNodeData }) {
           type="button"
           disabled={missing}
           onClick={() => {
-            void editor.openPrefab(root.prefab!.prefabAssetId);
+            void editor.openPrefab(root.prefab!.prefabAssetId).catch(() => undefined);
           }}
         >
           Open Prefab

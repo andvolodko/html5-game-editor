@@ -432,7 +432,7 @@ export function AssetsPanel() {
                   onActivate={
                     asset.type === "prefab"
                       ? () => {
-                          void model.editor.openPrefab(asset.id);
+                          void model.editor.openPrefab(asset.id).catch(() => undefined);
                         }
                       : undefined
                   }
@@ -534,7 +534,7 @@ export function AssetsPanel() {
             void model.createScene();
           }}
           onOpenPrefab={(id) => {
-            void model.editor.openPrefab(id);
+            void model.editor.openPrefab(id).catch(() => undefined);
           }}
           onInstantiatePrefab={(id) => {
             void model.editor.instantiatePrefabFromAsset(id).catch((error: unknown) => {

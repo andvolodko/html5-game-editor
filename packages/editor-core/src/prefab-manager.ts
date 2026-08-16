@@ -108,17 +108,22 @@ export class PrefabManager {
         // Fall through to content URL (demo / static).
       }
     }
+    const cached = this.catalog.get(assetId);
     const url = assets.getContentUrl(assetId);
     if (url === undefined || url.length === 0) {
-      return this.catalog.get(assetId);
+      return cached;
     }
-    const response = await fetch(url);
-    if (!response.ok) {
-      return this.catalog.get(assetId);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        return cached;
+      }
+      const prefab = parsePrefabData(await response.json());
+      this.catalog.set(assetId, prefab);
+      return prefab;
+    } catch {
+      return cached;
     }
-    const prefab = parsePrefabData(await response.json());
-    this.catalog.set(assetId, prefab);
-    return prefab;
   }
 
   syncOverrides(document: DocumentManager): void {

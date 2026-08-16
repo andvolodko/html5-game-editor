@@ -183,7 +183,9 @@ export function FolderBranch(props: FolderBranchProps) {
                 onActivate={
                   entry.asset.type === "prefab"
                     ? () => {
-                        void model.editor.openPrefab(entry.asset.id);
+                        void model.editor.openPrefab(entry.asset.id).catch(
+                          () => undefined,
+                        );
                       }
                     : undefined
                 }
