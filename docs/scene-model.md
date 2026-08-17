@@ -22,6 +22,7 @@ interface SceneNodeData {
   id: string;
   name: string;
   parentId?: string;
+  visible?: boolean; // omit = true; persist false when hidden at runtime
   components: ComponentData[];
   children: SceneNodeData[];
 }
@@ -56,7 +57,9 @@ Node
 └── Collider
 ```
 
-Example components: `Transform2D`, `Transform3D`, `Sprite`, `Text`, `Spine`, `Model3D`, `Camera3D`, `Camera2D`, `Light3D`, `Animator`, `AudioSource`, `Button`, `ParticleEmitter`, `Layout`.
+Example components: `Transform2D`, `Transform3D`, `Sprite`, `Text`, `Spine`, `Tilemap`, `Model3D`, `Camera3D`, `Camera2D`, `Light3D`, `Animator`, `AudioSource`, `Button`, `ParticleEmitter`, `Layout`.
+
+A `Tilemap` is one scene node. Tile cells live in sparse chunks on the component (`EMPTY_TILE = -1`). They are not child nodes and must not be serialized as Pixi objects. Animated tiles still store a single logical tile ID per cell; frame playback is TileSet metadata plus a transient shared clock.
 
 Components must contain serializable data. Runtime-specific objects live outside serialized component data.
 

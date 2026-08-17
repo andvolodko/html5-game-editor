@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ASSET_SCHEMA_VERSION, type AssetDatabaseData, type AssetRecord } from "./types.js";
+import { TILESET_SCHEMA_VERSION, type TileSetData } from "./tileset.js";
 
 export const assetTypeSchema = z.enum([
   "texture",
@@ -10,6 +11,7 @@ export const assetTypeSchema = z.enum([
   "font",
   "webfont",
   "prefab",
+  "tileset",
 ]);
 
 export const textureAssetMetadataSchema = z.object({
@@ -81,6 +83,49 @@ export const prefabAssetMetadataSchema = z.object({
   prefabId: z.string().min(1),
 });
 
+export const tileAnimationFrameSchema = z.object({
+  tileId: z.number(),
+  duration: z.number(),
+});
+
+export const tileAnimationDefinitionSchema = z.object({
+  frames: z.array(tileAnimationFrameSchema),
+  loop: z.boolean().optional(),
+});
+
+export const tileDefinitionSchema = z.object({
+  name: z.string().min(1).optional(),
+  tags: z.array(z.string().min(1)).optional(),
+  animation: tileAnimationDefinitionSchema.optional(),
+});
+
+export const tileSetAssetMetadataSchema = z.object({
+  kind: z.literal("tileset"),
+  tilesetId: z.string().min(1),
+  imageAssetId: z.string().min(1),
+  tileWidth: z.number().positive(),
+  tileHeight: z.number().positive(),
+  margin: z.number().nonnegative(),
+  spacing: z.number().nonnegative(),
+  columns: z.number().int().nonnegative(),
+  rows: z.number().int().nonnegative(),
+  tiles: z.record(z.string(), tileDefinitionSchema).optional(),
+});
+
+export const tileSetDataSchema = z.object({
+  version: z.number().int().positive(),
+  id: z.string().min(1),
+  name: z.string().min(1),
+  imageAssetId: z.string().min(1),
+  tileWidth: z.number().positive(),
+  tileHeight: z.number().positive(),
+  margin: z.number().nonnegative(),
+  spacing: z.number().nonnegative(),
+  columns: z.number().int().nonnegative(),
+  rows: z.number().int().nonnegative(),
+  tiles: z.record(z.string(), tileDefinitionSchema).optional(),
+});
+
 export const assetMetadataSchema = z.discriminatedUnion("kind", [
   textureAssetMetadataSchema,
   spineAssetMetadataSchema,
@@ -90,6 +135,7 @@ export const assetMetadataSchema = z.discriminatedUnion("kind", [
   bitmapFontAssetMetadataSchema,
   webFontAssetMetadataSchema,
   prefabAssetMetadataSchema,
+  tileSetAssetMetadataSchema,
 ]);
 
 const assetRecordObjectSchema = z.object({
@@ -124,6 +170,19 @@ export function parseAssetDatabase(input: unknown): AssetDatabaseData {
 
 export function parseAssetRecord(input: unknown): AssetRecord {
   return assetRecordSchema.parse(input);
+}
+
+export function parseTileSetData(input: unknown): TileSetData {
+  return tileSetDataSchema.parse(input);
+}
+
+export function isCurrentTileSetSchemaVersion(version: number): boolean {
+  return version === TILESET_SCHEMA_VERSION;
+}
+
+/** Deterministic JSON for Git-friendly TileSet documents. */
+export function serializeTileSetData(data: TileSetData): string {
+  return `${JSON.stringify(data, null, 2)}\n`;
 }
 
 export function isCurrentAssetSchemaVersion(version: number): boolean {

@@ -27,10 +27,17 @@ export interface PrefabLayerOverride {
   value: "background" | "foreground";
 }
 
+export interface PrefabVisibleOverride {
+  kind: "visible";
+  sourceNodeId: string;
+  value: boolean;
+}
+
 export type PrefabOverride =
   | PrefabPropertyOverride
   | PrefabNameOverride
-  | PrefabLayerOverride;
+  | PrefabLayerOverride
+  | PrefabVisibleOverride;
 
 /**
  * Persistent link from a scene node to a prefab source node.

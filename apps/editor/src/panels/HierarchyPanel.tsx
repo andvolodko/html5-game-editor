@@ -4,6 +4,7 @@ import {
   decodeAssetDragPayload,
   EDITOR_ASSET_MIME,
   flattenVisibleNodeIds,
+  getEditorNodeFlags,
   isToggleSelectionKey,
 } from "@game-editor/editor-core";
 import {
@@ -28,6 +29,7 @@ export function HierarchyPanel() {
   const scene = useEditorState((ed) => ed.getScene());
   const documentMode = useEditorState((ed) => ed.prefabs.getMode());
   const selected = useEditorState((ed) => ed.selection.getSelectedNodeIds());
+  const metadata = useEditorState((ed) => ed.nodeMetadata.getSnapshot());
   const sceneSelected = useEditorState((ed) => ed.selection.isSceneSelected());
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const [sceneExpanded, setSceneExpanded] = useState(true);
@@ -163,6 +165,14 @@ export function HierarchyPanel() {
       setSceneExpanded(true);
       return;
     }
+    if (action === "show-all") {
+      editor.showAllNodes();
+      return;
+    }
+    if (action === "unlock-all") {
+      editor.unlockAllNodes();
+      return;
+    }
     if (action === "rename-scene") {
       setRenamingTarget("scene");
       return;
@@ -172,6 +182,9 @@ export function HierarchyPanel() {
     }
     const nodeId = menu.target.nodeId;
     if (action === "create-child") {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
       setExpanded((prev) => new Set(prev).add(nodeId));
       setSceneExpanded(true);
       editor.selectNodes([nodeId]);
@@ -179,6 +192,9 @@ export function HierarchyPanel() {
       return;
     }
     if (action === "rename") {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
       setRenamingTarget(nodeId);
       return;
     }
@@ -188,6 +204,38 @@ export function HierarchyPanel() {
     }
     if (action === "delete") {
       editor.deleteNode(nodeId);
+      return;
+    }
+    if (action === "hide") {
+      editor.setNodeHidden(nodeId, true);
+      return;
+    }
+    if (action === "show") {
+      editor.setNodeHidden(nodeId, false);
+      return;
+    }
+    if (action === "lock") {
+      editor.setNodeLocked(nodeId, true);
+      return;
+    }
+    if (action === "unlock") {
+      editor.setNodeLocked(nodeId, false);
+      return;
+    }
+    if (action === "hide-children") {
+      editor.setNodeHiddenRecursive(nodeId, true);
+      return;
+    }
+    if (action === "show-children") {
+      editor.setNodeHiddenRecursive(nodeId, false);
+      return;
+    }
+    if (action === "lock-children") {
+      editor.setNodeLockedRecursive(nodeId, true);
+      return;
+    }
+    if (action === "unlock-children") {
+      editor.setNodeLockedRecursive(nodeId, false);
       return;
     }
     if (action === "create-prefab") {
@@ -253,6 +301,14 @@ export function HierarchyPanel() {
 
   return (
     <div className="panel hierarchy-panel" onClick={closeMenu}>
+      <div className="hierarchy-toolbar">
+        <button type="button" onClick={() => editor.showAllNodes()}>
+          Show All
+        </button>
+        <button type="button" onClick={() => editor.unlockAllNodes()}>
+          Unlock All
+        </button>
+      </div>
       <div
         ref={treeRef}
         className={
@@ -280,6 +336,9 @@ export function HierarchyPanel() {
           const targetId =
             row instanceof HTMLElement ? row.dataset.nodeId : undefined;
           const parentId = resolvePrefabDropParent(editor.getScene(), targetId);
+          if (parentId !== undefined && editor.isNodeEffectivelyLocked(parentId)) {
+            return;
+          }
           for (const assetId of assetIdsFromDragPayload(payload)) {
             const asset = editor.assets.get(assetId);
             if (asset?.type !== "prefab") {
@@ -394,6 +453,9 @@ export function HierarchyPanel() {
                       ? renamingTarget
                       : undefined
                   }
+                  flagsFor={(nodeId) =>
+                    getEditorNodeFlags(scene, metadata, nodeId)
+                  }
                   onToggle={toggleExpanded}
                   onSelect={selectClick}
                   onContextMenu={(nodeId, event) => {
@@ -413,6 +475,18 @@ export function HierarchyPanel() {
                       return;
                     }
                     onDragStart(id, clientX, clientY);
+                  }}
+                  onToggleHidden={(id, recursive) => {
+                    editor.setNodeHidden(
+                      id,
+                      !editor.isNodeHiddenInEditor(id),
+                      { recursive },
+                    );
+                  }}
+                  onToggleLocked={(id, recursive) => {
+                    editor.setNodeLocked(id, !editor.isNodeLocked(id), {
+                      recursive,
+                    });
                   }}
                   onCommitRename={(id, name) => {
                     setRenamingTarget(undefined);

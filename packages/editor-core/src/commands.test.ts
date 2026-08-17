@@ -70,6 +70,45 @@ describe("editor sprite commands", () => {
     expect(getSpine(editor.getScene().nodes[0]!)?.assetId).toBe("asset_spine");
   });
 
+  it("sets runtime visible through a command with undo", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const create = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "Sprite",
+      { x: 0, y: 0 },
+    );
+    editor.execute(create);
+    const nodeId = create.createdNodeId;
+    expect(findNodeById(editor.getScene(), nodeId)?.visible).toBeUndefined();
+
+    editor.setNodeVisible(nodeId, false);
+    expect(findNodeById(editor.getScene(), nodeId)?.visible).toBe(false);
+    expect(editor.getDirtyState()).toBe("dirty");
+
+    editor.undo();
+    expect(findNodeById(editor.getScene(), nodeId)?.visible).toBeUndefined();
+
+    editor.redo();
+    expect(findNodeById(editor.getScene(), nodeId)?.visible).toBe(false);
+  });
+
+  it("does not change runtime visible when the node is editor-locked", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const create = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "Sprite",
+      { x: 0, y: 0 },
+    );
+    editor.execute(create);
+    const nodeId = create.createdNodeId;
+    editor.setNodeVisible(nodeId, false);
+    editor.setNodeLocked(nodeId, true);
+    editor.setNodeVisible(nodeId, true);
+    expect(findNodeById(editor.getScene(), nodeId)?.visible).toBe(false);
+  });
+
   it("edits Transform2D through a command with undo", () => {
     const editor = new Editor({ scene: createEmptyScene("Test") });
     const create = new CreateSpriteCommand(

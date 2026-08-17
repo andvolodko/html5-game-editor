@@ -54,6 +54,13 @@ export interface PixiGizmoAnchorResult {
 
 export interface PixiPointerHandlers {
   onBackgroundPointerDown?: () => void;
+  /**
+   * Stage-level world pointer (capture). Return true to consume the gesture
+   * (skip node drag / background clear). Used by tilemap painting.
+   */
+  onWorldPointerDown?: (world: Vec2, button: number) => boolean;
+  onWorldPointerMove?: (world: Vec2) => void;
+  onWorldPointerUp?: (world: Vec2) => void;
   onNodePointerDown?: (nodeId: string, world: Vec2) => void;
   onNodePointerMove?: (nodeId: string, world: Vec2) => void;
   onNodePointerUp?: (nodeId: string, start: Vec2, end: Vec2) => void;

@@ -12,6 +12,9 @@ export interface NodeCreationContext {
   assetId?: string;
   /** CSS family when creating Text from a webfont. */
   fontFamily?: string;
+  /** Cell size when creating a Tilemap from a TileSet. */
+  tileWidth?: number;
+  tileHeight?: number;
 }
 
 export interface NodeTypeDefinition {

@@ -81,6 +81,9 @@ function visitNodes(
           addAssetId(ids, frame);
         }
       }
+      if (component.type === "Tilemap") {
+        addAssetId(ids, component.tileSetId);
+      }
     }
     visitNodes(node.children, ids, onPrefabAsset);
   }

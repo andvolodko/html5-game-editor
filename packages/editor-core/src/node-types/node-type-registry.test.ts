@@ -24,6 +24,7 @@ describe("NodeTypeRegistry", () => {
       "Container",
       "Sprites",
       "Spine",
+      "Tilemap",
       "Text",
       "Graphics",
       "Mesh",

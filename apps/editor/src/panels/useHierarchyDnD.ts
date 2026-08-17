@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import {
   hierarchyDragNodeIds,
+  isHierarchyDropBlockedByLock,
   placementFromRowOffset,
   resolveHierarchyMultiDrop,
 } from "@game-editor/editor-core";
@@ -42,6 +43,9 @@ export function useHierarchyDnD(
         const dy = event.clientY - pending.y;
         if (dx * dx + dy * dy >= DRAG_THRESHOLD_PX * DRAG_THRESHOLD_PX) {
           pendingDragRef.current = undefined;
+          if (pending.nodeIds.some((id) => editor.isNodeEffectivelyLocked(id))) {
+            return;
+          }
           setDraggingIds(pending.nodeIds);
         }
         return;
@@ -79,7 +83,16 @@ export function useHierarchyDnD(
         event.clientY - rect.top,
         rect.height,
       );
-      setDropIndicator({ targetId, placement });
+      const blocked = isHierarchyDropBlockedByLock(
+        editor.getScene(),
+        editor.nodeMetadata.getSnapshot(),
+        {
+          draggedIds: draggingIdsRef.current,
+          targetId,
+          placement,
+        },
+      );
+      setDropIndicator({ targetId, placement, blocked });
     };
 
     const onUp = () => {
@@ -88,7 +101,7 @@ export function useHierarchyDnD(
       const indicator = dropIndicatorRef.current;
       setDraggingIds([]);
       setDropIndicator(null);
-      if (dragIds.length === 0 || !indicator) {
+      if (dragIds.length === 0 || !indicator || indicator.blocked === true) {
         return;
       }
       const resolved =
@@ -119,11 +132,14 @@ export function useHierarchyDnD(
   }, [editor, treeRef]);
 
   const onDragStart = (nodeId: string, clientX: number, clientY: number) => {
+    if (editor.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     pendingDragRef.current = {
       nodeIds: hierarchyDragNodeIds(
         nodeId,
         editor.selection.getSelectedNodeIds(),
-      ),
+      ).filter((id) => !editor.isNodeEffectivelyLocked(id)),
       x: clientX,
       y: clientY,
     };

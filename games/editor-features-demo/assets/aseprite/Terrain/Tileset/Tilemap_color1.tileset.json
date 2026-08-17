@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "id": "tileset_e95912e6-36d1-407c-b01e-47b8e2607dda",
+  "name": "Tilemap_color1 TileSet",
+  "imageAssetId": "asset_fc6747f0-513f-4d8c-a936-7416a6d3c67c",
+  "tileWidth": 64,
+  "tileHeight": 64,
+  "margin": 0,
+  "spacing": 0,
+  "columns": 9,
+  "rows": 6
+}

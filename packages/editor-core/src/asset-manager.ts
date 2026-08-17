@@ -9,6 +9,8 @@ import {
   type BitmapFontAssetUrls,
   type SpineAssetUrls,
   type WebFontAssetUrls,
+  type TileSetResolved,
+  tileSetResolvedFromMetadata,
 } from "@game-editor/assets";
 import { collectReferencedAssetIds, type SceneData } from "@game-editor/scene";
 import type {
@@ -282,6 +284,14 @@ export class AssetManager implements AssetResolver {
     };
   }
 
+  resolveTileSet(assetId: string): TileSetResolved | undefined {
+    const asset = this.database.get(assetId);
+    if (!asset || asset.metadata.kind !== "tileset") {
+      return undefined;
+    }
+    return tileSetResolvedFromMetadata(asset.metadata);
+  }
+
   /** Asset ids referenced by a scene (delete / usage prep). */
   getReferencedAssetIds(scene: SceneData): ReadonlySet<string> {
     return new Set(collectReferencedAssetIds(scene));
@@ -292,6 +302,11 @@ export class AssetManager implements AssetResolver {
     return () => {
       this.listeners.delete(listener);
     };
+  }
+
+  /** Notify listeners after an in-memory catalogue mutation (tests / demo). */
+  notifyChanged(): void {
+    this.emit();
   }
 
   async refresh(options?: { force?: boolean }): Promise<void> {

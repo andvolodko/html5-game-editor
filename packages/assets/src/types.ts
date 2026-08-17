@@ -1,3 +1,5 @@
+import type { TileDefinition } from "./tileset.js";
+
 export const ASSET_SCHEMA_VERSION = 1 as const;
 
 /**
@@ -12,7 +14,8 @@ export type AssetType =
   | "aseprite"
   | "font"
   | "webfont"
-  | "prefab";
+  | "prefab"
+  | "tileset";
 
 export interface TextureAssetMetadata {
   kind: "texture";
@@ -103,6 +106,22 @@ export interface PrefabAssetMetadata {
   prefabId: string;
 }
 
+export interface TileSetAssetMetadata {
+  kind: "tileset";
+  /** TileSet document id (`tileset_…`), distinct from the catalogue assetId. */
+  tilesetId: string;
+  /** Source texture catalogue id. */
+  imageAssetId: string;
+  tileWidth: number;
+  tileHeight: number;
+  margin: number;
+  spacing: number;
+  columns: number;
+  rows: number;
+  /** Per-tile names, tags, and animation. Duplicated from the `.tileset.json`. */
+  tiles?: Record<string, TileDefinition>;
+}
+
 export type AssetMetadata =
   | TextureAssetMetadata
   | SpineAssetMetadata
@@ -111,7 +130,8 @@ export type AssetMetadata =
   | AsepriteAssetMetadata
   | BitmapFontAssetMetadata
   | WebFontAssetMetadata
-  | PrefabAssetMetadata;
+  | PrefabAssetMetadata
+  | TileSetAssetMetadata;
 
 /**
  * Stable asset identity. Scenes must reference `id`, never raw filesystem paths.

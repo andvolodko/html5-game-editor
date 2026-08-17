@@ -19,6 +19,12 @@ export interface ThreeRuntimeEntry {
   playback?: Model3DPlaybackState;
   /** PerspectiveCamera.active from domain (preview/runtime). */
   cameraActive?: boolean;
+  /** Editor-only lock overlay (not scene data). */
+  editorLocked?: boolean;
+  /** Editor-only hide overlay (not scene data). Combined with serialized visible. */
+  editorHidden?: boolean;
+  /** Last serialized `node.visible` (omitted means true). */
+  runtimeVisible?: boolean;
   /** Live AnimationMixer for skinned / keyframed glTF clips. */
   mixer?: AnimationMixer;
   /** Last applied clip name (for restart detection). */

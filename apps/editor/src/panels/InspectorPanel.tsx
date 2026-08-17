@@ -11,6 +11,7 @@ import {
   getDirectionalLight,
   getModel3D,
   getNodeLayer,
+  getNodeVisible,
   getPerspectiveCamera,
   getSceneRendererKind,
   getSprite,
@@ -33,6 +34,7 @@ import {
 import { ScriptComponentsInspector } from "./ScriptComponentsInspector";
 import { PrefabInspectorSection } from "./PrefabInspectorSection";
 import { isInspectorPropertyOverridden } from "./prefab-override-flag";
+import { BooleanField } from "./fields/inspector-fields";
 import {
   formatInspectorNumber,
   resolveInspectorNumber,
@@ -417,11 +419,43 @@ export function InspectorPanel() {
     editor.setTransform3D(node.id, patch);
   };
 
+  const editorFlags = editor.getEditorNodeFlags(node.id);
+  const inspectorLocked = editorFlags.effectivelyLocked;
+
   return (
     <div className="panel">
       <p className="panel-hint">Inspector · {node.name}</p>
-
+      {inspectorLocked ? (
+        <div className="inspector-locked-banner">
+          <p>
+            {editorFlags.lockedByAncestorName
+              ? `Locked because parent "${editorFlags.lockedByAncestorName}" is locked`
+              : "This node is locked in the editor"}
+          </p>
+          <button
+            type="button"
+            onClick={() => editor.unlockNodeForEditing(node.id)}
+          >
+            Unlock
+          </button>
+        </div>
+      ) : null}
+      <fieldset
+        className="inspector-edit-fieldset"
+        disabled={inspectorLocked}
+      >
       <PrefabInspectorSection node={node} />
+
+      <section className="inspector-section">
+        <h3>Node</h3>
+        <div className="inspector-grid">
+          <BooleanField
+            label="Visible"
+            value={getNodeVisible(node)}
+            onCommit={(visible) => editor.setNodeVisible(node.id, visible)}
+          />
+        </div>
+      </section>
 
       {transform ? (
         <section className="inspector-section">
@@ -649,6 +683,7 @@ export function InspectorPanel() {
       )}
 
       <ScriptComponentsInspector node={node} />
+      </fieldset>
     </div>
   );
 }

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "id": "tileset_9d3e1b76-2922-4bc1-8f6d-0d4ce0de802c",
+  "name": "Water Background color TileSet",
+  "imageAssetId": "asset_40aae961-ccbf-4b2b-8215-dae2741a796f",
+  "tileWidth": 64,
+  "tileHeight": 64,
+  "margin": 0,
+  "spacing": 0,
+  "columns": 1,
+  "rows": 1
+}

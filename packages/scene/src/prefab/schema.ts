@@ -6,6 +6,7 @@ export {
   prefabPropertyOverrideSchema,
   prefabNameOverrideSchema,
   prefabLayerOverrideSchema,
+  prefabVisibleOverrideSchema,
   prefabOverrideSchema,
   prefabInstanceLinkSchema,
 } from "./link-schema.js";

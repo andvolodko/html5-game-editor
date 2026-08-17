@@ -20,9 +20,13 @@ interface AssetRecord {
 }
 ```
 
-Possible types: `texture`, `spritesheet`, `aseprite`, `model3d`, `audio`, `font`, `webfont`, `spine`, `environment`, `scene`, `prefab`.
+Possible types: `texture`, `aseprite`, `gltf`, `audio`, `font`, `webfont`, `spine`, `prefab`, `tileset`.
 
 `prefab` records point at a `.prefab.json` document. Metadata stores `prefabId` (the document id). Scenes reference the catalogue `assetId`, never the file path. Rename/move keeps `assetId` stable.
+
+`tileset` records point at a `.tileset.json` document and reference an existing texture via `imageAssetId`. Tile cells are atlas regions of that texture, not separate catalogue assets. Scenes store the TileSet catalogue `assetId` on a Tilemap component (`tileSetId`).
+
+Optional per-tile metadata (`name`, `tags`, `animation`) lives on the TileSet document and is duplicated onto catalogue metadata so runtime/editor can resolve it without an extra fetch. A Tilemap cell stores only the **logical** tile ID. Animation frames are other tile IDs in the same TileSet (static atlas regions, not recursive animations). Runtime elapsed time and current frame are never serialized.
 
 `aseprite` records point at the source `.aseprite` / `.ase` path. Derived PNG/JSON live under `.generated/` and are not catalogue entries. Scenes must store the Aseprite `assetId` (and optional tag `animation`), never a generated filesystem path.
 
@@ -67,6 +71,7 @@ GLB/GLTF          → Model3D component
 .xml / .fnt + pages → BitmapText component
 TTF/OTF/WOFF/WOFF2 → Text component (webfont)
 Prefab             → instantiate prefab (one undo step)
+TileSet            → Tilemap node (one Hierarchy node; cells are internal)
 ```
 
 Drop coordinates must be converted from viewport coordinates into scene/world coordinates. Creating an object through drag-and-drop MUST use the command system so it can be undone.

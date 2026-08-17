@@ -3,6 +3,7 @@ import {
   createFetchComponentCatalogApiClient,
   createFetchProjectApiClient,
   createFetchPrefabApiClient,
+  createFetchTileSetApiClient,
   createFetchSceneApiClient,
   Editor,
 } from "@game-editor/editor-core";
@@ -23,5 +24,6 @@ export function createEditor(): Editor {
       PROJECT_SERVER_API_BASE,
     ),
     prefabApi: createFetchPrefabApiClient(PROJECT_SERVER_API_BASE),
+    tileSetApi: createFetchTileSetApiClient(PROJECT_SERVER_API_BASE),
   });
 }

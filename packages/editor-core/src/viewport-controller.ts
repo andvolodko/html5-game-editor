@@ -3,10 +3,15 @@ import {
   flattenNodes,
   flattenSubtree,
   getSceneRendererKind,
+  type SceneData,
   type SceneRenderer,
   type SceneRendererKind,
 } from "@game-editor/scene";
 import type { DocumentManager, SceneMutation } from "./document-manager.js";
+
+export interface ViewportOverlaySync {
+  sync(renderer: SceneRenderer, scene: SceneData): void;
+}
 
 /**
  * Keeps a SceneRenderer in sync with DocumentManager mutations.
@@ -21,8 +26,13 @@ export class EditorViewportController {
   private readonly remountListeners = new Set<
     (kind: SceneRendererKind) => void
   >();
+  private readonly overlay: ViewportOverlaySync | undefined;
 
-  constructor(private readonly document: DocumentManager) {
+  constructor(
+    private readonly document: DocumentManager,
+    overlay?: ViewportOverlaySync,
+  ) {
+    this.overlay = overlay;
     this.lastRendererKind = getSceneRendererKind(document.getScene());
   }
 
@@ -75,6 +85,7 @@ export class EditorViewportController {
     for (const node of flattenNodes(this.document.getScene())) {
       this.renderer.createNode(node);
     }
+    this.syncOverlay();
     this.renderer.render();
   }
 
@@ -102,6 +113,7 @@ export class EditorViewportController {
     switch (mutation.kind) {
       case "create": {
         this.createSubtree(mutation.nodeId);
+        this.syncOverlay();
         break;
       }
       case "update": {
@@ -128,6 +140,7 @@ export class EditorViewportController {
         if (node) {
           this.renderer.updateNode(node);
         }
+        this.syncOverlay();
         break;
       }
       case "reload": {
@@ -164,5 +177,12 @@ export class EditorViewportController {
     for (const listener of this.remountListeners) {
       listener(kind);
     }
+  }
+
+  private syncOverlay(): void {
+    if (!this.renderer || !this.overlay) {
+      return;
+    }
+    this.overlay.sync(this.renderer, this.document.getScene());
   }
 }

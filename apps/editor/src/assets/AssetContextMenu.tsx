@@ -29,6 +29,7 @@ export function AssetContextMenu({
   onNewFolder,
   onOpenPrefab,
   onInstantiatePrefab,
+  onCreateTileSet,
 }: {
   menu: Exclude<AssetContextMenuState, null>;
   onClose: () => void;
@@ -45,11 +46,13 @@ export function AssetContextMenu({
   onNewFolder: (folderPath?: string) => void;
   onOpenPrefab: (id: string) => void;
   onInstantiatePrefab: (id: string) => void;
+  onCreateTileSet: (id: string) => void;
 }) {
   const editor = useEditor();
-  const prefabAsset =
+  const menuAsset =
     menu.kind === "asset" ? editor.assets.get(menu.id) : undefined;
-  const isPrefab = prefabAsset?.type === "prefab";
+  const isPrefab = menuAsset?.type === "prefab";
+  const isTexture = menuAsset?.type === "texture";
   const canRemoveFolder =
     menu.kind === "folder" &&
     menu.path !== ASSETS_ROOT_FOLDER &&
@@ -84,6 +87,19 @@ export function AssetContextMenu({
                 </button>
               </li>
             </>
+          ) : null}
+          {isTexture ? (
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  onCreateTileSet(menu.id);
+                  onClose();
+                }}
+              >
+                Create TileSet
+              </button>
+            </li>
           ) : null}
           <li>
             <button

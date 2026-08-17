@@ -87,6 +87,7 @@ Initial supported resources: PNG, JPG, WebP, spritesheets, Aseprite / LibreSprit
 | PerspectiveMesh | Supported | Corner positions in Inspector |
 | AnimatedSprite | Supported | Frames as assetId[], or Aseprite `assetId` + `animation` tag; play/loop/speed |
 | Spine | Supported | Bundled skeleton+atlas+pages; Pixi playback via `@esotericsoftware/spine-pixi-v8` |
+| Tilemap | Supported | One node; chunked cells; `@pixi/tilemap` `CompositeTilemap` per chunk. Animated tiles share one clock per logical ID and rebuild only chunks that contain that ID. Not `TilingSprite`. |
 | ParticleContainer | Deferred | Pixi Particle API accepts Particle children only — incompatible with Container hierarchy |
 
 Node creation is driven by `NodeTypeRegistry` (`pixi.*` stable IDs). Menus and `CreateNodeCommand` share that registry. Leaf visuals cannot receive scene children (domain `canMoveNode` / create-parent policy).

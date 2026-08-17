@@ -4,6 +4,7 @@ import {
   getDirectionalLight,
   getLeafThreeComponent,
   getModel3D,
+  getNodeVisible,
   getPerspectiveCamera,
   getTransform3D,
   type SceneNodeData,
@@ -59,6 +60,7 @@ import {
 import {
   snapshotModelPlayback,
   ThreeRuntimeGraph,
+  type ThreeRuntimeEntry,
 } from "./three-runtime-nodes.js";
 import { readBoneWorldTransform } from "./three-bone-world.js";
 import type {
@@ -250,6 +252,37 @@ export class ThreeSceneRenderer implements SceneRenderer {
       return;
     }
     entry.object.visible = visible;
+    if (this.selectedNodeIds.has(nodeId)) {
+      this.setSelectedNodeIds([...this.selectedNodeIds]);
+    }
+  }
+
+  setNodeEditorHidden(nodeId: string, hidden: boolean): void {
+    const entry = this.graph.get(nodeId);
+    if (!entry) {
+      return;
+    }
+    entry.editorHidden = hidden;
+    this.applyDisplayVisible(entry);
+    if (this.selectedNodeIds.has(nodeId)) {
+      this.setSelectedNodeIds([...this.selectedNodeIds]);
+    }
+  }
+
+  private applyDisplayVisible(entry: ThreeRuntimeEntry): void {
+    entry.object.visible =
+      entry.runtimeVisible !== false && entry.editorHidden !== true;
+  }
+
+  setNodeLocked(nodeId: string, locked: boolean): void {
+    const entry = this.graph.get(nodeId);
+    if (!entry) {
+      return;
+    }
+    entry.editorLocked = locked;
+    if (this.selectedNodeIds.has(nodeId)) {
+      this.setSelectedNodeIds([...this.selectedNodeIds]);
+    }
   }
 
   pickNodeId(clientX: number, clientY: number): string | undefined {
@@ -267,6 +300,9 @@ export class ThreeSceneRenderer implements SceneRenderer {
     this.raycaster.setFromCamera(this.ndc, camera);
     const roots: Object3D[] = [];
     for (const [, entry] of this.graph.entries()) {
+      if (!isObjectWorldVisible(entry.object)) {
+        continue;
+      }
       roots.push(entry.object);
     }
     const hits = this.raycaster.intersectObjects(roots, true);
@@ -288,15 +324,19 @@ export class ThreeSceneRenderer implements SceneRenderer {
     tagObjectWithNodeId(object, node.id);
     this.applyTransform(object, node);
     const model = getModel3D(node);
-    this.graph.set(node.id, {
+    const entry = {
       object,
       parentId: node.parentId,
       kind: getLeafThreeComponent(node)?.type ?? "Container",
       assetId: model?.assetId,
       playback: snapshotModelPlayback(model),
       cameraActive: getPerspectiveCamera(node)?.active === true,
-    });
+      runtimeVisible: getNodeVisible(node),
+      editorHidden: false,
+    };
+    this.graph.set(node.id, entry);
     this.attachToParent(node.id, node.parentId);
+    this.applyDisplayVisible(entry);
     this.syncNodeHelper(node.id);
     if (getPerspectiveCamera(node)) {
       this.syncViewCameraToTools();
@@ -319,6 +359,8 @@ export class ThreeSceneRenderer implements SceneRenderer {
     }
     this.applyTransform(entry.object, node);
     this.applyLightOrCameraProps(entry.object, node);
+    entry.runtimeVisible = getNodeVisible(node);
+    this.applyDisplayVisible(entry);
     if (nextKind === "PerspectiveCamera") {
       entry.cameraActive = getPerspectiveCamera(node)?.active === true;
       this.syncViewCameraToTools();
@@ -745,7 +787,9 @@ export class ThreeSceneRenderer implements SceneRenderer {
     entry.assetId = assetId;
     entry.playback = snapshotModelPlayback(getModel3D(node));
     entry.cameraActive = getPerspectiveCamera(node)?.active === true;
+    entry.runtimeVisible = getNodeVisible(node);
     parent.add(next);
+    this.applyDisplayVisible(entry);
     this.editorTools?.refreshAttachment();
     this.syncNodeHelper(node.id);
     if (getPerspectiveCamera(node)) {
@@ -837,6 +881,7 @@ export class ThreeSceneRenderer implements SceneRenderer {
     tagObjectWithNodeId(visual, nodeId);
     entry.object = visual;
     parent.add(visual);
+    this.applyDisplayVisible(entry);
     if (this.selectedNodeIds.has(nodeId)) {
       this.editorTools?.setSelectedNodeIds([...this.selectedNodeIds]);
     }
@@ -853,4 +898,15 @@ function findTaggedNodeId(object: Object3D): string | undefined {
     current = current.parent;
   }
   return undefined;
+}
+
+function isObjectWorldVisible(object: Object3D): boolean {
+  let current: Object3D | null = object;
+  while (current) {
+    if (!current.visible) {
+      return false;
+    }
+    current = current.parent;
+  }
+  return true;
 }

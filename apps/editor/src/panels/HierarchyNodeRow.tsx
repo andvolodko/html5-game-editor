@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  isHierarchyChromeEventTarget,
+  type EditorNodeFlags,
+} from "@game-editor/editor-core";
 import { getNodeTypeIcon, type SceneNodeData } from "@game-editor/scene";
 import { MOUSE_BUTTON_PRIMARY } from "@game-editor/shared";
+import { EyeIcon, LockIcon } from "../ui/hierarchy-icons";
 import { treeIndentPadding } from "../ui/tree-indent";
 import type { HierarchyDropIndicator } from "./hierarchy-types";
 
@@ -12,10 +17,13 @@ export interface HierarchyNodeRowProps {
   draggingIds: readonly string[];
   dropIndicator: HierarchyDropIndicator;
   renamingId: string | undefined;
+  flagsFor: (nodeId: string) => EditorNodeFlags;
   onToggle: (nodeId: string) => void;
   onSelect: (nodeId: string, event: React.MouseEvent) => void;
   onContextMenu: (nodeId: string, event: React.MouseEvent) => void;
   onDragStart: (nodeId: string, clientX: number, clientY: number) => void;
+  onToggleHidden: (nodeId: string, recursive: boolean) => void;
+  onToggleLocked: (nodeId: string, recursive: boolean) => void;
   onCommitRename: (nodeId: string, name: string) => void;
   onCancelRename: () => void;
   registerRow: (nodeId: string, el: HTMLDivElement | null) => void;
@@ -30,10 +38,13 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
     draggingIds,
     dropIndicator,
     renamingId,
+    flagsFor,
     onToggle,
     onSelect,
     onContextMenu,
     onDragStart,
+    onToggleHidden,
+    onToggleLocked,
     onCommitRename,
     onCancelRename,
     registerRow,
@@ -44,6 +55,7 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
   const isRenaming = renamingId === node.id;
   const [draft, setDraft] = useState(node.name);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const flags = flagsFor(node.id);
 
   useEffect(() => {
     if (isRenaming) {
@@ -61,8 +73,21 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
     dropIndicator &&
     dropIndicator.placement !== "root" &&
     dropIndicator.targetId === node.id
-      ? `drop-${dropIndicator.placement}`
+      ? dropIndicator.blocked === true
+        ? "drop-invalid"
+        : `drop-${dropIndicator.placement}`
       : "";
+
+  const visibilityTitle = flags.ownHidden
+    ? "Show in editor (Shift: include children)"
+    : flags.hiddenByAncestorName
+      ? `Hidden because parent "${flags.hiddenByAncestorName}" is hidden`
+      : "Hide in editor (Shift: include children)";
+  const lockTitle = flags.ownLocked
+    ? "Unlock node (Shift: include children)"
+    : flags.lockedByAncestorName
+      ? `Locked because parent "${flags.lockedByAncestorName}" is locked`
+      : "Lock node (Shift: include children)";
 
   return (
     <div className="hierarchy-branch">
@@ -73,13 +98,14 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
           "hierarchy-row",
           isSelected ? "selected" : "",
           draggingIds.includes(node.id) ? "dragging" : "",
+          flags.ownHidden || flags.effectivelyHidden ? "editor-hidden" : "",
+          flags.ownLocked || flags.effectivelyLocked ? "editor-locked" : "",
           indicatorClass,
         ]
           .filter(Boolean)
           .join(" ")}
         style={{ paddingLeft: treeIndentPadding(depth) }}
         onClick={(event) => {
-          // Selection handled on pointerdown for snappier UX.
           void event;
         }}
         onContextMenu={(event) => onContextMenu(node.id, event)}
@@ -90,8 +116,14 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
           if ((event.target as HTMLElement).closest("[data-expand]")) {
             return;
           }
+          if (isHierarchyChromeEventTarget(event.target)) {
+            return;
+          }
           onSelect(node.id, event);
           if (event.ctrlKey || event.metaKey || event.shiftKey) {
+            return;
+          }
+          if (flags.effectivelyLocked) {
             return;
           }
           onDragStart(node.id, event.clientX, event.clientY);
@@ -148,6 +180,50 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
             ) : null}
           </span>
         )}
+        <span className="hierarchy-row-actions">
+          <button
+            type="button"
+            data-hierarchy-chrome=""
+            className={[
+              "hierarchy-chrome-btn",
+              flags.ownHidden ? "active" : "",
+              !flags.ownHidden && flags.effectivelyHidden ? "inherited" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            title={visibilityTitle}
+            aria-label={flags.ownHidden ? "Show in editor" : "Hide in editor"}
+            aria-pressed={flags.ownHidden}
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => {
+              event.stopPropagation();
+              onToggleHidden(node.id, event.shiftKey);
+            }}
+          >
+            <EyeIcon off={flags.ownHidden || flags.effectivelyHidden} />
+          </button>
+          <button
+            type="button"
+            data-hierarchy-chrome=""
+            className={[
+              "hierarchy-chrome-btn",
+              flags.ownLocked ? "active" : "",
+              !flags.ownLocked && flags.effectivelyLocked ? "inherited" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            title={lockTitle}
+            aria-label={flags.ownLocked ? "Unlock node" : "Lock node"}
+            aria-pressed={flags.ownLocked}
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => {
+              event.stopPropagation();
+              onToggleLocked(node.id, event.shiftKey);
+            }}
+          >
+            <LockIcon locked={flags.ownLocked || flags.effectivelyLocked} />
+          </button>
+        </span>
       </div>
       {hasChildren && isExpanded
         ? node.children.map((child) => (
@@ -160,10 +236,13 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
               draggingIds={draggingIds}
               dropIndicator={dropIndicator}
               renamingId={renamingId}
+              flagsFor={flagsFor}
               onToggle={onToggle}
               onSelect={onSelect}
               onContextMenu={onContextMenu}
               onDragStart={onDragStart}
+              onToggleHidden={onToggleHidden}
+              onToggleLocked={onToggleLocked}
               onCommitRename={onCommitRename}
               onCancelRename={onCancelRename}
               registerRow={registerRow}

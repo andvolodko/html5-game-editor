@@ -6,6 +6,7 @@ export type {
   PrefabPropertyOverride,
   PrefabNameOverride,
   PrefabLayerOverride,
+  PrefabVisibleOverride,
   PrefabData,
 } from "./prefab/types.js";
 
@@ -118,6 +119,8 @@ export type {
 
   SpineComponentData,
 
+  TilemapComponentData,
+
   VisualComponentData,
 
   LeafVisualComponentType,
@@ -213,6 +216,13 @@ export interface SceneNodeData {
    * Ignored for Transform3D nodes. Default `"background"`.
    */
   layer?: "background" | "foreground";
+
+  /**
+   * Runtime/export visibility of the display object.
+   * Omitted means visible (`true`). Persist `false` when hidden.
+   * Independent of editor-only Hierarchy hide.
+   */
+  visible?: boolean;
 
   /**
    * Present on nodes that belong to a prefab instance.

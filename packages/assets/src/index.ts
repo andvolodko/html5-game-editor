@@ -10,6 +10,7 @@ export type {
   BitmapFontAssetMetadata,
   WebFontAssetMetadata,
   PrefabAssetMetadata,
+  TileSetAssetMetadata,
   AssetMetadata,
   AssetRecord,
   AssetDatabaseData,
@@ -26,13 +27,18 @@ export {
   bitmapFontAssetMetadataSchema,
   webFontAssetMetadataSchema,
   prefabAssetMetadataSchema,
+  tileSetAssetMetadataSchema,
+  tileSetDataSchema,
   assetMetadataSchema,
   assetRecordSchema,
   assetDatabaseSchema,
   parseAssetDatabase,
   parseAssetRecord,
+  parseTileSetData,
   isCurrentAssetSchemaVersion,
+  isCurrentTileSetSchemaVersion,
   serializeAssetDatabase,
+  serializeTileSetData,
 } from "./schema.js";
 export {
   createEmptyAssetDatabase,
@@ -44,6 +50,7 @@ export {
   createBitmapFontAssetRecord,
   createWebFontAssetRecord,
   createPrefabAssetRecord,
+  createTileSetAssetRecord,
   normalizeProjectRelativePath,
   humanizeAssetNodeName,
 } from "./factories.js";
@@ -56,6 +63,7 @@ export type {
   AsepriteAssetUrls,
   BitmapFontAssetUrls,
   WebFontAssetUrls,
+  TileSetResolved,
 } from "./asset-resolver.js";
 export { createAssetResolver } from "./asset-resolver.js";
 export type { StaticAssetResolverOptions } from "./static-asset-resolver.js";
@@ -177,3 +185,44 @@ export type {
   AsepriteCliTag,
   PixiSpritesheetJson,
 } from "./aseprite-json.js";
+export {
+  TILESET_SCHEMA_VERSION,
+  DEFAULT_TILESET_TILE_SIZE,
+  TILESET_FILE_SUFFIX,
+  computeTileSetGrid,
+  tileCount,
+  tileIdToColumnRow,
+  tileRegion,
+  isValidTileId,
+  tileSetConfigKey,
+  tileSetMetadataFromData,
+  tileSetDataFromRecord,
+  tileSetResolvedFromMetadata,
+  tileIdAtPixel,
+} from "./tileset.js";
+export type {
+  TileDefinition,
+  TileAnimationFrame,
+  TileAnimationDefinition,
+  TileSetData,
+  TileSetGridInput,
+  TileRegion,
+} from "./tileset.js";
+export {
+  DEFAULT_TILE_ANIMATION_DURATION_MS,
+  tileAnimationClockKey,
+  parseTileAnimationClockKey,
+  normalizeTileAnimationFrames,
+  playableTileAnimationFrames,
+  tileHasPlayableAnimation,
+  animatedLogicalTileIds,
+  tileAnimationLoops,
+  resolveAnimatedTileFrame,
+  TileAnimationClock,
+  sharedTileAnimationClock,
+  resetSharedTileAnimationClock,
+} from "./tile-animation.js";
+export type {
+  TileAnimationSource,
+  TileAnimationFrameListener,
+} from "./tile-animation.js";

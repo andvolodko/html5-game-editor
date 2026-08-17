@@ -25,6 +25,7 @@
     "@game-editor/core": "workspace:*",
     "@game-editor/scene": "workspace:*",
     "@game-editor/shared": "workspace:*",
+    "@pixi/tilemap": "5.0.2",
     "pixi.js": "^8.12.0"
   },
   "devDependencies": {

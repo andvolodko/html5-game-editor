@@ -1,8 +1,8 @@
 import type { HierarchyDropPlacement } from "@game-editor/editor-core";
 
 export type HierarchyDropIndicator =
-  | { targetId: string; placement: HierarchyDropPlacement }
-  | { placement: "root" }
+  | { targetId: string; placement: HierarchyDropPlacement; blocked?: boolean }
+  | { placement: "root"; blocked?: boolean }
   | null;
 
 export type HierarchyRenamingTarget = "scene" | string | undefined;

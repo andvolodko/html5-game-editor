@@ -24,6 +24,7 @@ import { AssetMutationService } from "./services/asset-mutation-service.js";
 import { AssetSyncService } from "./services/asset-sync-service.js";
 import { ComponentCatalogService } from "./services/component-catalog-service.js";
 import { PrefabFileService } from "./services/prefab-file-service.js";
+import { TileSetFileService } from "./services/tileset-file-service.js";
 import { createRouter } from "./http/router.js";
 import { sendNoContent } from "./http/responses.js";
 import { DEFAULT_PROJECT_SERVER_PORT } from "@game-editor/shared";
@@ -86,6 +87,10 @@ const prefabFileService = new PrefabFileService(
   projectService,
   assetDatabaseStore,
 );
+const tileSetFileService = new TileSetFileService(
+  projectService,
+  assetDatabaseStore,
+);
 
 const router = createRouter({
   projectService,
@@ -99,6 +104,7 @@ const router = createRouter({
   projectCatalogService,
   componentCatalogService,
   prefabFileService,
+  tileSetFileService,
 });
 
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {

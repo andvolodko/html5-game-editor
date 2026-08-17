@@ -6,6 +6,7 @@ import {
   createTextureAssetRecord,
   createWebFontAssetRecord,
   createPrefabAssetRecord,
+  createTileSetAssetRecord,
   humanizeAssetNodeName,
   parseAssetDatabase,
   parseAssetRecord,
@@ -210,6 +211,43 @@ describe("AssetDatabase", () => {
     expect(parsed.metadata.kind).toBe("prefab");
     if (parsed.metadata.kind === "prefab") {
       expect(parsed.metadata.prefabId).toBe("prefab_player");
+    }
+  });
+
+  it("round-trips a tileset asset record", () => {
+    const record = createTileSetAssetRecord({
+      id: "asset_tileset",
+      name: "Grass",
+      path: "assets/tiles/Grass.tileset.json",
+      tilesetId: "tileset_grass",
+      imageAssetId: "asset_grass_png",
+      tileWidth: 32,
+      tileHeight: 32,
+      margin: 1,
+      spacing: 2,
+      columns: 8,
+      rows: 4,
+      tiles: {
+        "0": {
+          name: "dirt",
+          animation: {
+            loop: true,
+            frames: [{ tileId: 0, duration: 120 }],
+          },
+        },
+      },
+    });
+    const parsed = parseAssetRecord(record);
+    expect(parsed.type).toBe("tileset");
+    expect(parsed.metadata.kind).toBe("tileset");
+    if (parsed.metadata.kind === "tileset") {
+      expect(parsed.metadata.imageAssetId).toBe("asset_grass_png");
+      expect(parsed.metadata.columns).toBe(8);
+      expect(parsed.metadata.margin).toBe(1);
+      expect(parsed.metadata.tiles?.["0"]?.name).toBe("dirt");
+      expect(parsed.metadata.tiles?.["0"]?.animation?.frames[0]?.duration).toBe(
+        120,
+      );
     }
   });
 

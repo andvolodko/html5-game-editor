@@ -5,6 +5,7 @@ import { AsepriteAssetPreview } from "../assets/AsepriteAssetPreview";
 import { AudioAssetPreview } from "../assets/AudioAssetPreview";
 import { GltfAssetPreview } from "../assets/GltfAssetPreview";
 import { SpineAssetPreview } from "../assets/SpineAssetPreview";
+import { TileSetAssetPreview } from "../assets/TileSetAssetPreview";
 import { useAssetPreviewSelection } from "../assets/asset-preview-selection";
 
 export function AssetPreviewPanel() {
@@ -55,6 +56,16 @@ export function AssetPreviewPanel() {
       <div className="panel asset-preview-panel">
         <div className="asset-preview-heading">{asset.name}</div>
         <GltfAssetPreview key={asset.id} asset={asset} editor={editor} />
+      </div>
+    );
+  }
+
+  if (asset.type === "tileset") {
+    return (
+      <div className="panel asset-preview-panel">
+        <div className="asset-preview-heading">{asset.name}</div>
+        <div className="asset-preview-kind">{asset.type}</div>
+        <TileSetAssetPreview key={asset.id} asset={asset} editor={editor} />
       </div>
     );
   }

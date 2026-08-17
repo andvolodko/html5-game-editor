@@ -105,6 +105,8 @@ export function visualTypeToNodeTypeId(type: LeafVisualComponentType): string {
       return "pixi.animated-sprite";
     case "Spine":
       return "pixi.spine";
+    case "Tilemap":
+      return "pixi.tilemap";
     default: {
       const _exhaustive: never = type;
       return _exhaustive;
@@ -177,6 +179,8 @@ export function getNodeTypeIcon(node: SceneNodeData): string {
       return "▷";
     case "Spine":
       return "◇";
+    case "Tilemap":
+      return "⊞";
     case undefined:
       return "▣";
     default: {

@@ -1,4 +1,4 @@
-import { isSpineImportFile, isBitmapFontImportFile, isSupportedAsepriteFile, isSupportedAudioFile, isSupportedGltfFile, isSupportedTextureFile, isSupportedWebFontFile, isAsepriteAnimated } from "@game-editor/assets";
+import { isSpineImportFile, isBitmapFontImportFile, isSupportedAsepriteFile, isSupportedAudioFile, isSupportedGltfFile, isSupportedTextureFile, isSupportedWebFontFile, isAsepriteAnimated, humanizeAssetNodeName } from "@game-editor/assets";
 import type { Vec2 } from "@game-editor/scene";
 import { isScenesFolderOrDescendant } from "./asset-browser-model.js";
 import type { Editor } from "./editor.js";
@@ -109,6 +109,18 @@ export function dropAssetOntoScene(
   }
   if (asset?.type === "audio") {
     throw new Error("Audio assets cannot be dropped onto the scene yet");
+  }
+  if (asset?.type === "tileset") {
+    const tileset = editor.assets.resolveTileSet(assetId);
+    return editor.createNode({
+      typeId: "pixi.tilemap",
+      name: humanizeAssetNodeName(asset.name),
+      position,
+      assetId,
+      ...(tileset !== undefined
+        ? { tileWidth: tileset.tileWidth, tileHeight: tileset.tileHeight }
+        : {}),
+    });
   }
   if (asset?.type === "prefab") {
     const prefab = editor.prefabs.get(assetId);

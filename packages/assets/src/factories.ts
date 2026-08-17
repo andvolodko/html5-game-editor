@@ -12,6 +12,7 @@ import {
   type TextureAssetMetadata,
   type WebFontAssetMetadata,
   type PrefabAssetMetadata,
+  type TileSetAssetMetadata,
 } from "./types.js";
 import { generatedAsepriteOutputPaths } from "./aseprite-extensions.js";
 
@@ -185,6 +186,43 @@ export function createPrefabAssetRecord(input: {
   return {
     id: input.id ?? createId("asset"),
     type: "prefab",
+    name: input.name,
+    path: normalizeProjectRelativePath(input.path),
+    metadata,
+  };
+}
+
+export function createTileSetAssetRecord(input: {
+  name: string;
+  path: string;
+  tilesetId: string;
+  imageAssetId: string;
+  tileWidth: number;
+  tileHeight: number;
+  margin?: number;
+  spacing?: number;
+  columns: number;
+  rows: number;
+  tiles?: NonNullable<TileSetAssetMetadata["tiles"]>;
+  id?: string;
+}): AssetRecord {
+  const metadata: TileSetAssetMetadata = {
+    kind: "tileset",
+    tilesetId: input.tilesetId,
+    imageAssetId: input.imageAssetId,
+    tileWidth: input.tileWidth,
+    tileHeight: input.tileHeight,
+    margin: input.margin ?? 0,
+    spacing: input.spacing ?? 0,
+    columns: input.columns,
+    rows: input.rows,
+  };
+  if (input.tiles && Object.keys(input.tiles).length > 0) {
+    metadata.tiles = input.tiles;
+  }
+  return {
+    id: input.id ?? createId("asset"),
+    type: "tileset",
     name: input.name,
     path: normalizeProjectRelativePath(input.path),
     metadata,

@@ -66,7 +66,7 @@ export class PixiNodeDragController {
         y: local.y,
       });
 
-      if (!transform) {
+      if (!transform || live.editorLocked) {
         return;
       }
 

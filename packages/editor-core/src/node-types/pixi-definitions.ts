@@ -5,11 +5,13 @@ import { registerPixiMeshTypes } from "./pixi/mesh.js";
 import { registerPixiSpriteTypes } from "./pixi/sprites.js";
 import { registerPixiSpineTypes } from "./pixi/spine.js";
 import { registerPixiTextTypes } from "./pixi/text.js";
+import { registerPixiTilemapTypes } from "./pixi/tilemap.js";
 
 /** Registers built-in PixiJS node types into the given registry. */
 export function registerPixiNodeTypes(registry: NodeTypeRegistry): void {
   registerPixiContainerTypes(registry);
   registerPixiSpriteTypes(registry);
+  registerPixiTilemapTypes(registry);
   registerPixiSpineTypes(registry);
   registerPixiTextTypes(registry);
   registerPixiGraphicsTypes(registry);

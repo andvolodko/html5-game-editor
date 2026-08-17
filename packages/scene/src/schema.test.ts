@@ -8,8 +8,10 @@ import {
   createScriptComponent,
   createSpriteNode,
   createTextComponent,
+  createTilemapComponent,
   parseSceneData,
   SCENE_SCHEMA_VERSION,
+  setTile,
   type SceneData,
 } from "./index.js";
 
@@ -19,6 +21,33 @@ describe("scene schema", () => {
     expect(scene.version).toBe(SCENE_SCHEMA_VERSION);
     expect(scene.name).toBe("Main");
     expect(scene.nodes).toEqual([]);
+  });
+
+  it("accepts omitted node visible as the default and persists visible false", () => {
+    const hidden = createSpriteNode("Hidden", { x: 0, y: 0 });
+    hidden.visible = false;
+    const parsed = parseSceneData({
+      id: "scene_1",
+      name: "Demo",
+      version: SCENE_SCHEMA_VERSION,
+      nodes: [
+        {
+          id: "node_1",
+          name: "Shown",
+          components: hidden.components,
+          children: [],
+        },
+        {
+          id: "node_2",
+          name: "Hidden",
+          visible: false,
+          components: hidden.components,
+          children: [],
+        },
+      ],
+    });
+    expect(parsed.nodes[0]?.visible).toBeUndefined();
+    expect(parsed.nodes[1]?.visible).toBe(false);
   });
 
   it("validates a Transform2D scene document", () => {
@@ -117,6 +146,26 @@ describe("scene schema", () => {
       createSpriteNode("B", { x: 0, y: 0 }, { assetId: "asset_a" }),
     );
     expect(collectReferencedAssetIds(scene)).toEqual(["asset_a", "asset_b"]);
+  });
+
+  it("round-trips Tilemap chunks and collects the TileSet asset id", () => {
+    const scene = createEmptyScene("Tiles");
+    const tilemap = createTilemapComponent({
+      tileSetId: "asset_tileset",
+      tileWidth: 16,
+      tileHeight: 16,
+    });
+    setTile(tilemap, tilemap.layers[0]!.id, 2, 3, 7);
+    scene.nodes.push(createNodeWithVisual("Ground", { x: 0, y: 0 }, tilemap));
+    const parsed = parseSceneData(JSON.parse(JSON.stringify(scene)) as unknown);
+    const parsedTilemap = parsed.nodes[0]?.components.find(
+      (component) => component.type === "Tilemap",
+    );
+    expect(parsedTilemap && parsedTilemap.type === "Tilemap" ? parsedTilemap.tileSetId : undefined).toBe(
+      "asset_tileset",
+    );
+    expect(collectReferencedAssetIds(parsed)).toEqual(["asset_tileset"]);
+    expect(JSON.stringify(parsed)).not.toMatch(/PIXI|CompositeTilemap|dirty/i);
   });
 
   it("round-trips Script components with unknown scriptId", () => {

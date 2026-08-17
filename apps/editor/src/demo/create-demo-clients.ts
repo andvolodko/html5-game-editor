@@ -1,8 +1,14 @@
 import {
   AssetDatabase,
   computeAssetDatabaseRevision,
+  computeTileSetGrid,
   createPrefabAssetRecord,
   createStaticAssetResolver,
+  createTileSetAssetRecord,
+  DEFAULT_TILESET_TILE_SIZE,
+  parseTileSetData,
+  rasterAssetDisplaySize,
+  TILESET_SCHEMA_VERSION,
 } from "@game-editor/assets";
 import { createEmptyScene, parsePrefabData, PREFAB_SCHEMA_VERSION } from "@game-editor/scene";
 import { createId } from "@game-editor/shared";
@@ -13,6 +19,7 @@ import type {
   PrefabApiClient,
   ProjectApiClient,
   SceneApiClient,
+  TileSetApiClient,
 } from "@game-editor/editor-core";
 import type { ComponentCatalogData } from "@game-editor/game-components";
 import { foldersFromAssetDatabase } from "./folders-from-assets";
@@ -29,6 +36,7 @@ export interface DemoEditorClients {
   projectApi: ProjectApiClient;
   componentCatalogApi: ComponentCatalogApiClient;
   prefabApi: PrefabApiClient;
+  tileSetApi: TileSetApiClient;
 }
 
 export interface CreateDemoEditorClientsOptions {
@@ -186,5 +194,80 @@ export function createDemoEditorClients(
     },
   };
 
-  return { sceneApi, assetApi, projectApi, componentCatalogApi, prefabApi };
+  const tileSetApi: TileSetApiClient = {
+    async createTileSet(input) {
+      const image = store.assets.assets.find(
+        (asset) => asset.id === input.imageAssetId,
+      );
+      if (!image || image.type !== "texture") {
+        throw new DomainError(
+          "TEXTURE_NOT_FOUND",
+          `Texture asset not found: ${input.imageAssetId}`,
+        );
+      }
+      const size = rasterAssetDisplaySize(image);
+      const tileWidth = input.tileWidth ?? DEFAULT_TILESET_TILE_SIZE;
+      const tileHeight = input.tileHeight ?? DEFAULT_TILESET_TILE_SIZE;
+      const margin = input.margin ?? 0;
+      const spacing = input.spacing ?? 0;
+      const grid = computeTileSetGrid({
+        imageWidth: size?.width ?? tileWidth,
+        imageHeight: size?.height ?? tileHeight,
+        tileWidth,
+        tileHeight,
+        margin,
+        spacing,
+      });
+      const tileset = parseTileSetData({
+        version: TILESET_SCHEMA_VERSION,
+        id: createId("tileset"),
+        name: input.name.trim() || "TileSet",
+        imageAssetId: input.imageAssetId,
+        tileWidth,
+        tileHeight,
+        margin,
+        spacing,
+        columns: grid.columns,
+        rows: grid.rows,
+      });
+      const path = store.allocateTileSetPath(tileset.name, input.destination);
+      const asset = createTileSetAssetRecord({
+        name: tileset.name,
+        path,
+        tilesetId: tileset.id,
+        imageAssetId: tileset.imageAssetId,
+        tileWidth: tileset.tileWidth,
+        tileHeight: tileset.tileHeight,
+        margin: tileset.margin,
+        spacing: tileset.spacing,
+        columns: tileset.columns,
+        rows: tileset.rows,
+      });
+      store.addTileSetAsset(asset, tileset);
+      resolver = resolverForActive();
+      return { asset, tileset };
+    },
+    async saveTileSet(assetId, tileset) {
+      return store.saveTileSet(assetId, tileset);
+    },
+    async loadTileSet(assetId) {
+      const tileset = store.getTileSet(assetId);
+      if (!tileset) {
+        throw new DomainError(
+          "TILESET_NOT_FOUND",
+          `TileSet asset not found: ${assetId}`,
+        );
+      }
+      return tileset;
+    },
+  };
+
+  return {
+    sceneApi,
+    assetApi,
+    projectApi,
+    componentCatalogApi,
+    prefabApi,
+    tileSetApi,
+  };
 }

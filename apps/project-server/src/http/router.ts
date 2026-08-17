@@ -33,6 +33,10 @@ import {
   handlePrefabItemRoute,
   handlePrefabsCollectionRoute,
 } from "./routes/prefabs.js";
+import {
+  handleTileSetItemRoute,
+  handleTileSetsCollectionRoute,
+} from "./routes/tilesets.js";
 
 export type { RouterDeps } from "./router-deps.js";
 
@@ -59,6 +63,8 @@ const ROUTE_HANDLERS: readonly RouteHandler[] = [
   handleSceneItemRoute,
   handlePrefabsCollectionRoute,
   handlePrefabItemRoute,
+  handleTileSetsCollectionRoute,
+  handleTileSetItemRoute,
   handleComponentsCatalogRoute,
 ];
 

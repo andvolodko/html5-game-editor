@@ -29,6 +29,7 @@ export {
   createPerspectiveMeshComponent,
 } from "./factories/mesh.js";
 export { createSpineComponent } from "./factories/spine.js";
+export { createTilemapComponent } from "./factories/tilemap.js";
 export {
   createModel3DComponent,
   createPerspectiveCameraComponent,

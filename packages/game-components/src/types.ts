@@ -20,6 +20,7 @@ export const COMPONENT_ASSET_TYPES = [
   "aseprite",
   "font",
   "webfont",
+  "tileset",
 ] as const;
 
 export type ComponentAssetType = (typeof COMPONENT_ASSET_TYPES)[number];

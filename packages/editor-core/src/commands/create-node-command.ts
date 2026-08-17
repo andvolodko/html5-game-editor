@@ -35,6 +35,8 @@ export interface CreateNodeOptions {
   registry?: NodeTypeRegistry;
   /** CSS family when creating Text from a webfont catalogue asset. */
   fontFamily?: string;
+  tileWidth?: number;
+  tileHeight?: number;
 }
 
 export class CreateNodeCommand implements Command {
@@ -86,6 +88,10 @@ export class CreateNodeCommand implements Command {
       ...(options.assetId !== undefined ? { assetId: options.assetId } : {}),
       ...(options.fontFamily !== undefined
         ? { fontFamily: options.fontFamily }
+        : {}),
+      ...(options.tileWidth !== undefined ? { tileWidth: options.tileWidth } : {}),
+      ...(options.tileHeight !== undefined
+        ? { tileHeight: options.tileHeight }
         : {}),
     });
     this.previousSelection = selection.getSelection();

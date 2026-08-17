@@ -1,0 +1,434 @@
+/**
+ * Editor chrome design tokens.
+ * Components must use these semantic variables — never theme ID checks.
+ *
+ * Adding a theme: append an id in `theme.ts`, then define `[data-theme="…"]` here.
+ */
+:root {
+  --toolbar-height: 32px;
+  --bg: var(--bg-app);
+  --bg-elevated: var(--bg-panel-secondary);
+  --border: var(--border-default);
+  --text: var(--text-primary);
+  --muted: var(--text-muted);
+  --panel-bg: var(--bg-toolbar);
+  color-scheme: var(--color-scheme);
+}
+
+:root,
+[data-theme="dark"] {
+  --color-scheme: dark;
+  --bg-app: #14161c;
+  --bg-panel: #171a22;
+  --bg-panel-secondary: #1b1f29;
+  --bg-input: #1a1f2a;
+  --bg-hover: #222836;
+  --bg-active: #1a2a44;
+  --bg-overlay: rgba(8, 10, 14, 0.55);
+  --bg-toolbar: #12151c;
+  --bg-viewport: #0e1016;
+  --bg-thumbnail: #0b0d12;
+  --border-default: #2a3140;
+  --border-subtle: #232936;
+  --border-strong: #3a4458;
+  --text-primary: #e8ecf4;
+  --text-secondary: #c5ccda;
+  --text-muted: #9aa3b5;
+  --text-disabled: #6d7586;
+  --accent: #5b8cff;
+  --accent-hover: #7aa3ff;
+  --accent-active: #4c8bf5;
+  --accent-text: #ffffff;
+  --selection-bg: rgba(91, 140, 255, 0.12);
+  --selection-border: #5b8cff;
+  --danger: #f07178;
+  --warning: #e6c07b;
+  --success: #6a9e78;
+  --info: #5b8cff;
+  --focus-ring: #5b8cff;
+  --scrollbar-track: #12151c;
+  --scrollbar-thumb: #3a4458;
+  --scrollbar-thumb-hover: #4d5870;
+  --shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="light"] {
+  --color-scheme: light;
+  --bg-app: #dfe2e8;
+  --bg-panel: #eef0f4;
+  --bg-panel-secondary: #e4e7ed;
+  --bg-input: #f7f8fa;
+  --bg-hover: #dce1ea;
+  --bg-active: #d2dcf0;
+  --bg-overlay: rgba(24, 28, 36, 0.42);
+  --bg-toolbar: #e6e9ef;
+  --bg-viewport: #cfd4de;
+  --bg-thumbnail: #c5cbd6;
+  --border-default: #c3c9d4;
+  --border-subtle: #d3d8e1;
+  --border-strong: #9aa3b2;
+  --text-primary: #1c2330;
+  --text-secondary: #3a4354;
+  --text-muted: #5b6576;
+  --text-disabled: #8a93a3;
+  --accent: #3b6fd8;
+  --accent-hover: #2f5fc4;
+  --accent-active: #2754b0;
+  --accent-text: #ffffff;
+  --selection-bg: rgba(59, 111, 216, 0.14);
+  --selection-border: #3b6fd8;
+  --danger: #c4474a;
+  --warning: #a07420;
+  --success: #2f7a4a;
+  --info: #3b6fd8;
+  --focus-ring: #3b6fd8;
+  --scrollbar-track: #e6e9ef;
+  --scrollbar-thumb: #b4bcc9;
+  --scrollbar-thumb-hover: #9aa3b2;
+  --shadow-menu: 0 8px 24px rgba(24, 28, 36, 0.14);
+  --shadow-modal: 0 16px 40px rgba(24, 28, 36, 0.2);
+}
+
+[data-theme="midnight"] {
+  --color-scheme: dark;
+  --bg-app: #0b0e16;
+  --bg-panel: #11151f;
+  --bg-panel-secondary: #161b28;
+  --bg-input: #1a2030;
+  --bg-hover: #1e2536;
+  --bg-active: #1a2744;
+  --bg-overlay: rgba(4, 6, 12, 0.62);
+  --bg-toolbar: #0e121c;
+  --bg-viewport: #080b12;
+  --bg-thumbnail: #080b12;
+  --border-default: #242b3c;
+  --border-subtle: #1c2232;
+  --border-strong: #35405a;
+  --text-primary: #d9e1f2;
+  --text-secondary: #b4c0d6;
+  --text-muted: #8b97ad;
+  --text-disabled: #667089;
+  --accent: #5b8cff;
+  --accent-hover: #7aa3ff;
+  --accent-active: #4a7aee;
+  --accent-text: #f4f7ff;
+  --selection-bg: rgba(91, 140, 255, 0.16);
+  --selection-border: #5b8cff;
+  --danger: #e06c75;
+  --warning: #d4b06a;
+  --success: #6aae8a;
+  --info: #5b8cff;
+  --focus-ring: #5b8cff;
+  --scrollbar-track: #0e121c;
+  --scrollbar-thumb: #2c354c;
+  --scrollbar-thumb-hover: #3d4a68;
+  --shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="nord"] {
+  --color-scheme: dark;
+  --bg-app: #2e3440;
+  --bg-panel: #353b49;
+  --bg-panel-secondary: #3b4252;
+  --bg-input: #434c5e;
+  --bg-hover: #4c566a;
+  --bg-active: #434c5e;
+  --bg-overlay: rgba(24, 28, 36, 0.55);
+  --bg-toolbar: #323846;
+  --bg-viewport: #2a303c;
+  --bg-thumbnail: #2a303c;
+  --border-default: #4c566a;
+  --border-subtle: #3f4656;
+  --border-strong: #5b677d;
+  --text-primary: #eceff4;
+  --text-secondary: #e5e9f0;
+  --text-muted: #a8b1c2;
+  --text-disabled: #7b8494;
+  --accent: #88c0d0;
+  --accent-hover: #8fbcbb;
+  --accent-active: #81a1c1;
+  --accent-text: #2e3440;
+  --selection-bg: rgba(136, 192, 208, 0.16);
+  --selection-border: #88c0d0;
+  --danger: #bf616a;
+  --warning: #ebcb8b;
+  --success: #a3be8c;
+  --info: #81a1c1;
+  --focus-ring: #88c0d0;
+  --scrollbar-track: #2e3440;
+  --scrollbar-thumb: #4c566a;
+  --scrollbar-thumb-hover: #5b677d;
+  --shadow-menu: 0 8px 24px rgba(24, 28, 36, 0.4);
+  --shadow-modal: 0 16px 40px rgba(24, 28, 36, 0.5);
+}
+
+[data-theme="dracula"] {
+  --color-scheme: dark;
+  --bg-app: #282a36;
+  --bg-panel: #2f3242;
+  --bg-panel-secondary: #343746;
+  --bg-input: #3a3d4e;
+  --bg-hover: #44475a;
+  --bg-active: #3d3558;
+  --bg-overlay: rgba(18, 16, 28, 0.58);
+  --bg-toolbar: #252733;
+  --bg-viewport: #21222c;
+  --bg-thumbnail: #21222c;
+  --border-default: #44475a;
+  --border-subtle: #3b3e50;
+  --border-strong: #6272a4;
+  --text-primary: #f8f8f2;
+  --text-secondary: #e6e6dc;
+  --text-muted: #b6b9cc;
+  --text-disabled: #7d84a3;
+  --accent: #bd93f9;
+  --accent-hover: #c9a6fa;
+  --accent-active: #ff79c6;
+  --accent-text: #282a36;
+  --selection-bg: rgba(189, 147, 249, 0.16);
+  --selection-border: #bd93f9;
+  --danger: #ff5555;
+  --warning: #f1fa8c;
+  --success: #50fa7b;
+  --info: #8be9fd;
+  --focus-ring: #bd93f9;
+  --scrollbar-track: #252733;
+  --scrollbar-thumb: #44475a;
+  --scrollbar-thumb-hover: #6272a4;
+  --shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="monokai"] {
+  --color-scheme: dark;
+  --bg-app: #272822;
+  --bg-panel: #2e2f27;
+  --bg-panel-secondary: #3b3c35;
+  --bg-input: #3e3f38;
+  --bg-hover: #494a40;
+  --bg-active: #3f442c;
+  --bg-overlay: rgba(16, 16, 12, 0.58);
+  --bg-toolbar: #23241e;
+  --bg-viewport: #1d1e19;
+  --bg-thumbnail: #1d1e19;
+  --border-default: #494a40;
+  --border-subtle: #3a3b34;
+  --border-strong: #616255;
+  --text-primary: #f8f8f2;
+  --text-secondary: #e6e6db;
+  --text-muted: #c0c1b3;
+  --text-disabled: #8a8b7c;
+  --accent: #a6e22e;
+  --accent-hover: #b6eb4a;
+  --accent-active: #e6db74;
+  --accent-text: #272822;
+  --selection-bg: rgba(166, 226, 46, 0.14);
+  --selection-border: #a6e22e;
+  --danger: #f92672;
+  --warning: #e6db74;
+  --success: #a6e22e;
+  --info: #66d9ef;
+  --focus-ring: #a6e22e;
+  --scrollbar-track: #23241e;
+  --scrollbar-thumb: #494a40;
+  --scrollbar-thumb-hover: #616255;
+  --shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="solarized-dark"] {
+  --color-scheme: dark;
+  --bg-app: #002b36;
+  --bg-panel: #03303c;
+  --bg-panel-secondary: #073642;
+  --bg-input: #0b3c49;
+  --bg-hover: #0e4654;
+  --bg-active: #0a4a5c;
+  --bg-overlay: rgba(0, 20, 26, 0.58);
+  --bg-toolbar: #00222b;
+  --bg-viewport: #001e26;
+  --bg-thumbnail: #001e26;
+  --border-default: #0b4a58;
+  --border-subtle: #073642;
+  --border-strong: #1a6270;
+  --text-primary: #93a1a1;
+  --text-secondary: #839496;
+  --text-muted: #657b83;
+  --text-disabled: #586e75;
+  --accent: #268bd2;
+  --accent-hover: #3c9de0;
+  --accent-active: #2aa198;
+  --accent-text: #fdf6e3;
+  --selection-bg: rgba(38, 139, 210, 0.18);
+  --selection-border: #268bd2;
+  --danger: #dc322f;
+  --warning: #b58900;
+  --success: #859900;
+  --info: #268bd2;
+  --focus-ring: #268bd2;
+  --scrollbar-track: #00222b;
+  --scrollbar-thumb: #0b4a58;
+  --scrollbar-thumb-hover: #1a6270;
+  --shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="solarized-light"] {
+  --color-scheme: light;
+  --bg-app: #eee8d5;
+  --bg-panel: #f7f1de;
+  --bg-panel-secondary: #f3ecd7;
+  --bg-input: #fdf6e3;
+  --bg-hover: #e7e0c8;
+  --bg-active: #dce8e4;
+  --bg-overlay: rgba(50, 42, 28, 0.38);
+  --bg-toolbar: #f3ecd7;
+  --bg-viewport: #e4dcc4;
+  --bg-thumbnail: #e4dcc4;
+  --border-default: #d6cdb4;
+  --border-subtle: #e4dcc4;
+  --border-strong: #b8af96;
+  --text-primary: #586e75;
+  --text-secondary: #657b83;
+  --text-muted: #6e8188;
+  --text-disabled: #93a1a1;
+  --accent: #268bd2;
+  --accent-hover: #1e78b8;
+  --accent-active: #1a6aa3;
+  --accent-text: #fdf6e3;
+  --selection-bg: rgba(38, 139, 210, 0.14);
+  --selection-border: #268bd2;
+  --danger: #dc322f;
+  --warning: #b58900;
+  --success: #859900;
+  --info: #268bd2;
+  --focus-ring: #268bd2;
+  --scrollbar-track: #eee8d5;
+  --scrollbar-thumb: #d6cdb4;
+  --scrollbar-thumb-hover: #b8af96;
+  --shadow-menu: 0 8px 24px rgba(50, 42, 28, 0.14);
+  --shadow-modal: 0 16px 40px rgba(50, 42, 28, 0.2);
+}
+
+[data-theme="graphite"] {
+  --color-scheme: dark;
+  --bg-app: #2b2b2b;
+  --bg-panel: #333333;
+  --bg-panel-secondary: #3a3a3a;
+  --bg-input: #2f2f2f;
+  --bg-hover: #424242;
+  --bg-active: #4a4a4a;
+  --bg-overlay: rgba(12, 12, 12, 0.55);
+  --bg-toolbar: #303030;
+  --bg-viewport: #242424;
+  --bg-thumbnail: #242424;
+  --border-default: #1f1f1f;
+  --border-subtle: #2a2a2a;
+  --border-strong: #4e4e4e;
+  --text-primary: #e6e6e6;
+  --text-secondary: #c8c8c8;
+  --text-muted: #9a9a9a;
+  --text-disabled: #737373;
+  --accent: #4c8dc8;
+  --accent-hover: #5b9ad1;
+  --accent-active: #3d7ab3;
+  --accent-text: #ffffff;
+  --selection-bg: rgba(76, 141, 200, 0.18);
+  --selection-border: #4c8dc8;
+  --danger: #d36b6b;
+  --warning: #c9a24a;
+  --success: #6ea56e;
+  --info: #4c8dc8;
+  --focus-ring: #4c8dc8;
+  --scrollbar-track: #2b2b2b;
+  --scrollbar-thumb: #4a4a4a;
+  --scrollbar-thumb-hover: #5c5c5c;
+  --shadow-menu: 0 8px 22px rgba(0, 0, 0, 0.38);
+  --shadow-modal: 0 16px 36px rgba(0, 0, 0, 0.46);
+}
+
+[data-theme="ocean"] {
+  --color-scheme: dark;
+  --bg-app: #0a1926;
+  --bg-panel: #122536;
+  --bg-panel-secondary: #163044;
+  --bg-input: #1a3650;
+  --bg-hover: #1e3e5a;
+  --bg-active: #1c4c5e;
+  --bg-overlay: rgba(4, 12, 20, 0.6);
+  --bg-toolbar: #0e2030;
+  --bg-viewport: #07131d;
+  --bg-thumbnail: #07131d;
+  --border-default: #234860;
+  --border-subtle: #1a364a;
+  --border-strong: #2f6280;
+  --text-primary: #d5e8ef;
+  --text-secondary: #b3cdd8;
+  --text-muted: #8aadc0;
+  --text-disabled: #658196;
+  --accent: #3aa7b8;
+  --accent-hover: #4cb9ca;
+  --accent-active: #2f93a4;
+  --accent-text: #062026;
+  --selection-bg: rgba(58, 167, 184, 0.16);
+  --selection-border: #3aa7b8;
+  --danger: #e06c75;
+  --warning: #d4b06a;
+  --success: #6cba8e;
+  --info: #3aa7b8;
+  --focus-ring: #3aa7b8;
+  --scrollbar-track: #0e2030;
+  --scrollbar-thumb: #234860;
+  --scrollbar-thumb-hover: #2f6280;
+  --shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.42);
+  --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.52);
+}
+
+.dockview-theme-dark.editor-dockview {
+  --dv-background-color: var(--bg-app);
+  --dv-group-view-background-color: var(--bg-panel);
+  --dv-tabs-and-actions-container-background-color: var(--bg-panel-secondary);
+  --dv-activegroup-visiblepanel-tab-background-color: var(--bg-panel);
+  --dv-activegroup-hiddenpanel-tab-background-color: var(--bg-hover);
+  --dv-inactivegroup-visiblepanel-tab-background-color: var(--bg-panel);
+  --dv-inactivegroup-hiddenpanel-tab-background-color: var(--bg-hover);
+  --dv-tab-divider-color: var(--border-subtle);
+  --dv-activegroup-visiblepanel-tab-color: var(--text-primary);
+  --dv-activegroup-hiddenpanel-tab-color: var(--text-muted);
+  --dv-inactivegroup-visiblepanel-tab-color: var(--text-secondary);
+  --dv-inactivegroup-hiddenpanel-tab-color: var(--text-muted);
+  --dv-separator-border: var(--border-default);
+  --dv-paneview-header-border-color: var(--border-subtle);
+  --dv-paneview-active-outline-color: var(--accent);
+  --dv-icon-hover-background-color: var(--bg-hover);
+  --dv-tabs-container-scrollbar-color: var(--scrollbar-thumb);
+  --dv-drag-over-background-color: color-mix(in srgb, var(--accent) 28%, transparent);
+  --dv-drag-over-border-color: var(--accent);
+  --dv-floating-box-shadow: var(--shadow-modal);
+  --dv-sash-color: var(--border-subtle);
+  --dv-active-sash-color: var(--accent);
+}
+
+* {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}

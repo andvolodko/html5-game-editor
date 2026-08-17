@@ -20,6 +20,7 @@ import { AssetFolderService } from "../services/asset-folder-service.js";
 import { AssetMutationService } from "../services/asset-mutation-service.js";
 import { AssetSyncService } from "../services/asset-sync-service.js";
 import { PrefabFileService } from "../services/prefab-file-service.js";
+import { TileSetFileService } from "../services/tileset-file-service.js";
 import { createRouter } from "./router.js";
 
 function tinyPng(): Buffer {
@@ -107,6 +108,10 @@ describe("assets HTTP routes", () => {
       ),
       assetSyncService,
       prefabFileService,
+      tileSetFileService: new TileSetFileService(
+        projectService,
+        assetDatabaseStore,
+      ),
     });
 
     server = createServer((req: IncomingMessage, res: ServerResponse) => {

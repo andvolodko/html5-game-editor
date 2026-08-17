@@ -229,7 +229,7 @@ export class PixiNodePainter {
 
     // Full selection gizmo for leaf visuals and grouping nodes with content
     // bounds (scale/rotate around Transform2D; size/anchor only on leaves).
-    if (runtime.gizmo && runtime.visualBounds) {
+    if (runtime.gizmo && runtime.visualBounds && !runtime.editorLocked) {
       const displaySize = visual ? getVisualDisplaySize(visual) : undefined;
       const width =
         runtime.sizePreview?.width ??

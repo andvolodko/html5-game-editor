@@ -41,6 +41,10 @@ export interface RuntimeNode {
   supportsSpriteGizmo: boolean;
   selection: Graphics | undefined;
   gizmo: SpriteSelectionGizmo | undefined;
+  /** Editor-only lock overlay (not scene data). */
+  editorLocked: boolean;
+  /** Editor-only hide overlay (not scene data). Combined with `node.visible`. */
+  editorHidden: boolean;
   /** Live size override while a gizmo resize is in progress. */
   sizePreview: { width: number; height: number } | undefined;
   /** Live anchor override while an anchor drag is in progress. */
@@ -184,6 +188,8 @@ export class PixiRuntimeGraph {
       supportsSpriteGizmo: false,
       selection,
       gizmo,
+      editorLocked: false,
+      editorHidden: false,
       sizePreview: undefined,
       anchorPreview: undefined,
       node,

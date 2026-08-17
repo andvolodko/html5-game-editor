@@ -121,6 +121,9 @@ function assetRowIconClass(type: AssetRecord["type"]): string {
   if (type === "prefab") {
     return "asset-row-icon prefab";
   }
+  if (type === "tileset") {
+    return "asset-row-icon tileset";
+  }
   return "asset-row-icon texture";
 }
 

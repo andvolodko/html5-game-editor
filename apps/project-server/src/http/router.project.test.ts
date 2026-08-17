@@ -21,6 +21,7 @@ import { AssetFolderService } from "../services/asset-folder-service.js";
 import { AssetMutationService } from "../services/asset-mutation-service.js";
 import { AssetSyncService } from "../services/asset-sync-service.js";
 import { PrefabFileService } from "../services/prefab-file-service.js";
+import { TileSetFileService } from "../services/tileset-file-service.js";
 import { createRouter } from "./router.js";
 
 async function writeMinimalGame(
@@ -110,6 +111,10 @@ describe("project HTTP routes", () => {
       assetSyncService,
       projectCatalogService,
       prefabFileService: new PrefabFileService(
+        projectService,
+        assetDatabaseStore,
+      ),
+      tileSetFileService: new TileSetFileService(
         projectService,
         assetDatabaseStore,
       ),

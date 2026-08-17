@@ -557,6 +557,18 @@ export function AssetsPanel() {
               });
             });
           }}
+          onCreateTileSet={(id) => {
+            void model.editor.createTileSetFromTexture(id).catch((error: unknown) => {
+              model.editor.console.log({
+                level: "error",
+                category: "assets",
+                message:
+                  error instanceof Error
+                    ? error.message
+                    : "Create TileSet failed",
+              });
+            });
+          }}
           onNewFolder={(folderPath) => {
             if (folderPath) {
               model.setSelection({ kind: "folder", path: folderPath });

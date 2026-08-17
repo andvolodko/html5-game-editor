@@ -1,4 +1,4 @@
-import { humanizeAssetNodeName, rasterAssetDisplaySize, type AssetRecord } from "@game-editor/assets";
+import { humanizeAssetNodeName, rasterAssetDisplaySize, type AssetRecord, type TileSetData } from "@game-editor/assets";
 import {
   CommandManager,
   CompositeCommand,
@@ -13,6 +13,7 @@ import {
 import {
   createEmptyScene,
   findNodeById,
+  getAncestorIds,
   getTransform2D,
   getVisualComponent,
   parseSceneData,
@@ -20,6 +21,7 @@ import {
   type SceneData,
   type SceneRenderer,
   type SceneRendererKind,
+  type TileChange,
   type Vec2,
   type Vec3,
 } from "@game-editor/scene";
@@ -44,6 +46,7 @@ import {
   SetSceneNameCommand,
   SetSceneRendererCommand,
   SetNodeLayerCommand,
+  SetNodeVisibleCommand,
   SetTransform2DCommand,
   SetTransform3DCommand,
   createResetNodeTransformCommand,
@@ -70,6 +73,7 @@ import {
 } from "./commands/index.js";
 import {
   ensureDefaultNodeTypesRegistered,
+  resolveCreateParentId,
   type NodeTypeId,
   type NodeTypeRegistry,
 } from "./node-types/index.js";
@@ -111,8 +115,15 @@ import {
 } from "./editor-scene-persistence.js";
 import { RenameRequestBus, type RenameRequestListener } from "./rename-request-bus.js";
 import { EditorConsole } from "./editor-console.js";
-import { PrefabManager } from "./prefab-manager.js";
+import { PrefabManager, type EditorDocumentMode } from "./prefab-manager.js";
 import type { PrefabApiClient } from "./prefab-api-client.js";
+import type { TileSetApiClient } from "./tileset-api-client.js";
+import { TilemapEditSession } from "./tilemap-edit-session.js";
+import {
+  createTileSetFromTexture,
+  saveTileSetDocument,
+} from "./editor-tileset-workflows.js";
+import { PaintTilemapCommand } from "./commands/paint-tilemap-command.js";
 import {
   applyPrefabOverrides,
   createPrefabFromSelectedNode,
@@ -124,6 +135,18 @@ import {
   saveOpenPrefabDocument,
   unpackPrefabInstance,
 } from "./editor-prefab-workflows.js";
+import {
+  applyEditorNodeOverlay,
+  descendantNodeIds,
+  getEditorNodeFlags,
+  isNodeEffectivelyLocked,
+  isNodeEffectivelyVisible,
+  isNodeHiddenInEditor,
+  isNodeLocked,
+  subtreeNodeIds,
+  type EditorNodeFlags,
+} from "./editor-node-metadata.js";
+import { EditorNodeMetadataStore } from "./editor-node-metadata-store.js";
 
 export type { RenameRequestTarget } from "./rename-request-bus.js";
 export { isChordLetter } from "./editor-hotkeys.js";
@@ -139,6 +162,7 @@ export interface EditorOptions {
   projectApi?: ProjectApiClient;
   componentCatalogApi?: ComponentCatalogApiClient;
   prefabApi?: PrefabApiClient;
+  tileSetApi?: TileSetApiClient;
 }
 
 /**
@@ -157,6 +181,9 @@ export class Editor {
   /** Structured log for the Console panel (not scene/document state). */
   readonly console: EditorConsole;
   readonly prefabs: PrefabManager;
+  readonly tilemapEdit: TilemapEditSession;
+  readonly nodeMetadata: EditorNodeMetadataStore;
+  private tileSetApi: TileSetApiClient | undefined;
   /** Bus event ids for dynamicEnum source `busEvents` (set when loading game catalog). */
   private busEvents: readonly BusEventDefinition[] = [];
 
@@ -177,13 +204,24 @@ export class Editor {
     );
     this.selection = new SelectionManager();
     this.commands = new CommandManager();
-    this.viewport = new EditorViewportController(this.document);
+    this.nodeMetadata = new EditorNodeMetadataStore();
+    this.viewport = new EditorViewportController(this.document, {
+      sync: (renderer, scene) => {
+        applyEditorNodeOverlay(
+          renderer,
+          scene,
+          this.nodeMetadata.getSnapshot(),
+        );
+      },
+    });
     this.assets = new AssetManager(options.assetApi);
     this.project = new ProjectManager(options.projectApi);
     this.components = new ComponentRegistry();
     this.console = new EditorConsole();
     this.prefabs = new PrefabManager();
     this.prefabs.setApi(options.prefabApi);
+    this.tilemapEdit = new TilemapEditSession();
+    this.tileSetApi = options.tileSetApi;
     this.prefabs.setMode({
       kind: "scene",
       sceneFileId: options.sceneFileId ?? "main",
@@ -198,9 +236,18 @@ export class Editor {
       }),
       this.selection.subscribe(() => this.emit()),
       this.assets.subscribe(() => this.emit()),
-      this.project.subscribe(() => this.emit()),
+      this.project.subscribe(() => {
+        this.syncNodeMetadataScope();
+        this.emit();
+      }),
       this.console.subscribe(() => this.emit()),
+      this.tilemapEdit.subscribe(() => this.emit()),
+      this.nodeMetadata.subscribe(() => {
+        this.syncEditorOverlay();
+        this.emit();
+      }),
     );
+    this.syncNodeMetadataScope();
   }
 
   getScene(): SceneData {
@@ -231,11 +278,33 @@ export class Editor {
     this.prefabs.setApi(client);
   }
 
+  setTileSetApi(client: TileSetApiClient): void {
+    this.tileSetApi = client;
+  }
+
+  getTileSetApi(): TileSetApiClient | undefined {
+    return this.tileSetApi;
+  }
+
+  createTileSetFromTexture(imageAssetId: string): Promise<string> {
+    return createTileSetFromTexture(this, imageAssetId);
+  }
+
+  saveTileSetDocument(
+    assetId: string,
+    tileset: TileSetData,
+  ): Promise<TileSetData> {
+    return saveTileSetDocument(this, assetId, tileset);
+  }
+
   instantiatePrefabFromAsset(
     assetId: string,
     position?: Vec2,
     parentId?: string,
   ): Promise<string> {
+    if (parentId !== undefined && this.isNodeEffectivelyLocked(parentId)) {
+      return Promise.resolve("");
+    }
     return instantiatePrefabFromAsset(this, assetId, {
       ...(position !== undefined ? { position2D: position } : {}),
       parentId,
@@ -247,6 +316,9 @@ export class Editor {
     position: Vec3,
     parentId?: string,
   ): Promise<string> {
+    if (parentId !== undefined && this.isNodeEffectivelyLocked(parentId)) {
+      return Promise.resolve("");
+    }
     return instantiatePrefabFromAsset(this, assetId, {
       position3D: position,
       parentId,
@@ -254,18 +326,30 @@ export class Editor {
   }
 
   createPrefabFromNode(nodeId: string): Promise<string> {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return Promise.resolve("");
+    }
     return createPrefabFromSelectedNode(this, nodeId);
   }
 
   unpackPrefab(nodeId: string): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     unpackPrefabInstance(this, nodeId);
   }
 
   revertPrefabOverrides(nodeId: string, overrideIndex?: number): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     revertPrefabOverrides(this, nodeId, overrideIndex);
   }
 
   applyPrefabOverrides(nodeId: string, overrideIndex?: number): Promise<void> {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return Promise.resolve();
+    }
     return applyPrefabOverrides(this, nodeId, overrideIndex);
   }
 
@@ -289,6 +373,7 @@ export class Editor {
     const sceneFileId = session?.sceneFileId ?? this.sceneFileId;
     this.sceneFileId = sceneFileId;
     this.prefabs.setMode({ kind: "scene", sceneFileId });
+    this.syncNodeMetadataScope();
     if (session) {
       this.document.restoreSnapshot(session.snapshot);
       this.commands.clear();
@@ -298,6 +383,7 @@ export class Editor {
   }
 
   setScene(scene: SceneData, options?: { preserveUndo?: boolean }): void {
+    this.syncNodeMetadataScope();
     this.selection.clear();
     if (!options?.preserveUndo) {
       this.commands.clear();
@@ -493,6 +579,14 @@ export class Editor {
     ensureDefaultNodeTypesRegistered();
     const normalized: CreateNodeOptions =
       typeof options === "string" ? { typeId: options } : options;
+    const scene = this.getScene();
+    const resolveParent = normalized.resolveParent !== false;
+    const parentId = resolveParent
+      ? resolveCreateParentId(scene, this.selection.getPrimaryNodeId())
+      : normalized.parentId;
+    if (parentId !== undefined && this.isNodeEffectivelyLocked(parentId)) {
+      return "";
+    }
     const command = new CreateNodeCommand(
       this.document,
       this.selection,
@@ -507,6 +601,9 @@ export class Editor {
   }
 
   renameNode(nodeId: string, name: string): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(new RenameNodeCommand(this.document, nodeId, name));
   }
 
@@ -516,7 +613,7 @@ export class Editor {
 
   duplicateNode(nodeId?: string): string | undefined {
     const id = nodeId ?? this.selection.getPrimaryNodeId();
-    if (!id) {
+    if (!id || this.isNodeEffectivelyLocked(id)) {
       return undefined;
     }
     try {
@@ -558,6 +655,12 @@ export class Editor {
       scene,
       this.selection.getPrimaryNodeId(),
     );
+    if (
+      location.parentId !== undefined &&
+      this.isNodeEffectivelyLocked(location.parentId)
+    ) {
+      return [];
+    }
     const command = new PasteNodesCommand(
       this.document,
       this.selection,
@@ -570,14 +673,27 @@ export class Editor {
   }
 
   deleteSelectedNodes(): void {
+    const scene = this.document.getScene();
+    const unlocked = this.selection
+      .getSelectedNodeIds()
+      .filter((id) => !isNodeEffectivelyLocked(scene, this.nodeMetadata.getSnapshot(), id));
+    if (unlocked.length === 0) {
+      return;
+    }
+    const previous = this.selection.getSelectedNodeIds();
+    this.selection.setSelection(unlocked);
     const command = createDeleteSelectionCommand(this.document, this.selection);
     if (!command) {
+      this.selection.setSelection(previous);
       return;
     }
     this.execute(command);
   }
 
   deleteNode(nodeId: string): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     try {
       this.execute(new DeleteNodeCommand(this.document, this.selection, nodeId));
     } catch (error) {
@@ -598,6 +714,12 @@ export class Editor {
     toIndex: number,
     options?: { preserveWorldTransform?: boolean },
   ): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
+    if (toParentId !== undefined && this.isNodeEffectivelyLocked(toParentId)) {
+      return;
+    }
     try {
       this.execute(
         new MoveNodeCommand(this.document, {
@@ -626,8 +748,20 @@ export class Editor {
     if (moves.length === 0) {
       return;
     }
-    if (moves.length === 1) {
-      const only = moves[0];
+    const allowed = moves.filter((move) => {
+      if (this.isNodeEffectivelyLocked(move.nodeId)) {
+        return false;
+      }
+      return (
+        move.toParentId === undefined ||
+        !this.isNodeEffectivelyLocked(move.toParentId)
+      );
+    });
+    if (allowed.length === 0) {
+      return;
+    }
+    if (allowed.length === 1) {
+      const only = allowed[0];
       if (!only) {
         return;
       }
@@ -635,7 +769,7 @@ export class Editor {
       return;
     }
     try {
-      const commands = moves.map(
+      const commands = allowed.map(
         (move) =>
           new MoveNodeCommand(this.document, {
             nodeId: move.nodeId,
@@ -654,10 +788,16 @@ export class Editor {
   }
 
   setTransform2D(nodeId: string, patch: Transform2DPatch): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(new SetTransform2DCommand(this.document, nodeId, patch));
   }
 
   setTransform3D(nodeId: string, patch: Transform3DPatch): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(new SetTransform3DCommand(this.document, nodeId, patch));
   }
 
@@ -669,7 +809,7 @@ export class Editor {
    */
   resetNodeTransform(nodeId?: string): boolean {
     const id = nodeId ?? this.selection.getPrimaryNodeId();
-    if (!id) {
+    if (!id || this.isNodeEffectivelyLocked(id)) {
       return false;
     }
     const node = findNodeById(this.document.getScene(), id);
@@ -693,18 +833,30 @@ export class Editor {
   }
 
   setModel3D(nodeId: string, patch: Model3DPatch): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(new SetModel3DCommand(this.document, nodeId, patch));
   }
 
   setPerspectiveCamera(nodeId: string, patch: PerspectiveCameraPatch): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(new SetPerspectiveCameraCommand(this.document, nodeId, patch));
   }
 
   setDirectionalLight(nodeId: string, patch: DirectionalLightPatch): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(new SetDirectionalLightCommand(this.document, nodeId, patch));
   }
 
   setAmbientLight(nodeId: string, patch: AmbientLightPatch): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(new SetAmbientLightCommand(this.document, nodeId, patch));
   }
 
@@ -713,7 +865,17 @@ export class Editor {
   }
 
   setNodeLayer(nodeId: string, layer: "background" | "foreground"): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(new SetNodeLayerCommand(this.document, nodeId, layer));
+  }
+
+  setNodeVisible(nodeId: string, visible: boolean): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
+    this.execute(new SetNodeVisibleCommand(this.document, nodeId, visible));
   }
 
   /**
@@ -731,7 +893,7 @@ export class Editor {
     for (const nodeId of nodeIds) {
       const node = findNodeById(scene, nodeId);
       const transform = node ? getTransform2D(node) : undefined;
-      if (!transform) {
+      if (!transform || this.isNodeEffectivelyLocked(nodeId)) {
         continue;
       }
       commands.push(
@@ -756,12 +918,36 @@ export class Editor {
   }
 
   setSpriteSize(nodeId: string, patch: SpriteSizePatch): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(new SetSpriteSizeCommand(this.document, nodeId, patch));
   }
 
   /** Patch the node's leaf visual component (one undo step). */
   setVisualComponent(nodeId: string, patch: Record<string, unknown>): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(new SetVisualComponentCommand(this.document, nodeId, patch));
+  }
+
+  /** Commit one paint/erase stroke (changed cells only). */
+  paintTilemap(
+    nodeId: string,
+    changes: readonly TileChange[],
+    options?: { alreadyApplied?: boolean },
+  ): void {
+    if (changes.length === 0 || this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
+    const command = new PaintTilemapCommand(this.document, nodeId, changes);
+    if (options?.alreadyApplied === true) {
+      this.commands.record(command);
+      this.afterDocumentCommand();
+      return;
+    }
+    this.execute(command);
   }
 
   /**
@@ -816,8 +1002,107 @@ export class Editor {
     return this.busEvents;
   }
 
+  isNodeHiddenInEditor(nodeId: string): boolean {
+    return isNodeHiddenInEditor(this.nodeMetadata.getSnapshot(), nodeId);
+  }
+
+  isNodeEffectivelyVisible(nodeId: string): boolean {
+    return isNodeEffectivelyVisible(
+      this.getScene(),
+      this.nodeMetadata.getSnapshot(),
+      nodeId,
+    );
+  }
+
+  isNodeLocked(nodeId: string): boolean {
+    return isNodeLocked(this.nodeMetadata.getSnapshot(), nodeId);
+  }
+
+  isNodeEffectivelyLocked(nodeId: string): boolean {
+    return isNodeEffectivelyLocked(
+      this.getScene(),
+      this.nodeMetadata.getSnapshot(),
+      nodeId,
+    );
+  }
+
+  getEditorNodeFlags(nodeId: string): EditorNodeFlags {
+    return getEditorNodeFlags(
+      this.getScene(),
+      this.nodeMetadata.getSnapshot(),
+      nodeId,
+    );
+  }
+
+  setNodeHidden(
+    nodeId: string,
+    hidden: boolean,
+    options?: { recursive?: boolean },
+  ): void {
+    const ids =
+      options?.recursive === true
+        ? subtreeNodeIds(this.getScene(), nodeId)
+        : [nodeId];
+    this.nodeMetadata.setHidden(ids, hidden);
+  }
+
+  setNodeLocked(
+    nodeId: string,
+    locked: boolean,
+    options?: { recursive?: boolean },
+  ): void {
+    const ids =
+      options?.recursive === true
+        ? subtreeNodeIds(this.getScene(), nodeId)
+        : [nodeId];
+    this.nodeMetadata.setLocked(ids, locked);
+  }
+
+  setNodeHiddenRecursive(nodeId: string, hidden: boolean): void {
+    this.nodeMetadata.setHidden(
+      descendantNodeIds(this.getScene(), nodeId),
+      hidden,
+    );
+  }
+
+  setNodeLockedRecursive(nodeId: string, locked: boolean): void {
+    this.nodeMetadata.setLocked(
+      descendantNodeIds(this.getScene(), nodeId),
+      locked,
+    );
+  }
+
+  showAllNodes(): void {
+    this.nodeMetadata.showAll(this.getScene());
+  }
+
+  unlockAllNodes(): void {
+    this.nodeMetadata.unlockAll(this.getScene());
+  }
+
+  /**
+   * Clears this node's own lock, or the nearest locked ancestor so editing
+   * is restored without walking the tree in the UI.
+   */
+  unlockNodeForEditing(nodeId: string): void {
+    if (this.isNodeLocked(nodeId)) {
+      this.setNodeLocked(nodeId, false);
+      return;
+    }
+    const ancestors = getAncestorIds(this.getScene(), nodeId);
+    for (const ancestorId of ancestors) {
+      if (this.isNodeLocked(ancestorId)) {
+        this.setNodeLocked(ancestorId, false);
+        return;
+      }
+    }
+  }
+
   /** Add a registered Script component to a node (one undo step). */
   addScriptComponent(nodeId: string, scriptId: string): string {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return "";
+    }
     const command = new AddScriptComponentCommand(
       this.document,
       nodeId,
@@ -830,6 +1115,9 @@ export class Editor {
 
   /** Remove a Script component by instance id (one undo step). */
   removeComponent(nodeId: string, componentId: string): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(
       new RemoveComponentCommand(this.document, nodeId, componentId),
     );
@@ -841,6 +1129,9 @@ export class Editor {
     componentId: string,
     propertiesPatch: Record<string, unknown>,
   ): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
     this.execute(
       new SetScriptPropertiesCommand(
         this.document,
@@ -1113,6 +1404,10 @@ export class Editor {
   }
 
   requestRename(nodeId?: string): void {
+    const id = nodeId ?? this.selection.getPrimaryNodeId();
+    if (id && this.isNodeEffectivelyLocked(id)) {
+      return;
+    }
     this.renameBus.requestRename(this.selection, nodeId);
   }
 
@@ -1149,6 +1444,7 @@ export class Editor {
       getSceneFileId: () => this.sceneFileId,
       setSceneFileId: (id) => {
         this.sceneFileId = id;
+        this.syncNodeMetadataScope();
       },
       document: this.document,
       setScene: (scene, options) => this.setScene(scene, options),
@@ -1241,7 +1537,43 @@ export class Editor {
       this.prefabs.syncOverrides(this.document);
     }
     this.document.syncDirtyFromContent();
+    this.nodeMetadata.pruneMissing(this.getScene());
     this.emit();
+  }
+
+  private editorMetadataProjectId(): string {
+    return (
+      this.project.getActiveProjectId() ??
+      this.project.getProject()?.name ??
+      "local"
+    );
+  }
+
+  private currentMetadataMode(): EditorDocumentMode {
+    const mode = this.prefabs.getMode();
+    if (mode.kind === "prefab") {
+      return mode;
+    }
+    return { kind: "scene", sceneFileId: this.sceneFileId };
+  }
+
+  private syncNodeMetadataScope(): void {
+    this.nodeMetadata.bindScope(
+      this.editorMetadataProjectId(),
+      this.currentMetadataMode(),
+    );
+  }
+
+  private syncEditorOverlay(): void {
+    const renderer = this.viewport.getRenderer();
+    if (!renderer) {
+      return;
+    }
+    applyEditorNodeOverlay(
+      renderer,
+      this.getScene(),
+      this.nodeMetadata.getSnapshot(),
+    );
   }
 
   private emit(): void {

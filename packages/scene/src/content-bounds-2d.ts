@@ -6,6 +6,8 @@ import {
   getVisualAnchorOrDefault,
   getVisualDisplaySize,
 } from "./visual-components.js";
+import { tilemapLocalBounds } from "./tilemap.js";
+import { DEFAULT_TILEMAP_EMPTY_EXTENT_TILES } from "./defaults.js";
 
 const ORIGIN_FALLBACK: LocalAabb = { x: -8, y: -8, width: 16, height: 16 };
 
@@ -30,6 +32,9 @@ export function collectSceneContentBounds2D(
 
 function localContentAabb(node: SceneNodeData): LocalAabb {
   const visual = getVisualComponent(node);
+  if (visual?.type === "Tilemap") {
+    return tilemapLocalBounds(visual, DEFAULT_TILEMAP_EMPTY_EXTENT_TILES);
+  }
   const size = visual ? getVisualDisplaySize(visual) : undefined;
   if (!visual || size === undefined || size.width <= 0 || size.height <= 0) {
     return { ...ORIGIN_FALLBACK };

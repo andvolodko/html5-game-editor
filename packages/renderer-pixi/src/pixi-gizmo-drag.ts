@@ -106,6 +106,13 @@ export class PixiGizmoDragController {
     if (!transform) {
       return;
     }
+    if (runtime.editorLocked) {
+      host.onNodePointerDown?.(runtime.node.id, {
+        x: transform.position.x,
+        y: transform.position.y,
+      });
+      return;
+    }
     const visual = getVisualComponent(runtime.node);
 
     host.onNodePointerDown?.(runtime.node.id, {

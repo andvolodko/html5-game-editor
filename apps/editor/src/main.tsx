@@ -1,7 +1,11 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
+import { installEditorThemePersistence } from "./theme/themeStorage";
+import "./theme/themes.css";
 import "./styles.css";
+
+installEditorThemePersistence();
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {

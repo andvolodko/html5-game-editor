@@ -22,6 +22,7 @@ import {
 } from "./painters/mesh.js";
 import { animatedSpritePainter } from "./painters/animated-sprite.js";
 import { spinePainter } from "./painters/spine.js";
+import { tilemapPainter } from "./painters/tilemap.js";
 
 const painters: PixiVisualPainter[] = [
   spritePainter,
@@ -38,6 +39,7 @@ const painters: PixiVisualPainter[] = [
   perspectiveMeshPainter,
   animatedSpritePainter,
   spinePainter,
+  tilemapPainter,
 ];
 
 const painterByType = new Map<string, PixiVisualPainter>(

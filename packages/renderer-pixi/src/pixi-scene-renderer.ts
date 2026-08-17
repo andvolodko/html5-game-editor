@@ -1,7 +1,9 @@
 import type { Container } from "pixi.js";
 import type { FederatedPointerEvent } from "pixi.js";
 import type { AssetResolver } from "@game-editor/assets";
+import { sharedTileAnimationClock } from "@game-editor/assets";
 import {
+  getNodeVisible,
   getTransform2D,
   getVisualComponent,
   type SceneNodeData,
@@ -13,6 +15,9 @@ import {
 import { samplePixiRenderStats } from "./pixi-render-stats.js";
 import { clientPointToScreen } from "./viewport-math.js";
 import { PixelGridOverlay } from "./pixel-grid.js";
+import { TilemapGridOverlay } from "./tilemap-grid-overlay.js";
+import { evictTileTextureCache } from "./visuals/painters/tilemap.js";
+import { PixiTilemapView } from "./pixi-tilemap-view.js";
 import {
   PixiRuntimeGraph,
   type RuntimeNode,
@@ -67,6 +72,7 @@ export class PixiSceneRenderer implements SceneRenderer {
   private pointerHandlers: PixiPointerHandlers | undefined;
   private selectedNodeIds = new Set<string>();
   private readonly pixelGrid: PixelGridOverlay | undefined;
+  private readonly tilemapGrid: TilemapGridOverlay | undefined;
   private readonly screenGuides: ScreenGuidesOverlay | undefined;
   private readonly editable: boolean;
   private readonly camera = new ViewportCameraController();
@@ -88,6 +94,8 @@ export class PixiSceneRenderer implements SceneRenderer {
           );
     this.screenGuides =
       options.screenGuides === true ? new ScreenGuidesOverlay() : undefined;
+    this.tilemapGrid =
+      options.editable !== false ? new TilemapGridOverlay() : undefined;
     this.editable = options.editable !== false;
     this.assetResolver =
       options.assetResolver ??
@@ -126,9 +134,20 @@ export class PixiSceneRenderer implements SceneRenderer {
         onBackgroundPointerDown: () => {
           this.pointerHandlers?.onBackgroundPointerDown?.();
         },
+        onWorldPointerDown: (world, button) =>
+          this.pointerHandlers?.onWorldPointerDown?.(world, button) === true,
+        onWorldPointerMove: (world) => {
+          this.pointerHandlers?.onWorldPointerMove?.(world);
+        },
+        onWorldPointerUp: (world) => {
+          this.pointerHandlers?.onWorldPointerUp?.(world);
+        },
         onResize: () => {
           this.lifecycle.syncViewportSize();
           this.redrawEditorOverlays();
+        },
+        onTick: (deltaMs) => {
+          this.advanceTileAnimations(deltaMs);
         },
       },
       options.headless === true,
@@ -168,9 +187,9 @@ export class PixiSceneRenderer implements SceneRenderer {
   }
 
   invalidateAsset(assetId: string): void {
-    if (!this.textureCache.evict(assetId)) {
-      return;
-    }
+    this.textureCache.evict(assetId);
+    evictTileTextureCache(assetId);
+    sharedTileAnimationClock().invalidate(assetId);
     for (const runtime of this.graph.values()) {
       const visual = getVisualComponent(runtime.node);
       if (!visual) {
@@ -185,6 +204,30 @@ export class PixiSceneRenderer implements SceneRenderer {
         visual.frames.includes(assetId)
       ) {
         void this.painter.paintVisuals(runtime);
+        continue;
+      }
+      if (visual.type === "Tilemap") {
+        const tileset = visual.tileSetId
+          ? this.assetResolver?.resolveTileSet?.(visual.tileSetId)
+          : undefined;
+        if (
+          visual.tileSetId === assetId ||
+          tileset?.imageAssetId === assetId
+        ) {
+          void this.painter.paintVisuals(runtime);
+        }
+      }
+    }
+  }
+
+  private advanceTileAnimations(deltaMs: number): void {
+    const changed = sharedTileAnimationClock().advance(deltaMs);
+    if (changed.size === 0) {
+      return;
+    }
+    for (const runtime of this.graph.values()) {
+      if (runtime.visual instanceof PixiTilemapView) {
+        runtime.visual.applyAnimationFrames(changed);
       }
     }
   }
@@ -274,9 +317,11 @@ export class PixiSceneRenderer implements SceneRenderer {
   async destroy(): Promise<void> {
     this.clear();
     this.pointerHandlers = undefined;
+    this.tilemapGrid?.destroy();
     // Drop local cache entries only — URL refcounts in PixiTextureCache keep
     // shared Assets textures alive for any other live renderer (Scene vs Preview).
     this.textureCache.evictAll();
+    evictTileTextureCache();
     await this.lifecycle.destroy();
   }
 
@@ -300,6 +345,7 @@ export class PixiSceneRenderer implements SceneRenderer {
       );
     }
     this.painter.paint(runtime);
+    this.applyDisplayVisible(runtime);
     this.syncStats.created += 1;
   }
 
@@ -309,6 +355,7 @@ export class PixiSceneRenderer implements SceneRenderer {
       throw new Error(`PixiSceneRenderer: unknown node ${node.id}`);
     }
     runtime.node = node;
+    this.applyDisplayVisible(runtime);
     this.graph.syncDisplayLabels(node.id);
     this.syncStats.updated += 1;
     if (
@@ -334,6 +381,7 @@ export class PixiSceneRenderer implements SceneRenderer {
   }
 
   destroyNode(nodeId: string): void {
+    this.tilemapGrid?.root.removeFromParent();
     const parentId = this.graph.get(nodeId)?.node.parentId;
     const destroyed = this.graph.destroyNode(nodeId);
     this.syncStats.destroyed += destroyed;
@@ -343,6 +391,7 @@ export class PixiSceneRenderer implements SceneRenderer {
   }
 
   clear(): void {
+    this.tilemapGrid?.root.removeFromParent();
     this.graph.clear();
   }
 
@@ -365,6 +414,7 @@ export class PixiSceneRenderer implements SceneRenderer {
       height: size.height,
       graph: this.graph,
       pixelGrid: this.pixelGrid,
+      tilemapGrid: this.tilemapGrid,
       screenGuides: this.screenGuides,
       getCameraState: () => this.camera.getState(),
       getSelectedNodeIds: () => this.selectedNodeIds,
@@ -438,6 +488,34 @@ export class PixiSceneRenderer implements SceneRenderer {
     runtime.container.visible = visible;
   }
 
+  setNodeEditorHidden(nodeId: string, hidden: boolean): void {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    runtime.editorHidden = hidden;
+    this.applyDisplayVisible(runtime);
+  }
+
+  private applyDisplayVisible(runtime: RuntimeNode): void {
+    runtime.container.visible =
+      getNodeVisible(runtime.node) && !runtime.editorHidden;
+  }
+
+  setNodeLocked(nodeId: string, locked: boolean): void {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    runtime.editorLocked = locked;
+    if (runtime.editable) {
+      const cursor = locked ? "default" : "grab";
+      runtime.container.cursor = cursor;
+      runtime.visualsRoot.cursor = cursor;
+      this.painter.paintSelection(runtime);
+    }
+  }
+
   setNodeCursor(nodeId: string, cursor: string): void {
     const runtime = this.graph.get(nodeId);
     if (!runtime) {
@@ -483,7 +561,7 @@ export class PixiSceneRenderer implements SceneRenderer {
     let bestId: string | undefined;
     let bestArea = Number.POSITIVE_INFINITY;
     for (const [nodeId, runtime] of this.graph.entries()) {
-      if (!runtime.container.visible) {
+      if (!isPixiWorldVisible(runtime.container)) {
         continue;
       }
       const target = runtime.visual ?? runtime.visualsRoot;
@@ -605,4 +683,15 @@ export class PixiSceneRenderer implements SceneRenderer {
       paint: (runtime) => this.painter.paint(runtime),
     };
   }
+}
+
+function isPixiWorldVisible(container: Container): boolean {
+  let current: Container | null = container;
+  while (current) {
+    if (!current.visible) {
+      return false;
+    }
+    current = current.parent;
+  }
+  return true;
 }

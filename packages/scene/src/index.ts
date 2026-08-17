@@ -56,6 +56,8 @@ export type {
 
   SpineComponentData,
 
+  TilemapComponentData,
+
   Model3DComponentData,
 
   PerspectiveCameraComponentData,
@@ -170,6 +172,8 @@ export {
 
   spineComponentSchema,
 
+  tilemapComponentSchema,
+
   model3DComponentSchema,
 
   perspectiveCameraComponentSchema,
@@ -242,6 +246,8 @@ export {
 
   createSpineComponent,
 
+  createTilemapComponent,
+
   createModel3DComponent,
 
   createPerspectiveCameraComponent,
@@ -302,6 +308,8 @@ export {
 
   getSpine,
 
+  getTilemap,
+
   getModel3D,
 
   getPerspectiveCamera,
@@ -358,6 +366,12 @@ export type {
   NodeTransformSpace,
 } from "./scene-layers.js";
 
+export {
+  getNodeVisible,
+  setNodeVisibleField,
+  copyNodeVisible,
+} from "./node-visibility.js";
+
 export { MultiSceneRenderer } from "./multi-scene-renderer.js";
 export type { MultiSceneRendererSlot } from "./multi-scene-renderer.js";
 
@@ -404,6 +418,48 @@ export {
   worldPointToLocal,
 
 } from "./transform-math.js";
+
+export {
+  EMPTY_TILE,
+  TILEMAP_CHUNK_SIZE,
+  DEFAULT_TILEMAP_LAYER_NAME,
+  chunkCoord,
+  chunkLocalCoord,
+  chunkKey,
+  chunkCellCount,
+  isChunkEmpty,
+} from "./tilemap-data.js";
+export type {
+  TileChunkData,
+  TilemapLayerData,
+  TileChange,
+} from "./tilemap-data.js";
+export {
+  getTilemapLayer,
+  primaryTilemapLayer,
+  getTile,
+  setTile,
+  eraseTile,
+  applyTileChanges,
+  pruneEmptyTilemapChunks,
+  occupiedTileBounds,
+  tilemapLocalBounds,
+  createDefaultTilemapLayer,
+} from "./tilemap.js";
+export type { OccupiedTileBounds } from "./tilemap.js";
+export {
+  tilemapChunkRenderKey,
+  collectAnimatedTileUsage,
+  chunksForChangedLogicalTiles,
+} from "./tilemap-animation-usage.js";
+export {
+  worldToTile,
+  tileToWorld,
+  localToTile,
+  tileToLocal,
+  tileToLocalCenter,
+  screenToTile,
+} from "./tilemap-coords.js";
 
 export type { Aff2 } from "./transform-math.js";
 
@@ -521,6 +577,8 @@ export {
   DEFAULT_NODE_SPAWN_POSITION,
   DEFAULT_NODE_SPAWN_POSITION_3D,
   DEFAULT_SPRITE_SIZE,
+  DEFAULT_TILE_SIZE,
+  DEFAULT_TILEMAP_EMPTY_EXTENT_TILES,
   DEFAULT_NINE_SLICE_WIDTH,
   DEFAULT_NINE_SLICE_HEIGHT,
   DEFAULT_NINE_SLICE_BORDER,
@@ -567,6 +625,7 @@ export type {
   PrefabPropertyOverride,
   PrefabNameOverride,
   PrefabLayerOverride,
+  PrefabVisibleOverride,
   PrefabOverride,
   PrefabInstanceLink,
   PrefabData,
@@ -584,6 +643,7 @@ export {
   prefabPropertyOverrideSchema,
   prefabNameOverrideSchema,
   prefabLayerOverrideSchema,
+  prefabVisibleOverrideSchema,
   prefabOverrideSchema,
   prefabInstanceLinkSchema,
   prefabDataSchema,

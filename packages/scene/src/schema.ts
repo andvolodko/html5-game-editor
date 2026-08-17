@@ -257,6 +257,39 @@ export const spineComponentSchema = z.object({
   playing: z.boolean(),
 });
 
+export const tileChunkSchema = z.object({
+  x: z.number().int(),
+  y: z.number().int(),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  tiles: z.array(z.number().int()),
+}).superRefine((chunk, ctx) => {
+  if (chunk.tiles.length !== chunk.width * chunk.height) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Tile chunk tiles length (${String(chunk.tiles.length)}) must equal width*height (${String(chunk.width * chunk.height)})`,
+      path: ["tiles"],
+    });
+  }
+});
+
+export const tilemapLayerSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  visible: z.boolean(),
+  opacity: z.number().min(0).max(1),
+  chunks: z.array(tileChunkSchema),
+});
+
+export const tilemapComponentSchema = z.object({
+  type: z.literal("Tilemap"),
+  id: z.string().min(1),
+  tileSetId: z.string().min(1).optional(),
+  tileWidth: z.number().positive(),
+  tileHeight: z.number().positive(),
+  layers: z.array(tilemapLayerSchema).min(1),
+});
+
 export const model3DComponentSchema = z.object({
   type: z.literal("Model3D"),
   id: z.string().min(1),
@@ -326,6 +359,7 @@ export const componentSchema = z.discriminatedUnion("type", [
   perspectiveMeshComponentSchema,
   animatedSpriteComponentSchema,
   spineComponentSchema,
+  tilemapComponentSchema,
   model3DComponentSchema,
   perspectiveCameraComponentSchema,
   directionalLightComponentSchema,
@@ -339,6 +373,7 @@ export const sceneNodeSchema: z.ZodType<SceneNodeData> = z.lazy(() =>
     name: z.string().min(1),
     parentId: z.string().min(1).optional(),
     layer: z.enum(["background", "foreground"]).optional(),
+    visible: z.boolean().optional(),
     prefab: prefabInstanceLinkSchema.optional(),
     components: z.array(componentSchema),
     children: z.array(sceneNodeSchema),

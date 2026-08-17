@@ -17,6 +17,9 @@ export function bindThreeTransformTool(
       editor.selectNodes([nodeId]);
     },
     onGizmoTransformEnd: (nodeId, transform) => {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
       editor.setTransform3D(nodeId, {
         position: transform.position,
         rotation: transform.rotation,

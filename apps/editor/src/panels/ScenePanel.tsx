@@ -5,6 +5,7 @@ import {
   dropAssetOntoScene,
   EDITOR_ASSET_MIME,
   MULTI_ASSET_SCENE_DROP_OFFSET,
+  type TilemapEditTool,
 } from "@game-editor/editor-core";
 import {
   clampSnapGridSize,
@@ -17,7 +18,9 @@ import {
 } from "@game-editor/renderer-pixi";
 import {
   DEFAULT_NODE_SPAWN_POSITION,
+  findNodeById,
   getSceneRendererKind,
+  getTilemap,
 } from "@game-editor/scene";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
@@ -82,6 +85,15 @@ export function ScenePanel({
     useState<ThreeViewMode>("camera");
   const [showPixiLayers, setShowPixiLayers] = useState(true);
   const [showThreeLayers, setShowThreeLayers] = useState(true);
+  const tilemapTool = useEditorState((ed) => ed.tilemapEdit.getTool());
+  const tilemapSelected = useEditorState((ed) => {
+    const id = ed.selection.getSelectedNodeIds().at(-1);
+    if (!id) {
+      return false;
+    }
+    const node = findNodeById(ed.getScene(), id);
+    return Boolean(node && getTilemap(node));
+  });
 
   const viewportRef = useSceneViewport({
     editor,
@@ -258,6 +270,33 @@ export function ScenePanel({
             {isHybrid ? "Hybrid" : isThree ? "Three.js" : "PixiJS"}
           </span>
         </div>
+        {showPixiChrome && tilemapSelected ? (
+          <div className="scene-toolbar-group">
+            <span className="scene-toolbar-label">Tiles</span>
+            {(
+              [
+                ["paint", "Paint"],
+                ["erase", "Erase"],
+                ["picker", "Picker"],
+              ] as const satisfies ReadonlyArray<readonly [TilemapEditTool, string]>
+            ).map(([tool, label]) => (
+              <button
+                key={tool}
+                type="button"
+                className={
+                  tilemapTool === tool
+                    ? "scene-toolbar-toggle active"
+                    : "scene-toolbar-toggle"
+                }
+                aria-pressed={tilemapTool === tool}
+                title={label}
+                onClick={() => editor.tilemapEdit.setTool(tool)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        ) : null}
         {showThreeTools ? (
           <>
             <div className="scene-toolbar-group">

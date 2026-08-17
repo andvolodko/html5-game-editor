@@ -6,10 +6,13 @@ import {
   getTransform2D,
   getTransform3D,
   getVisualComponent,
+  getTilemap,
+  applyTileChanges,
   insertNodeInScene,
   moveNodeInScene,
   detachNodeFromScene,
   getNodeLocation,
+  setNodeVisibleField,
   type ComponentData,
   type Model3DComponentData,
   type SceneData,
@@ -19,6 +22,7 @@ import {
   type Transform2DComponentData,
   type Transform3DComponentData,
   type VisualComponentData,
+  type TileChange,
   type PrefabInstanceLink,
   type PrefabOverride,
 } from "@game-editor/scene";
@@ -326,6 +330,19 @@ export class DocumentManager {
     });
   }
 
+  setNodeVisible(nodeId: string, visible: boolean): void {
+    const node = findNodeById(this.scene, nodeId);
+    if (!node) {
+      throw new Error(`DocumentManager: unknown node ${nodeId}`);
+    }
+    setNodeVisibleField(node, visible);
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "visual",
+    });
+  }
+
   applySpriteSize(
     nodeId: string,
     size: { width: number; height: number },
@@ -450,6 +467,27 @@ export class DocumentManager {
     }
     node.components[index] = structuredClone(values);
 
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "visual",
+    });
+  }
+
+  /**
+   * Apply sparse tile cell changes without cloning the whole Tilemap.
+   */
+  applyTilemapChanges(
+    nodeId: string,
+    changes: readonly TileChange[],
+    field: "before" | "after",
+  ): void {
+    const node = findNodeById(this.scene, nodeId);
+    const tilemap = node ? getTilemap(node) : undefined;
+    if (!node || !tilemap) {
+      throw new Error(`DocumentManager: node ${nodeId} is not a Tilemap`);
+    }
+    applyTileChanges(tilemap, changes, field);
     this.afterContentMutation({
       kind: "update",
       nodeId,

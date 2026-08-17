@@ -1,8 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function () {
+        var key = "html5-game-editor.theme";
+        var allowed = [
+          "dark",
+          "light",
+          "midnight",
+          "nord",
+          "dracula",
+          "monokai",
+          "solarized-dark",
+          "solarized-light",
+          "graphite",
+          "ocean",
+        ];
+        try {
+          var stored = localStorage.getItem(key);
+          if (allowed.indexOf(stored) !== -1) {
+            document.documentElement.setAttribute("data-theme", stored);
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="./favicon.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />

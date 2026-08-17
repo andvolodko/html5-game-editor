@@ -1,3 +1,5 @@
+import type { TileDefinition } from "./tileset.js";
+
 /**
  * Renderer/runtime port: resolve a stable assetId to a loadable URL.
  * Editor supplies project-server HTTP URLs; games may supply bundled asset URLs.
@@ -27,6 +29,8 @@ export interface AssetResolver {
   resolveBitmapFontUrls?(assetId: string): BitmapFontAssetUrls | undefined;
   /** File URL + CSS family for a TTF/OTF/WOFF catalogue asset. */
   resolveWebFontUrls?(assetId: string): WebFontAssetUrls | undefined;
+  /** TileSet atlas config for a catalogue tileset asset. */
+  resolveTileSet?(assetId: string): TileSetResolved | undefined;
 }
 
 export interface SpineAssetUrls {
@@ -65,6 +69,17 @@ export interface WebFontAssetUrls {
   format: "ttf" | "otf" | "woff" | "woff2";
 }
 
+export interface TileSetResolved {
+  imageAssetId: string;
+  tileWidth: number;
+  tileHeight: number;
+  margin: number;
+  spacing: number;
+  columns: number;
+  rows: number;
+  tiles?: Record<string, TileDefinition>;
+}
+
 /** Adapts a plain function to AssetResolver. */
 export function createAssetResolver(
   resolveUrl: (assetId: string) => string | undefined,
@@ -81,6 +96,7 @@ export function createAssetResolver(
   ) => string | undefined,
   resolveBitmapFontUrls?: (assetId: string) => BitmapFontAssetUrls | undefined,
   resolveWebFontUrls?: (assetId: string) => WebFontAssetUrls | undefined,
+  resolveTileSet?: (assetId: string) => TileSetResolved | undefined,
 ): AssetResolver {
   return {
     resolveUrl,
@@ -96,5 +112,6 @@ export function createAssetResolver(
       : {}),
     ...(resolveBitmapFontUrls !== undefined ? { resolveBitmapFontUrls } : {}),
     ...(resolveWebFontUrls !== undefined ? { resolveWebFontUrls } : {}),
+    ...(resolveTileSet !== undefined ? { resolveTileSet } : {}),
   };
 }

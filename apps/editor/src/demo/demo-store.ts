@@ -2,8 +2,12 @@ import { DomainError } from "@game-editor/core";
 import {
   parseAssetDatabase,
   parseAssetRecord,
+  parseTileSetData,
+  tileSetDataFromRecord,
+  tileSetMetadataFromData,
   type AssetDatabaseData,
   type AssetRecord,
+  type TileSetData,
 } from "@game-editor/assets";
 import {
   parseProjectData,
@@ -49,6 +53,8 @@ interface DemoPersistedProject {
   scenes: Record<string, unknown>;
   createdPrefabAssets?: unknown[];
   prefabOverlays?: Record<string, unknown>;
+  createdTilesetAssets?: unknown[];
+  tilesetOverlays?: Record<string, unknown>;
 }
 
 interface DemoPersistedV2 {
@@ -75,6 +81,7 @@ interface DemoProjectState {
   project: ProjectData;
   scenes: Map<string, SceneData>;
   prefabs: Map<string, PrefabData>;
+  tilesets: Map<string, TileSetData>;
 }
 
 export function throwDemoUnavailable(action: string): never {
@@ -145,6 +152,7 @@ export class DemoProjectStore {
         project: structuredClone(snapshot.project),
         scenes: cloneSceneMap(snapshot.scenes),
         prefabs: clonePrefabMap(snapshot.prefabs ?? {}),
+        tilesets: tilesetsFromAssets(snapshot.assets),
       });
     }
     const restored = this.readPersisted();
@@ -159,6 +167,8 @@ export class DemoProjectStore {
         state.scenes = cloneSceneMap(overlay.scenes);
         mergeCreatedPrefabAssets(state, overlay.createdPrefabAssets);
         applyPrefabOverlays(state, overlay.prefabOverlays);
+        mergeCreatedTilesetAssets(state, overlay.createdTilesetAssets);
+        applyTilesetOverlays(state, overlay.tilesetOverlays);
       }
       if (this.states.has(restored.activeProjectId)) {
         this.activeId = restored.activeProjectId;
@@ -318,6 +328,81 @@ export class DemoProjectStore {
     this.persist();
   }
 
+  getTileSet(assetId: string): TileSetData | undefined {
+    const tileset = this.active().tilesets.get(assetId);
+    return tileset === undefined ? undefined : structuredClone(tileset);
+  }
+
+  saveTileSet(assetId: string, tileset: TileSetData): TileSetData {
+    const parsed = parseTileSetData(tileset);
+    const state = this.active();
+    const record = state.assets.assets.find((asset) => asset.id === assetId);
+    if (!record || record.type !== "tileset" || record.metadata.kind !== "tileset") {
+      throw new DomainError("TILESET_NOT_FOUND", `TileSet asset not found: ${assetId}`);
+    }
+    state.tilesets.set(assetId, parsed);
+    state.assets = {
+      ...state.assets,
+      assets: state.assets.assets.map((asset) =>
+        asset.id === assetId
+          ? {
+              ...asset,
+              name: parsed.name,
+              metadata: tileSetMetadataFromData(parsed),
+            }
+          : asset,
+      ),
+    };
+    this.persist();
+    return structuredClone(parsed);
+  }
+
+  addTileSetAsset(asset: AssetRecord, tileset: TileSetData): void {
+    const state = this.active();
+    if (state.assets.assets.some((existing) => existing.id === asset.id)) {
+      throw new DomainError("ASSET_EXISTS", `Asset ${asset.id} already exists`);
+    }
+    state.assets = {
+      ...state.assets,
+      assets: [...state.assets.assets, asset],
+    };
+    state.tilesets.set(asset.id, parseTileSetData(tileset));
+    this.persist();
+  }
+
+  allocateTileSetPath(stem: string, destination?: string): string {
+    const sanitized = stem.trim().replace(/[^A-Za-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "");
+    const base = sanitized.length > 0 ? sanitized : "TileSet";
+    const suffix = ".tileset.json";
+    let relative: string;
+    if (destination && destination.endsWith(suffix)) {
+      relative = destination;
+    } else {
+      const folder =
+        destination && destination.length > 0
+          ? destination.replace(/\/$/, "")
+          : "assets";
+      relative = `${folder}/${base}${suffix}`;
+    }
+    const used = new Set(this.active().assets.assets.map((asset) => asset.path));
+    if (!used.has(relative)) {
+      return relative;
+    }
+    const slash = relative.lastIndexOf("/");
+    const dir = slash >= 0 ? relative.slice(0, slash) : "assets";
+    const name = (slash >= 0 ? relative.slice(slash + 1) : relative).replace(
+      /\.tileset\.json$/,
+      "",
+    );
+    let n = 2;
+    let candidate = `${dir}/${name}-${String(n)}${suffix}`;
+    while (used.has(candidate)) {
+      n += 1;
+      candidate = `${dir}/${name}-${String(n)}${suffix}`;
+    }
+    return candidate;
+  }
+
   allocatePrefabPath(stem: string, destination?: string): string {
     const sanitized = stem.trim().replace(/[^A-Za-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "");
     const base = sanitized.length > 0 ? sanitized : "Prefab";
@@ -362,6 +447,10 @@ export class DemoProjectStore {
           (asset) => asset.type === "prefab",
         ),
         prefabOverlays: Object.fromEntries(state.prefabs),
+        createdTilesetAssets: state.assets.assets.filter(
+          (asset) => asset.type === "tileset",
+        ),
+        tilesetOverlays: Object.fromEntries(state.tilesets),
       };
     }
     const payload: DemoPersistedV3 = {
@@ -382,6 +471,8 @@ export class DemoProjectStore {
             scenes: Record<string, SceneData>;
             createdPrefabAssets?: AssetRecord[];
             prefabOverlays?: Record<string, PrefabData>;
+            createdTilesetAssets?: AssetRecord[];
+            tilesetOverlays?: Record<string, TileSetData>;
           }
         >;
       }
@@ -420,6 +511,8 @@ export class DemoProjectStore {
           scenes: Record<string, SceneData>;
           createdPrefabAssets?: AssetRecord[];
           prefabOverlays?: Record<string, PrefabData>;
+          createdTilesetAssets?: AssetRecord[];
+          tilesetOverlays?: Record<string, TileSetData>;
         }
       > = {};
       for (const [id, overlay] of Object.entries(parsed.projects)) {
@@ -432,6 +525,10 @@ export class DemoProjectStore {
           scenes,
           createdPrefabAssets: parsePersistedPrefabAssets(overlay.createdPrefabAssets),
           prefabOverlays: parsePersistedPrefabs(overlay.prefabOverlays),
+          createdTilesetAssets: parsePersistedPrefabAssets(
+            overlay.createdTilesetAssets,
+          ),
+          tilesetOverlays: parsePersistedTilesets(overlay.tilesetOverlays),
         };
       }
       if (Object.keys(projects).length === 0) {
@@ -514,4 +611,50 @@ function parsePersistedPrefabs(
     }
   }
   return prefabs;
+}
+
+function tilesetsFromAssets(assets: AssetDatabaseData): Map<string, TileSetData> {
+  const tilesets = new Map<string, TileSetData>();
+  for (const asset of assets.assets) {
+    if (asset.metadata.kind === "tileset") {
+      tilesets.set(asset.id, tileSetDataFromRecord(asset.name, asset.metadata));
+    }
+  }
+  return tilesets;
+}
+
+function mergeCreatedTilesetAssets(
+  state: DemoProjectState,
+  created: readonly AssetRecord[] | undefined,
+): void {
+  mergeCreatedPrefabAssets(state, created);
+}
+
+function applyTilesetOverlays(
+  state: DemoProjectState,
+  overlays: Readonly<Record<string, TileSetData>> | undefined,
+): void {
+  if (overlays === undefined) {
+    return;
+  }
+  for (const [assetId, tileset] of Object.entries(overlays)) {
+    state.tilesets.set(assetId, structuredClone(tileset));
+  }
+}
+
+function parsePersistedTilesets(
+  raw: Record<string, unknown> | undefined,
+): Record<string, TileSetData> | undefined {
+  if (raw === undefined) {
+    return undefined;
+  }
+  const tilesets: Record<string, TileSetData> = {};
+  for (const [id, value] of Object.entries(raw)) {
+    try {
+      tilesets[id] = parseTileSetData(value);
+    } catch {
+      // Skip invalid overlay documents.
+    }
+  }
+  return tilesets;
 }

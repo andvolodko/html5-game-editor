@@ -142,6 +142,23 @@ describe("prefab overrides", () => {
     expect(getTransform2D(resolved.node)?.position).toEqual({ x: 600, y: 0 });
   });
 
+  it("copies runtime visibility and records a visible override", () => {
+    const prefab = buildPlayerPrefab();
+    prefab.root.visible = false;
+    const { node } = instantiatePrefab(prefab, { prefabAssetId: PREFAB_ASSET_ID });
+    expect(node.visible).toBe(false);
+    delete node.visible;
+    const overrides = computePrefabOverrides(prefab.root, node);
+    expect(overrides).toContainEqual({
+      kind: "visible",
+      sourceNodeId: prefab.root.id,
+      value: true,
+    });
+    node.prefab!.overrides = overrides;
+    const resolved = resolvePrefabInstance(prefab, node, catalogOf(prefab));
+    expect(resolved.node.visible).toBeUndefined();
+  });
+
   it("non-overridden prefab updates propagate", () => {
     const prefab = buildPlayerPrefab();
     const { node } = instantiatePrefab(prefab, { prefabAssetId: PREFAB_ASSET_ID });

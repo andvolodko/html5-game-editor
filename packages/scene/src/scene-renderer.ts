@@ -77,8 +77,21 @@ export interface SceneRenderer {
     nodeId: string,
     boneName: string,
   ): BoneWorldTransform | undefined;
-  /** Runtime-only visibility (does not persist on SceneNodeData). */
+  /**
+   * Transient script visibility. Does not write `SceneNodeData.visible`.
+   * Serialized visibility is applied on create/update.
+   */
   setNodeVisible?(nodeId: string, visible: boolean): void;
+  /**
+   * Editor-only hide overlay. Combined with serialized `node.visible`
+   * (`runtimeVisible && !editorHidden`) on the display object.
+   */
+  setNodeEditorHidden?(nodeId: string, hidden: boolean): void;
+  /**
+   * Editor-only lock overlay. Does not persist on SceneNodeData.
+   * Locked nodes stay visible but skip transform gizmos / viewport drags.
+   */
+  setNodeLocked?(nodeId: string, locked: boolean): void;
   /** CSS cursor for the node's runtime object (Pixi). Empty string clears it. */
   setNodeCursor?(nodeId: string, cursor: string): void;
   /** Last cursor assigned via `setNodeCursor`, if any. */

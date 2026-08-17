@@ -28,6 +28,34 @@ export {
 } from "./list-selection.js";
 export type { ListSelectionModifiers } from "./list-selection.js";
 export { flattenVisibleNodeIds } from "./hierarchy-visible.js";
+export {
+  HIERARCHY_CHROME_ATTR,
+  isHierarchyChromeEventTarget,
+} from "./hierarchy-chrome.js";
+export {
+  applyEditorNodeOverlay,
+  createLocalStorageEditorNodeMetadataStorage,
+  createMemoryEditorNodeMetadataStorage,
+  descendantNodeIds,
+  editorDocumentKey,
+  editorNodeMetadataStorageKey,
+  emptyEditorSceneNodeMetadata,
+  getEditorNodeFlags,
+  isHierarchyDropBlockedByLock,
+  isNodeEffectivelyHidden,
+  isNodeEffectivelyLocked,
+  isNodeEffectivelyVisible,
+  isNodeHiddenInEditor,
+  isNodeLocked,
+  subtreeNodeIds,
+} from "./editor-node-metadata.js";
+export type {
+  EditorNodeFlags,
+  EditorNodeMetadataStorage,
+  EditorNodeState,
+  EditorSceneNodeMetadata,
+} from "./editor-node-metadata.js";
+export { EditorNodeMetadataStore } from "./editor-node-metadata-store.js";
 export { EditorViewportController } from "./viewport-controller.js";
 export {
   CreateSpriteCommand,
@@ -44,6 +72,7 @@ export {
   SetAmbientLightCommand,
   SetSceneRendererCommand,
   SetNodeLayerCommand,
+  SetNodeVisibleCommand,
   SetSpriteSizeCommand,
   SetVisualComponentCommand,
   MoveNodeCommand,
@@ -71,6 +100,7 @@ export {
   RevertPrefabOverridesCommand,
   ConvertSubtreeToPrefabInstanceCommand,
   RefreshPrefabInstancesCommand,
+  PaintTilemapCommand,
 } from "./commands/index.js";
 export type {
   Transform2DPatch,
@@ -155,6 +185,15 @@ export {
 export type { SceneApiClient, SceneListEntry } from "./scene-api-client.js";
 export { createFetchPrefabApiClient } from "./prefab-api-client.js";
 export type { PrefabApiClient, PrefabCreateResult } from "./prefab-api-client.js";
+export { createFetchTileSetApiClient } from "./tileset-api-client.js";
+export type { TileSetApiClient, TileSetCreateResult } from "./tileset-api-client.js";
+export { TilemapEditSession } from "./tilemap-edit-session.js";
+export type { TilemapEditTool } from "./tilemap-edit-session.js";
+export {
+  createTileSetFromTexture,
+  saveTileSetDocument,
+  tileSetDocumentFromAsset,
+} from "./editor-tileset-workflows.js";
 export { PrefabManager } from "./prefab-manager.js";
 export type { EditorDocumentMode } from "./prefab-manager.js";
 export {

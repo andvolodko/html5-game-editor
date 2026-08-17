@@ -2,7 +2,9 @@ import {
   DEFAULT_MESH_FALLBACK_SIZE,
   DEFAULT_MESH_ROPE_BOUNDS_PAD_Y,
   DEFAULT_SPRITE_SIZE,
+  DEFAULT_TILEMAP_EMPTY_EXTENT_TILES,
   getVisualAnchorOrDefault,
+  tilemapLocalBounds,
   type Vec2,
   type VisualComponentData,
 } from "@game-editor/scene";
@@ -143,6 +145,8 @@ export function provisionalVisualBounds(
     }
     case "Spine":
       return centeredFallback(DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE);
+    case "Tilemap":
+      return tilemapLocalBounds(data, DEFAULT_TILEMAP_EMPTY_EXTENT_TILES);
     default: {
       const _exhaustive: never = data;
       return _exhaustive;

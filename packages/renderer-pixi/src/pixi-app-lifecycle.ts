@@ -18,6 +18,17 @@ function pixiDebugGlobals(): PixiDebugGlobals {
   return globalThis as PixiDebugGlobals;
 }
 
+function isGizmoPointerTarget(target: unknown): boolean {
+  let current = target as { label?: string; parent?: unknown } | null | undefined;
+  while (current) {
+    if (typeof current.label === "string" && current.label.startsWith("gizmo")) {
+      return true;
+    }
+    current = current.parent as typeof current;
+  }
+  return false;
+}
+
 function publishPixiApp(app: Application): void {
   const globals = pixiDebugGlobals();
   // PixiJS DevTools bridge (browser extension detects this global).
@@ -47,7 +58,11 @@ export interface PixiAppLifecycleHost {
   pixelGrid: PixelGridOverlay | undefined;
   screenGuides: ScreenGuidesOverlay | undefined;
   onBackgroundPointerDown(): void;
+  onWorldPointerDown?(world: Vec2, button: number): boolean;
+  onWorldPointerMove?(world: Vec2): void;
+  onWorldPointerUp?(world: Vec2): void;
   onResize(): void;
+  onTick?(deltaMs: number): void;
 }
 
 /**
@@ -143,14 +158,50 @@ export class PixiAppLifecycle {
     }
     app.stage.eventMode = "static";
     app.stage.hitArea = app.screen;
-    app.stage.on("pointerdown", (event: FederatedPointerEvent) => {
-      if (event.button === MOUSE_BUTTON_MIDDLE) {
-        return;
-      }
-      if (event.target === app.stage) {
-        this.host.onBackgroundPointerDown();
-      }
-    });
+    app.stage.addEventListener(
+      "pointerdown",
+      (event: FederatedPointerEvent) => {
+        if (event.button === MOUSE_BUTTON_MIDDLE) {
+          return;
+        }
+        if (isGizmoPointerTarget(event.target)) {
+          return;
+        }
+        const world = this.clientToWorld(event.clientX, event.clientY);
+        const consumed = this.host.onWorldPointerDown?.(world, event.button);
+        if (consumed === true) {
+          event.stopImmediatePropagation();
+          const pointerId = event.pointerId;
+          const onMove = (moveEvent: FederatedPointerEvent) => {
+            if (moveEvent.pointerId !== pointerId) {
+              return;
+            }
+            this.host.onWorldPointerMove?.(
+              this.clientToWorld(moveEvent.clientX, moveEvent.clientY),
+            );
+          };
+          const onUp = (upEvent: FederatedPointerEvent) => {
+            if (upEvent.pointerId !== pointerId) {
+              return;
+            }
+            app.stage.removeEventListener("pointermove", onMove);
+            app.stage.removeEventListener("pointerup", onUp);
+            app.stage.removeEventListener("pointerupoutside", onUp);
+            this.host.onWorldPointerUp?.(
+              this.clientToWorld(upEvent.clientX, upEvent.clientY),
+            );
+          };
+          app.stage.addEventListener("pointermove", onMove);
+          app.stage.addEventListener("pointerup", onUp);
+          app.stage.addEventListener("pointerupoutside", onUp);
+          return;
+        }
+        if (event.target === app.stage) {
+          this.host.onBackgroundPointerDown();
+        }
+      },
+      { capture: true },
+    );
     app.renderer.on("resize", () => {
       this.host.onResize();
     });
@@ -162,6 +213,9 @@ export class PixiAppLifecycle {
       this.parentResizeObserver.observe(this.host.canvasParent);
     }
     this.syncViewportSize();
+    app.ticker.add((ticker) => {
+      this.host.onTick?.(ticker.deltaMS);
+    });
     this.ready = true;
   }
 

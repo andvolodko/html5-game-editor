@@ -51,6 +51,18 @@ function addAssetUrls(
     return;
   }
 
+  const webfont = resolver.resolveWebFontUrls?.(assetId);
+  if (webfont) {
+    addUrl(urls, webfont.url);
+    return;
+  }
+
+  const tileset = resolver.resolveTileSet?.(assetId);
+  if (tileset) {
+    addAssetUrls(urls, resolver, tileset.imageAssetId);
+    return;
+  }
+
   addUrl(urls, resolver.resolveUrl(assetId));
 }
 

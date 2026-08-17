@@ -4,6 +4,7 @@ import type {
   PrefabNameOverride,
   PrefabOverride,
   PrefabPropertyOverride,
+  PrefabVisibleOverride,
 } from "./types.js";
 import {
   cloneJson,
@@ -14,6 +15,7 @@ import {
   setValueAtPath,
 } from "./property-path.js";
 import { findInstanceNodeBySourceId, getPrefabInstanceOverrides } from "./queries.js";
+import { getNodeVisible, setNodeVisibleField } from "../node-visibility.js";
 
 export function sortPrefabOverrides(overrides: readonly PrefabOverride[]): PrefabOverride[] {
   return [...overrides].sort((left, right) => {
@@ -153,6 +155,14 @@ export function computePrefabOverrides(
         overrides.push(layerOverride);
       }
     }
+    if (getNodeVisible(instance) !== getNodeVisible(source)) {
+      const visibleOverride: PrefabVisibleOverride = {
+        kind: "visible",
+        sourceNodeId: source.id,
+        value: getNodeVisible(instance),
+      };
+      overrides.push(visibleOverride);
+    }
     for (const sourceComponent of source.components) {
       const sceneComponentId = Object.entries(instance.prefab?.componentSources ?? {}).find(
         ([, sourceId]) => sourceId === sourceComponent.id,
@@ -204,6 +214,10 @@ export function applyOverridesToInstance(
       instance.layer = override.value;
       continue;
     }
+    if (override.kind === "visible") {
+      setNodeVisibleField(instance, override.value);
+      continue;
+    }
     const sceneComponentId = Object.entries(instance.prefab?.componentSources ?? {}).find(
       ([, sourceId]) => sourceId === override.componentId,
     )?.[0];
@@ -242,13 +256,17 @@ export function applySourceValueToPrefabNode(
 
 export function applyNameOrLayerToPrefabNode(
   sourceNode: SceneNodeData,
-  override: PrefabNameOverride | PrefabLayerOverride,
+  override: PrefabNameOverride | PrefabLayerOverride | PrefabVisibleOverride,
 ): void {
   if (override.kind === "name") {
     sourceNode.name = override.value;
     return;
   }
-  sourceNode.layer = override.value;
+  if (override.kind === "layer") {
+    sourceNode.layer = override.value;
+    return;
+  }
+  setNodeVisibleField(sourceNode, override.value);
 }
 
 export function findPrefabSourceNode(

@@ -20,6 +20,7 @@ import {
 } from "./visual-fields/sprites";
 import { SpineFields } from "./visual-fields/spine";
 import { BitmapTextFields, TextStyleFields } from "./visual-fields/text";
+import { TilemapFields } from "./visual-fields/tilemap";
 import type { VisualCommit } from "./visual-fields/types";
 
 interface Props {
@@ -94,6 +95,10 @@ function VisualFields({
       return <AnimatedSpriteFields visual={visual} commit={commit} editor={editor} />;
     case "Spine":
       return <SpineFields visual={visual} commit={commit} editor={editor} />;
+    case "Tilemap":
+      return (
+        <TilemapFields visual={visual} commit={commit} editor={editor} />
+      );
     default: {
       const _exhaustive: never = visual;
       return _exhaustive;

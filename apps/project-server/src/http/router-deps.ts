@@ -9,6 +9,7 @@ import type { AssetMutationService } from "../services/asset-mutation-service.js
 import type { AssetSyncService } from "../services/asset-sync-service.js";
 import type { ComponentCatalogService } from "../services/component-catalog-service.js";
 import type { PrefabFileService } from "../services/prefab-file-service.js";
+import type { TileSetFileService } from "../services/tileset-file-service.js";
 
 export interface RouterDeps {
   projectService: ProjectService;
@@ -25,4 +26,5 @@ export interface RouterDeps {
   /** Optional: script component catalog for the active project. */
   componentCatalogService?: ComponentCatalogService;
   prefabFileService: PrefabFileService;
+  tileSetFileService: TileSetFileService;
 }

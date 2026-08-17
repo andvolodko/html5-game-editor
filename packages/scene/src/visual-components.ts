@@ -7,6 +7,9 @@ import {
   DEFAULT_TEXT_FILL,
   DEFAULT_TILING_SPRITE_SIZE,
 } from "./defaults.js";
+import type { TilemapComponentData } from "./tilemap-data.js";
+
+export type { TilemapComponentData } from "./tilemap-data.js";
 
 /**
  * Stable visual component discriminants (domain identity — not PIXI class names).
@@ -319,7 +322,8 @@ export type VisualComponentData =
   | MeshPlaneComponentData
   | PerspectiveMeshComponentData
   | AnimatedSpriteComponentData
-  | SpineComponentData;
+  | SpineComponentData
+  | TilemapComponentData;
 
 /** Component types that are renderable leaves (may not receive scene children). */
 export const LEAF_VISUAL_COMPONENT_TYPES = [
@@ -337,6 +341,7 @@ export const LEAF_VISUAL_COMPONENT_TYPES = [
   "PerspectiveMesh",
   "AnimatedSprite",
   "Spine",
+  "Tilemap",
 ] as const;
 
 export type LeafVisualComponentType =

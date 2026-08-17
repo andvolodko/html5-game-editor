@@ -21,34 +21,106 @@ export function HierarchyContextMenu({
       : undefined;
   const isInstanceRoot = node !== undefined && isPrefabInstanceRoot(node);
   const isInherited = node !== undefined && isInheritedPrefabNode(node);
+  const flags =
+    node !== undefined ? editor.getEditorNodeFlags(node.id) : undefined;
+  const locked = flags?.effectivelyLocked === true;
+  const hasChildren = node !== undefined && node.children.length > 0;
 
   return (
     <EditorContextMenu x={menu.x} y={menu.y}>
-      {typeof menu.target === "object" ? (
+      {typeof menu.target === "object" && node && flags ? (
         <>
           <li>
-            <button type="button" onClick={() => onAction("create-child")}>
+            <button
+              type="button"
+              disabled={locked}
+              title={locked ? "Unlock the node to create a child" : undefined}
+              onClick={() => onAction("create-child")}
+            >
               Create Child
             </button>
           </li>
           <li>
-            <button type="button" onClick={() => onAction("rename")}>
+            <button
+              type="button"
+              disabled={locked}
+              title={locked ? "Unlock the node to rename it" : undefined}
+              onClick={() => onAction("rename")}
+            >
               Rename
             </button>
           </li>
           <li>
-            <button type="button" onClick={() => onAction("duplicate")}>
+            <button
+              type="button"
+              disabled={locked}
+              title={locked ? "Unlock the node to duplicate it" : undefined}
+              onClick={() => onAction("duplicate")}
+            >
               Duplicate
             </button>
           </li>
           <li>
-            <button type="button" onClick={() => onAction("delete")}>
+            <button
+              type="button"
+              disabled={locked}
+              title={locked ? "Unlock the node to delete it" : undefined}
+              onClick={() => onAction("delete")}
+            >
               Delete
             </button>
           </li>
+          <li>
+            <button
+              type="button"
+              onClick={() => onAction(flags.ownHidden ? "show" : "hide")}
+            >
+              {flags.ownHidden ? "Show in Editor" : "Hide in Editor"}
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              onClick={() => onAction(flags.ownLocked ? "unlock" : "lock")}
+            >
+              {flags.ownLocked ? "Unlock" : "Lock"}
+            </button>
+          </li>
+          {hasChildren ? (
+            <>
+              <li>
+                <button type="button" onClick={() => onAction("hide-children")}>
+                  Hide Children
+                </button>
+              </li>
+              <li>
+                <button type="button" onClick={() => onAction("show-children")}>
+                  Show Children
+                </button>
+              </li>
+              <li>
+                <button type="button" onClick={() => onAction("lock-children")}>
+                  Lock Children
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onAction("unlock-children")}
+                >
+                  Unlock Children
+                </button>
+              </li>
+            </>
+          ) : null}
           {!isInherited ? (
             <li>
-              <button type="button" onClick={() => onAction("create-prefab")}>
+              <button
+                type="button"
+                disabled={locked}
+                title={locked ? "Unlock the node to create a prefab" : undefined}
+                onClick={() => onAction("create-prefab")}
+              >
                 Create Prefab
               </button>
             </li>
@@ -68,17 +140,29 @@ export function HierarchyContextMenu({
                 </button>
               </li>
               <li>
-                <button type="button" onClick={() => onAction("apply-all")}>
+                <button
+                  type="button"
+                  disabled={locked}
+                  onClick={() => onAction("apply-all")}
+                >
                   Apply All
                 </button>
               </li>
               <li>
-                <button type="button" onClick={() => onAction("revert-all")}>
+                <button
+                  type="button"
+                  disabled={locked}
+                  onClick={() => onAction("revert-all")}
+                >
                   Revert All
                 </button>
               </li>
               <li>
-                <button type="button" onClick={() => onAction("unpack")}>
+                <button
+                  type="button"
+                  disabled={locked}
+                  onClick={() => onAction("unpack")}
+                >
                   Unpack
                 </button>
               </li>
@@ -99,6 +183,16 @@ export function HierarchyContextMenu({
               </button>
             </li>
           ) : null}
+          <li>
+            <button type="button" onClick={() => onAction("show-all")}>
+              Show All
+            </button>
+          </li>
+          <li>
+            <button type="button" onClick={() => onAction("unlock-all")}>
+              Unlock All
+            </button>
+          </li>
         </>
       )}
     </EditorContextMenu>

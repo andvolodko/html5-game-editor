@@ -25,6 +25,12 @@ export const DEFAULT_NODE_SPAWN_POSITION_3D: Vec3 = { x: 0, y: 0, z: 0 };
 /** Default width/height for Sprite (and AnimatedSprite placeholder) display size. */
 export const DEFAULT_SPRITE_SIZE = 64;
 
+/** Default Tilemap / TileSet cell size in pixels. */
+export const DEFAULT_TILE_SIZE = 32;
+
+/** Hit-area size in tiles when a Tilemap has no painted cells. */
+export const DEFAULT_TILEMAP_EMPTY_EXTENT_TILES = 8;
+
 export const DEFAULT_NINE_SLICE_WIDTH = 200;
 export const DEFAULT_NINE_SLICE_HEIGHT = 100;
 export const DEFAULT_NINE_SLICE_BORDER = 20;

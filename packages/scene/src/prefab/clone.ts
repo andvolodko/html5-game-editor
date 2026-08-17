@@ -2,6 +2,7 @@ import { createId } from "@game-editor/shared";
 import type { ComponentData, SceneNodeData } from "../types.js";
 import { cloneJson } from "./property-path.js";
 import type { PrefabInstanceLink } from "./types.js";
+import { copyNodeVisible } from "../node-visibility.js";
 
 export function cloneSerializableNode(source: SceneNodeData): SceneNodeData {
   const cloned: SceneNodeData = {
@@ -16,6 +17,7 @@ export function cloneSerializableNode(source: SceneNodeData): SceneNodeData {
   if (source.layer !== undefined) {
     cloned.layer = source.layer;
   }
+  copyNodeVisible(source, cloned);
   if (source.prefab !== undefined) {
     cloned.prefab = cloneJson(source.prefab);
   }

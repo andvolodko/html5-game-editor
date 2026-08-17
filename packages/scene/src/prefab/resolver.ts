@@ -16,6 +16,7 @@ import type {
   PrefabResolveResult,
   PrefabResolveWarning,
 } from "./types.js";
+import { getNodeVisible, setNodeVisibleField } from "../node-visibility.js";
 
 export function resolvePrefabInstance(
   prefab: PrefabData,
@@ -165,6 +166,10 @@ function mergeSourceOntoInstance(
   }
   if (existing.layer !== undefined && hasLayerOverride(context.overrides, source.id)) {
     node.layer = existing.layer;
+  }
+  setNodeVisibleField(node, getNodeVisible(source));
+  if (hasVisibleOverride(context.overrides, source.id)) {
+    setNodeVisibleField(node, getNodeVisible(existing));
   }
   if (hasNameOverride(context.overrides, source.id)) {
     node.name = existing.name;
@@ -322,6 +327,12 @@ function hasLayerOverride(overrides: readonly PrefabOverride[], sourceNodeId: st
   );
 }
 
+function hasVisibleOverride(overrides: readonly PrefabOverride[], sourceNodeId: string): boolean {
+  return overrides.some(
+    (override) => override.kind === "visible" && override.sourceNodeId === sourceNodeId,
+  );
+}
+
 export function instantiatePrefabResolved(
   prefab: PrefabData,
   options: {
@@ -364,6 +375,10 @@ export function applyOverridesToPrefabAsset(
     }
     if (override.kind === "layer") {
       sourceNode.layer = override.value;
+      continue;
+    }
+    if (override.kind === "visible") {
+      setNodeVisibleField(sourceNode, override.value);
       continue;
     }
     const component = sourceNode.components.find((entry) => entry.id === override.componentId);

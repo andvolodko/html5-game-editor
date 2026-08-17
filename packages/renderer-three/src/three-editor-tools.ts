@@ -137,7 +137,7 @@ export class ThreeEditorTools {
       return;
     }
     const entry = this.graph.get(primary);
-    if (!entry) {
+    if (!entry || entry.editorLocked === true || !isObjectWorldVisible(entry.object)) {
       this.detachGizmo();
       return;
     }
@@ -186,6 +186,9 @@ export class ThreeEditorTools {
     this.raycaster.setFromCamera(this.ndc, this.viewCamera as Camera);
     const roots: Object3D[] = [];
     for (const [, entry] of this.graph.entries()) {
+      if (!isObjectWorldVisible(entry.object)) {
+        continue;
+      }
       roots.push(entry.object);
     }
     roots.push(...this.pickRootsExtra());
@@ -201,7 +204,7 @@ export class ThreeEditorTools {
 
   private emitTransformEnd(nodeId: string): void {
     const entry = this.graph.get(nodeId);
-    if (!entry) {
+    if (!entry || entry.editorLocked === true) {
       return;
     }
     const object = entry.object;
@@ -226,4 +229,15 @@ export class ThreeEditorTools {
       scale,
     });
   }
+}
+
+function isObjectWorldVisible(object: Object3D): boolean {
+  let current: Object3D | null = object;
+  while (current) {
+    if (!current.visible) {
+      return false;
+    }
+    current = current.parent;
+  }
+  return true;
 }

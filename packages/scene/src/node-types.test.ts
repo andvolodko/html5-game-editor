@@ -18,6 +18,7 @@ import {
   createMeshComponent,
   createAnimatedSpriteComponent,
   createSpineComponent,
+  createTilemapComponent,
   nodeCanHaveChildren,
   parseSceneData,
   insertNodeInScene,
@@ -145,6 +146,15 @@ describe("pixi visual components round-trip", () => {
           "Spine",
           { x: 0, y: 0 },
           createSpineComponent({ assetId: "asset_spine" }),
+        ),
+    ],
+    [
+      "Tilemap",
+      () =>
+        createNodeWithVisual(
+          "Tilemap",
+          { x: 0, y: 0 },
+          createTilemapComponent({ tileSetId: "asset_tileset" }),
         ),
     ],
   ] as const;

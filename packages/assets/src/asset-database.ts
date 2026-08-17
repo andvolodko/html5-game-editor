@@ -1,4 +1,5 @@
 import type { AssetDatabaseData, AssetMetadata, AssetRecord, AsepriteTagMetadata } from "./types.js";
+import type { TileDefinition } from "./tileset.js";
 import {
   createEmptyAssetDatabase,
   normalizeProjectRelativePath,
@@ -233,7 +234,43 @@ function assetMetadataEquivalent(
   if (left.kind === "prefab" && right.kind === "prefab") {
     return left.prefabId === right.prefabId;
   }
+  if (left.kind === "tileset" && right.kind === "tileset") {
+    return (
+      left.tilesetId === right.tilesetId &&
+      left.imageAssetId === right.imageAssetId &&
+      left.tileWidth === right.tileWidth &&
+      left.tileHeight === right.tileHeight &&
+      left.margin === right.margin &&
+      left.spacing === right.spacing &&
+      left.columns === right.columns &&
+      left.rows === right.rows &&
+      tileDefinitionsEquivalent(left.tiles, right.tiles)
+    );
+  }
   return false;
+}
+
+function tileDefinitionsEquivalent(
+  left: Record<string, TileDefinition> | undefined,
+  right: Record<string, TileDefinition> | undefined,
+): boolean {
+  if (left === right) {
+    return true;
+  }
+  if (!left || !right) {
+    return !left && !right;
+  }
+  const leftKeys = Object.keys(left).sort();
+  const rightKeys = Object.keys(right).sort();
+  if (leftKeys.length !== rightKeys.length) {
+    return false;
+  }
+  return leftKeys.every((key, index) => {
+    if (key !== rightKeys[index]) {
+      return false;
+    }
+    return JSON.stringify(left[key]) === JSON.stringify(right[key]);
+  });
 }
 
 function asepriteTagsEqual(

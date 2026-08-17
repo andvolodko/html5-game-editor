@@ -30,6 +30,8 @@ import type {
 
   SpineComponentData,
 
+  TilemapComponentData,
+
   TextComponentData,
 
   TilingSpriteComponentData,
@@ -367,6 +369,18 @@ export function getSpine(
 ): SpineComponentData | undefined {
 
   return getComponentByType(node, "Spine");
+
+}
+
+
+
+export function getTilemap(
+
+  node: SceneNodeData,
+
+): TilemapComponentData | undefined {
+
+  return getComponentByType(node, "Tilemap");
 
 }
 

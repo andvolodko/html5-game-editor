@@ -95,6 +95,10 @@ pointer up    → create one command
 
 One drag should equal one undo action. Text/numeric editing should avoid an undo entry per keystroke. Use commit semantics: Enter, blur, interaction end, or a controlled transaction.
 
+Tilemap paint/erase uses the same rule: one pointer stroke collects changed cells (`before`/`after`) and records a single `PaintTilemapCommand`. Do not push a command per cell.
+
+TileSet geometry and animation metadata are saved through the TileSet document API (same path as tile width / source texture). Runtime animation frame advancement is not an undoable command.
+
 Inspector drafts (string inputs) are UI-only until blur/Enter commits a command.
 
 ---
@@ -113,7 +117,29 @@ Example states: `clean`, `dirty`, `saving`, `save-error`.
 
 ---
 
-## Inspector
+## Editor node metadata (visibility / lock)
+
+Hierarchy eye and lock controls are **editor-only**. They are not stored on `SceneNodeData` and are omitted from scene save/export.
+
+Inspector **Visible** is the serialized runtime/export flag (`SceneNodeData.visible`; omit when `true`, persist `visible: false` when hidden). It is undoable and dirties the scene. Hierarchy eye does not write this field.
+
+Viewport display is `runtimeVisible && !editorHidden`. Game preview and export use only the serialized flag.
+
+State lives in `EditorNodeMetadataStore` (`packages/editor-core`) and is persisted to `localStorage` under:
+
+```text
+game-editor:node-meta:v1:${projectId}:${scene:fileId|prefab:assetId}
+```
+
+Missing keys default to visible and unlocked. Stale node ids are ignored and pruned after document commands.
+
+**Effective** hidden/locked walks ancestors. Hiding or locking a parent does **not** write flags onto children. Explicit recursive actions (Shift+click, Hide/Lock Children) do write descendant flags.
+
+These operations are **not** on the undo stack: commands mutate the scene document and dirty state; editor metadata is session UI state in localStorage.
+
+Viewport sync uses `SceneRenderer.setNodeEditorHidden` / `setNodeLocked` on existing display objects (no full Pixi/Three rebuild). Serialized `node.visible` is applied on create/update.
+
+---
 
 Inspector should be driven by component schemas/metadata whenever practical. Avoid hardcoding every component’s entire UI into one giant component.
 

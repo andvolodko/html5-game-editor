@@ -20,10 +20,17 @@ export const prefabLayerOverrideSchema = z.object({
   value: z.enum(["background", "foreground"]),
 });
 
+export const prefabVisibleOverrideSchema = z.object({
+  kind: z.literal("visible"),
+  sourceNodeId: z.string().min(1),
+  value: z.boolean(),
+});
+
 export const prefabOverrideSchema = z.discriminatedUnion("kind", [
   prefabPropertyOverrideSchema,
   prefabNameOverrideSchema,
   prefabLayerOverrideSchema,
+  prefabVisibleOverrideSchema,
 ]);
 
 export const prefabInstanceLinkSchema = z.object({

@@ -225,4 +225,32 @@ describe("PixiSceneRenderer incremental hierarchy", () => {
     expect(renderer.getRuntimeContainer(node.id)?.destroyed).toBe(false);
     await renderer.destroy();
   });
+
+  it("applies serialized visible and combines it with editor hide", async () => {
+    const host = { appendChild() {} } as unknown as HTMLElement;
+    const renderer = new PixiSceneRenderer({
+      canvasParent: host,
+      headless: true,
+    });
+    await renderer.whenReady();
+
+    const node = createSpriteNode("Sprite", { x: 0, y: 0 });
+    node.visible = false;
+    renderer.createNode(node);
+    expect(renderer.getRuntimeContainer(node.id)?.visible).toBe(false);
+
+    delete node.visible;
+    renderer.updateNode(node);
+    expect(renderer.getRuntimeContainer(node.id)?.visible).toBe(true);
+
+    renderer.setNodeEditorHidden(node.id, true);
+    expect(renderer.getRuntimeContainer(node.id)?.visible).toBe(false);
+
+    node.visible = false;
+    renderer.updateNode(node);
+    renderer.setNodeEditorHidden(node.id, false);
+    expect(renderer.getRuntimeContainer(node.id)?.visible).toBe(false);
+
+    await renderer.destroy();
+  });
 });

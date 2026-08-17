@@ -5,6 +5,7 @@ import type {
   BitmapFontAssetUrls,
   GltfAssetUrls,
   SpineAssetUrls,
+  TileSetResolved,
   WebFontAssetUrls,
 } from "./asset-resolver.js";
 import {
@@ -16,6 +17,7 @@ import { resolveSpinePartRelativePath } from "./spine-extensions.js";
 import { resolveAsepritePartRelativePath } from "./aseprite-extensions.js";
 import { resolveBitmapFontPartRelativePath } from "./bitmap-font-extensions.js";
 import { normalizeProjectRelativePath } from "./factories.js";
+import { tileSetResolvedFromMetadata } from "./tileset.js";
 
 export interface StaticAssetResolverOptions {
   /**
@@ -169,6 +171,14 @@ export function createStaticAssetResolver(
         fontFamily: asset.metadata.fontFamily,
         format: asset.metadata.format,
       };
+    },
+
+    resolveTileSet(assetId: string): TileSetResolved | undefined {
+      const asset = database.get(assetId);
+      if (!asset || asset.metadata.kind !== "tileset") {
+        return undefined;
+      }
+      return tileSetResolvedFromMetadata(asset.metadata);
     },
   };
 }

@@ -6,6 +6,7 @@ import {
 } from "@game-editor/editor-core";
 import type { PixiSceneRenderer } from "@game-editor/renderer-pixi";
 import { findNodeById, getTransform2D } from "@game-editor/scene";
+import { createPixiTilemapGesture } from "./pixi-tilemap-tool";
 
 /**
  * Editor-owned tool: maps Pixi pointer events to selection + transform commands.
@@ -16,7 +17,16 @@ export function bindPixiTransformTool(
   editor: Editor,
   renderer: PixiSceneRenderer,
 ): () => void {
+  const tilemap = createPixiTilemapGesture(editor);
   renderer.setPointerHandlers({
+    onWorldPointerDown: (world, button) =>
+      tilemap.onWorldPointerDown(world, button),
+    onWorldPointerMove: (world) => {
+      tilemap.onWorldPointerMove(world);
+    },
+    onWorldPointerUp: () => {
+      tilemap.onWorldPointerUp();
+    },
     onBackgroundPointerDown: () => {
       editor.clearSelection();
     },
@@ -24,24 +34,39 @@ export function bindPixiTransformTool(
       editor.selectNodes([nodeId]);
     },
     onNodePointerUp: (nodeId, start, end) => {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
       if (start.x === end.x && start.y === end.y) {
         return;
       }
       editor.setTransform2D(nodeId, { position: { x: end.x, y: end.y } });
     },
     onGizmoResizeEnd: (nodeId, size) => {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
       editor.setVisualComponent(nodeId, {
         width: size.width,
         height: size.height,
       });
     },
     onGizmoRotateEnd: (nodeId, rotation) => {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
       editor.setTransform2D(nodeId, { rotation });
     },
     onGizmoScaleEnd: (nodeId, scale) => {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
       editor.setTransform2D(nodeId, { scale });
     },
     onGizmoAnchorEnd: (nodeId, result) => {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
       editor.execute(
         new CompositeCommand("SetVisualAnchor", [
           new SetVisualComponentCommand(editor.document, nodeId, {
@@ -54,6 +79,9 @@ export function bindPixiTransformTool(
       );
     },
     onGizmoFlip: (nodeId, axis) => {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
       const node = findNodeById(editor.getScene(), nodeId);
       const transform = node ? getTransform2D(node) : undefined;
       if (!transform) {

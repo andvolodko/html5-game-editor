@@ -10,6 +10,7 @@ import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
 import { useEditorLayoutControls } from "../layout/layout-context";
 import { OpenProjectDialog } from "../project/OpenProjectDialog";
+import { PreferencesDialog } from "../settings/PreferencesDialog";
 import { useUnsavedChangesGuard } from "../unsaved/useUnsavedChangesGuard";
 import { syncEditorComponentCatalog } from "../components/sync-editor-component-catalog";
 import { isDemoMode } from "../demo/demo-mode";
@@ -33,6 +34,7 @@ export function Toolbar() {
   const [status, setStatus] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState<MenuId | null>(null);
   const [projectPickerOpen, setProjectPickerOpen] = useState(false);
+  const [preferencesOpen, setPreferencesOpen] = useState(false);
   const [projectOptions, setProjectOptions] = useState<ProjectListEntry[]>([]);
   const [projectPickerError, setProjectPickerError] = useState<string | null>(
     null,
@@ -355,6 +357,14 @@ export function Toolbar() {
           >
             Redo
           </MenuItem>
+          <MenuItem
+            onClick={() => {
+              closeMenus();
+              setPreferencesOpen(true);
+            }}
+          >
+            Preferences…
+          </MenuItem>
         </ToolbarMenu>
 
         <ToolbarMenu
@@ -456,6 +466,11 @@ export function Toolbar() {
           }
         }}
         onSelect={selectProject}
+      />
+
+      <PreferencesDialog
+        open={preferencesOpen}
+        onClose={() => setPreferencesOpen(false)}
       />
 
       {dialog}

@@ -14,6 +14,23 @@
       }
     },
     {
+      "id": "asset_01055316-04c6-4bbd-89d1-10121343cb12",
+      "type": "tileset",
+      "name": "Tilemap_color3 TileSet",
+      "path": "assets/aseprite/Terrain/Tileset/Tilemap_color3.tileset.json",
+      "metadata": {
+        "kind": "tileset",
+        "tilesetId": "tileset_2fd2ede6-8fe9-427a-bce3-14e0722b644a",
+        "imageAssetId": "asset_f0fb1fb0-e5ab-4c29-8972-9b344906eac7",
+        "tileWidth": 64,
+        "tileHeight": 64,
+        "margin": 0,
+        "spacing": 0,
+        "columns": 9,
+        "rows": 6
+      }
+    },
+    {
       "id": "asset_023a3766-bdcd-4a2e-a1cc-8406ac86de34",
       "type": "texture",
       "name": "Rubber duck",
@@ -311,6 +328,23 @@
         "width": 1536,
         "height": 192,
         "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_0ad3ed22-cee7-450e-9c75-ca3fdc7890c4",
+      "type": "tileset",
+      "name": "Tilemap_color5 TileSet",
+      "path": "assets/aseprite/Terrain/Tileset/Tilemap_color5.tileset.json",
+      "metadata": {
+        "kind": "tileset",
+        "tilesetId": "tileset_a30a0015-9df4-4ef4-a941-8a18d15dc06e",
+        "imageAssetId": "asset_676c9f24-8ae7-4b04-a629-e221c3e8a4a2",
+        "tileWidth": 64,
+        "tileHeight": 64,
+        "margin": 0,
+        "spacing": 0,
+        "columns": 9,
+        "rows": 6
       }
     },
     {
@@ -1638,7 +1672,7 @@
       "id": "asset_3c85e8f0-0538-4af6-b7d1-33e1a070d3bb",
       "type": "gltf",
       "name": "Monster01",
-      "path": "assets/Monster01.glb",
+      "path": "assets/3d-models/Monster01.glb",
       "metadata": {
         "kind": "gltf",
         "mimeType": "model/gltf-binary",
@@ -2984,6 +3018,23 @@
       }
     },
     {
+      "id": "asset_778d8d14-3b13-4adf-8db3-5ff49caf56f2",
+      "type": "tileset",
+      "name": "Water Background color TileSet",
+      "path": "assets/aseprite/Terrain/Tileset/Water Background color.tileset.json",
+      "metadata": {
+        "kind": "tileset",
+        "tilesetId": "tileset_9d3e1b76-2922-4bc1-8f6d-0d4ce0de802c",
+        "imageAssetId": "asset_40aae961-ccbf-4b2b-8215-dae2741a796f",
+        "tileWidth": 64,
+        "tileHeight": 64,
+        "margin": 0,
+        "spacing": 0,
+        "columns": 1,
+        "rows": 1
+      }
+    },
+    {
       "id": "asset_784ae545-f2ae-4f24-b0d1-daab462f8ea2",
       "type": "texture",
       "name": "Pawn_Run Wood",
@@ -3029,6 +3080,23 @@
         "width": 768,
         "height": 192,
         "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_7adc6f5c-239f-407f-8fdc-4b4bf22bea67",
+      "type": "tileset",
+      "name": "Tilemap_color4 TileSet",
+      "path": "assets/aseprite/Terrain/Tileset/Tilemap_color4.tileset.json",
+      "metadata": {
+        "kind": "tileset",
+        "tilesetId": "tileset_85345f77-7126-44b6-aff0-e60c2869f0f5",
+        "imageAssetId": "asset_b2f7815b-b217-4d89-b1ae-52dad12da124",
+        "tileWidth": 64,
+        "tileHeight": 64,
+        "margin": 0,
+        "spacing": 0,
+        "columns": 9,
+        "rows": 6
       }
     },
     {
@@ -3403,6 +3471,23 @@
         "sheetPath": ".generated/assets/aseprite/Terrain/Decorations/Clouds/Clouds.png",
         "dataPath": ".generated/assets/aseprite/Terrain/Decorations/Clouds/Clouds.json",
         "compileRevision": "1786912360774.8955-14097"
+      }
+    },
+    {
+      "id": "asset_8be94771-2469-469d-b7b3-3ac11cf157be",
+      "type": "tileset",
+      "name": "Tilemap_color1 TileSet",
+      "path": "assets/aseprite/Terrain/Tileset/Tilemap_color1.tileset.json",
+      "metadata": {
+        "kind": "tileset",
+        "tilesetId": "tileset_e95912e6-36d1-407c-b01e-47b8e2607dda",
+        "imageAssetId": "asset_fc6747f0-513f-4d8c-a936-7416a6d3c67c",
+        "tileWidth": 64,
+        "tileHeight": 64,
+        "margin": 0,
+        "spacing": 0,
+        "columns": 9,
+        "rows": 6
       }
     },
     {
@@ -3835,6 +3920,23 @@
         "width": 1536,
         "height": 192,
         "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset_a10769af-256e-4ec6-96fd-3e980ab4bdc9",
+      "type": "tileset",
+      "name": "Tilemap_color2 TileSet",
+      "path": "assets/aseprite/Terrain/Tileset/Tilemap_color2.tileset.json",
+      "metadata": {
+        "kind": "tileset",
+        "tilesetId": "tileset_39e2c806-03b8-4a63-abc9-7f276366a42d",
+        "imageAssetId": "asset_4d48a694-e89a-4881-b044-9e2820aba3f2",
+        "tileWidth": 32,
+        "tileHeight": 32,
+        "margin": 0,
+        "spacing": 0,
+        "columns": 18,
+        "rows": 12
       }
     },
     {
@@ -4532,7 +4634,7 @@
       "id": "asset_c49eee78-55fa-4261-b489-8b0c90fa9305",
       "type": "gltf",
       "name": "ManaRune",
-      "path": "assets/ManaRune.glb",
+      "path": "assets/3d-models/ManaRune.glb",
       "metadata": {
         "kind": "gltf",
         "mimeType": "model/gltf-binary",

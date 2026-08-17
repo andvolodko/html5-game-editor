@@ -207,6 +207,9 @@ export function resolveAssetBrowserPreviewUrl(
     case "audio":
     case "gltf":
     case "webfont":
+    case "prefab":
       return undefined;
+    case "tileset":
+      return resolvers.contentUrl(asset.metadata.imageAssetId);
   }
 }
