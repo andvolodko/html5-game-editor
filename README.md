@@ -130,7 +130,7 @@ html5-game-editor/
 │   ├── example-game-2/    # Pixi-only demo (port 5175)
 │   ├── muonline-game/     # Hybrid Three + Pixi HUD (port 5176)
 │   └── solitaire/         # Pixi-only solitaire (port 5177)
-├── docs/                  # Architecture details (see PROJECT.md)
+├── docs/                  # Developer docs (index: docs/README.md)
 ├── PROJECT.md             # Architecture entry point (invariants + doc index)
 └── pnpm-workspace.yaml
 ```
@@ -365,7 +365,7 @@ Node
 └── Script (e.g. shared.ChangeScene)
 ```
 
-Define behaviours with `defineComponent` and an OOP class that implements `ScriptInstance`:
+Define behaviours with `defineComponent` and an OOP class that implements `ScriptInstance`. Step-by-step: [`docs/guides/add-a-script-component.md`](./docs/guides/add-a-script-component.md).
 
 | Kind | Location | ID prefix |
 | --- | --- | --- |
@@ -424,9 +424,12 @@ Do not mutate `PIXI.Sprite` or `THREE.Object3D` from React.
 
 ## Documentation
 
+Developer index (how-tos and topic pages): **[`docs/README.md`](./docs/README.md)**.
+
 | Doc | Use it for |
 | --- | --- |
 | [`PROJECT.md`](./PROJECT.md) | Orientation, critical invariants, and which detailed doc to open |
+| [`docs/guides/add-a-script-component.md`](./docs/guides/add-a-script-component.md) | Add a Script behaviour (Inspector + runtime) |
 | [`docs/architecture.md`](./docs/architecture.md) | Package boundaries, quality, errors, performance |
 | [`docs/scene-model.md`](./docs/scene-model.md) | Scene graph, components, serialization, prefabs |
 | [`docs/assets.md`](./docs/assets.md) | Asset database, import, atlas, generated files |

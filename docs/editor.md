@@ -1,179 +1,242 @@
 # Editor
 
-Editor application, layout, commands, selection, inspector, and editor-core.
+Browser editor: dockable React UI plus `@game-editor/editor-core`, which owns the document, selection, commands, and project I/O.
 
-Orientation: [`PROJECT.md`](../PROJECT.md). Command file layout: `.cursor/rules/editor-commands.mdc`. React vs core: `.cursor/rules/editor-ui.mdc`. Feature workflow: `.cursor/skills/implement-editor-feature/SKILL.md`.
+**Status:** shipped. Layout, undo/redo, Inspector, Asset Browser, prefab edit mode, and tilemap paint are in use. Multi-user locking is not — see [`collaboration.md`](./collaboration.md).
 
----
-
-## apps/editor
-
-Browser-based visual editor: React, TypeScript, Vite, docking layout, PixiJS viewport, Three.js viewport.
-
-Responsibilities: hierarchy, scene viewport, asset browser, inspector, toolbar, console, preview, tabs, docking layout, drag-and-drop, keyboard shortcuts, command execution, scene editing.
-
-Editor UI should remain primarily DOM/React based. Do not render standard editor UI using PixiJS. PixiJS and Three.js should be used only where a graphical viewport is required.
+Scene JSON: [`scene-model.md`](./scene-model.md). Shortcuts: [`hotkeys.md`](./hotkeys.md). Script Inspector entries: [Add a script component](./guides/add-a-script-component.md).
 
 ---
 
-## Layout
-
-Target layout:
+## How it works
 
 ```text
-┌─────────────────────────────────────────────────────┐
-│ Toolbar                                             │
-├────────────┬──────────────────────────┬─────────────┤
-│ Hierarchy  │ Scene                    │ Inspector   │
-│            │                          │             │
-├────────────┼──────────────────────────┤             │
-│ Assets     │ Preview / Console        │             │
-└────────────┴──────────────────────────┴─────────────┘
+React panels (apps/editor)
+        │  read via useEditor / useEditorState
+        │  mutate via Editor methods / commands
+        ▼
+Editor  (packages/editor-core)
+  ├── DocumentManager     scene JSON in memory + dirty vs last save
+  ├── SelectionManager    node / scene selection (IDs only)
+  ├── CommandManager      undo / redo stacks
+  ├── AssetManager        catalogue from project-server
+  ├── PrefabManager       catalog + scene | prefab document mode
+  ├── EditorViewportController  sync SceneRenderer after mutations
+  └── EditorNodeMetadataStore   Hierarchy eye / lock (localStorage)
+        │
+        ▼
+SceneData  →  PixiSceneRenderer / ThreeSceneRenderer
 ```
 
-Panels should support resizing, tabs, docking, moving, hiding, reopening, and persisted layout.
+`createEditor()` in `apps/editor/src/create-editor.ts` constructs `Editor` with fetch clients on `/api` (Vite proxy → project-server). Demo mode swaps those clients for an in-memory snapshot.
 
-Possible panels: Hierarchy, Scene, Assets, Inspector, Game Preview, Console, Timeline, Animation, Atlas Preview.
-
-Panel implementations must remain modular. Docking (`DockLayout` / dockview) is layout-only; it must not become domain state.
-
-Keyboard shortcuts: [`hotkeys.md`](./hotkeys.md).
+React is a view. Canonical scene trees, transforms, and the asset catalogue live on `Editor`, not in component state.
 
 ---
 
-## Editor core
+## Where the code lives
 
-Business logic must not be hidden inside React components. Use `@game-editor/editor-core`.
+| Piece | Path |
+| --- | --- |
+| Façade | `packages/editor-core/src/editor.ts` |
+| Commands | `packages/editor-core/src/commands/` (one class per file, re-exported from `commands/index.ts`) |
+| Command contract | `packages/commands` — `Command` / `CommandManager` / `CompositeCommand` |
+| Node create menus | `packages/editor-core/src/node-types/` (`pixi.*` / `three.*` IDs) |
+| React shell | `apps/editor/src/` — `EditorShell`, `DockLayout`, panels |
+| Subscribe hook | `apps/editor/src/hooks/useEditorState.ts` |
+| Live factory | `apps/editor/src/create-editor.ts` |
 
-```text
-editor-core/
-├── Editor.ts
-├── SelectionManager.ts
-├── DocumentManager.ts
-├── CommandManager.ts
-├── AssetManager.ts
-├── ProjectManager.ts
-└── events/
-```
-
-React components should primarily: read editor state, render UI, dispatch actions/commands. React vs `editor-core` constraints: `.cursor/rules/editor-ui.mdc`.
+Public API is the `@game-editor/editor-core` barrel. Panels import that package; they do not reach into `src/` of other packages.
 
 ---
 
-## Undo / redo
+## `Editor` façade
 
-Undo/redo is mandatory. Use the Command Pattern. Do not implement undo by serializing the entire scene for every operation.
+`Editor` is what UI and hotkeys call. It owns:
+
+| Field | Role |
+| --- | --- |
+| `document` | Editable `SceneData`. Commands mutate here only. |
+| `selection` | `{ kind: "none" \| "scene" \| "nodes" }` — last node id is primary |
+| `commands` | Undo/redo history |
+| `assets` | Catalogue + import workflows |
+| `project` | Open project / `project.json` |
+| `components` | Script catalog for Add Component |
+| `prefabs` | Prefab catalog + `EditorDocumentMode` |
+| `viewport` | Attached `SceneRenderer`s, camera, overlay flags |
+| `nodeMetadata` | Editor-only hidden/locked flags |
+| `console` | Structured log for the Console panel |
+| `tilemapEdit` | Paint/erase stroke session |
+
+`editor.subscribe` bumps `getStoreVersion()`. `useEditorState(selector)` re-renders panels from that version. Prefer a selector that reads the fields you need rather than copying the whole scene into React state.
+
+Convenience methods (`createSprite`, `setTransform2D`, `saveScene`, …) construct a command and `execute` it. File/catalog ops that hit the network use `executeAsync`.
+
+---
+
+## Commands and undo
+
+User-visible edits go through `Command`:
 
 ```ts
 interface Command {
-  execute(): void;
-  undo(): void;
+  readonly name: string;
+  execute(): void | Promise<void>;
+  undo(): void | Promise<void>;
 }
 ```
 
-Command manager: `undoStack` / `redoStack`. All user-editing operations should eventually go through commands.
+`CommandManager` keeps `undoStack` / `redoStack` (default max 100). It does not snapshot the whole scene per edit; each command stores before/after for its own mutation.
 
-Examples: `CreateNodeCommand`, `DeleteNodeCommand`, `MoveNodeCommand`, `ReparentNodeCommand`, `SetPropertyCommand`, `AddComponentCommand`, `RemoveComponentCommand`, `DuplicateNodeCommand`, `InstantiatePrefabCommand`, `UnpackPrefabCommand`, `RevertPrefabOverridesCommand`, `CompositeCommand`.
+Example — Inspector **Visible** (serialized runtime flag):
 
-Prefab instance roots can be opened as an isolated document (`EditorDocumentMode` `scene` | `prefab`). Save in prefab mode writes the prefab asset, not the stashed scene. After each document command, `PrefabManager.syncOverrides` diffs instances against the catalog so Inspector fields stay generic.
+```ts
+// packages/editor-core/src/commands/set-node-visible-command.ts
+export class SetNodeVisibleCommand implements Command {
+  execute(): void {
+    this.document.setNodeVisible(this.nodeId, this.after);
+  }
+  undo(): void {
+    this.document.setNodeVisible(this.nodeId, this.before);
+  }
+}
+```
 
-Commands implement `Command` from `@game-editor/commands` and mutate through `DocumentManager` / `SelectionManager` — never Pixi/Three objects or React state. One command class per file under `packages/editor-core/src/commands/`.
+Commands talk to `DocumentManager` / `SelectionManager`. They do not write Pixi/Three objects or React state. Viewport sync happens after the document mutation (`EditorViewportController`).
+
+`CompositeCommand` groups several commands into one undo step and undoes children in reverse order (duplicate selection, multi-node move, nudge).
+
+### Command catalog (common)
+
+| Command | Typical trigger |
+| --- | --- |
+| `CreateNodeCommand` / `CreateSpriteCommand` / `CreateAnimatedSpriteCommand` / `CreateSpineCommand` / `CreateModel3DCommand` | Hierarchy / viewport / asset drop |
+| `DeleteNodeCommand` / `DeleteNodesCommand` | Delete key |
+| `DuplicateNodeCommand` / `PasteNodesCommand` | Ctrl+D / Ctrl+V |
+| `MoveNodeCommand` | Hierarchy drag |
+| `SetTransform2DCommand` / `SetTransform3DCommand` | Gizmo / Inspector commit |
+| `SetVisualComponentCommand` / `SetSpriteSizeCommand` | Inspector visual fields |
+| `SetNodeVisibleCommand` / `SetNodeLayerCommand` | Inspector |
+| `AddScriptComponentCommand` / `RemoveComponentCommand` / `SetScriptPropertiesCommand` | Inspector scripts |
+| `InstantiatePrefabCommand` / `UnpackPrefabCommand` / `RevertPrefabOverridesCommand` | Prefab workflows |
+| `PaintTilemapCommand` | Tilemap stroke (one command per pointer gesture) |
+| `RenameAssetCommand` / `DeleteAssetCommand` / folder variants | Asset Browser |
+
+Adding a command: new file under `packages/editor-core/src/commands/<name>-command.ts`, export from `commands/index.ts`, cover it with a unit test, then optionally add an `Editor` method if the UI needs a one-liner.
 
 ---
 
 ## Continuous input
 
-Do not create one command per mouse-move event.
-
-For transform dragging:
+Pointer moves are not commands. Drag / paint / numeric scrub:
 
 ```text
-pointer down  → capture initial value
-pointer move  → preview transient values
-pointer up    → create one command
+pointer down  → capture initial value (or start a tilemap stroke)
+pointer move  → preview on the renderer (e.g. PixiSceneRenderer.previewNodePosition)
+pointer up    → one command with before/after
 ```
 
-One drag should equal one undo action. Text/numeric editing should avoid an undo entry per keystroke. Use commit semantics: Enter, blur, interaction end, or a controlled transaction.
-
-Tilemap paint/erase uses the same rule: one pointer stroke collects changed cells (`before`/`after`) and records a single `PaintTilemapCommand`. Do not push a command per cell.
-
-TileSet geometry and animation metadata are saved through the TileSet document API (same path as tile width / source texture). Runtime animation frame advancement is not an undoable command.
-
-Inspector drafts (string inputs) are UI-only until blur/Enter commits a command.
+Inspector string/number drafts stay in the input until Enter or blur. TileSet geometry/animation metadata saves through the TileSet document API; advancing an animated tile at runtime is not undoable.
 
 ---
 
-## Composite commands
+## Dirty state
 
-Operations containing multiple internal changes should appear as one user action. Example: duplicating 15 objects is one undo entry. Composite commands must undo child commands in reverse order.
+`DocumentManager` compares a stable snapshot of `SceneData` to the last successful save. States: `clean`, `dirty`, `saving`, `save-error`. Leaving a dirty scene is guarded in `apps/editor/src/unsaved/`.
 
----
-
-## Scene dirty state
-
-Scene modifications must track whether unsaved changes exist. Avoid deriving this solely from React component state. Command/history or document revision state is responsible.
-
-Example states: `clean`, `dirty`, `saving`, `save-error`.
-
----
-
-## Editor node metadata (visibility / lock)
-
-Hierarchy eye and lock controls are **editor-only**. They are not stored on `SceneNodeData` and are omitted from scene save/export.
-
-Inspector **Visible** is the serialized runtime/export flag (`SceneNodeData.visible`; omit when `true`, persist `visible: false` when hidden). It is undoable and dirties the scene. Hierarchy eye does not write this field.
-
-Viewport display is `runtimeVisible && !editorHidden`. Game preview and export use only the serialized flag.
-
-State lives in `EditorNodeMetadataStore` (`packages/editor-core`) and is persisted to `localStorage` under:
-
-```text
-game-editor:node-meta:v1:${projectId}:${scene:fileId|prefab:assetId}
-```
-
-Missing keys default to visible and unlocked. Stale node ids are ignored and pruned after document commands.
-
-**Effective** hidden/locked walks ancestors. Hiding or locking a parent does **not** write flags onto children. Explicit recursive actions (Shift+click, Hide/Lock Children) do write descendant flags.
-
-These operations are **not** on the undo stack: commands mutate the scene document and dirty state; editor metadata is session UI state in localStorage.
-
-Viewport sync uses `SceneRenderer.setNodeEditorHidden` / `setNodeLocked` on existing display objects (no full Pixi/Three rebuild). Serialized `node.visible` is applied on create/update.
-
----
-
-Inspector should be driven by component schemas/metadata whenever practical. Avoid hardcoding every component’s entire UI into one giant component.
-
-```text
-Component definition → Property metadata → Inspector field renderer
-```
-
-Example property editors: `number`, `string`, `boolean`, `enum`, `vector2`, `vector3`, `color`, `asset-reference`. Custom inspectors should remain possible.
+Dirty is not derived from React, and it is not the undo stack length (you can undo back to the saved snapshot).
 
 ---
 
 ## Selection
 
-Selection belongs to editor state, not scene serialization. Possible states: no selection, single selection, multi-selection.
+`SelectionManager` stores **node ids** (or “the scene document is selected”). It never stores `PIXI.DisplayObject` / `THREE.Object3D`.
 
-Selection should use stable node IDs. Never store selected Pixi/Three runtime objects as the canonical selection state.
+Asset Browser selection (`selectedAssetId`, folder, search) is separate UI state. Dropping an asset onto the scene passes an `assetId` in the drag payload and creates a node via a command.
 
 ---
 
-## Events
+## Hierarchy eye / lock vs Inspector Visible
 
-Prefer explicit typed events for loosely coupled editor systems. Avoid uncontrolled global event buses. Event names and payloads must be typed.
+| Control | Persisted? | Undo? | Affects game export? |
+| --- | --- | --- | --- |
+| Inspector **Visible** (`SceneNodeData.visible`) | Scene JSON (`false` only; omit means visible) | Yes | Yes |
+| Hierarchy eye / lock | `localStorage` only | No | No |
 
-```ts
-interface EditorEvents {
-  "selection.changed": { nodeIds: string[] };
-  "scene.changed": { sceneId: string };
-}
+Viewport display is `runtimeVisible && !editorHidden`. Preview and standalone builds use only the serialized flag.
+
+Store: `EditorNodeMetadataStore`. Key shape:
+
+```text
+game-editor:node-meta:v1:${projectId}:${scene:fileId|prefab:assetId}
 ```
 
-Do not use stringly typed event payloads without compile-time types.
+Effective hide/lock walks ancestors. Hiding a parent does not write flags onto children unless you use the recursive actions (Shift+click, Hide/Lock Children). Viewport applies overlay via `SceneRenderer.setNodeEditorHidden` / `setNodeLocked` without a full rebuild.
 
 ---
 
-## Performance (editor)
+## Inspector
 
-Do not re-render React on every Pixi ticker frame. Do not serialize entire scenes every frame. Avoid unnecessary Pixi/Three object recreation. Viewport and subscription details: `.cursor/rules/editor-ui.mdc`. Cross-cutting performance: [`architecture.md`](./architecture.md).
+Inspector is schema-driven where possible:
+
+```text
+ComponentData.type / Script definition.properties
+        → field renderer (number, string, boolean, enum, vector, color, asset)
+        → command on commit
+```
+
+| Selection | Panel |
+| --- | --- |
+| Scene | Name, renderer (`pixi` / `three` / `hybrid`) |
+| Node visuals | `VisualComponentInspector` + per-type fields under `apps/editor/src/panels/visual-fields/` |
+| Script | `ScriptComponentsInspector` — catalog from `editor.components` |
+| Prefab instance | `PrefabInspectorSection` — Apply / Revert / Unpack |
+
+Add Component lists `NodeTypeRegistry` (create node) and the script catalog (`GET /components/catalog` + `installActiveGameRuntime`). Custom inspectors are extra React, not a second scene model.
+
+---
+
+## Prefab edit mode
+
+`PrefabManager` mode is `scene` or `prefab`. Opening an instance root as a prefab stashes the scene snapshot; Save writes the `.prefab.json` asset, not the scene file. After each document command, `PrefabManager.syncOverrides` diffs instances against the catalog so Inspector fields stay generic.
+
+Pixi/Three adapters do not read prefab metadata. Resolution is a domain step (`resolveScenePrefabs`) before render/runtime. See [`scene-model.md`](./scene-model.md#prefabs).
+
+---
+
+## Layout
+
+Docking is `DockLayout` / dockview (`apps/editor/src/layout/`). Layout is UI chrome: it is not scene state. Default arrangement:
+
+```text
+┌─────────────────────────────────────────────────────┐
+│ Toolbar                                             │
+├────────────┬──────────────────────────┬─────────────┤
+│ Hierarchy  │ Scene viewport           │ Inspector   │
+│            │                          │ Asset Preview│
+├────────────┼──────────────────────────┤             │
+│ Assets     │ Preview / Console        │             │
+└────────────┴──────────────────────────┴─────────────┘
+```
+
+Pixi and Three are used in the scene viewport (and game Preview). Standard chrome stays DOM/React.
+
+---
+
+## How to extend
+
+1. **New undoable edit** — command class → `DocumentManager` mutator if needed → `Editor` method or panel call → test in `packages/editor-core/src/`.
+2. **New creatable node type** — domain factory + Zod in `@game-editor/scene`, renderer adapter, then `NodeTypeDefinition` in `node-types/`.
+3. **New Script in Add Component** — [Add a script component](./guides/add-a-script-component.md).
+4. **New Inspector field** — prefer component schema/`properties`; add a field renderer only when the control is unique.
+
+Keep one completed gesture as one undo entry. If the change alters persisted JSON, update Zod and tests in `@game-editor/scene` in the same slice.
+
+---
+
+## Related
+
+- Scene schema and prefabs: [`scene-model.md`](./scene-model.md)
+- Runtime preview vs standalone: [`runtime.md`](./runtime.md)
+- Adapters: [`renderers.md`](./renderers.md)
+- Keyboard: [`hotkeys.md`](./hotkeys.md)

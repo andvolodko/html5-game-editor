@@ -14,7 +14,7 @@ Use this workflow for changes that cross package boundaries or alter persisted f
 
 ## 1. Orient, then read only what you need
 
-Consult `PROJECT.md` for repository orientation.
+Consult `PROJECT.md` for repository orientation. Developer index: `docs/README.md`.
 
 Read **only** the detailed docs that match this change. Do not load the full `docs/` set.
 
@@ -22,6 +22,7 @@ Read **only** the detailed docs that match this change. Do not load the full `do
 | --- | --- |
 | Package boundaries, quality, errors, performance | `docs/architecture.md` |
 | Scene/domain schema, components, serialization, prefabs | `docs/scene-model.md` |
+| Script components (defineComponent) | `docs/guides/add-a-script-component.md` |
 | Asset database, import, generated files | `docs/assets.md` |
 | Aseprite compile | `docs/aseprite.md` |
 | Editor core / commands / selection | `docs/editor.md` |

@@ -9,21 +9,18 @@ The editor should resemble a lightweight Unity/Cocos-style workflow for HTML5. P
 
 Priorities: clean architecture, editor/runtime separation, deterministic scene serialization, testability, multiple independently buildable games, designer-friendly workflows, and maintainability by humans and AI agents.
 
-Human and operator docs: [`README.md`](./README.md). This file is the architecture entry point for developers and AI agents.
+Human and operator docs: [`README.md`](./README.md). Developer how-tos and topic pages: [`docs/README.md`](./docs/README.md). This file is the architecture map (invariants, packages, which topic to open).
 
 ---
 
 ## How to use this documentation
 
-Consult this file for repository orientation when needed.
-
-For architectural or cross-package changes, consult the relevant documentation linked below. Do not load unrelated documentation for localized changes.
-
-A trivial Inspector, UI, styling, or test-only change should not require reading the full architecture set.
+Start at [`docs/README.md`](./docs/README.md) for “I want to…” links. Use this file for orientation and the invariant list below.
 
 | Task | Read |
 | --- | --- |
 | Scene / domain model, components, serialization, prefabs | [`docs/scene-model.md`](./docs/scene-model.md) |
+| Add a Script behaviour (Inspector + runtime) | [`docs/guides/add-a-script-component.md`](./docs/guides/add-a-script-component.md) |
 | Asset database, import, browser, atlas, generated files | [`docs/assets.md`](./docs/assets.md) |
 | Aseprite / LibreSprite compile pipeline | [`docs/aseprite.md`](./docs/aseprite.md) |
 | Editor core, commands, undo, inspector, selection, layout | [`docs/editor.md`](./docs/editor.md) |
@@ -142,4 +139,4 @@ Common commands: `pnpm dev`, `pnpm test`, `pnpm typecheck`, `pnpm lint`. Per-gam
 4. Implement the smallest coherent slice. Avoid unrelated changes.
 5. Run relevant typecheck/tests/lint. A feature is not done because it merely looks correct.
 
-Scaffolding: `.cursor/skills/create-game/` and `.cursor/skills/create-game-component/`.
+Scaffolding: [`docs/guides/add-a-script-component.md`](./docs/guides/add-a-script-component.md); `.cursor/skills/create-game/` and `.cursor/skills/create-game-component/`.

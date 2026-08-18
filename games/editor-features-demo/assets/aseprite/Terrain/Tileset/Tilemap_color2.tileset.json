@@ -3,10 +3,10 @@
   "id": "tileset_39e2c806-03b8-4a63-abc9-7f276366a42d",
   "name": "Tilemap_color2 TileSet",
   "imageAssetId": "asset_4d48a694-e89a-4881-b044-9e2820aba3f2",
-  "tileWidth": 32,
-  "tileHeight": 32,
+  "tileWidth": 64,
+  "tileHeight": 64,
   "margin": 0,
   "spacing": 0,
-  "columns": 18,
-  "rows": 12
+  "columns": 9,
+  "rows": 6
 }

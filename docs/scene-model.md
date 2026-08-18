@@ -1,20 +1,73 @@
 # Scene model
 
-Serializable scene graph, components, transforms, validation, and prefabs.
+Engine-neutral scene graph: nodes, components, Zod validation, and prefabs. Pixi and Three objects are never stored here; adapters in `renderer-pixi` / `renderer-three` map `nodeId` → display objects.
 
-Orientation: [`PROJECT.md`](../PROJECT.md). Renderers: [`renderers.md`](./renderers.md). Assets: [`assets.md`](./assets.md).
+**Status:** shipped. Schema version is `1` (`SCENE_SCHEMA_VERSION`). Prefab instances, property overrides, unpack, and nested resolution are in. Inherited children cannot be deleted, duplicated, or reparented without Unpack first.
+
+Renderers: [`renderers.md`](./renderers.md). Assets: [`assets.md`](./assets.md). Scripts: [Add a script component](./guides/add-a-script-component.md).
 
 ---
 
-## Scene data
+## Scene files
 
-A scene contains nodes. The serialized model is engine-neutral.
+Editable scenes live next to the game:
+
+```text
+games/<name>/assets/scenes/<fileId>.json
+```
+
+`<fileId>` is the scene id used by `project.json` `startScene`, Change Scene, and `GameRuntime.loadScene` (e.g. `loading`, `main`). Load/save goes through project-server in the editor; standalone games `import.meta.glob` the JSON and parse it with `parseSceneData`.
+
+Example (trimmed from `games/editor-features-demo/assets/scenes/loading.json`):
+
+```json
+{
+  "id": "scene_89ecaa39-c734-49b4-b14c-1f627a95551a",
+  "name": "loading",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "node_227af3f8-374d-4b5f-93b0-95b5c5ef52f2",
+      "name": "Container",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_e152e89f-f4c1-4a02-805e-71470e62bbc3",
+          "position": { "x": 0, "y": 0 },
+          "rotation": 0,
+          "scale": { "x": 1, "y": 1 }
+        },
+        {
+          "type": "Script",
+          "id": "comp_5605ec41-37a1-443d-a8c2-a963db614a77",
+          "scriptId": "editor-features-demo.LoadingScene",
+          "properties": {
+            "completeEvent": "loading.complete",
+            "nextScene": "main",
+            "minDisplayMs": 500
+          }
+        }
+      ],
+      "children": []
+    }
+  ]
+}
+```
+
+Textures and other files are referenced by catalogue `assetId` (`asset_…`), not by path. Moving an asset updates `AssetDatabase`; scene JSON keeps the same id.
+
+---
+
+## Types
+
+`packages/scene/src/types.ts`:
 
 ```ts
 interface SceneData {
   id: string;
   name: string;
-  version: number;
+  version: number;                 // SCENE_SCHEMA_VERSION (1)
+  renderer?: "pixi" | "three" | "hybrid";  // omit → "pixi"
   nodes: SceneNodeData[];
 }
 
@@ -22,52 +75,58 @@ interface SceneNodeData {
   id: string;
   name: string;
   parentId?: string;
-  visible?: boolean; // omit = true; persist false when hidden at runtime
+  layer?: "background" | "foreground";  // hybrid Pixi stack; ignored for 3D
+  visible?: boolean;                    // omit = true; persist false when hidden
+  prefab?: PrefabInstanceLink;          // only on prefab-instance nodes
   components: ComponentData[];
   children: SceneNodeData[];
 }
 ```
 
-Never store runtime instances such as `PIXI.Sprite` or `THREE.Mesh` inside the scene domain model. Renderer adapters translate scene data into PixiJS or Three.js objects.
-
-Scene data must remain serializable, deterministic, Git-friendly, and renderer-independent.
-
----
-
-## Composition over inheritance
-
-Avoid large node-type inheritance trees (`SpriteNode`, `ThreeMeshNode`, `ButtonNode`, …). Prefer components on a generic node.
-
-Example 2D entity:
+Nodes are generic. Behaviour and look come from **components**, not subclasses (`SpriteNode`, `ButtonNode`, …).
 
 ```text
 Node
 ├── Transform2D
-├── Sprite
-└── Button
+├── Sprite          (assetId)
+└── Script          (scriptId: shared.ChangeScene)
 ```
 
-Example 3D entity:
+A 3D entity is the same idea with `Transform3D` + `Model3D` / lights / camera.
 
-```text
-Node
-├── Transform3D
-├── Model3D
-├── Animator
-└── Collider
-```
+Leaf visuals and leaf Three components cannot have scene children (`nodeCanHaveChildren` in `packages/scene/src/node-capabilities.ts`). Group with a Transform-only container.
 
-Example components: `Transform2D`, `Transform3D`, `Sprite`, `Text`, `Spine`, `Tilemap`, `Model3D`, `Camera3D`, `Camera2D`, `Light3D`, `Animator`, `AudioSource`, `Button`, `ParticleEmitter`, `Layout`.
+**Tilemap** is one node. Cells live in sparse chunks on the component (`EMPTY_TILE = -1`). They are not child nodes. A cell stores a logical tile ID; animation frames are TileSet metadata plus a transient clock — not serialized per frame.
 
-A `Tilemap` is one scene node. Tile cells live in sparse chunks on the component (`EMPTY_TILE = -1`). They are not child nodes and must not be serialized as Pixi objects. Animated tiles still store a single logical tile ID per cell; frame playback is TileSet metadata plus a transient shared clock.
+---
 
-Components must contain serializable data. Runtime-specific objects live outside serialized component data.
+## Component types (shipped)
+
+Discriminated union `ComponentData` on `type`:
+
+| `type` | Package file | Notes |
+| --- | --- | --- |
+| `Transform2D` / `Transform3D` | `types.ts` | Separate structs; 2D has optional `skew`, `anchor` |
+| `Sprite`, `NineSliceSprite`, `TilingSprite` | `visual-components.ts` | `assetId` optional (placeholder) |
+| `Graphics` | `visual-components.ts` | rect / rounded-rect / circle / ellipse / polygon |
+| `Text`, `HTMLText`, `BitmapText` | `visual-components.ts` | webfont `style.fontAssetId` or bitmap `font` asset |
+| `Mesh`, `MeshSimple`, `MeshRope`, `MeshPlane`, `PerspectiveMesh` | `visual-components.ts` | |
+| `AnimatedSprite` | `visual-components.ts` | frame `assetId`s or Aseprite `assetId` + `animation` tag |
+| `Spine` | `visual-components.ts` | skeleton + atlas catalogue id |
+| `Tilemap` | `tilemap-data.ts` | `tileSetId` + chunked cells |
+| `Model3D` | `three-components.ts` | glTF `assetId`, clip / loop / playing |
+| `PerspectiveCamera`, `DirectionalLight`, `AmbientLight` | `three-components.ts` | |
+| `Script` | `types.ts` | `scriptId` + JSON `properties` — no class instances |
+
+Factories: `packages/scene/src/factories/` (`createEmptyScene`, `createSpriteComponent`, `createScriptComponent`, …). Queries: `findNodeById`, `getTransform2D`, `getVisualComponent`, `flattenNodes` in `queries.ts`. Hierarchy mutations: `node-ops.ts` / `hierarchy.ts`.
+
+IDs come from `createId(prefix)` in `@game-editor/shared`: `scene_`, `node_`, `comp_`, `asset_`, `prefab_`, `pinst_` (prefab instance).
 
 ---
 
 ## Transforms
 
-Do not force 2D and 3D transforms into the same structure merely to reduce type count.
+2D and 3D stay distinct:
 
 ```ts
 interface Transform2D {
@@ -85,62 +144,44 @@ interface Transform3D {
 }
 ```
 
----
-
-## Stable IDs
-
-Every persistent entity must have a stable ID: assets, scene nodes, components, prefabs, scenes.
-
-Scenes reference assets with `assetId`, not filesystem paths:
-
-```json
-{ "texture": "asset_42" }
-```
-
-Avoid `"../../assets/ui/button.png"`. Moving or renaming an asset must not invalidate scenes. IDs come from `createId(prefix)` in `@game-editor/shared`.
+Rotation/skew in scene data are degrees (engine-neutral). Renderers convert to radians.
 
 ---
 
-## Runtime validation
+## Validation
 
-Serialized JSON is external input. Do not assume a JSON file matches TypeScript interfaces simply because the editor generated it.
+Scene JSON is untrusted input (hand-edits, old files, other branches). `parseSceneData` in `packages/scene/src/schema.ts` runs Zod (`sceneDataSchema`) after `withSceneParseDefaults`. Prefab documents use `parsePrefabData` (`packages/scene/src/prefab/schema.ts`).
 
-Scene, project, and asset metadata should have runtime schema validation (Zod: `parseSceneData`, `parseAssetDatabase`, project parsers).
+`version` is the format version. Incompatible shape changes bump `SCENE_SCHEMA_VERSION` / `PREFAB_SCHEMA_VERSION` and need a migration plus tests in `schema.test.ts` / `prefab.test.ts`. There is no separate migration runner yet (see [`roadmap.md`](./roadmap.md)).
 
-Serialized variants use discriminated unions on `type` / `kind`. Keep discriminants and Zod schemas aligned.
+Keep files Git-friendly: deterministic field order from the writer, no Pixi/Three instances, no play-mode clocks or selection.
 
 ---
 
-## Serialization versions
+## Visibility and layers
 
-Persisted formats must contain a format/schema version:
-
-```json
-{ "version": 1 }
-```
-
-Future incompatible changes must go through migrations. Never silently reinterpret old persisted structures.
-
-Scene JSON should be deterministic and human-diff-friendly. Avoid unnecessary property reordering. Avoid storing generated or transient state in scene files.
+- **`visible`** — runtime/export. Omit when `true`. Inspector **Visible** writes this field (undoable). Hierarchy eye does not.
+- **`layer`** — `"background"` \| `"foreground"` on 2D nodes in a hybrid scene (Pixi under vs over Three). Default `"background"`. Ignored for `Transform3D` nodes.
+- **`renderer`** on `SceneData` — `"pixi"` \| `"three"` \| `"hybrid"`. Must match the game’s package dependencies (`project.json` `renderers`).
 
 ---
 
 ## Prefabs
 
-A prefab is a versioned, engine-neutral document whose `root` reuses the same serializable node/component types as scenes:
+A prefab is a versioned document whose `root` reuses `SceneNodeData`:
 
 ```ts
 interface PrefabData {
-  version: number; // PREFAB_SCHEMA_VERSION
+  version: number; // PREFAB_SCHEMA_VERSION (1)
   id: string;      // prefab_…
   name: string;
   root: SceneNodeData;
 }
 ```
 
-Catalogue records use `type: "prefab"` and a stable `assetId`. Scene instances never store filesystem paths.
+Files: `games/<name>/assets/prefabs/**/*.prefab.json`. Catalogue type is `prefab`; scenes store the catalogue `assetId`, not the path.
 
-Instance metadata lives on `SceneNodeData.prefab` (optional; existing scenes stay valid):
+Instance link on `SceneNodeData.prefab`:
 
 ```ts
 interface PrefabInstanceLink {
@@ -149,24 +190,64 @@ interface PrefabInstanceLink {
   sourceNodeId: string;
   componentSources: Record<string, string>; // scene comp id → source comp id
   isRoot?: boolean;
-  overrides?: PrefabOverride[];
+  overrides?: PrefabOverride[];             // property / name / layer / visible
 }
 ```
 
-Prefab source node IDs and scene instance node IDs are distinct. Mapping is via `sourceNodeId` + `componentSources`.
+Source node ids and instance node ids are different; mapping is `sourceNodeId` + `componentSources`.
 
-Resolution (`resolveScenePrefabs` / `resolvePrefabInstance` in `packages/scene/src/prefab/`) is a pure domain step:
+Resolution (`resolveScenePrefabs` / `resolvePrefabInstance` in `packages/scene/src/prefab/`) is pure domain:
 
 ```text
-Serialized scene + prefab catalog
+Serialized scene + prefab catalog (assetId → PrefabData)
         ↓
 Resolved scene graph
         ↓
-Runtime / renderer adapters
+GameRuntime / Pixi / Three adapters
 ```
 
-Pixi and Three adapters must not inspect prefab metadata. Missing prefabs keep the last-known baked tree and emit a warning. Nested prefabs resolve with cycle/depth guards.
+Adapters must not inspect prefab metadata. Missing prefabs keep the last-known baked tree and emit a warning (`MISSING_PREFAB`). Nested prefabs use cycle and depth guards (`PREFAB_MAX_NESTING_DEPTH = 16`).
 
-**MVP limitation:** inherited prefab children cannot be deleted, duplicated, or reparented. Add local children, or Unpack first. Property overrides, Apply/Revert, and regular Unpack are supported.
+**Limitation:** you cannot delete, duplicate, or reparent inherited prefab children. Add local children, or Unpack. Property overrides, Apply/Revert, and Unpack are supported.
 
-Script component class instances and functions must never be persisted in scene JSON. See `.cursor/skills/create-game-component/SKILL.md`.
+---
+
+## Scripts on the scene
+
+Serialized shape:
+
+```ts
+interface ScriptComponentData {
+  type: "Script";
+  id: string;
+  scriptId: string;  // e.g. "shared.ChangeScene"
+  properties: Record<string, unknown>;
+}
+```
+
+`scriptId` is a registry id, never a file path. Unknown ids still deserialize so old scenes load; the editor warns if the definition is missing. Behaviour **classes and functions are not persisted** — `GameRuntime` / preview construct them from `ComponentRegistry.create`.
+
+---
+
+## How to extend
+
+**New visual / 3D component**
+
+1. Add the `type: "…"` interface and union member in `visual-components.ts` or `three-components.ts`.
+2. Add the Zod object to `schema.ts` (keep discriminant aligned).
+3. Add a factory in `packages/scene/src/factories/`.
+4. Teach queries / capabilities if it is a leaf.
+5. Implement create/update/destroy in the matching renderer.
+6. Register a `NodeTypeDefinition` in `packages/editor-core/src/node-types/` and Inspector fields.
+7. Add schema + command tests. Bump `SCENE_SCHEMA_VERSION` only for incompatible changes, with a migration.
+
+**New Script** — do not add a new `ComponentData` variant. Use [Add a script component](./guides/add-a-script-component.md).
+
+---
+
+## Related
+
+- Editor commands and Inspector: [`editor.md`](./editor.md)
+- Adapters and node-type status: [`renderers.md`](./renderers.md)
+- Runtime load path: [`runtime.md`](./runtime.md)
+- Asset ids and generated files: [`assets.md`](./assets.md)

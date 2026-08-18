@@ -154,7 +154,8 @@ export function installGameRuntime(registry: ComponentRegistry): void {
 
 ## References
 
-- Scene persistence rules: `docs/scene-model.md`
+- Human guide: `docs/guides/add-a-script-component.md`
+- Scene persistence: `docs/scene-model.md`
 - Shared Change Scene: `packages/game-components/src/shared/change-scene.ts`
 - Game Loading Scene (emit + navigate): `games/editor-features-demo/src/components/loading-scene.ts`
 - Types: `packages/game-components/src/types.ts` (`ScriptCreateContext`, `ScriptRuntimeServices`)

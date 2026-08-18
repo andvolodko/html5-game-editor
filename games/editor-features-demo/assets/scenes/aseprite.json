@@ -1073,6 +1073,3571 @@
       "children": []
     },
     {
+      "id": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+      "name": "WaterFoam",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_426f0ce1-9d10-4463-953a-486332ab4a3a",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_ddc7f75c-1f7a-4431-995d-468a378d35bd",
+          "name": "Water Foam",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_b2cf3ede-57eb-4ee7-b3e6-894f2ad09eb0",
+              "position": {
+                "x": 192,
+                "y": 320
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_0e8ad9eb-e923-4e85-9c3b-a80bcd79fb3f",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_d9eaabd4-adbe-41f5-b307-0c9302e01b39",
+          "name": "Water Foam Copy",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_52af05da-e7fc-4eef-a5b3-999f00977d7d",
+              "position": {
+                "x": 192,
+                "y": 256
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_8584166e-c398-4745-aeb7-d0a2f38faabd",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_3dcdb05a-8697-45dc-b240-35c38f86d34a",
+          "name": "Water Foam Copy 2",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_35412e91-b274-4078-b1b8-90d2b890d3d5",
+              "position": {
+                "x": 192,
+                "y": 384
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_2f916e27-c369-47a2-ab49-a0a1fc50da75",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_df3fdb95-bb60-47d0-995e-33888bf2dc80",
+          "name": "Water Foam Copy 2 Copy",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_39026f0b-6b58-4bd2-b2f1-f45ca76e151e",
+              "position": {
+                "x": 256,
+                "y": 384
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_30c58ca9-808f-4c2b-b6e8-93c7e214016f",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_76a5dbf2-5ffe-46d2-8710-cfe7c364d013",
+          "name": "Water Foam Copy 2 Copy 2",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_8bfad89f-95cf-4061-af7d-9b85b785c55b",
+              "position": {
+                "x": 320,
+                "y": 384
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_17be6978-41c9-4b75-a642-ba6153c5bdfd",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_1ef0a81c-2c76-4965-ae03-f84ed2a52f76",
+          "name": "Water Foam Copy 2 Copy 3",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_3343fb08-4d19-40da-832c-9856cf41031c",
+              "position": {
+                "x": 384,
+                "y": 384
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_38bc68ec-e386-4c5c-aa48-5496c65b3ecb",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_c9214552-6bf9-4f38-b4e6-ce829479a32f",
+          "name": "Water Foam Copy 2 Copy 3 Copy",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_1d8de82c-2946-40a9-98be-98e4ba4f3432",
+              "position": {
+                "x": 448,
+                "y": 384
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_70da0643-696f-4344-a0ad-9a1547f7ae02",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_acc6a55a-885f-4626-9a64-77cacbc753e9",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_3295fee6-683f-4010-8e87-6b96fd9dc8b3",
+              "position": {
+                "x": 512,
+                "y": 448
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_ce21e8dc-222f-4b6b-9fc9-5ff470340d8e",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_d4b5552f-3aa4-4534-970d-d06a92bff8b8",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 2",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_d8026c24-a6ab-4449-a57f-569a56831381",
+              "position": {
+                "x": 512,
+                "y": 512
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_81bc4b76-0fed-42cb-bb4f-b14f484f8edf",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_4cd58a8c-7904-4542-b01a-c8160b9a2f23",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 3",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_83d87e06-1e6d-49c8-816d-0ce07f4c1719",
+              "position": {
+                "x": 512,
+                "y": 576
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_4cac4358-1ab0-4ec2-92d6-6d2fdaa08e18",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_7e96cd42-0423-4e53-8d84-7ed55096e806",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 4",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_8db88676-ec42-45a7-8be1-6667b51384b0",
+              "position": {
+                "x": 576,
+                "y": 640
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_49f09bc5-b839-4455-9ce0-524f1f74a056",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_0613e683-2dce-4679-b1e6-df980458ed5a",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 5",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_25b1fe48-a0b2-4bfb-b7f7-883f9ca0aa67",
+              "position": {
+                "x": 576,
+                "y": 704
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_2173a8d9-3b30-43ae-9bcb-f323474feaa8",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_416ac261-c840-4a10-bc10-646564d187d4",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 6",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_ad7ae04f-ea20-444f-bb1b-3de0c79f4755",
+              "position": {
+                "x": 640,
+                "y": 768
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_244dc3d1-a5ef-4560-84c4-4ad81c28c38f",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_023a9abb-e065-4b81-87e0-e2a615a7f79b",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_8c0d9af5-7d97-4a20-815c-db4eccf8e869",
+              "position": {
+                "x": 704,
+                "y": 832
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_7b39e5bc-50cd-490c-b692-02c334f7932a",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_9baa2610-429d-46ce-a830-0633d89059ab",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_7bc78fff-78f8-4fa4-998c-564f6cf2ff6f",
+              "position": {
+                "x": 768,
+                "y": 832
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_e8595461-a077-4ca3-9310-fb631ab54b78",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_4d2137b2-cbdc-4e0c-8ee4-770d28205522",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 2",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_0cd29fed-11fe-4ff6-a4bd-716dcaa4d084",
+              "position": {
+                "x": 832,
+                "y": 832
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_af68c108-e243-4eca-8097-e5c6b6dd65c2",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_8316abfe-9b5d-4bf3-901f-a47e008b0a74",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_fd684b02-db5a-448d-a21b-131c2e8d81d0",
+              "position": {
+                "x": 896,
+                "y": 832
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_90388ac0-097c-43ab-ba0f-5300c195df40",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_3f4ec6e8-ad2e-42fe-a13b-8d572dcffdca",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_a3064ecc-863f-4f19-82fe-b8fef2f0654c",
+              "position": {
+                "x": 960,
+                "y": 832
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_4d693553-b606-4ed2-9edb-3467f491f50d",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_b7e6bd12-7d86-49c6-bda2-5392c3f6a333",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 2",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_6dc02483-a75c-4a6b-88f0-87091fb0d573",
+              "position": {
+                "x": 1024,
+                "y": 832
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_ce93ed65-4f5c-41fb-b5a6-6ade746cc19e",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_c20b25b7-4a57-4d41-b7b5-21d67cd27895",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 3",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_bc6bb3b3-67b6-47ff-acc9-9e69acc24249",
+              "position": {
+                "x": 1088,
+                "y": 832
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_e2b82ca2-c4d8-4094-92e9-a0348aba1a1d",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_37005ecc-8b64-4cf4-8f5d-c0e351632426",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 4",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_c920f482-db2c-436c-b3dd-caa49fe092b8",
+              "position": {
+                "x": 1152,
+                "y": 832
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_f44f2197-b2b5-43a7-b8fe-839e32387204",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_80470c43-714b-43b4-af0c-1c481575aa20",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 5",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_274e2c50-70e0-4893-991f-5db794e3d16f",
+              "position": {
+                "x": 1216,
+                "y": 832
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_4f6482a2-6ea6-4a3c-bdc7-0b7017e793d6",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_db9302d6-fbb2-45cc-9f25-d4864d016a85",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 6",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_83eb54b2-0005-4086-b5c8-553f0af5f3fa",
+              "position": {
+                "x": 1280,
+                "y": 768
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_cdb94470-c871-4d93-b991-06fd9a08abd3",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_99ec4f97-c4af-4433-9a29-049d83fc20ba",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 7",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_eaf8ab14-9602-4b19-975b-455ebbfc921e",
+              "position": {
+                "x": 1344,
+                "y": 704
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_c8414a1d-153d-4f5e-b56a-1e2f5a736746",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_c235b31d-1d3b-4f54-bd08-3c63802c9f92",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_9ac7bdf4-4519-4138-98f8-a32d6c5e6f43",
+              "position": {
+                "x": 1344,
+                "y": 640
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_e56c18c8-6802-4e1b-a15f-2cbedd637343",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_ee393203-1494-4c15-93d5-eb6a81ab7c9c",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_ff77e272-99a0-4b9e-8075-41bd6e8c01ab",
+              "position": {
+                "x": 1344,
+                "y": 576
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_161e7ca3-91b3-4e85-ad66-5d436107d8f2",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_959b40bb-f61f-4151-b4b2-47f8b5f7bf02",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 2",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_0f039f22-017a-4ff1-9df7-1fbaddaed574",
+              "position": {
+                "x": 1344,
+                "y": 512
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_9d04450f-46ae-498e-bcbd-7724dc89ac13",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_178f555e-3503-4892-8890-c7cedd01da40",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 3",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_a1efa880-0245-44e8-9b13-a5aab425cfda",
+              "position": {
+                "x": 1408,
+                "y": 448
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_821b9748-f30e-49d7-8b5a-b092fed4fd7b",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_c9454345-933d-4594-8ca7-1afb7a5798e4",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 4",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_246f034c-cdea-4bf9-9664-2e7cbb18bc89",
+              "position": {
+                "x": 1472,
+                "y": 448
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_7e6086ad-a906-4000-b7a4-1c6e4d170964",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_69a616c6-95fb-4d1e-8a13-42f93ce60cd6",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 5",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_0d5e998b-5167-4747-bf93-967d1621e9e4",
+              "position": {
+                "x": 1472,
+                "y": 384
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_00c8d009-e323-4204-8b3e-1847185f0491",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_e4a6d6fe-2129-4495-bc49-e35f7e153f69",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 6",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_96b317f2-fabb-40f0-aa9b-82b8c384c8cc",
+              "position": {
+                "x": 1472,
+                "y": 320
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_33f156f5-7d33-46e7-a841-bd2b186424e2",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_b0504c0a-70ee-4a35-ada9-76c5353ce98d",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 7",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_80f9ec42-1712-465c-b783-3fc3e488c52a",
+              "position": {
+                "x": 1536,
+                "y": 256
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_4b9752bc-df9c-4bb6-bb9d-c0d2383583a9",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_92abe852-26e2-4bd5-98fe-f97cd0560d5d",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 7 Copy",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_5fb39251-cd04-444c-9ede-1f58abfc71d7",
+              "position": {
+                "x": 1472,
+                "y": 192
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_543acd0e-07b8-4938-88bd-8a9ed035213a",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_2660d06d-dbd8-4884-99c2-c3f8048a0ad9",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 7 Copy 2",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_8b98d8b6-ff08-42d2-95eb-521ca5d22b06",
+              "position": {
+                "x": 1408,
+                "y": 192
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_c7257fd5-0a55-437a-99bb-896834525340",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_40238417-a72c-417a-95b8-59ce584ca719",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 7 Copy 3",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_c2afed85-b531-40c9-96dc-6f1253772184",
+              "position": {
+                "x": 1344,
+                "y": 192
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_e334cd58-a410-4c95-aadd-1fed4f7afa67",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_08fa3d76-7ec7-4ffb-9bfc-02346ac9b925",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 7 Copy 4",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_a08417ce-7d88-4d06-ab1b-2645d9d053f6",
+              "position": {
+                "x": 1280,
+                "y": 128
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_8b4e7dd0-863d-46fe-a445-a5196ad13718",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_64fe9cba-118c-4798-8a1a-97863857e7e0",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 7 Copy 5",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_d94149d1-a0de-421b-b931-534df21c95a9",
+              "position": {
+                "x": 1216,
+                "y": 128
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_1fd64a79-5c82-48ca-a3df-8c1549f38584",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_5aa1b156-256f-4315-b37d-f6d84a47f3f6",
+          "name": "Water Foam Copy 2 Copy 3 Copy Copy 7 Copy 3 Copy 8 Copy 7 Copy 6",
+          "parentId": "node_0945f20e-75a1-47e0-9663-e970c31412fb",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_9d453ddd-98ae-4c8e-86d6-19366688ab36",
+              "position": {
+                "x": 1152,
+                "y": 128
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_ae916c1b-9f14-410c-9746-0d7b1c9e46b0",
+              "frames": [],
+              "assetId": "asset_31631f94-a174-4fd2-b799-2646dcf0091e",
+              "animation": "New version",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.33377458880987587,
+                "y": 0.37696467386339405
+              },
+              "width": 192,
+              "height": 192
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "node_121903b2-70d6-4b6b-bac4-75c4ebaf40fa",
+      "name": "Tilemap 3",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_4d69729a-df00-41c5-bfc3-fdc7faa7d950",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Tilemap",
+          "id": "comp_f0fe50a6-6426-4b99-ad10-bfdbe5e70e1e",
+          "tileSetId": "asset_01055316-04c6-4bbd-89d1-10121343cb12",
+          "tileWidth": 64,
+          "tileHeight": 64,
+          "layers": [
+            {
+              "id": "layer_1444aa88-32df-453a-9e63-62c2784b70dd",
+              "name": "Layer 1",
+              "visible": true,
+              "opacity": 1,
+              "chunks": [
+                {
+                  "x": 0,
+                  "y": 0,
+                  "width": 32,
+                  "height": 32,
+                  "tiles": [
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    0,
+                    1,
+                    2,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    10,
+                    10,
+                    10,
+                    1,
+                    1,
+                    2,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    10,
+                    10,
+                    10,
+                    10,
+                    10,
+                    29,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    10,
+                    10,
+                    10,
+                    10,
+                    11,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    10,
+                    10,
+                    10,
+                    11,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    10,
+                    10,
+                    19,
+                    20,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    10,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    10,
+                    11,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    10,
+                    10,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    10,
+                    11,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    10,
+                    10,
+                    10,
+                    10,
+                    10,
+                    10,
+                    10,
+                    41,
+                    10,
+                    10,
+                    10,
+                    20,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    18,
+                    10,
+                    10,
+                    10,
+                    10,
+                    10,
+                    10,
+                    10,
+                    10,
+                    10,
+                    20,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    18,
+                    19,
+                    19,
+                    19,
+                    19,
+                    19,
+                    19,
+                    19,
+                    20,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_f3550df2-a3a0-4180-9567-3484bcda8165",
+      "name": "Tilemap 2",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_1564ad54-d5b7-4511-8b34-4817de2811de",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Tilemap",
+          "id": "comp_6acd7d4e-2217-44b4-8652-0f9ba0b5538e",
+          "tileSetId": "asset_a10769af-256e-4ec6-96fd-3e980ab4bdc9",
+          "tileWidth": 64,
+          "tileHeight": 64,
+          "layers": [
+            {
+              "id": "layer_ed352e2d-03a3-42cf-9d2a-55c6b29f5330",
+              "name": "Layer 1",
+              "visible": true,
+              "opacity": 1,
+              "chunks": [
+                {
+                  "x": 0,
+                  "y": 0,
+                  "width": 32,
+                  "height": 32,
+                  "tiles": [
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    5,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    5,
+                    6,
+                    6,
+                    6,
+                    7,
+                    -1,
+                    5,
+                    6,
+                    6,
+                    7,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    14,
+                    10,
+                    10,
+                    10,
+                    10,
+                    6,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    6,
+                    15,
+                    15,
+                    15,
+                    15,
+                    7,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    23,
+                    19,
+                    19,
+                    24,
+                    24,
+                    10,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    39,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    50,
+                    51,
+                    51,
+                    51,
+                    51,
+                    14,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    16,
+                    48,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    14,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    6,
+                    2,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    23,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    16,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    42,
+                    14,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    15,
+                    20,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    23,
+                    15,
+                    15,
+                    24,
+                    15,
+                    15,
+                    15,
+                    15,
+                    24,
+                    24,
+                    24,
+                    20,
+                    42,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    42,
+                    23,
+                    25,
+                    42,
+                    23,
+                    24,
+                    24,
+                    24,
+                    39,
+                    42,
+                    42,
+                    42,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    42,
+                    42,
+                    -1,
+                    42,
+                    42,
+                    42,
+                    42,
+                    48,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    -1
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "children": []
+    },
+    {
       "id": "node_c8e75942-ffd5-4d14-9c53-eead61aa2fe1",
       "name": "Tilemap",
       "components": [
@@ -1208,6 +4773,10 @@
                     -1,
                     -1,
                     -1,
+                    23,
+                    24,
+                    24,
+                    39,
                     -1,
                     -1,
                     -1,
@@ -1236,14 +4805,10 @@
                     -1,
                     -1,
                     -1,
-                    -1,
-                    -1,
-                    -1,
-                    -1,
-                    -1,
-                    -1,
-                    -1,
-                    -1,
+                    42,
+                    42,
+                    42,
+                    48,
                     -1,
                     -1,
                     -1,
@@ -2242,189 +5807,6 @@
       "children": []
     },
     {
-      "id": "node_03ef647f-0786-4661-8669-32d1d485bc40",
-      "name": "Archer",
-      "components": [
-        {
-          "type": "Transform2D",
-          "id": "comp_ff2f9172-9843-4f72-84b1-7687115b51e2",
-          "position": {
-            "x": -256,
-            "y": 896
-          },
-          "rotation": 0,
-          "scale": {
-            "x": 1,
-            "y": 1
-          }
-        },
-        {
-          "type": "AnimatedSprite",
-          "id": "comp_bf7b531a-a40b-440f-bf6e-e9ce4c934e9a",
-          "frames": [],
-          "assetId": "asset_4b9e8864-faf5-41b7-aeee-8ae7ee968111",
-          "animation": "Idle",
-          "animationSpeed": 0.1,
-          "loop": true,
-          "playing": true,
-          "width": 192,
-          "height": 192
-        }
-      ],
-      "children": []
-    },
-    {
-      "id": "node_f9210fce-c0c2-4c17-9dc6-05e5e8b706d6",
-      "name": "Water Rocks_01",
-      "components": [
-        {
-          "type": "Transform2D",
-          "id": "comp_052520ca-281d-4cb4-991a-293332ffe521",
-          "position": {
-            "x": 256,
-            "y": 448
-          },
-          "rotation": 0,
-          "scale": {
-            "x": 1,
-            "y": 1
-          }
-        },
-        {
-          "type": "AnimatedSprite",
-          "id": "comp_411a64f3-8564-42e8-a99f-a43027748e76",
-          "frames": [],
-          "assetId": "asset_add471c1-65ee-4312-9f3b-c62e399ea64f",
-          "animationSpeed": 0.1,
-          "loop": true,
-          "playing": true,
-          "width": 64,
-          "height": 64
-        }
-      ],
-      "children": []
-    },
-    {
-      "id": "node_95bfc996-04ab-4014-8552-68eb3f6ca7c4",
-      "name": "Water Rocks_02",
-      "components": [
-        {
-          "type": "Transform2D",
-          "id": "comp_4fabda84-13ed-4b40-837d-d24fde25938c",
-          "position": {
-            "x": 384,
-            "y": 576
-          },
-          "rotation": 0,
-          "scale": {
-            "x": 1,
-            "y": 1
-          }
-        },
-        {
-          "type": "AnimatedSprite",
-          "id": "comp_d0854ac1-8c16-400c-8bcb-350117ac0ea7",
-          "frames": [],
-          "assetId": "asset_53088808-8970-46e8-a1ac-411535e06d4e",
-          "animationSpeed": 0.1,
-          "loop": true,
-          "playing": true,
-          "width": 64,
-          "height": 64
-        }
-      ],
-      "children": []
-    },
-    {
-      "id": "node_a085d591-6a0a-43ff-9111-006bfbba0827",
-      "name": "Water Rocks_04",
-      "components": [
-        {
-          "type": "Transform2D",
-          "id": "comp_c13ddba0-2cc2-40e7-a700-fe2da0f84098",
-          "position": {
-            "x": 576,
-            "y": 576
-          },
-          "rotation": 0,
-          "scale": {
-            "x": 1,
-            "y": 1
-          }
-        },
-        {
-          "type": "AnimatedSprite",
-          "id": "comp_e5876da4-9712-42f9-afb5-b70c6019c89c",
-          "frames": [],
-          "assetId": "asset_2bf48f24-76a9-4f3f-af00-58d5fdf10ab3",
-          "animationSpeed": 0.1,
-          "loop": true,
-          "playing": true,
-          "width": 64,
-          "height": 64
-        }
-      ],
-      "children": []
-    },
-    {
-      "id": "node_69638428-e27d-4b84-8bc0-0096f45ce5b5",
-      "name": "Water Rocks_03",
-      "components": [
-        {
-          "type": "Transform2D",
-          "id": "comp_0208a3fb-d06c-4500-b66c-98b6975453dd",
-          "position": {
-            "x": 768,
-            "y": 576
-          },
-          "rotation": 0,
-          "scale": {
-            "x": 1,
-            "y": 1
-          }
-        },
-        {
-          "type": "AnimatedSprite",
-          "id": "comp_a0213739-160d-4e4a-9224-053420befdf2",
-          "frames": [],
-          "assetId": "asset_c2906c40-fee2-4836-a6b9-2777ed9df744",
-          "animationSpeed": 0.1,
-          "loop": true,
-          "playing": true,
-          "width": 64,
-          "height": 64
-        }
-      ],
-      "children": []
-    },
-    {
-      "id": "node_22eba183-9c72-475b-8f43-bc5718421e4a",
-      "name": "Shadow",
-      "components": [
-        {
-          "type": "Transform2D",
-          "id": "comp_f99e9324-b161-4b8d-b504-a80f5feb4b1d",
-          "position": {
-            "x": 192,
-            "y": 896
-          },
-          "rotation": 0,
-          "scale": {
-            "x": 1,
-            "y": 1
-          }
-        },
-        {
-          "type": "Sprite",
-          "id": "comp_2889a549-5abb-4d52-a984-493302f455a9",
-          "assetId": "asset_9e798f0d-efbe-44f2-a713-474adb310371",
-          "width": 192,
-          "height": 192
-        }
-      ],
-      "children": []
-    },
-    {
       "id": "node_cad2a915-57c0-49c1-9dfb-887b1ad88637",
       "name": "Bushes",
       "components": [
@@ -2432,8 +5814,8 @@
           "type": "Transform2D",
           "id": "comp_67de8460-b9d1-4c06-b160-90420037a63e",
           "position": {
-            "x": -320,
-            "y": 1024
+            "x": 257.7284318833744,
+            "y": 311.3987317691316
           },
           "rotation": 0,
           "scale": {
@@ -2450,11 +5832,508 @@
           "animationSpeed": 0.1,
           "loop": true,
           "playing": true,
+          "anchor": {
+            "x": 0.35007891929084556,
+            "y": 0.43998520015383935
+          },
           "width": 128,
           "height": 128
         }
       ],
       "children": []
+    },
+    {
+      "id": "node_533a586e-4b4d-4956-b563-cb70ae1a67a6",
+      "name": "Bushes Copy",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_c6d45a83-a3eb-4ab2-8c42-678e27e63fe2",
+          "position": {
+            "x": 192,
+            "y": 256
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_8b817f88-13f1-474d-86cb-55f92054f277",
+          "frames": [],
+          "assetId": "asset_1beb16c5-3740-41b0-863c-b1273e09196b",
+          "animation": "Bush 2",
+          "animationSpeed": 0.1,
+          "loop": true,
+          "playing": true,
+          "anchor": {
+            "x": 0.35007891929084556,
+            "y": 0.43998520015383935
+          },
+          "width": 128,
+          "height": 128
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_b5633d23-5001-4167-8b6e-3510338cb463",
+      "name": "Bushes Copy 2",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_bfd5c8f6-b6a7-4755-831f-d88d631888cf",
+          "position": {
+            "x": 192,
+            "y": 320
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_f2159cf3-c50f-42d2-9d02-511e709b3f20",
+          "frames": [],
+          "assetId": "asset_1beb16c5-3740-41b0-863c-b1273e09196b",
+          "animation": "Bush 3",
+          "animationSpeed": 0.1,
+          "loop": true,
+          "playing": true,
+          "anchor": {
+            "x": 0.35007891929084556,
+            "y": 0.43998520015383935
+          },
+          "width": 128,
+          "height": 128
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_5812dca4-34e0-4fe7-8151-102b5a749129",
+      "name": "Bushes Copy 3",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_e68f2564-3447-408f-8878-28fb8940869e",
+          "position": {
+            "x": 320,
+            "y": 320
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_f1a6047d-0bfa-4b7d-8913-5d180bc5b6a1",
+          "frames": [],
+          "assetId": "asset_1beb16c5-3740-41b0-863c-b1273e09196b",
+          "animation": "Bush 4",
+          "animationSpeed": 0.1,
+          "loop": true,
+          "playing": true,
+          "anchor": {
+            "x": 0.35007891929084556,
+            "y": 0.43998520015383935
+          },
+          "width": 128,
+          "height": 128
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+      "name": "Rocks",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_e8cce191-98d0-4fa9-a911-3a31d4d8ff17",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_69638428-e27d-4b84-8bc0-0096f45ce5b5",
+          "name": "Water Rocks_03",
+          "parentId": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_0208a3fb-d06c-4500-b66c-98b6975453dd",
+              "position": {
+                "x": 384,
+                "y": 576
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_a0213739-160d-4e4a-9224-053420befdf2",
+              "frames": [],
+              "assetId": "asset_c2906c40-fee2-4836-a6b9-2777ed9df744",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_f4cccadf-576a-47ca-a477-79ee81ccd3af",
+          "name": "Water Rocks_03 Copy",
+          "parentId": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_36e89337-7454-494b-bb63-c7a34f2fe39d",
+              "position": {
+                "x": 192,
+                "y": 448
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_ad7fa724-51ae-4f34-a265-3835407af472",
+              "frames": [],
+              "assetId": "asset_c2906c40-fee2-4836-a6b9-2777ed9df744",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_96a11e99-a7c7-486b-ac54-acbaf8f26e7b",
+          "name": "Water Rocks_03 Copy 2",
+          "parentId": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_12d07470-7a74-4f0b-ada5-7bf7cda491c0",
+              "position": {
+                "x": 448,
+                "y": 512
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_1b5cfd24-4fbe-4f0d-b360-ac120cc7beed",
+              "frames": [],
+              "assetId": "asset_c2906c40-fee2-4836-a6b9-2777ed9df744",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_a085d591-6a0a-43ff-9111-006bfbba0827",
+          "name": "Water Rocks_04",
+          "parentId": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_c13ddba0-2cc2-40e7-a700-fe2da0f84098",
+              "position": {
+                "x": 448,
+                "y": 640
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_e5876da4-9712-42f9-afb5-b70c6019c89c",
+              "frames": [],
+              "assetId": "asset_2bf48f24-76a9-4f3f-af00-58d5fdf10ab3",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_49099e10-6191-4135-829f-6254d051f6f2",
+          "name": "Water Rocks_04 Copy",
+          "parentId": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_fff8cfa1-4c0f-4c00-8b5e-384e0b23972e",
+              "position": {
+                "x": 128,
+                "y": 256
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_f578887d-ee98-4593-a0b4-4ac139e19234",
+              "frames": [],
+              "assetId": "asset_2bf48f24-76a9-4f3f-af00-58d5fdf10ab3",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_95bfc996-04ab-4014-8552-68eb3f6ca7c4",
+          "name": "Water Rocks_02",
+          "parentId": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_4fabda84-13ed-4b40-837d-d24fde25938c",
+              "position": {
+                "x": 320,
+                "y": 512
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_d0854ac1-8c16-400c-8bcb-350117ac0ea7",
+              "frames": [],
+              "assetId": "asset_53088808-8970-46e8-a1ac-411535e06d4e",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_c8fc5a70-2337-4190-9fe2-9a4a50c06556",
+          "name": "Water Rocks_01 Copy 3",
+          "parentId": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_8e3f3a2b-e473-419d-9b9c-3f7256ed8924",
+              "position": {
+                "x": 448,
+                "y": 448
+              },
+              "rotation": 180,
+              "scale": {
+                "x": 1,
+                "y": -1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_aca8e0db-6506-4678-94c2-2d45a92494fc",
+              "frames": [],
+              "assetId": "asset_add471c1-65ee-4312-9f3b-c62e399ea64f",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.13682757600498174,
+                "y": 0.20367587343475124
+              },
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_83c1f1ff-805b-4b99-ba0d-612911f651f5",
+          "name": "Water Rocks_01 Copy 2",
+          "parentId": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_03e3c1c4-333d-40f0-b4ad-7d05724b482b",
+              "position": {
+                "x": 448,
+                "y": 448
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_6d558527-a5aa-4a18-8341-998b5dcb64a0",
+              "frames": [],
+              "assetId": "asset_add471c1-65ee-4312-9f3b-c62e399ea64f",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.2913188051268909,
+                "y": 0.16777303417178935
+              },
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_ee0297bc-85b6-4bb7-acc0-2b2aa98c1eee",
+          "name": "Water Rocks_01 Copy 2 Copy",
+          "parentId": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_021ef1c8-dda8-41ab-87b6-8f4352af4160",
+              "position": {
+                "x": 128,
+                "y": 320
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_4a321d9a-12b6-4730-b24b-880ef84c039b",
+              "frames": [],
+              "assetId": "asset_add471c1-65ee-4312-9f3b-c62e399ea64f",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "anchor": {
+                "x": 0.2913188051268909,
+                "y": 0.16777303417178935
+              },
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_44a1f298-db82-424f-8059-da1466302b5f",
+          "name": "Water Rocks_01 Copy",
+          "parentId": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_134e65eb-6444-42f9-98a9-e34a63bed23d",
+              "position": {
+                "x": 448,
+                "y": 448
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_4bbe9730-89c5-4ff2-9a70-0efe77e56feb",
+              "frames": [],
+              "assetId": "asset_add471c1-65ee-4312-9f3b-c62e399ea64f",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_f9210fce-c0c2-4c17-9dc6-05e5e8b706d6",
+          "name": "Water Rocks_01",
+          "parentId": "node_68716652-804d-4f9f-8f73-d1efe4939c7a",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_052520ca-281d-4cb4-991a-293332ffe521",
+              "position": {
+                "x": 256,
+                "y": 448
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "AnimatedSprite",
+              "id": "comp_411a64f3-8564-42e8-a99f-a43027748e76",
+              "frames": [],
+              "assetId": "asset_add471c1-65ee-4312-9f3b-c62e399ea64f",
+              "animationSpeed": 0.1,
+              "loop": true,
+              "playing": true,
+              "width": 64,
+              "height": 64
+            }
+          ],
+          "children": []
+        }
+      ]
     },
     {
       "id": "node_4b185f0e-c63d-40b6-baac-655c3f098061",
@@ -2484,8 +6363,8 @@
               "type": "Transform2D",
               "id": "comp_9435ce07-89f3-4a2a-8558-244f13a7436c",
               "position": {
-                "x": 1536,
-                "y": 192
+                "x": 1792,
+                "y": 1856
               },
               "rotation": 0,
               "scale": {
@@ -2512,8 +6391,8 @@
               "type": "Transform2D",
               "id": "comp_66816ee4-dfd5-4378-8308-bbf4546c9e08",
               "position": {
-                "x": 1664,
-                "y": 704
+                "x": 1856,
+                "y": 1216
               },
               "rotation": 0,
               "scale": {
@@ -2540,8 +6419,8 @@
               "type": "Transform2D",
               "id": "comp_0caa40e9-3e28-4cbc-937f-e30da15fb0b1",
               "position": {
-                "x": 896,
-                "y": 192
+                "x": 1984,
+                "y": 2176
               },
               "rotation": 0,
               "scale": {
@@ -2569,7 +6448,7 @@
               "id": "comp_917b14a8-0cf3-47da-aa29-f47587589272",
               "position": {
                 "x": 832,
-                "y": 704
+                "y": 1216
               },
               "rotation": 0,
               "scale": {
@@ -2596,8 +6475,8 @@
               "type": "Transform2D",
               "id": "comp_f2a115ad-0dbf-4ec0-a617-ee733f855574",
               "position": {
-                "x": 576,
-                "y": 256
+                "x": 640,
+                "y": 1984
               },
               "rotation": 0,
               "scale": {
@@ -2624,8 +6503,8 @@
               "type": "Transform2D",
               "id": "comp_93d20ecd-9a42-4ff7-87ad-e54c3e08f795",
               "position": {
-                "x": 1216,
-                "y": 960
+                "x": 256,
+                "y": 1216
               },
               "rotation": 0,
               "scale": {
@@ -2652,8 +6531,8 @@
               "type": "Transform2D",
               "id": "comp_728229ce-b91c-4609-a4ab-01df581f135b",
               "position": {
-                "x": 576,
-                "y": 896
+                "x": 320,
+                "y": 2176
               },
               "rotation": 0,
               "scale": {
@@ -2680,8 +6559,8 @@
               "type": "Transform2D",
               "id": "comp_7e9500ca-31b3-4bc0-ab68-b44ca28ae9cf",
               "position": {
-                "x": 1024,
-                "y": 576
+                "x": 1920,
+                "y": 1664
               },
               "rotation": 0,
               "scale": {
@@ -2785,8 +6664,8 @@
               "type": "Transform2D",
               "id": "comp_14ed5d48-ce38-472d-816f-69b261e12cae",
               "position": {
-                "x": -1216,
-                "y": 1088
+                "x": 896,
+                "y": 384
               },
               "rotation": 0,
               "scale": {
@@ -2945,6 +6824,141 @@
           "children": []
         }
       ]
+    },
+    {
+      "id": "node_c0383dce-8571-4ea3-a4b2-66c783921933",
+      "name": "Trees",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_3c4357ba-1d22-485e-94f9-b6c9e8c094a1",
+          "position": {
+            "x": 320,
+            "y": 128
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_6c6f3dc5-e300-4a4e-a2fc-2cda51d11320",
+          "frames": [],
+          "assetId": "asset_1397c930-7e5d-4eb1-9f59-bac1bd64c26a",
+          "animation": "Tree 1",
+          "animationSpeed": 0.1,
+          "loop": true,
+          "playing": true,
+          "width": 192,
+          "height": 256
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_22eba183-9c72-475b-8f43-bc5718421e4a",
+      "name": "Shadow",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_f99e9324-b161-4b8d-b504-a80f5feb4b1d",
+          "position": {
+            "x": 704,
+            "y": 512
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Sprite",
+          "id": "comp_2889a549-5abb-4d52-a984-493302f455a9",
+          "assetId": "asset_9e798f0d-efbe-44f2-a713-474adb310371",
+          "width": 192,
+          "height": 192,
+          "anchor": {
+            "x": 0.34419593115179536,
+            "y": 0.2367339192293732
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_03ef647f-0786-4661-8669-32d1d485bc40",
+      "name": "Archer",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_ff2f9172-9843-4f72-84b1-7687115b51e2",
+          "position": {
+            "x": 832,
+            "y": 320
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_bf7b531a-a40b-440f-bf6e-e9ce4c934e9a",
+          "frames": [],
+          "assetId": "asset_4b9e8864-faf5-41b7-aeee-8ae7ee968111",
+          "animation": "Idle",
+          "animationSpeed": 0.1,
+          "loop": true,
+          "playing": true,
+          "anchor": {
+            "x": 0.3380232225916616,
+            "y": 0.36269525308888295
+          },
+          "width": 192,
+          "height": 192
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_d9a513ec-5a35-411a-8e9e-8ff1727e8b6c",
+      "name": "Archer Copy",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_d22d7f87-582c-45b3-b76f-c19c9b5540f2",
+          "position": {
+            "x": 704,
+            "y": 512
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "AnimatedSprite",
+          "id": "comp_b9433e83-2f24-4ec8-ae34-b078c150eece",
+          "frames": [],
+          "assetId": "asset_544ef966-497f-45ed-a86e-5bdb3a5c9d8e",
+          "animation": "Idle",
+          "animationSpeed": 0.1,
+          "loop": true,
+          "playing": true,
+          "anchor": {
+            "x": 0.3380232225916616,
+            "y": 0.36269525308888295
+          },
+          "width": 192,
+          "height": 192
+        }
+      ],
+      "children": []
     }
   ]
 }

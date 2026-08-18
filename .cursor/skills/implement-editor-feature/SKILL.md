@@ -20,11 +20,12 @@ Restate internally:
 
 Do not immediately generate code.
 
-Consult `PROJECT.md` for repository orientation when needed. Read **only** the docs that match this change. Do not load unrelated documentation for localized Inspector, UI, styling, or test-only work.
+Consult `PROJECT.md` for repository orientation when needed. Developer index: `docs/README.md`. Read **only** the docs that match this change. Do not load unrelated documentation for localized Inspector, UI, styling, or test-only work.
 
 | Layer | Doc |
 | --- | --- |
 | Scene / domain / serialization | `docs/scene-model.md` |
+| Script components | `docs/guides/add-a-script-component.md` |
 | Assets | `docs/assets.md` |
 | Editor core / UI / commands | `docs/editor.md` |
 | Runtime / games | `docs/runtime.md` |
