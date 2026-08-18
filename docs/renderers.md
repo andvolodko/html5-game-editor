@@ -73,10 +73,12 @@ Initial supported resources: PNG, JPG, WebP, spritesheets, Aseprite / LibreSprit
 | Type | Status | Notes |
 | --- | --- | --- |
 | Container | Supported | Transform2D-only grouping; `canHaveChildren` |
+| Hit Zone | Supported | `Transform2D` + `HitZone`; optional click/touch region. Also addable on existing 2D nodes. Not a leaf visual. Polygon vertices are editable in the viewport. |
+| Mask | Supported | `Transform2D` + `Mask`; shape or sprite/alpha clip of the node visual and scene children. Inverse optional. Editor gizmos live on an unmasked chrome layer. |
 | Sprite | Supported | Texture or Aseprite `assetId` + display size |
 | NineSliceSprite | Supported | |
 | TilingSprite | Supported | |
-| Graphics | Supported | MVP shapes: rect / rounded-rect / circle / ellipse / polygon |
+| Graphics | Supported | MVP shapes: rect / rounded-rect / circle / ellipse / polygon. Polygon vertices are editable in the Inspector and viewport. |
 | Text | Supported | Common TextStyle subset, including linear fill gradients (`fill` color stops) and webfont `style.fontAssetId` |
 | BitmapText | Supported | AngelCode BMFont (`font` assetId); unassigned/missing → placeholder |
 | HTMLText | Supported | Same TextStyle subset as Text, including webfont `style.fontAssetId` |
@@ -90,6 +92,6 @@ Initial supported resources: PNG, JPG, WebP, spritesheets, Aseprite / LibreSprit
 | Tilemap | Supported | One node; chunked cells; `@pixi/tilemap` `CompositeTilemap` per chunk. Animated tiles share one clock per logical ID and rebuild only chunks that contain that ID. Not `TilingSprite`. |
 | ParticleContainer | Deferred | Pixi Particle API accepts Particle children only — incompatible with Container hierarchy |
 
-Node creation is driven by `NodeTypeRegistry` (`pixi.*` stable IDs). Menus and `CreateNodeCommand` share that registry. Leaf visuals cannot receive scene children (domain `canMoveNode` / create-parent policy).
+Node creation is driven by `NodeTypeRegistry` (`pixi.*` stable IDs). Menus and `CreateNodeCommand` share that registry. Leaf visuals cannot receive scene children (domain `canMoveNode` / create-parent policy). `HitZone` is not a leaf: it maps to a dedicated overlay / playback `hitTarget` and must never set Pixi `hitArea` on the node container (that would prune child sprites). `Mask` is not a leaf: the Pixi stencil is a dedicated child; in the editor the clip is applied to `contentRoot` so selection gizmos on `chromeRoot` are not clipped.
 
-Future compatibility: particles / ParticleContainer (experimental), masks, filters, custom shaders, visual mesh vertex editor.
+Future compatibility: particles / ParticleContainer (experimental), filters, custom shaders, visual mesh vertex editor.

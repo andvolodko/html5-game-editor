@@ -3,7 +3,13 @@ import {
   canMoveNode,
   createContainerNode,
   createEmptyScene,
+  createHitZoneComponent,
+  createHitZoneNode,
+  createMaskComponent,
+  createMaskNode,
   createSpriteNode,
+  getNodeTypeIcon,
+  getNodeTypeId,
   createTextComponent,
   createNodeWithVisual,
   createNineSliceSpriteComponent,
@@ -27,6 +33,8 @@ import {
 describe("nodeCanHaveChildren", () => {
   it("allows containers and rejects leaf visuals", () => {
     expect(nodeCanHaveChildren(createContainerNode("C"))).toBe(true);
+    expect(nodeCanHaveChildren(createHitZoneNode("H"))).toBe(true);
+    expect(nodeCanHaveChildren(createMaskNode("M"))).toBe(true);
     expect(nodeCanHaveChildren(createSpriteNode("S"))).toBe(false);
     expect(
       nodeCanHaveChildren(
@@ -208,3 +216,22 @@ describe("mixed scene save/load", () => {
     expect(parsed.nodes[0]?.children).toHaveLength(children.length);
   });
 });
+
+describe("getNodeTypeId", () => {
+  it("maps Mask-only 2D nodes to pixi.mask", () => {
+    const node = createMaskNode("Clip");
+    expect(getNodeTypeId(node)).toBe("pixi.mask");
+    expect(getNodeTypeIcon(node)).toBe("◐");
+  });
+
+  it("keeps leaf visuals and HitZone ahead of Mask", () => {
+    const sprite = createSpriteNode("Hero");
+    sprite.components.push(createMaskComponent());
+    expect(getNodeTypeId(sprite)).toBe("pixi.sprite");
+
+    const hitZone = createHitZoneNode("Zone");
+    hitZone.components.push(createMaskComponent());
+    expect(getNodeTypeId(hitZone)).toBe("pixi.hit-zone");
+  });
+});
+

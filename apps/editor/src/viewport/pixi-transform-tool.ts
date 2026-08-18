@@ -96,6 +96,37 @@ export function bindPixiTransformTool(
           : { x: transform.scale.x, y: nextSigned };
       editor.setTransform2D(nodeId, { scale });
     },
+    onHitZoneResizeEnd: (nodeId, hitZone) => {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
+      editor.setHitZone(nodeId, {
+        offset: hitZone.offset,
+        shape: hitZone.shape,
+        enabled: hitZone.enabled,
+      });
+    },
+    onMaskResizeEnd: (nodeId, mask) => {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
+      editor.setMask(nodeId, {
+        offset: mask.offset,
+        shape: mask.shape,
+        enabled: mask.enabled,
+        inverse: mask.inverse,
+        mode: mask.mode,
+        assetId: mask.assetId,
+        width: mask.width,
+        height: mask.height,
+      });
+    },
+    onGraphicsPolygonEnd: (nodeId, shape) => {
+      if (editor.isNodeEffectivelyLocked(nodeId)) {
+        return;
+      }
+      editor.setVisualComponent(nodeId, { shape });
+    },
   });
 
   return () => {

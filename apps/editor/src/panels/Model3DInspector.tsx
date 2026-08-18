@@ -6,6 +6,7 @@ import {
 import {
   AssetSelectField,
   BooleanField,
+  InspectorFieldRow,
   NumberField,
   OptionalSelectField,
 } from "./fields/inspector-fields";
@@ -50,29 +51,31 @@ export function Model3DInspector({ editor, node }: Props) {
             editor.setModel3D(node.id, { animation });
           }}
         />
-        <BooleanField
-          label="Playing"
-          value={model.playing}
-          onCommit={(playing) => {
-            editor.setModel3D(node.id, { playing });
-          }}
-        />
-        <BooleanField
-          label="Loop"
-          value={model.loop}
-          onCommit={(loop) => {
-            editor.setModel3D(node.id, { loop });
-          }}
-        />
-        <NumberField
-          label="Time Scale"
-          value={model.timeScale}
-          onCommit={(timeScale) => {
-            if (timeScale > 0) {
-              editor.setModel3D(node.id, { timeScale });
-            }
-          }}
-        />
+        <InspectorFieldRow>
+          <BooleanField
+            label="Playing"
+            value={model.playing}
+            onCommit={(playing) => {
+              editor.setModel3D(node.id, { playing });
+            }}
+          />
+          <BooleanField
+            label="Loop"
+            value={model.loop}
+            onCommit={(loop) => {
+              editor.setModel3D(node.id, { loop });
+            }}
+          />
+          <NumberField
+            label="Time Scale"
+            value={model.timeScale}
+            onCommit={(timeScale) => {
+              if (timeScale > 0) {
+                editor.setModel3D(node.id, { timeScale });
+              }
+            }}
+          />
+        </InspectorFieldRow>
       </div>
     </section>
   );

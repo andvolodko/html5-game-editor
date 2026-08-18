@@ -333,6 +333,10 @@ export interface ScriptRuntimeServices {
    */
   setNodeVisible?: (nodeId: string, visible: boolean) => void;
   /**
+   * Set a node's runtime opacity (0–1). Does not persist to scene files.
+   */
+  setNodeAlpha?: (nodeId: string, alpha: number) => void;
+  /**
    * CSS cursor on a node's runtime object (e.g. `pointer`). Pixi playback.
    */
   setNodeCursor?: (nodeId: string, cursor: string) => void;

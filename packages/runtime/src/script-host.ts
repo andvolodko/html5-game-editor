@@ -7,6 +7,7 @@ import type {
 import {
   flattenNodes,
   getScriptComponents,
+  isScriptEnabled,
   type SceneData,
 } from "@game-editor/scene";
 
@@ -37,7 +38,7 @@ export class ScriptHost {
     this.bindings.length = 0;
   }
 
-  /** Build live instances for every Script component in the scene. */
+  /** Build live instances for every enabled Script component in the scene. */
   attachScene(scene: SceneData): void {
     this.clear();
     if (!this.registry || !this.services) {
@@ -46,6 +47,9 @@ export class ScriptHost {
 
     for (const node of flattenNodes(scene)) {
       for (const component of getScriptComponents(node)) {
+        if (!isScriptEnabled(component)) {
+          continue;
+        }
         const definition = this.registry.get(component.scriptId);
         if (!definition?.create) {
           continue;

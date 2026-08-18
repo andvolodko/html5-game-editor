@@ -7,6 +7,7 @@ export type {
   PrefabNameOverride,
   PrefabLayerOverride,
   PrefabVisibleOverride,
+  PrefabAlphaOverride,
   PrefabData,
 } from "./prefab/types.js";
 
@@ -181,6 +182,11 @@ export {
 
 import type { VisualComponentData } from "./visual-components.js";
 import type { ThreeComponentData } from "./three-components.js";
+import type { HitZoneComponentData } from "./hit-zone-component.js";
+import type { MaskComponentData } from "./mask-component.js";
+
+export type { HitZoneComponentData } from "./hit-zone-component.js";
+export type { MaskComponentData, MaskMode } from "./mask-component.js";
 
 /**
  * User/script component instance. `scriptId` is a stable registry id
@@ -191,6 +197,11 @@ export interface ScriptComponentData {
   type: "Script";
   id: string;
   scriptId: string;
+  /**
+   * Runtime execution. Omitted means enabled (`true`). Persist `false` when
+   * the behaviour should not be constructed or ticked.
+   */
+  enabled?: boolean;
   properties: Record<string, unknown>;
 }
 
@@ -199,6 +210,8 @@ export type ComponentData =
   | Transform3DComponentData
   | VisualComponentData
   | ThreeComponentData
+  | HitZoneComponentData
+  | MaskComponentData
   | ScriptComponentData;
 
 
@@ -223,6 +236,12 @@ export interface SceneNodeData {
    * Independent of editor-only Hierarchy hide.
    */
   visible?: boolean;
+
+  /**
+   * Runtime/export opacity of the display object (0–1).
+   * Omitted means fully opaque (`1`). Persist when not `1`.
+   */
+  alpha?: number;
 
   /**
    * Present on nodes that belong to a prefab instance.

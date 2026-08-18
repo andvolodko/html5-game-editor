@@ -37,3 +37,19 @@ export const TEXT_PROVISIONAL_HEIGHT_EM = 1.4;
 export const GIZMO_FRAME_STROKE_WIDTH = 1.25;
 export const GIZMO_FRAME_STROKE_ALPHA = 0.95;
 export const GIZMO_STEM_STROKE_ALPHA = 0.9;
+
+/** Editor HitZone overlay (not serialized). Distinct from selection blue. */
+export const HIT_ZONE_FILL_COLOR = 0x3dcc7a;
+export const HIT_ZONE_STROKE_COLOR = 0x2eaa64;
+export const HIT_ZONE_FILL_ALPHA = 0.16;
+export const HIT_ZONE_STROKE_ALPHA = 0.95;
+export const HIT_ZONE_STROKE_WIDTH = 1.5;
+export const HIT_ZONE_HANDLE_FILL = 0xd8f8e6;
+
+/** Editor Mask overlay (not serialized). Distinct from HitZone green. */
+export const MASK_FILL_COLOR = 0xcc3dcc;
+export const MASK_STROKE_COLOR = 0xaa2eaa;
+export const MASK_FILL_ALPHA = 0.16;
+export const MASK_STROKE_ALPHA = 0.95;
+export const MASK_STROKE_WIDTH = 1.5;
+export const MASK_HANDLE_FILL = 0xf8d8f8;

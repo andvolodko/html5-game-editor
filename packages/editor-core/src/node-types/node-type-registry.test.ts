@@ -29,6 +29,11 @@ describe("NodeTypeRegistry", () => {
       "Graphics",
       "Mesh",
     ]);
+    expect(groups[0]?.types.map((t) => t.id)).toEqual([
+      "pixi.container",
+      "pixi.hit-zone",
+      "pixi.mask",
+    ]);
     expect(groups[1]?.types.map((t) => t.id)).toContain("pixi.animated-sprite");
   });
 

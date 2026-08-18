@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { AssetType } from "@game-editor/assets";
 import { useEditorState } from "../../hooks/useEditorState";
 import {
@@ -14,6 +14,11 @@ import { uniqueSelectOptions } from "./unique-select-options";
 
 function displayInspectorNumber(value: number, integer?: boolean): string {
   return integer ? String(value) : formatInspectorNumber(value);
+}
+
+/** Side-by-side inspector fields (Position X/Y, Width/Height, …). */
+export function InspectorFieldRow({ children }: { children: ReactNode }) {
+  return <div className="inspector-field-row">{children}</div>;
 }
 
 export function NumberField({
@@ -183,13 +188,21 @@ export function BooleanField({
   label,
   value,
   onCommit,
+  overridden,
 }: {
   label: string;
   value: boolean;
   onCommit: (value: boolean) => void;
+  overridden?: boolean;
 }) {
   return (
-    <label className="inspector-checkbox">
+    <label
+      className={
+        overridden
+          ? "inspector-checkbox inspector-field-overridden"
+          : "inspector-checkbox"
+      }
+    >
       {label}
       <input
         type="checkbox"
@@ -205,14 +218,16 @@ export function EnumField<T extends string>({
   value,
   options,
   onCommit,
+  overridden,
 }: {
   label: string;
   value: T;
   options: readonly T[];
   onCommit: (value: T) => void;
+  overridden?: boolean;
 }) {
   return (
-    <label>
+    <label className={overridden ? "inspector-field-overridden" : undefined}>
       {label}
       <select
         value={value}

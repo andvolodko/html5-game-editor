@@ -1,4 +1,5 @@
 import {
+  applyTextStyleWebFont,
   compactTextStyleFill,
   DEFAULT_TEXT_FILL,
   findNodeById,
@@ -19,6 +20,7 @@ import {
   BooleanField,
   ColorField,
   EnumField,
+  InspectorFieldRow,
   NumberField,
   StringField,
   TextAreaField,
@@ -109,7 +111,7 @@ export function TextStyleFields({
         value={visual.style.fontAssetId}
         onCommit={(fontAssetId) => {
           if (fontAssetId === undefined) {
-            patchStyle({ fontAssetId: undefined });
+            commit({ style: applyTextStyleWebFont(visual.style, undefined) });
             return;
           }
           const asset = editor.assets.get(fontAssetId);
@@ -117,99 +119,116 @@ export function TextStyleFields({
             asset?.metadata.kind === "webfont"
               ? asset.metadata.fontFamily
               : visual.style.fontFamily;
-          patchStyle({ fontAssetId, fontFamily });
+          commit({
+            style: applyTextStyleWebFont(visual.style, {
+              fontAssetId,
+              fontFamily,
+            }),
+          });
         }}
       />
-      <StringField
-        label="Font Family"
-        value={visual.style.fontFamily}
-        onCommit={(fontFamily) => patchStyle({ fontFamily })}
-      />
-      <NumberField
-        label="Font Size"
-        value={visual.style.fontSize}
-        onCommit={(fontSize) => patchStyle({ fontSize })}
-      />
-      <EnumField
-        label="Font Weight"
-        value={visual.style.fontWeight}
-        options={TEXT_FONT_WEIGHT_OPTIONS}
-        onCommit={(fontWeight) => patchStyle({ fontWeight })}
-      />
-      <EnumField
-        label="Font Style"
-        value={visual.style.fontStyle}
-        options={TEXT_FONT_STYLE_OPTIONS}
-        onCommit={(fontStyle) => patchStyle({ fontStyle })}
-      />
-      <EnumField
-        label="Font Variant"
-        value={visual.style.fontVariant}
-        options={TEXT_FONT_VARIANT_OPTIONS}
-        onCommit={(fontVariant) => patchStyle({ fontVariant })}
-      />
+      <InspectorFieldRow>
+        <StringField
+          label="Font Family"
+          value={visual.style.fontFamily}
+          onCommit={(fontFamily) => patchStyle({ fontFamily })}
+        />
+        <NumberField
+          label="Font Size"
+          value={visual.style.fontSize}
+          onCommit={(fontSize) => patchStyle({ fontSize })}
+        />
+      </InspectorFieldRow>
+      <InspectorFieldRow>
+        <EnumField
+          label="Weight"
+          value={visual.style.fontWeight}
+          options={TEXT_FONT_WEIGHT_OPTIONS}
+          onCommit={(fontWeight) => patchStyle({ fontWeight })}
+        />
+        <EnumField
+          label="Style"
+          value={visual.style.fontStyle}
+          options={TEXT_FONT_STYLE_OPTIONS}
+          onCommit={(fontStyle) => patchStyle({ fontStyle })}
+        />
+        <EnumField
+          label="Variant"
+          value={visual.style.fontVariant}
+          options={TEXT_FONT_VARIANT_OPTIONS}
+          onCommit={(fontVariant) => patchStyle({ fontVariant })}
+        />
+      </InspectorFieldRow>
       <FillStopsField
         fill={visual.style.fill}
         onCommit={(fill) => patchStyle({ fill })}
       />
-      <NumberField
-        label="Fill Alpha"
-        value={visual.style.fillAlpha}
-        onCommit={(fillAlpha) => patchStyle({ fillAlpha })}
-      />
-      <EnumField
-        label="Align"
-        value={visual.style.align}
-        options={TEXT_ALIGN_OPTIONS}
-        onCommit={(align) => patchStyle({ align })}
-      />
-      <NumberField
-        label="Letter Spacing"
-        value={visual.style.letterSpacing}
-        onCommit={(letterSpacing) => patchStyle({ letterSpacing })}
-      />
-      <NumberField
-        label="Line Height"
-        value={visual.style.lineHeight}
-        onCommit={(lineHeight) => patchStyle({ lineHeight })}
-      />
-      {visual.type === "Text" ? (
+      <InspectorFieldRow>
         <NumberField
-          label="Leading"
-          value={visual.style.leading}
-          onCommit={(leading) => patchStyle({ leading })}
+          label="Fill Alpha"
+          value={visual.style.fillAlpha}
+          onCommit={(fillAlpha) => patchStyle({ fillAlpha })}
         />
-      ) : null}
-      <BooleanField
-        label="Word Wrap"
-        value={visual.style.wordWrap}
-        onCommit={(wordWrap) => patchStyle({ wordWrap })}
-      />
-      <NumberField
-        label="Word Wrap Width"
-        value={visual.style.wordWrapWidth}
-        onCommit={(wordWrapWidth) => patchStyle({ wordWrapWidth })}
-      />
-      <BooleanField
-        label="Break Words"
-        value={visual.style.breakWords}
-        onCommit={(breakWords) => patchStyle({ breakWords })}
-      />
-      <EnumField
-        label="White Space"
-        value={visual.style.whiteSpace}
-        options={TEXT_WHITE_SPACE_OPTIONS}
-        onCommit={(whiteSpace) => patchStyle({ whiteSpace })}
-      />
-      <NumberField
-        label="Padding"
-        value={visual.style.padding}
-        onCommit={(padding) => patchStyle({ padding })}
-      />
+        <EnumField
+          label="Align"
+          value={visual.style.align}
+          options={TEXT_ALIGN_OPTIONS}
+          onCommit={(align) => patchStyle({ align })}
+        />
+      </InspectorFieldRow>
+      <InspectorFieldRow>
+        <NumberField
+          label="Letter Spacing"
+          value={visual.style.letterSpacing}
+          onCommit={(letterSpacing) => patchStyle({ letterSpacing })}
+        />
+        <NumberField
+          label="Line Height"
+          value={visual.style.lineHeight}
+          onCommit={(lineHeight) => patchStyle({ lineHeight })}
+        />
+        {visual.type === "Text" ? (
+          <NumberField
+            label="Leading"
+            value={visual.style.leading}
+            onCommit={(leading) => patchStyle({ leading })}
+          />
+        ) : null}
+      </InspectorFieldRow>
+      <InspectorFieldRow>
+        <BooleanField
+          label="Word Wrap"
+          value={visual.style.wordWrap}
+          onCommit={(wordWrap) => patchStyle({ wordWrap })}
+        />
+        <NumberField
+          label="Wrap Width"
+          value={visual.style.wordWrapWidth}
+          onCommit={(wordWrapWidth) => patchStyle({ wordWrapWidth })}
+        />
+      </InspectorFieldRow>
+      <InspectorFieldRow>
+        <BooleanField
+          label="Break Words"
+          value={visual.style.breakWords}
+          onCommit={(breakWords) => patchStyle({ breakWords })}
+        />
+        <EnumField
+          label="White Space"
+          value={visual.style.whiteSpace}
+          options={TEXT_WHITE_SPACE_OPTIONS}
+          onCommit={(whiteSpace) => patchStyle({ whiteSpace })}
+        />
+      </InspectorFieldRow>
       {visual.type === "Text" ? (
-        <>
+        <InspectorFieldRow>
+          <NumberField
+            label="Padding"
+            value={visual.style.padding}
+            onCommit={(padding) => patchStyle({ padding })}
+          />
           <EnumField
-            label="Text Baseline"
+            label="Baseline"
             value={visual.style.textBaseline}
             options={TEXT_BASELINE_OPTIONS}
             onCommit={(textBaseline) => patchStyle({ textBaseline })}
@@ -219,25 +238,33 @@ export function TextStyleFields({
             value={visual.style.trim}
             onCommit={(trim) => patchStyle({ trim })}
           />
-        </>
-      ) : null}
-      <ColorField
-        label="Stroke Color"
-        value={visual.style.strokeColor}
-        onCommit={(strokeColor) => patchStyle({ strokeColor })}
-      />
-      <NumberField
-        label="Stroke Alpha"
-        value={visual.style.strokeAlpha}
-        onCommit={(strokeAlpha) => patchStyle({ strokeAlpha })}
-      />
-      <NumberField
-        label="Stroke Width"
-        value={visual.style.strokeWidth}
-        onCommit={(strokeWidth) => patchStyle({ strokeWidth })}
-      />
+        </InspectorFieldRow>
+      ) : (
+        <NumberField
+          label="Padding"
+          value={visual.style.padding}
+          onCommit={(padding) => patchStyle({ padding })}
+        />
+      )}
+      <InspectorFieldRow>
+        <ColorField
+          label="Stroke Color"
+          value={visual.style.strokeColor}
+          onCommit={(strokeColor) => patchStyle({ strokeColor })}
+        />
+        <NumberField
+          label="Stroke Alpha"
+          value={visual.style.strokeAlpha}
+          onCommit={(strokeAlpha) => patchStyle({ strokeAlpha })}
+        />
+        <NumberField
+          label="Stroke Width"
+          value={visual.style.strokeWidth}
+          onCommit={(strokeWidth) => patchStyle({ strokeWidth })}
+        />
+      </InspectorFieldRow>
       {visual.type === "Text" ? (
-        <>
+        <InspectorFieldRow>
           <EnumField
             label="Stroke Join"
             value={visual.style.strokeJoin}
@@ -249,7 +276,7 @@ export function TextStyleFields({
             value={visual.style.miterLimit}
             onCommit={(miterLimit) => patchStyle({ miterLimit })}
           />
-        </>
+        </InspectorFieldRow>
       ) : null}
       <BooleanField
         label="Drop Shadow"
@@ -258,33 +285,37 @@ export function TextStyleFields({
       />
       {visual.style.dropShadow ? (
         <>
-          <ColorField
-            label="Shadow Color"
-            value={visual.style.dropShadowColor}
-            onCommit={(dropShadowColor) => patchStyle({ dropShadowColor })}
-          />
-          <NumberField
-            label="Shadow Alpha"
-            value={visual.style.dropShadowAlpha}
-            onCommit={(dropShadowAlpha) => patchStyle({ dropShadowAlpha })}
-          />
-          <NumberField
-            label="Shadow Blur"
-            value={visual.style.dropShadowBlur}
-            onCommit={(dropShadowBlur) => patchStyle({ dropShadowBlur })}
-          />
-          <NumberField
-            label="Shadow Distance"
-            value={visual.style.dropShadowDistance}
-            onCommit={(dropShadowDistance) =>
-              patchStyle({ dropShadowDistance })
-            }
-          />
-          <NumberField
-            label="Shadow Angle (°)"
-            value={visual.style.dropShadowAngle}
-            onCommit={(dropShadowAngle) => patchStyle({ dropShadowAngle })}
-          />
+          <InspectorFieldRow>
+            <ColorField
+              label="Shadow Color"
+              value={visual.style.dropShadowColor}
+              onCommit={(dropShadowColor) => patchStyle({ dropShadowColor })}
+            />
+            <NumberField
+              label="Shadow Alpha"
+              value={visual.style.dropShadowAlpha}
+              onCommit={(dropShadowAlpha) => patchStyle({ dropShadowAlpha })}
+            />
+          </InspectorFieldRow>
+          <InspectorFieldRow>
+            <NumberField
+              label="Shadow Blur"
+              value={visual.style.dropShadowBlur}
+              onCommit={(dropShadowBlur) => patchStyle({ dropShadowBlur })}
+            />
+            <NumberField
+              label="Shadow Distance"
+              value={visual.style.dropShadowDistance}
+              onCommit={(dropShadowDistance) =>
+                patchStyle({ dropShadowDistance })
+              }
+            />
+            <NumberField
+              label="Shadow Angle (°)"
+              value={visual.style.dropShadowAngle}
+              onCommit={(dropShadowAngle) => patchStyle({ dropShadowAngle })}
+            />
+          </InspectorFieldRow>
         </>
       ) : null}
     </>
@@ -311,22 +342,24 @@ export function BitmapTextFields({
         value={visual.assetId}
         onCommit={(assetId) => commit({ assetId })}
       />
-      <NumberField
-        label="Font Size"
-        value={visual.fontSize}
-        onCommit={(fontSize) => commit({ fontSize })}
-      />
-      <EnumField
-        label="Align"
-        value={visual.align}
-        options={["left", "center", "right"]}
-        onCommit={(align) => commit({ align })}
-      />
-      <NumberField
-        label="Letter Spacing"
-        value={visual.letterSpacing}
-        onCommit={(letterSpacing) => commit({ letterSpacing })}
-      />
+      <InspectorFieldRow>
+        <NumberField
+          label="Font Size"
+          value={visual.fontSize}
+          onCommit={(fontSize) => commit({ fontSize })}
+        />
+        <EnumField
+          label="Align"
+          value={visual.align}
+          options={["left", "center", "right"]}
+          onCommit={(align) => commit({ align })}
+        />
+        <NumberField
+          label="Letter Spacing"
+          value={visual.letterSpacing}
+          onCommit={(letterSpacing) => commit({ letterSpacing })}
+        />
+      </InspectorFieldRow>
     </>
   );
 }

@@ -13,6 +13,7 @@ import { tileSetDocumentFromAsset } from "@game-editor/editor-core";
 import { useEditorState } from "../hooks/useEditorState";
 import {
   AssetSelectField,
+  InspectorFieldRow,
   NumberField,
   StringField,
 } from "../panels/fields/inspector-fields";
@@ -93,40 +94,46 @@ export function TileSetAssetPreview({
             persist({ imageAssetId });
           }}
         />
-        <NumberField
-          label="Tile Width"
-          integer
-          value={tileset.tileWidth}
-          onCommit={(tileWidth) => persist({ tileWidth: Math.max(1, tileWidth) })}
-        />
-        <NumberField
-          label="Tile Height"
-          integer
-          value={tileset.tileHeight}
-          onCommit={(tileHeight) =>
-            persist({ tileHeight: Math.max(1, tileHeight) })
-          }
-        />
-        <NumberField
-          label="Margin"
-          integer
-          value={tileset.margin}
-          onCommit={(margin) => persist({ margin: Math.max(0, margin) })}
-        />
-        <NumberField
-          label="Spacing"
-          integer
-          value={tileset.spacing}
-          onCommit={(spacing) => persist({ spacing: Math.max(0, spacing) })}
-        />
-        <label>
-          Columns
-          <input readOnly value={tileset.columns} />
-        </label>
-        <label>
-          Rows
-          <input readOnly value={tileset.rows} />
-        </label>
+        <InspectorFieldRow>
+          <NumberField
+            label="Tile Width"
+            integer
+            value={tileset.tileWidth}
+            onCommit={(tileWidth) => persist({ tileWidth: Math.max(1, tileWidth) })}
+          />
+          <NumberField
+            label="Tile Height"
+            integer
+            value={tileset.tileHeight}
+            onCommit={(tileHeight) =>
+              persist({ tileHeight: Math.max(1, tileHeight) })
+            }
+          />
+        </InspectorFieldRow>
+        <InspectorFieldRow>
+          <NumberField
+            label="Margin"
+            integer
+            value={tileset.margin}
+            onCommit={(margin) => persist({ margin: Math.max(0, margin) })}
+          />
+          <NumberField
+            label="Spacing"
+            integer
+            value={tileset.spacing}
+            onCommit={(spacing) => persist({ spacing: Math.max(0, spacing) })}
+          />
+        </InspectorFieldRow>
+        <InspectorFieldRow>
+          <label>
+            Columns
+            <input readOnly value={tileset.columns} />
+          </label>
+          <label>
+            Rows
+            <input readOnly value={tileset.rows} />
+          </label>
+        </InspectorFieldRow>
       </div>
       {imageUrl && imageSize ? (
         <>

@@ -4,6 +4,7 @@ import { createTransform2D } from "./factories.js";
 import { findNodeById } from "./queries.js";
 import { getNodeLocation, isAncestorOf } from "./hierarchy.js";
 import { copyNodeVisible } from "./node-visibility.js";
+import { copyNodeAlpha } from "./node-alpha.js";
 
 function cloneComponent(component: ComponentData): ComponentData {
   // Structured clone via JSON keeps nested plain data (arrays, vec2) without PIXI.
@@ -29,6 +30,7 @@ export function cloneNodeSubtree(source: SceneNodeData): SceneNodeData {
       cloned.layer = node.layer;
     }
     copyNodeVisible(node, cloned);
+    copyNodeAlpha(node, cloned);
     if (node.prefab !== undefined) {
       const componentSources: Record<string, string> = {};
       for (let index = 0; index < node.components.length; index += 1) {

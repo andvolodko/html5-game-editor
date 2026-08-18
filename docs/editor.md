@@ -115,9 +115,11 @@ Commands talk to `DocumentManager` / `SelectionManager`. They do not write Pixi/
 | `DuplicateNodeCommand` / `PasteNodesCommand` | Ctrl+D / Ctrl+V |
 | `MoveNodeCommand` | Hierarchy drag |
 | `SetTransform2DCommand` / `SetTransform3DCommand` | Gizmo / Inspector commit |
-| `SetVisualComponentCommand` / `SetSpriteSizeCommand` | Inspector visual fields |
-| `SetNodeVisibleCommand` / `SetNodeLayerCommand` | Inspector |
-| `AddScriptComponentCommand` / `RemoveComponentCommand` / `SetScriptPropertiesCommand` | Inspector scripts |
+| `SetVisualComponentCommand` / `SetSpriteSizeCommand` | Inspector visual fields / Graphics polygon vertices |
+| `AddHitZoneCommand` / `SetHitZoneCommand` | Inspector Hit Zone / viewport HitZone size, move, and polygon vertices |
+| `AddMaskCommand` / `SetMaskCommand` | Inspector Mask / viewport Mask size, move, and polygon vertices |
+| `SetNodeVisibleCommand` / `SetNodeAlphaCommand` / `SetNodeLayerCommand` | Inspector |
+| `AddScriptComponentCommand` / `RemoveComponentCommand` / `SetScriptPropertiesCommand` / `SetScriptEnabledCommand` | Inspector scripts / HitZone / Mask remove |
 | `InstantiatePrefabCommand` / `UnpackPrefabCommand` / `RevertPrefabOverridesCommand` | Prefab workflows |
 | `PaintTilemapCommand` | Tilemap stroke (one command per pointer gesture) |
 | `RenameAssetCommand` / `DeleteAssetCommand` / folder variants | Asset Browser |
@@ -188,7 +190,9 @@ ComponentData.type / Script definition.properties
 | Selection | Panel |
 | --- | --- |
 | Scene | Name, renderer (`pixi` / `three` / `hybrid`) |
-| Node visuals | `VisualComponentInspector` + per-type fields under `apps/editor/src/panels/visual-fields/` |
+| Node visuals | `VisualComponentInspector` + per-type fields under `apps/editor/src/panels/visual-fields/`. Graphics polygons are editable in the Inspector and viewport (same vertex/edge handles as Mask). |
+| Hit Zone | `HitZoneInspector` — Add/Remove on Transform2D nodes; not a Script. Polygon vertices are editable in the Inspector and viewport. |
+| Mask | `MaskInspector` — Add/Remove on Transform2D nodes; shape or sprite/alpha clip. Not a Script. Viewport handles commit `SetMaskCommand`. |
 | Script | `ScriptComponentsInspector` — catalog from `editor.components` |
 | Prefab instance | `PrefabInspectorSection` — Apply / Revert / Unpack |
 

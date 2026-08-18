@@ -72,6 +72,12 @@ export type {
 
   ScriptComponentData,
 
+  HitZoneComponentData,
+
+  MaskComponentData,
+
+  MaskMode,
+
   VisualComponentData,
 
   LeafVisualComponentType,
@@ -186,6 +192,8 @@ export {
 
   scriptComponentSchema,
 
+  hitZoneComponentSchema,
+
   componentSchema,
 
   sceneNodeSchema,
@@ -217,6 +225,8 @@ export {
   vec2ToVec3OnXZ,
 
   createDefaultTextStyle,
+
+  applyTextStyleWebFont,
 
   createSpriteComponent,
 
@@ -258,6 +268,18 @@ export {
 
   createScriptComponent,
 
+  createHitZoneComponent,
+
+  createHitZoneNode,
+
+  defaultHitZoneShapeForNode,
+
+  createMaskComponent,
+
+  createMaskNode,
+
+  defaultMaskShapeForNode,
+
   createSpriteNode,
 
   createNodeWithVisual,
@@ -287,6 +309,10 @@ export {
   getTilingSprite,
 
   getGraphics,
+
+  getHitZone,
+
+  getMask,
 
   getText,
 
@@ -371,6 +397,12 @@ export {
   setNodeVisibleField,
   copyNodeVisible,
 } from "./node-visibility.js";
+export { isScriptEnabled, setScriptEnabledField } from "./script-enabled.js";
+export {
+  getNodeAlpha,
+  setNodeAlphaField,
+  copyNodeAlpha,
+} from "./node-alpha.js";
 
 export { MultiSceneRenderer } from "./multi-scene-renderer.js";
 export type { MultiSceneRendererSlot } from "./multi-scene-renderer.js";
@@ -467,6 +499,34 @@ export { transformLocalAabb, unionLocalAabb } from "./local-aabb.js";
 
 export type { LocalAabb } from "./local-aabb.js";
 export { collectSceneContentBounds2D } from "./content-bounds-2d.js";
+
+export {
+  isHitZoneEnabled,
+  getHitZoneOffset,
+  defaultGraphicsShape,
+  defaultHitZoneShapeFromVisual,
+  hitZoneLocalAabb,
+  localPointHitsHitZone,
+  hitZoneSupportsSizeHandles,
+  HIT_ZONE_POLYGON_MIN_POINTS,
+  isHitZonePolygon,
+  setHitZonePolygonPoint,
+  insertHitZonePolygonPointOnEdge,
+  removeHitZonePolygonPoint,
+  hitZoneShapeSize,
+  applySizeToHitZoneShape,
+  hitZoneSizeFromHandleDrag,
+} from "./hit-zone-math.js";
+
+export {
+  isMaskEnabled,
+  isMaskInverse,
+  getMaskOffset,
+  getMaskShape,
+  getMaskSpriteSize,
+  maskAsHitZone,
+  maskLocalAabb,
+} from "./mask.js";
 
 export {
 
@@ -571,6 +631,9 @@ export {
   IDENTITY_ROTATION_2D,
   IDENTITY_SCALE_2D,
   IDENTITY_SKEW_2D,
+  IDENTITY_NODE_ALPHA,
+  NODE_ALPHA_MIN,
+  NODE_ALPHA_MAX,
   IDENTITY_POSITION_3D,
   IDENTITY_ROTATION_3D,
   IDENTITY_SCALE_3D,
@@ -583,6 +646,7 @@ export {
   DEFAULT_NINE_SLICE_HEIGHT,
   DEFAULT_NINE_SLICE_BORDER,
   DEFAULT_TILING_SPRITE_SIZE,
+  DEFAULT_TEXT_FONT_FAMILY,
   DEFAULT_TEXT_FONT_SIZE,
   DEFAULT_TEXT_FILL,
   DEFAULT_TEXT_FILL_ALPHA,
@@ -626,6 +690,7 @@ export type {
   PrefabNameOverride,
   PrefabLayerOverride,
   PrefabVisibleOverride,
+  PrefabAlphaOverride,
   PrefabOverride,
   PrefabInstanceLink,
   PrefabData,
@@ -644,6 +709,7 @@ export {
   prefabNameOverrideSchema,
   prefabLayerOverrideSchema,
   prefabVisibleOverrideSchema,
+  prefabAlphaOverrideSchema,
   prefabOverrideSchema,
   prefabInstanceLinkSchema,
   prefabDataSchema,

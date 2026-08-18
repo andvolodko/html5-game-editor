@@ -47,6 +47,7 @@ import {
   SetSceneRendererCommand,
   SetNodeLayerCommand,
   SetNodeVisibleCommand,
+  SetNodeAlphaCommand,
   SetTransform2DCommand,
   SetTransform3DCommand,
   createResetNodeTransformCommand,
@@ -56,9 +57,14 @@ import {
   SetAmbientLightCommand,
   SetSpriteSizeCommand,
   SetVisualComponentCommand,
+  SetHitZoneCommand,
+  SetMaskCommand,
   AddScriptComponentCommand,
+  AddHitZoneCommand,
+  AddMaskCommand,
   RemoveComponentCommand,
   SetScriptPropertiesCommand,
+  SetScriptEnabledCommand,
   createDeleteSelectionCommand,
   type CreateSpriteOptions,
   type CreateAnimatedSpriteOptions,
@@ -70,6 +76,8 @@ import {
   type DirectionalLightPatch,
   type AmbientLightPatch,
   type SpriteSizePatch,
+  type HitZonePatch,
+  type MaskPatch,
 } from "./commands/index.js";
 import {
   ensureDefaultNodeTypesRegistered,
@@ -878,6 +886,13 @@ export class Editor {
     this.execute(new SetNodeVisibleCommand(this.document, nodeId, visible));
   }
 
+  setNodeAlpha(nodeId: string, alpha: number): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
+    this.execute(new SetNodeAlphaCommand(this.document, nodeId, alpha));
+  }
+
   /**
    * Nudge selected nodes by Transform2D position delta (one undo step).
    * Returns false when nothing moved (empty selection / no Transform2D).
@@ -1113,7 +1128,43 @@ export class Editor {
     return command.addedComponentId;
   }
 
-  /** Remove a Script component by instance id (one undo step). */
+  /** Add a HitZone on a 2D node (one undo step). */
+  addHitZone(nodeId: string): string {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return "";
+    }
+    const command = new AddHitZoneCommand(this.document, nodeId);
+    this.execute(command);
+    return command.addedComponentId;
+  }
+
+  /** Patch HitZone fields (one undo step). */
+  setHitZone(nodeId: string, patch: HitZonePatch): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
+    this.execute(new SetHitZoneCommand(this.document, nodeId, patch));
+  }
+
+  /** Add a Mask on a 2D node (one undo step). */
+  addMask(nodeId: string): string {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return "";
+    }
+    const command = new AddMaskCommand(this.document, nodeId);
+    this.execute(command);
+    return command.addedComponentId;
+  }
+
+  /** Patch Mask fields (one undo step). */
+  setMask(nodeId: string, patch: MaskPatch): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
+    this.execute(new SetMaskCommand(this.document, nodeId, patch));
+  }
+
+  /** Remove a Script, HitZone, or Mask component by instance id (one undo step). */
   removeComponent(nodeId: string, componentId: string): void {
     if (this.isNodeEffectivelyLocked(nodeId)) {
       return;
@@ -1139,6 +1190,16 @@ export class Editor {
         componentId,
         propertiesPatch,
       ),
+    );
+  }
+
+  /** Toggle Script.enabled (one undo step). Omitted means enabled. */
+  setScriptEnabled(nodeId: string, componentId: string, enabled: boolean): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
+    this.execute(
+      new SetScriptEnabledCommand(this.document, nodeId, componentId, enabled),
     );
   }
 

@@ -6378,6 +6378,16 @@
               "assetId": "asset_9532eb18-706d-424b-be78-e019f9acc57e",
               "width": 576,
               "height": 256
+            },
+            {
+              "type": "Script",
+              "id": "comp_d563b070-0311-4b2d-b20e-ee8bea2c7cd4",
+              "scriptId": "editor-features-demo.Cloud",
+              "properties": {
+                "speed": 0.05,
+                "rangeX": 28,
+                "rangeY": 2
+              }
             }
           ],
           "children": []
@@ -6406,6 +6416,16 @@
               "assetId": "asset_2d5208cd-dbec-4f23-b584-3efdb5ebe3d1",
               "width": 576,
               "height": 256
+            },
+            {
+              "type": "Script",
+              "id": "comp_a41a4471-c34f-47f9-b8d1-f9670b9616b3",
+              "scriptId": "editor-features-demo.Cloud",
+              "properties": {
+                "speed": 0.05,
+                "rangeX": 28,
+                "rangeY": 2
+              }
             }
           ],
           "children": []
@@ -6434,6 +6454,16 @@
               "assetId": "asset_8bef37c3-74a7-41d7-ad38-e1856307d176",
               "width": 576,
               "height": 256
+            },
+            {
+              "type": "Script",
+              "id": "comp_048ae3fc-deec-45df-b514-543da8c6e36c",
+              "scriptId": "editor-features-demo.Cloud",
+              "properties": {
+                "speed": 0.05,
+                "rangeX": 28,
+                "rangeY": 2
+              }
             }
           ],
           "children": []
@@ -6462,6 +6492,16 @@
               "assetId": "asset_65444877-e13f-408f-87d6-2d1ad9ddea33",
               "width": 576,
               "height": 256
+            },
+            {
+              "type": "Script",
+              "id": "comp_ee77e374-af72-4798-b66c-87e7f38ffc7b",
+              "scriptId": "editor-features-demo.Cloud",
+              "properties": {
+                "speed": 0.05,
+                "rangeX": 10,
+                "rangeY": 2
+              }
             }
           ],
           "children": []
@@ -6490,6 +6530,16 @@
               "assetId": "asset_5ef8d714-6b25-4b11-94fa-629ee636c817",
               "width": 576,
               "height": 256
+            },
+            {
+              "type": "Script",
+              "id": "comp_04783413-d831-43a7-890a-2f7f76ab597e",
+              "scriptId": "editor-features-demo.Cloud",
+              "properties": {
+                "speed": 0.05,
+                "rangeX": 10,
+                "rangeY": 2
+              }
             }
           ],
           "children": []
@@ -6518,6 +6568,16 @@
               "assetId": "asset_20ff3de8-10a9-4ed2-a7ca-17787adbef2d",
               "width": 576,
               "height": 256
+            },
+            {
+              "type": "Script",
+              "id": "comp_d7f9e699-1c10-4129-835b-68e8b0b306b0",
+              "scriptId": "editor-features-demo.Cloud",
+              "properties": {
+                "speed": 0.05,
+                "rangeX": 10,
+                "rangeY": 2
+              }
             }
           ],
           "children": []
@@ -6546,6 +6606,16 @@
               "assetId": "asset_b6010201-6a8a-4087-9005-172b2583af67",
               "width": 576,
               "height": 256
+            },
+            {
+              "type": "Script",
+              "id": "comp_82aa5c8d-ddda-4405-aac4-140d1fcc6366",
+              "scriptId": "editor-features-demo.Cloud",
+              "properties": {
+                "speed": 0.05,
+                "rangeX": 10,
+                "rangeY": 2
+              }
             }
           ],
           "children": []
@@ -6574,6 +6644,16 @@
               "assetId": "asset_08ff37cd-29ab-4511-9004-4c65d6a3069e",
               "width": 576,
               "height": 256
+            },
+            {
+              "type": "Script",
+              "id": "comp_09864f84-54da-45ef-80e2-a3d15aac8b15",
+              "scriptId": "editor-features-demo.Cloud",
+              "properties": {
+                "speed": 0.05,
+                "rangeX": 10,
+                "rangeY": 2
+              }
             }
           ],
           "children": []

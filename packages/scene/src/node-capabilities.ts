@@ -70,6 +70,12 @@ export function getNodeTypeId(node: SceneNodeData): string | undefined {
   }
   const hasTransform2D = node.components.some((c) => c.type === "Transform2D");
   if (hasTransform2D) {
+    if (node.components.some((c) => c.type === "HitZone")) {
+      return "pixi.hit-zone";
+    }
+    if (node.components.some((c) => c.type === "Mask")) {
+      return "pixi.mask";
+    }
     return "pixi.container";
   }
   return undefined;
@@ -182,6 +188,12 @@ export function getNodeTypeIcon(node: SceneNodeData): string {
     case "Tilemap":
       return "⊞";
     case undefined:
+      if (node.components.some((c) => c.type === "HitZone")) {
+        return "▭";
+      }
+      if (node.components.some((c) => c.type === "Mask")) {
+        return "◐";
+      }
       return "▣";
     default: {
       const _exhaustive: never = leaf;

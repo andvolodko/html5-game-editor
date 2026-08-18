@@ -17,6 +17,7 @@ import type {
   PrefabResolveWarning,
 } from "./types.js";
 import { getNodeVisible, setNodeVisibleField } from "../node-visibility.js";
+import { getNodeAlpha, setNodeAlphaField } from "../node-alpha.js";
 
 export function resolvePrefabInstance(
   prefab: PrefabData,
@@ -170,6 +171,10 @@ function mergeSourceOntoInstance(
   setNodeVisibleField(node, getNodeVisible(source));
   if (hasVisibleOverride(context.overrides, source.id)) {
     setNodeVisibleField(node, getNodeVisible(existing));
+  }
+  setNodeAlphaField(node, getNodeAlpha(source));
+  if (hasAlphaOverride(context.overrides, source.id)) {
+    setNodeAlphaField(node, getNodeAlpha(existing));
   }
   if (hasNameOverride(context.overrides, source.id)) {
     node.name = existing.name;
@@ -333,6 +338,12 @@ function hasVisibleOverride(overrides: readonly PrefabOverride[], sourceNodeId: 
   );
 }
 
+function hasAlphaOverride(overrides: readonly PrefabOverride[], sourceNodeId: string): boolean {
+  return overrides.some(
+    (override) => override.kind === "alpha" && override.sourceNodeId === sourceNodeId,
+  );
+}
+
 export function instantiatePrefabResolved(
   prefab: PrefabData,
   options: {
@@ -379,6 +390,10 @@ export function applyOverridesToPrefabAsset(
     }
     if (override.kind === "visible") {
       setNodeVisibleField(sourceNode, override.value);
+      continue;
+    }
+    if (override.kind === "alpha") {
+      setNodeAlphaField(sourceNode, override.value);
       continue;
     }
     const component = sourceNode.components.find((entry) => entry.id === override.componentId);

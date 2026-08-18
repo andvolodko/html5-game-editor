@@ -12,6 +12,7 @@ import {
   DEFAULT_TEXT_DROP_SHADOW_DISTANCE,
   DEFAULT_TEXT_FILL,
   DEFAULT_TEXT_FILL_ALPHA,
+  DEFAULT_TEXT_FONT_FAMILY,
   DEFAULT_TEXT_FONT_SIZE,
   DEFAULT_TEXT_MITER_LIMIT,
   DEFAULT_TEXT_PADDING,
@@ -24,7 +25,7 @@ export function createDefaultTextStyle(
   partial?: Partial<TextStyleData>,
 ): TextStyleData {
   const data: TextStyleData = {
-    fontFamily: partial?.fontFamily ?? "Arial",
+    fontFamily: partial?.fontFamily ?? DEFAULT_TEXT_FONT_FAMILY,
     fontSize: partial?.fontSize ?? DEFAULT_TEXT_FONT_SIZE,
     fontWeight: partial?.fontWeight ?? "normal",
     fontStyle: partial?.fontStyle ?? "normal",
@@ -60,6 +61,27 @@ export function createDefaultTextStyle(
     data.fontAssetId = partial.fontAssetId;
   }
   return data;
+}
+
+/**
+ * Assigns a catalogue webfont, or clears it and restores the default family.
+ */
+export function applyTextStyleWebFont(
+  style: TextStyleData,
+  webfont: { fontAssetId: string; fontFamily: string } | undefined,
+): TextStyleData {
+  if (webfont === undefined) {
+    return createDefaultTextStyle({
+      ...style,
+      fontAssetId: undefined,
+      fontFamily: DEFAULT_TEXT_FONT_FAMILY,
+    });
+  }
+  return createDefaultTextStyle({
+    ...style,
+    fontAssetId: webfont.fontAssetId,
+    fontFamily: webfont.fontFamily,
+  });
 }
 
 type TextComponentInput = Partial<

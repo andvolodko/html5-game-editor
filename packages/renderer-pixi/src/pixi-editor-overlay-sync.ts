@@ -1,6 +1,7 @@
 import type { Container } from "pixi.js";
 import { getTilemap } from "@game-editor/scene";
 import type { PixiRuntimeGraph, RuntimeNode } from "./pixi-runtime-nodes.js";
+import { chromeHitBounds } from "./pixi-hit-zone-pick.js";
 import type { PixelGridOverlay } from "./pixel-grid.js";
 import type { ScreenGuidesOverlay } from "./screen-guides.js";
 import type { TilemapGridOverlay } from "./tilemap-grid-overlay.js";
@@ -52,7 +53,7 @@ export function redrawEditorOverlays(host: EditorOverlaySyncHost): void {
       runtime.visualsRoot !== runtime.container
     ) {
       runtime.visualsRoot.hitArea = hitAreaFromBounds(
-        runtime.visualBounds,
+        chromeHitBounds(runtime, runtime.visualBounds) ?? runtime.visualBounds,
         cameraScale,
         localScaleTowardAncestor(runtime.container, host.graph.world),
       );
@@ -77,8 +78,8 @@ function syncTilemapGridOverlay(host: EditorOverlaySyncHost): void {
     overlay.hide();
     return;
   }
-  if (overlay.root.parent !== runtime.visualsRoot) {
-    runtime.visualsRoot.addChild(overlay.root);
+  if (overlay.root.parent !== (runtime.chromeRoot ?? runtime.visualsRoot)) {
+    (runtime.chromeRoot ?? runtime.visualsRoot).addChild(overlay.root);
   }
   const camera = host.getCameraState();
   const world = visibleWorldRect(host.width, host.height, camera);

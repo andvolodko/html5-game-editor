@@ -4,11 +4,18 @@ import type { Container } from "pixi.js";
 export interface RuntimeDisplayLabelTarget {
   editable: boolean;
   container: Container;
+  contentRoot: Container;
   visualsRoot: Container;
+  chromeRoot: Container | undefined;
   childrenRoot: Container | undefined;
   placeholder: Container | undefined;
   selection: Container | undefined;
+  hitZoneOverlay: Container | undefined;
+  maskOverlay: Container | undefined;
   gizmo: { root: Container } | undefined;
+  hitZoneGizmo: { root: Container } | undefined;
+  maskGizmo: { root: Container } | undefined;
+  graphicsPolygonGizmo: { root: Container } | undefined;
   visual: Container | undefined;
   visualType: string | undefined;
   node: { name: string };
@@ -37,8 +44,14 @@ export function applyRuntimeDisplayLabels(
   runtime.container.label = nodeRootLabel(name);
 
   if (runtime.editable) {
+    if (runtime.contentRoot !== runtime.container) {
+      runtime.contentRoot.label = nodeHelperLabel(name, "content");
+    }
     if (runtime.visualsRoot !== runtime.container) {
       runtime.visualsRoot.label = nodeHelperLabel(name, "visuals");
+    }
+    if (runtime.chromeRoot) {
+      runtime.chromeRoot.label = nodeHelperLabel(name, "chrome");
     }
     if (runtime.childrenRoot) {
       runtime.childrenRoot.label = nodeHelperLabel(name, "children");
@@ -49,8 +62,26 @@ export function applyRuntimeDisplayLabels(
     if (runtime.selection) {
       runtime.selection.label = nodeHelperLabel(name, "selection");
     }
+    if (runtime.hitZoneOverlay) {
+      runtime.hitZoneOverlay.label = nodeHelperLabel(name, "hitZone");
+    }
+    if (runtime.maskOverlay) {
+      runtime.maskOverlay.label = nodeHelperLabel(name, "mask");
+    }
     if (runtime.gizmo) {
       runtime.gizmo.root.label = nodeHelperLabel(name, "gizmo");
+    }
+    if (runtime.hitZoneGizmo) {
+      runtime.hitZoneGizmo.root.label = nodeHelperLabel(name, "hitZoneGizmo");
+    }
+    if (runtime.maskGizmo) {
+      runtime.maskGizmo.root.label = nodeHelperLabel(name, "maskGizmo");
+    }
+    if (runtime.graphicsPolygonGizmo) {
+      runtime.graphicsPolygonGizmo.root.label = nodeHelperLabel(
+        name,
+        "graphicsPolygonGizmo",
+      );
     }
     applyVisualDisplayLabel(runtime.visual, name, runtime.visualType, false);
     return;

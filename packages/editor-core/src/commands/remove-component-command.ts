@@ -1,16 +1,24 @@
 import type { Command } from "@game-editor/commands";
 import {
   findNodeById,
+  type HitZoneComponentData,
+  type MaskComponentData,
   type ScriptComponentData,
 } from "@game-editor/scene";
 import type { DocumentManager } from "../document-manager.js";
 
+type RemovableComponent =
+  | ScriptComponentData
+  | HitZoneComponentData
+  | MaskComponentData;
+
 /**
- * Removes a Script component by instance id. Transform/visuals are rejected.
+ * Removes a Script, HitZone, or Mask component by instance id.
+ * Transform / visual / Three leaves are rejected.
  */
 export class RemoveComponentCommand implements Command {
   readonly name = "RemoveComponent";
-  private readonly removed: ScriptComponentData;
+  private readonly removed: RemovableComponent;
   private readonly index: number;
 
   constructor(
@@ -24,9 +32,14 @@ export class RemoveComponentCommand implements Command {
     }
     const index = node.components.findIndex((c) => c.id === componentId);
     const component = index >= 0 ? node.components[index] : undefined;
-    if (!component || component.type !== "Script") {
+    if (
+      !component ||
+      (component.type !== "Script" &&
+        component.type !== "HitZone" &&
+        component.type !== "Mask")
+    ) {
       throw new Error(
-        `RemoveComponentCommand: node ${nodeId} missing Script ${componentId}`,
+        `RemoveComponentCommand: node ${nodeId} missing removable component ${componentId}`,
       );
     }
     this.removed = structuredClone(component);

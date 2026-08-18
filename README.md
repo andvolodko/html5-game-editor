@@ -387,7 +387,7 @@ The architecture described in [`PROJECT.md`](./PROJECT.md) and [`docs/`](./docs/
 - **Prefab variants & structural overrides** — property overrides, unpack, and nested resolution are in; variants and delete/reparent of inherited children are not
 - **Spritesheet / atlas generation** — Aseprite/LibreSprite compile is in; still needed: pack loose PNGs and a BitmapText font importer
 - **Timeline & animation** — clip editing for Spine, AnimatedSprite, and glTF animations
-- **Particles, masks, filters** — Pixi ParticleContainer is deferred; masks/filters are still design-only
+- **Particles, filters** — Pixi ParticleContainer is deferred; filters are still design-only
 - **Richer 3D** — HDR environments, shadows, materials, post-processing (extension points exist; implementations do not)
 
 ### Runtime & games

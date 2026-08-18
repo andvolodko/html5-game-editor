@@ -125,6 +125,7 @@ describe("PixiSceneRenderer incremental hierarchy", () => {
     renderer.createNode(node);
 
     const visuals = renderer.getRuntimeVisualsRoot(node.id)!;
+    const chrome = renderer.getRuntimeChromeRoot(node.id)!;
     const container = renderer.getRuntimeContainer(node.id)!;
     // First child of visualsRoot is the placeholder Graphics.
     const placeholder = visuals.children[0]!;
@@ -134,7 +135,7 @@ describe("PixiSceneRenderer incremental hierarchy", () => {
 
     renderer.setSelectedNodeIds([node.id]);
     // Selection uses an origin marker, not a fake 64×64 bounds rect.
-    const selection = visuals.children[1]!;
+    const selection = chrome.getChildByLabel("Container:selection")!;
     expect(selection.visible).toBe(true);
   });
 
@@ -250,6 +251,44 @@ describe("PixiSceneRenderer incremental hierarchy", () => {
     renderer.updateNode(node);
     renderer.setNodeEditorHidden(node.id, false);
     expect(renderer.getRuntimeContainer(node.id)?.visible).toBe(false);
+
+    await renderer.destroy();
+  });
+
+  it("applies serialized alpha to the visual without fading the gizmo", async () => {
+    const host = { appendChild() {} } as unknown as HTMLElement;
+    const renderer = new PixiSceneRenderer({
+      canvasParent: host,
+      headless: true,
+    });
+    await renderer.whenReady();
+
+    const node = createSpriteNode("Sprite", { x: 0, y: 0 });
+    node.alpha = 0.4;
+    renderer.createNode(node);
+    renderer.setSelectedNodeIds([node.id]);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(renderer.getRuntimeContainer(node.id)?.alpha).toBe(1);
+    expect(renderer.getRuntimeGizmoRoot(node.id)?.alpha).toBe(1);
+    const content =
+      renderer.getRuntimeVisual(node.id) ??
+      renderer.getRuntimeVisualsRoot(node.id)?.getChildByLabel("Sprite:placeholder");
+    expect(content?.alpha).toBe(0.4);
+
+    delete node.alpha;
+    renderer.updateNode(node);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const restored =
+      renderer.getRuntimeVisual(node.id) ??
+      renderer.getRuntimeVisualsRoot(node.id)?.getChildByLabel("Sprite:placeholder");
+    expect(restored?.alpha).toBe(1);
+    expect(renderer.getRuntimeGizmoRoot(node.id)?.alpha).toBe(1);
+
+    renderer.setNodeAlpha(node.id, 0.2);
+    expect(content?.alpha).toBe(0.2);
+    expect(renderer.getRuntimeGizmoRoot(node.id)?.alpha).toBe(1);
+    expect(renderer.getRuntimeContainer(node.id)?.alpha).toBe(1);
 
     await renderer.destroy();
   });

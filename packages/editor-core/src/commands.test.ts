@@ -93,6 +93,45 @@ describe("editor sprite commands", () => {
     expect(findNodeById(editor.getScene(), nodeId)?.visible).toBe(false);
   });
 
+  it("sets node alpha through a command with undo", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const create = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "Sprite",
+      { x: 0, y: 0 },
+    );
+    editor.execute(create);
+    const nodeId = create.createdNodeId;
+    expect(findNodeById(editor.getScene(), nodeId)?.alpha).toBeUndefined();
+
+    editor.setNodeAlpha(nodeId, 0.4);
+    expect(findNodeById(editor.getScene(), nodeId)?.alpha).toBe(0.4);
+    expect(editor.getDirtyState()).toBe("dirty");
+
+    editor.undo();
+    expect(findNodeById(editor.getScene(), nodeId)?.alpha).toBeUndefined();
+
+    editor.redo();
+    expect(findNodeById(editor.getScene(), nodeId)?.alpha).toBe(0.4);
+  });
+
+  it("does not change node alpha when the node is editor-locked", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const create = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "Sprite",
+      { x: 0, y: 0 },
+    );
+    editor.execute(create);
+    const nodeId = create.createdNodeId;
+    editor.setNodeAlpha(nodeId, 0.2);
+    editor.setNodeLocked(nodeId, true);
+    editor.setNodeAlpha(nodeId, 1);
+    expect(findNodeById(editor.getScene(), nodeId)?.alpha).toBe(0.2);
+  });
+
   it("does not change runtime visible when the node is editor-locked", () => {
     const editor = new Editor({ scene: createEmptyScene("Test") });
     const create = new CreateSpriteCommand(

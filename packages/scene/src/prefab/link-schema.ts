@@ -26,11 +26,18 @@ export const prefabVisibleOverrideSchema = z.object({
   value: z.boolean(),
 });
 
+export const prefabAlphaOverrideSchema = z.object({
+  kind: z.literal("alpha"),
+  sourceNodeId: z.string().min(1),
+  value: z.number().min(0).max(1),
+});
+
 export const prefabOverrideSchema = z.discriminatedUnion("kind", [
   prefabPropertyOverrideSchema,
   prefabNameOverrideSchema,
   prefabLayerOverrideSchema,
   prefabVisibleOverrideSchema,
+  prefabAlphaOverrideSchema,
 ]);
 
 export const prefabInstanceLinkSchema = z.object({

@@ -120,6 +120,41 @@ describe("GameRuntime.loadScene", () => {
     expect(runtime.getScriptInstanceCount()).toBe(1);
   });
 
+  it("does not instantiate disabled Script components", () => {
+    const created = vi.fn(() => ({ update: vi.fn() }));
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.Marker",
+        displayName: "Marker",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: created,
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: createMockRenderer(),
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+
+    const node = createSpriteNode("Hero", { x: 0, y: 0 });
+    node.components.push(
+      createScriptComponent("test.Marker", { n: 1 }, { enabled: false }),
+    );
+    const scene = createEmptyScene("Scripts");
+    scene.nodes = [node];
+
+    runtime.loadScene(scene);
+
+    expect(created).not.toHaveBeenCalled();
+    expect(runtime.getScriptInstanceCount()).toBe(0);
+  });
+
   it("skips unknown scriptIds without failing load", () => {
     const runtime = new GameRuntime({ components: new ComponentRegistry() });
     runtime.registerRenderer({

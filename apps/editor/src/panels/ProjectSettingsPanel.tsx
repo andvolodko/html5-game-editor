@@ -9,6 +9,7 @@ import {
 } from "@game-editor/project";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
+import { InspectorFieldRow } from "./fields/inspector-fields";
 import { buildStartSceneSelectOptions } from "./fields/start-scene-select-options";
 
 const RESOLUTION_MIN = 1;
@@ -107,7 +108,7 @@ export function ProjectSettingsPanel() {
   };
 
   return (
-    <div className="panel panel-project-settings">
+    <div className="panel panel-project-settings panel-inspector">
       <p className="panel-hint">Project Settings</p>
       {project ? (
         <div className="inspector-grid">
@@ -141,44 +142,46 @@ export function ProjectSettingsPanel() {
               ))}
             </select>
           </label>
-          <label>
-            Resolution Width
-            <input
-              type="number"
-              min={RESOLUTION_MIN}
-              step={1}
-              value={widthDraft}
-              disabled={busy}
-              onChange={(event) => {
-                setWidthDraft(event.target.value);
-              }}
-              onBlur={commitResolution}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.currentTarget.blur();
-                }
-              }}
-            />
-          </label>
-          <label>
-            Resolution Height
-            <input
-              type="number"
-              min={RESOLUTION_MIN}
-              step={1}
-              value={heightDraft}
-              disabled={busy}
-              onChange={(event) => {
-                setHeightDraft(event.target.value);
-              }}
-              onBlur={commitResolution}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.currentTarget.blur();
-                }
-              }}
-            />
-          </label>
+          <InspectorFieldRow>
+            <label>
+              Resolution Width
+              <input
+                type="number"
+                min={RESOLUTION_MIN}
+                step={1}
+                value={widthDraft}
+                disabled={busy}
+                onChange={(event) => {
+                  setWidthDraft(event.target.value);
+                }}
+                onBlur={commitResolution}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.currentTarget.blur();
+                  }
+                }}
+              />
+            </label>
+            <label>
+              Resolution Height
+              <input
+                type="number"
+                min={RESOLUTION_MIN}
+                step={1}
+                value={heightDraft}
+                disabled={busy}
+                onChange={(event) => {
+                  setHeightDraft(event.target.value);
+                }}
+                onBlur={commitResolution}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.currentTarget.blur();
+                  }
+                }}
+              />
+            </label>
+          </InspectorFieldRow>
           <label>
             Background
             <input

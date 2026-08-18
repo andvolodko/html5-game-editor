@@ -21,6 +21,8 @@ Scene JSON stores data only:
 }
 ```
 
+Omit `enabled` when the behaviour should run (default). Persist `"enabled": false` to skip construction and ticks at runtime. Inspector **Enabled** (checkbox next to the component title) writes this field (undoable). Do not confuse it with a script property named `enabled`.
+
 The behaviour class is created by `defineComponent({ create })` when `GameRuntime` loads the scene. Do not put class instances, functions, or Pixi/Three objects in `properties`.
 
 ---

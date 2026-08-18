@@ -1,6 +1,9 @@
 import { Container, Graphics } from "pixi.js";
 import type { FederatedPointerEvent } from "pixi.js";
 import type {
+  GraphicsShapeData,
+  HitZoneComponentData,
+  MaskComponentData,
   SceneNodeData,
   SpriteGizmoHandle,
   Transform2DComponentData,
@@ -8,8 +11,12 @@ import type {
 } from "@game-editor/scene";
 import { applyRuntimeDisplayLabels } from "./pixi-display-labels.js";
 import { SpriteSelectionGizmo } from "./sprite-selection-gizmo.js";
+import {
+  HitZoneSelectionGizmo,
+  type HitZoneGizmoHandle,
+} from "./pixi-hit-zone-gizmo.js";
 import type { VisualBounds } from "./visuals/types.js";
-import { PLACEHOLDER_CORNER_RADIUS } from "./editor-chrome.js";
+import { PLACEHOLDER_CORNER_RADIUS, MASK_HANDLE_FILL, MASK_STROKE_COLOR, EDITOR_ACCENT_ACTIVE_FILL, EDITOR_ACCENT_COLOR } from "./editor-chrome.js";
 
 const DEGREES_TO_RADIANS = Math.PI / 180;
 
@@ -22,10 +29,19 @@ export interface RuntimeNode {
   /** Transform root attached under parent `childrenRoot` (or world). */
   container: Container;
   /**
-   * Parent for the leaf visual / editor chrome.
-   * Editor: dedicated container. Playback: same as `container` (no wrapper).
+   * Mask target: clips leaf visual + scene children.
+   * Editor: dedicated container. Playback: same as `container`.
+   */
+  contentRoot: Container;
+  /**
+   * Parent for the leaf visual / placeholder only.
+   * Editor: dedicated container under `contentRoot`. Playback: same as `container`.
    */
   visualsRoot: Container;
+  /**
+   * Editor-only unmasked chrome (selection, gizmos, overlays).
+   */
+  chromeRoot: Container | undefined;
   /**
    * Scene-node children only — sibling index matches domain order.
    * Playback: created lazily on first child attach.
@@ -41,6 +57,24 @@ export interface RuntimeNode {
   supportsSpriteGizmo: boolean;
   selection: Graphics | undefined;
   gizmo: SpriteSelectionGizmo | undefined;
+  hitZoneGizmo: HitZoneSelectionGizmo | undefined;
+  maskGizmo: HitZoneSelectionGizmo | undefined;
+  graphicsPolygonGizmo: HitZoneSelectionGizmo | undefined;
+  /** Editor-only HitZone overlay (fill/stroke). */
+  hitZoneOverlay: Graphics | undefined;
+  /** Editor-only Mask overlay (fill/stroke). */
+  maskOverlay: Graphics | undefined;
+  /** Playback-only dedicated hit target (never the node container). */
+  hitZoneTarget: Container | undefined;
+  /** Live HitZone override while a HitZone gizmo drag is in progress. */
+  hitZonePreview: HitZoneComponentData | undefined;
+  /** Live Mask override while a Mask gizmo drag is in progress. */
+  maskPreview: MaskComponentData | undefined;
+  /** Live Graphics polygon override while a vertex drag is in progress. */
+  graphicsShapePreview: GraphicsShapeData | undefined;
+  /** Stencil Graphics or Sprite; not a scene node. */
+  maskStencil: Container | undefined;
+  warnedMissingMaskAsset: boolean;
   /** Editor-only lock overlay (not scene data). */
   editorLocked: boolean;
   /** Editor-only hide overlay (not scene data). Combined with `node.visible`. */
@@ -59,6 +93,29 @@ export interface RuntimeNodeCreateOptions {
   onGizmoHandlePointerDown: (
     runtime: RuntimeNode,
     handle: SpriteGizmoHandle,
+    event: FederatedPointerEvent,
+  ) => void;
+  onHitZoneHandlePointerDown: (
+    runtime: RuntimeNode,
+    handle: HitZoneGizmoHandle,
+    event: FederatedPointerEvent,
+  ) => void;
+  onHitZoneBodyPointerDown: (
+    runtime: RuntimeNode,
+    event: FederatedPointerEvent,
+  ) => void;
+  onMaskHandlePointerDown: (
+    runtime: RuntimeNode,
+    handle: HitZoneGizmoHandle,
+    event: FederatedPointerEvent,
+  ) => void;
+  onMaskBodyPointerDown: (
+    runtime: RuntimeNode,
+    event: FederatedPointerEvent,
+  ) => void;
+  onGraphicsPolygonHandlePointerDown: (
+    runtime: RuntimeNode,
+    handle: HitZoneGizmoHandle,
     event: FederatedPointerEvent,
   ) => void;
 }
@@ -130,26 +187,65 @@ export class PixiRuntimeGraph {
     }
     container.interactiveChildren = true;
 
+    let contentRoot: Container;
     let visualsRoot: Container;
+    let chromeRoot: Container | undefined;
     let childrenRoot: Container | undefined;
     let placeholder: Graphics | undefined;
     let selection: Graphics | undefined;
+    let hitZoneOverlay: Graphics | undefined;
+    let maskOverlay: Graphics | undefined;
     let gizmo: SpriteSelectionGizmo | undefined;
+    let hitZoneGizmo: HitZoneSelectionGizmo | undefined;
+    let maskGizmo: HitZoneSelectionGizmo | undefined;
+    let graphicsPolygonGizmo: HitZoneSelectionGizmo | undefined;
 
     const runtimeRef: { current: RuntimeNode | undefined } = {
       current: undefined,
     };
 
     if (editable) {
+      contentRoot = new Container();
+      contentRoot.eventMode = "passive";
+      contentRoot.interactiveChildren = true;
       visualsRoot = new Container();
       // Editor: static for drag/gizmo.
       visualsRoot.eventMode = "static";
       visualsRoot.cursor = "grab";
+      chromeRoot = new Container();
+      chromeRoot.eventMode = "passive";
+      chromeRoot.interactiveChildren = true;
       childrenRoot = this.createChildrenRootContainer();
       placeholder = new Graphics();
       selection = new Graphics();
+      hitZoneOverlay = new Graphics();
+      hitZoneOverlay.eventMode = "none";
+      hitZoneOverlay.cursor = "move";
+      hitZoneOverlay.on("pointerdown", (event: FederatedPointerEvent) => {
+        event.stopPropagation();
+        const live = runtimeRef.current;
+        if (!live || live.editorLocked) {
+          return;
+        }
+        options.onHitZoneBodyPointerDown(live, event);
+      });
+      maskOverlay = new Graphics();
+      maskOverlay.eventMode = "none";
+      maskOverlay.cursor = "move";
+      maskOverlay.on("pointerdown", (event: FederatedPointerEvent) => {
+        event.stopPropagation();
+        const live = runtimeRef.current;
+        if (!live || live.editorLocked) {
+          return;
+        }
+        options.onMaskBodyPointerDown(live, event);
+      });
       visualsRoot.addChild(placeholder);
-      visualsRoot.addChild(selection);
+      contentRoot.addChild(visualsRoot);
+      contentRoot.addChild(childrenRoot);
+      chromeRoot.addChild(selection);
+      chromeRoot.addChild(hitZoneOverlay);
+      chromeRoot.addChild(maskOverlay);
 
       gizmo = new SpriteSelectionGizmo({
         onHandlePointerDown: (handle, event) => {
@@ -161,25 +257,84 @@ export class PixiRuntimeGraph {
         },
       });
       gizmo.setVisible(false);
-      visualsRoot.addChild(gizmo.root);
+      chromeRoot.addChild(gizmo.root);
 
-      container.addChild(visualsRoot);
-      container.addChild(childrenRoot);
+      hitZoneGizmo = new HitZoneSelectionGizmo({
+        onHandlePointerDown: (handle, event) => {
+          const live = runtimeRef.current;
+          if (!live) {
+            return;
+          }
+          options.onHitZoneHandlePointerDown(live, handle, event);
+        },
+      });
+      hitZoneGizmo.setVisible(false);
+      chromeRoot.addChild(hitZoneGizmo.root);
+
+      maskGizmo = new HitZoneSelectionGizmo(
+        {
+          onHandlePointerDown: (handle, event) => {
+            const live = runtimeRef.current;
+            if (!live) {
+              return;
+            }
+            options.onMaskHandlePointerDown(live, handle, event);
+          },
+        },
+        {
+          handleFill: MASK_HANDLE_FILL,
+          stroke: MASK_STROKE_COLOR,
+          labelPrefix: "maskGizmo",
+        },
+      );
+      maskGizmo.setVisible(false);
+      chromeRoot.addChild(maskGizmo.root);
+
+      graphicsPolygonGizmo = new HitZoneSelectionGizmo(
+        {
+          onHandlePointerDown: (handle, event) => {
+            const live = runtimeRef.current;
+            if (!live) {
+              return;
+            }
+            options.onGraphicsPolygonHandlePointerDown(live, handle, event);
+          },
+        },
+        {
+          handleFill: EDITOR_ACCENT_ACTIVE_FILL,
+          stroke: EDITOR_ACCENT_COLOR,
+          labelPrefix: "graphicsPolygonGizmo",
+        },
+      );
+      graphicsPolygonGizmo.setVisible(false);
+      chromeRoot.addChild(graphicsPolygonGizmo.root);
+
+      container.addChild(contentRoot);
+      container.addChild(chromeRoot);
     } else {
       // Playback: no visuals/placeholder/selection wrappers — leaf visual is a
       // direct child of the node container; childrenRoot is created lazily.
+      contentRoot = container;
       visualsRoot = container;
+      chromeRoot = undefined;
       childrenRoot = undefined;
       placeholder = undefined;
       selection = undefined;
+      hitZoneOverlay = undefined;
+      maskOverlay = undefined;
       gizmo = undefined;
+      hitZoneGizmo = undefined;
+      maskGizmo = undefined;
+      graphicsPolygonGizmo = undefined;
     }
 
     this.attachToParent(container, node);
     const runtime: RuntimeNode = {
       editable,
       container,
+      contentRoot,
       visualsRoot,
+      chromeRoot,
       childrenRoot,
       placeholder,
       visual: undefined,
@@ -187,13 +342,24 @@ export class PixiRuntimeGraph {
       visualBounds: undefined,
       supportsSpriteGizmo: false,
       selection,
+      hitZoneOverlay,
+      maskOverlay,
+      hitZoneTarget: undefined,
+      hitZonePreview: undefined,
+      maskPreview: undefined,
+      graphicsShapePreview: undefined,
+      maskStencil: undefined,
       gizmo,
+      hitZoneGizmo,
+      maskGizmo,
+      graphicsPolygonGizmo,
       editorLocked: false,
       editorHidden: false,
       sizePreview: undefined,
       anchorPreview: undefined,
       node,
       warnedMissingAsset: false,
+      warnedMissingMaskAsset: false,
     };
     runtimeRef.current = runtime;
     applyRuntimeDisplayLabels(runtime);
@@ -220,7 +386,7 @@ export class PixiRuntimeGraph {
       return runtime.childrenRoot;
     }
     const childrenRoot = this.createChildrenRootContainer();
-    runtime.container.addChild(childrenRoot);
+    runtime.contentRoot.addChild(childrenRoot);
     runtime.childrenRoot = childrenRoot;
     applyRuntimeDisplayLabels(runtime);
     return childrenRoot;

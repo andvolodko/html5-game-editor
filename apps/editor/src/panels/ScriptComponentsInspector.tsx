@@ -3,12 +3,14 @@ import {
   findScript,
   getModel3D,
   getScriptComponents,
+  isScriptEnabled,
   type SceneNodeData,
 } from "@game-editor/scene";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
 import { AddComponentMenu } from "./AddComponentMenu";
 import { ScriptComponentSection } from "./ScriptComponentSection";
+import { isInspectorPropertyOverridden } from "./prefab-override-flag";
 
 interface ScriptComponentsInspectorProps {
   node: SceneNodeData;
@@ -18,6 +20,7 @@ export function ScriptComponentsInspector({
   node,
 }: ScriptComponentsInspectorProps) {
   const editor = useEditor();
+  const scene = useEditorState((ed) => ed.getScene());
   const catalogRevision = useEditorState((ed) => ed.getStoreVersion());
   const scripts = getScriptComponents(node);
   const [sceneIds, setSceneIds] = useState<string[]>([]);
@@ -86,6 +89,16 @@ export function ScriptComponentsInspector({
           component={component}
           definition={editor.components.get(component.scriptId)}
           dynamicOptions={dynamicOptions}
+          enabled={isScriptEnabled(component)}
+          enabledOverridden={isInspectorPropertyOverridden(
+            scene,
+            node,
+            component.id,
+            "enabled",
+          )}
+          onEnabledCommit={(enabled) => {
+            editor.setScriptEnabled(node.id, component.id, enabled);
+          }}
           onPropertyCommit={(key, value) => {
             editor.setScriptProperties(node.id, component.id, {
               [key]: value,

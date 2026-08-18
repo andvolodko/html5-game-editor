@@ -1,8 +1,8 @@
-import { Fragment } from "react";
 import type { VisualComponentData } from "@game-editor/scene";
 import {
   AssetSelectField,
   BooleanField,
+  InspectorFieldRow,
   NumberField,
 } from "../fields/inspector-fields";
 import type { VisualCommit } from "./types";
@@ -50,16 +50,18 @@ export function MeshRopeFields({
         value={visual.assetId}
         onCommit={(assetId) => commit({ assetId })}
       />
-      <NumberField
-        label="Texture Scale"
-        value={visual.textureScale}
-        onCommit={(textureScale) => commit({ textureScale })}
-      />
-      <BooleanField
-        label="Auto Update"
-        value={visual.autoUpdate}
-        onCommit={(autoUpdate) => commit({ autoUpdate })}
-      />
+      <InspectorFieldRow>
+        <NumberField
+          label="Texture Scale"
+          value={visual.textureScale}
+          onCommit={(textureScale) => commit({ textureScale })}
+        />
+        <BooleanField
+          label="Auto Update"
+          value={visual.autoUpdate}
+          onCommit={(autoUpdate) => commit({ autoUpdate })}
+        />
+      </InspectorFieldRow>
     </>
   );
 }
@@ -79,20 +81,24 @@ export function MeshPlaneFields({
         value={visual.assetId}
         onCommit={(assetId) => commit({ assetId })}
       />
-      <NumberField label="Width" value={visual.width} onCommit={(width) => commit({ width })} />
-      <NumberField label="Height" value={visual.height} onCommit={(height) => commit({ height })} />
-      <NumberField
-        label="Vertices X"
-        value={visual.verticesX}
-        integer
-        onCommit={(verticesX) => commit({ verticesX })}
-      />
-      <NumberField
-        label="Vertices Y"
-        value={visual.verticesY}
-        integer
-        onCommit={(verticesY) => commit({ verticesY })}
-      />
+      <InspectorFieldRow>
+        <NumberField label="Width" value={visual.width} onCommit={(width) => commit({ width })} />
+        <NumberField label="Height" value={visual.height} onCommit={(height) => commit({ height })} />
+      </InspectorFieldRow>
+      <InspectorFieldRow>
+        <NumberField
+          label="Vertices X"
+          value={visual.verticesX}
+          integer
+          onCommit={(verticesX) => commit({ verticesX })}
+        />
+        <NumberField
+          label="Vertices Y"
+          value={visual.verticesY}
+          integer
+          onCommit={(verticesY) => commit({ verticesY })}
+        />
+      </InspectorFieldRow>
     </>
   );
 }
@@ -112,10 +118,12 @@ export function PerspectiveMeshFields({
         value={visual.assetId}
         onCommit={(assetId) => commit({ assetId })}
       />
-      <NumberField label="Width" value={visual.width} onCommit={(width) => commit({ width })} />
-      <NumberField label="Height" value={visual.height} onCommit={(height) => commit({ height })} />
+      <InspectorFieldRow>
+        <NumberField label="Width" value={visual.width} onCommit={(width) => commit({ width })} />
+        <NumberField label="Height" value={visual.height} onCommit={(height) => commit({ height })} />
+      </InspectorFieldRow>
       {visual.corners.map((corner, index) => (
-        <Fragment key={index}>
+        <InspectorFieldRow key={index}>
           <NumberField
             label={`Corner ${index} X`}
             value={corner.x}
@@ -134,7 +142,7 @@ export function PerspectiveMeshFields({
               commit({ corners });
             }}
           />
-        </Fragment>
+        </InspectorFieldRow>
       ))}
     </>
   );

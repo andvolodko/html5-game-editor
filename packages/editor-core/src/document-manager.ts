@@ -6,6 +6,8 @@ import {
   getTransform2D,
   getTransform3D,
   getVisualComponent,
+  getHitZone,
+  getMask,
   getTilemap,
   applyTileChanges,
   insertNodeInScene,
@@ -13,6 +15,7 @@ import {
   detachNodeFromScene,
   getNodeLocation,
   setNodeVisibleField,
+  setNodeAlphaField,
   type ComponentData,
   type Model3DComponentData,
   type SceneData,
@@ -22,6 +25,8 @@ import {
   type Transform2DComponentData,
   type Transform3DComponentData,
   type VisualComponentData,
+  type HitZoneComponentData,
+  type MaskComponentData,
   type TileChange,
   type PrefabInstanceLink,
   type PrefabOverride,
@@ -343,6 +348,19 @@ export class DocumentManager {
     });
   }
 
+  setNodeAlpha(nodeId: string, alpha: number): void {
+    const node = findNodeById(this.scene, nodeId);
+    if (!node) {
+      throw new Error(`DocumentManager: unknown node ${nodeId}`);
+    }
+    setNodeAlphaField(node, alpha);
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "visual",
+    });
+  }
+
   applySpriteSize(
     nodeId: string,
     size: { width: number; height: number },
@@ -393,8 +411,8 @@ export class DocumentManager {
   }
 
   /**
-   * Remove a Script component by id. Transform / visual components are not
-   * removable through this API.
+   * Remove a Script, HitZone, or Mask component by id. Transform / visual /
+   * Three leaves are not removable through this API.
    */
   removeComponent(nodeId: string, componentId: string): void {
     const node = findNodeById(this.scene, nodeId);
@@ -403,9 +421,14 @@ export class DocumentManager {
     }
     const index = node.components.findIndex((c) => c.id === componentId);
     const component = index >= 0 ? node.components[index] : undefined;
-    if (!component || component.type !== "Script") {
+    if (
+      !component ||
+      (component.type !== "Script" &&
+        component.type !== "HitZone" &&
+        component.type !== "Mask")
+    ) {
       throw new Error(
-        `DocumentManager: node ${nodeId} missing Script component ${componentId}`,
+        `DocumentManager: node ${nodeId} missing removable component ${componentId}`,
       );
     }
     node.components.splice(index, 1);
@@ -439,6 +462,58 @@ export class DocumentManager {
       kind: "update",
       nodeId,
       reason: "metadata",
+    });
+  }
+
+  /** Replace a HitZone component in-place (same id). */
+  applyHitZoneComponent(nodeId: string, values: HitZoneComponentData): void {
+    const node = findNodeById(this.scene, nodeId);
+    const hitZone = node ? getHitZone(node) : undefined;
+    if (!node || !hitZone) {
+      throw new Error(`DocumentManager: node ${nodeId} missing HitZone`);
+    }
+    if (hitZone.id !== values.id) {
+      throw new Error(
+        `DocumentManager: HitZone identity mismatch on ${nodeId}`,
+      );
+    }
+    const index = node.components.findIndex(
+      (component) => component.id === hitZone.id,
+    );
+    if (index < 0) {
+      throw new Error(`DocumentManager: HitZone missing from ${nodeId}`);
+    }
+    node.components[index] = structuredClone(values);
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "visual",
+    });
+  }
+
+  /** Replace a Mask component in-place (same id). */
+  applyMaskComponent(nodeId: string, values: MaskComponentData): void {
+    const node = findNodeById(this.scene, nodeId);
+    const mask = node ? getMask(node) : undefined;
+    if (!node || !mask) {
+      throw new Error(`DocumentManager: node ${nodeId} missing Mask`);
+    }
+    if (mask.id !== values.id) {
+      throw new Error(
+        `DocumentManager: Mask identity mismatch on ${nodeId}`,
+      );
+    }
+    const index = node.components.findIndex(
+      (component) => component.id === mask.id,
+    );
+    if (index < 0) {
+      throw new Error(`DocumentManager: Mask missing from ${nodeId}`);
+    }
+    node.components[index] = structuredClone(values);
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "visual",
     });
   }
 

@@ -126,6 +126,7 @@ export class GameRuntime {
     const externalCloneNodeByName = options.services?.cloneNodeByName;
     const externalListChildNodes = options.services?.listChildNodes;
     const externalSetNodeVisible = options.services?.setNodeVisible;
+    const externalSetNodeAlpha = options.services?.setNodeAlpha;
     const externalSetNodeCursor = options.services?.setNodeCursor;
     const externalGetModel3DBoneWorldTransform =
       options.services?.getModel3DBoneWorldTransform;
@@ -265,6 +266,13 @@ export class GameRuntime {
           return;
         }
         this.setNodeVisible(nodeId, visible);
+      },
+      setNodeAlpha: (nodeId, alpha) => {
+        if (externalSetNodeAlpha) {
+          externalSetNodeAlpha(nodeId, alpha);
+          return;
+        }
+        this.setNodeAlpha(nodeId, alpha);
       },
       setNodeCursor: (nodeId, cursor) => {
         if (externalSetNodeCursor) {
@@ -664,6 +672,12 @@ export class GameRuntime {
   private setNodeVisible(nodeId: string, visible: boolean): void {
     for (const registration of this.renderers.values()) {
       registration.renderer.setNodeVisible?.(nodeId, visible);
+    }
+  }
+
+  private setNodeAlpha(nodeId: string, alpha: number): void {
+    for (const registration of this.renderers.values()) {
+      registration.renderer.setNodeAlpha?.(nodeId, alpha);
     }
   }
 

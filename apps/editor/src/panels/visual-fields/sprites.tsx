@@ -10,6 +10,7 @@ import {
   AssetSelectField,
   BooleanField,
   ColorField,
+  InspectorFieldRow,
   NumberField,
   OptionalSelectField,
   StringField,
@@ -43,16 +44,18 @@ export function SpriteFields({
           });
         }}
       />
-      <NumberField
-        label="Width"
-        value={visual.width}
-        onCommit={(width) => commit({ width })}
-      />
-      <NumberField
-        label="Height"
-        value={visual.height}
-        onCommit={(height) => commit({ height })}
-      />
+      <InspectorFieldRow>
+        <NumberField
+          label="Width"
+          value={visual.width}
+          onCommit={(width) => commit({ width })}
+        />
+        <NumberField
+          label="Height"
+          value={visual.height}
+          onCommit={(height) => commit({ height })}
+        />
+      </InspectorFieldRow>
       <ColorField
         label="Tint"
         value={visual.tint ?? 0xffffff}
@@ -78,12 +81,18 @@ export function NineSliceFields({
         value={visual.assetId}
         onCommit={(assetId) => commit({ assetId })}
       />
-      <NumberField label="Width" value={visual.width} onCommit={(width) => commit({ width })} />
-      <NumberField label="Height" value={visual.height} onCommit={(height) => commit({ height })} />
-      <NumberField label="Left Width" value={visual.leftWidth} onCommit={(leftWidth) => commit({ leftWidth })} />
-      <NumberField label="Right Width" value={visual.rightWidth} onCommit={(rightWidth) => commit({ rightWidth })} />
-      <NumberField label="Top Height" value={visual.topHeight} onCommit={(topHeight) => commit({ topHeight })} />
-      <NumberField label="Bottom Height" value={visual.bottomHeight} onCommit={(bottomHeight) => commit({ bottomHeight })} />
+      <InspectorFieldRow>
+        <NumberField label="Width" value={visual.width} onCommit={(width) => commit({ width })} />
+        <NumberField label="Height" value={visual.height} onCommit={(height) => commit({ height })} />
+      </InspectorFieldRow>
+      <InspectorFieldRow>
+        <NumberField label="Left Width" value={visual.leftWidth} onCommit={(leftWidth) => commit({ leftWidth })} />
+        <NumberField label="Right Width" value={visual.rightWidth} onCommit={(rightWidth) => commit({ rightWidth })} />
+      </InspectorFieldRow>
+      <InspectorFieldRow>
+        <NumberField label="Top Height" value={visual.topHeight} onCommit={(topHeight) => commit({ topHeight })} />
+        <NumberField label="Bottom Height" value={visual.bottomHeight} onCommit={(bottomHeight) => commit({ bottomHeight })} />
+      </InspectorFieldRow>
     </>
   );
 }
@@ -103,28 +112,34 @@ export function TilingFields({
         value={visual.assetId}
         onCommit={(assetId) => commit({ assetId })}
       />
-      <NumberField label="Width" value={visual.width} onCommit={(width) => commit({ width })} />
-      <NumberField label="Height" value={visual.height} onCommit={(height) => commit({ height })} />
-      <NumberField
-        label="Tile Position X"
-        value={visual.tilePosition.x}
-        onCommit={(x) => commit({ tilePosition: { x, y: visual.tilePosition.y } })}
-      />
-      <NumberField
-        label="Tile Position Y"
-        value={visual.tilePosition.y}
-        onCommit={(y) => commit({ tilePosition: { x: visual.tilePosition.x, y } })}
-      />
-      <NumberField
-        label="Tile Scale X"
-        value={visual.tileScale.x}
-        onCommit={(x) => commit({ tileScale: { x, y: visual.tileScale.y } })}
-      />
-      <NumberField
-        label="Tile Scale Y"
-        value={visual.tileScale.y}
-        onCommit={(y) => commit({ tileScale: { x: visual.tileScale.x, y } })}
-      />
+      <InspectorFieldRow>
+        <NumberField label="Width" value={visual.width} onCommit={(width) => commit({ width })} />
+        <NumberField label="Height" value={visual.height} onCommit={(height) => commit({ height })} />
+      </InspectorFieldRow>
+      <InspectorFieldRow>
+        <NumberField
+          label="Tile Position X"
+          value={visual.tilePosition.x}
+          onCommit={(x) => commit({ tilePosition: { x, y: visual.tilePosition.y } })}
+        />
+        <NumberField
+          label="Tile Position Y"
+          value={visual.tilePosition.y}
+          onCommit={(y) => commit({ tilePosition: { x: visual.tilePosition.x, y } })}
+        />
+      </InspectorFieldRow>
+      <InspectorFieldRow>
+        <NumberField
+          label="Tile Scale X"
+          value={visual.tileScale.x}
+          onCommit={(x) => commit({ tileScale: { x, y: visual.tileScale.y } })}
+        />
+        <NumberField
+          label="Tile Scale Y"
+          value={visual.tileScale.y}
+          onCommit={(y) => commit({ tileScale: { x: visual.tileScale.x, y } })}
+        />
+      </InspectorFieldRow>
       <NumberField
         label="Tile Rotation"
         value={visual.tileRotation}
@@ -191,31 +206,35 @@ export function AnimatedSpriteFields({
           }}
         />
       )}
-      <NumberField
-        label="Width"
-        value={visual.width ?? DEFAULT_SPRITE_SIZE}
-        onCommit={(width) => commit({ width })}
-      />
-      <NumberField
-        label="Height"
-        value={visual.height ?? DEFAULT_SPRITE_SIZE}
-        onCommit={(height) => commit({ height })}
-      />
-      <NumberField
-        label="Animation Speed"
-        value={visual.animationSpeed}
-        onCommit={(animationSpeed) => commit({ animationSpeed })}
-      />
-      <BooleanField
-        label="Loop"
-        value={visual.loop}
-        onCommit={(loop) => commit({ loop })}
-      />
-      <BooleanField
-        label="Playing"
-        value={visual.playing}
-        onCommit={(playing) => commit({ playing })}
-      />
+      <InspectorFieldRow>
+        <NumberField
+          label="Width"
+          value={visual.width ?? DEFAULT_SPRITE_SIZE}
+          onCommit={(width) => commit({ width })}
+        />
+        <NumberField
+          label="Height"
+          value={visual.height ?? DEFAULT_SPRITE_SIZE}
+          onCommit={(height) => commit({ height })}
+        />
+      </InspectorFieldRow>
+      <InspectorFieldRow>
+        <NumberField
+          label="Animation Speed"
+          value={visual.animationSpeed}
+          onCommit={(animationSpeed) => commit({ animationSpeed })}
+        />
+        <BooleanField
+          label="Loop"
+          value={visual.loop}
+          onCommit={(loop) => commit({ loop })}
+        />
+        <BooleanField
+          label="Playing"
+          value={visual.playing}
+          onCommit={(playing) => commit({ playing })}
+        />
+      </InspectorFieldRow>
     </>
   );
 }

@@ -99,4 +99,34 @@ describe("script component commands", () => {
         .refreshIntervalMs,
     ).toBe(250);
   });
+
+  it("toggles script enabled with undo", () => {
+    const editor = editorWithCatalog();
+    const nodeId = editor.createSprite("Hero");
+    const componentId = editor.addScriptComponent(nodeId, SHARED_METER);
+
+    expect(findScript(editor.getScene().nodes[0]!, SHARED_METER)?.enabled).toBe(
+      undefined,
+    );
+
+    editor.setScriptEnabled(nodeId, componentId, false);
+    expect(findScript(editor.getScene().nodes[0]!, SHARED_METER)?.enabled).toBe(
+      false,
+    );
+
+    editor.undo();
+    expect(findScript(editor.getScene().nodes[0]!, SHARED_METER)?.enabled).toBe(
+      undefined,
+    );
+
+    editor.redo();
+    expect(findScript(editor.getScene().nodes[0]!, SHARED_METER)?.enabled).toBe(
+      false,
+    );
+
+    editor.setScriptEnabled(nodeId, componentId, true);
+    expect(findScript(editor.getScene().nodes[0]!, SHARED_METER)?.enabled).toBe(
+      undefined,
+    );
+  });
 });

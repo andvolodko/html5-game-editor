@@ -3,6 +3,7 @@ import type { VisualComponentData } from "@game-editor/scene";
 import {
   AssetSelectField,
   BooleanField,
+  InspectorFieldRow,
   NumberField,
   OptionalSelectField,
 } from "../fields/inspector-fields";
@@ -31,33 +32,37 @@ export function SpineFields({
         value={visual.assetId}
         onCommit={(assetId) => commit({ assetId })}
       />
-      <OptionalSelectField
-        label="Skin"
-        value={visual.skin}
-        options={skins}
-        onCommit={(skin) => commit({ skin })}
-      />
-      <OptionalSelectField
-        label="Animation"
-        value={visual.animation}
-        options={animations}
-        onCommit={(animation) => commit({ animation })}
-      />
-      <BooleanField
-        label="Loop"
-        value={visual.loop}
-        onCommit={(loop) => commit({ loop })}
-      />
-      <NumberField
-        label="Time Scale"
-        value={visual.timeScale}
-        onCommit={(timeScale) => commit({ timeScale })}
-      />
-      <BooleanField
-        label="Playing"
-        value={visual.playing}
-        onCommit={(playing) => commit({ playing })}
-      />
+      <InspectorFieldRow>
+        <OptionalSelectField
+          label="Skin"
+          value={visual.skin}
+          options={skins}
+          onCommit={(skin) => commit({ skin })}
+        />
+        <OptionalSelectField
+          label="Animation"
+          value={visual.animation}
+          options={animations}
+          onCommit={(animation) => commit({ animation })}
+        />
+      </InspectorFieldRow>
+      <InspectorFieldRow>
+        <BooleanField
+          label="Loop"
+          value={visual.loop}
+          onCommit={(loop) => commit({ loop })}
+        />
+        <BooleanField
+          label="Playing"
+          value={visual.playing}
+          onCommit={(playing) => commit({ playing })}
+        />
+        <NumberField
+          label="Time Scale"
+          value={visual.timeScale}
+          onCommit={(timeScale) => commit({ timeScale })}
+        />
+      </InspectorFieldRow>
     </>
   );
 }

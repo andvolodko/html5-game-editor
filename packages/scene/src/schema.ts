@@ -339,7 +339,29 @@ export const scriptComponentSchema = z.object({
   type: z.literal("Script"),
   id: z.string().min(1),
   scriptId: z.string().min(1),
+  enabled: z.boolean().optional(),
   properties: z.record(z.string(), scriptPropertyValueSchema),
+});
+
+export const hitZoneComponentSchema = z.object({
+  type: z.literal("HitZone"),
+  id: z.string().min(1),
+  enabled: z.boolean().optional(),
+  offset: vec2Schema.optional(),
+  shape: graphicsShapeSchema,
+});
+
+export const maskComponentSchema = z.object({
+  type: z.literal("Mask"),
+  id: z.string().min(1),
+  enabled: z.boolean().optional(),
+  inverse: z.boolean().optional(),
+  offset: vec2Schema.optional(),
+  mode: z.enum(["shape", "sprite"]),
+  shape: graphicsShapeSchema.optional(),
+  assetId: z.string().min(1).optional(),
+  width: z.number().positive().optional(),
+  height: z.number().positive().optional(),
 });
 
 export const componentSchema = z.discriminatedUnion("type", [
@@ -365,7 +387,17 @@ export const componentSchema = z.discriminatedUnion("type", [
   directionalLightComponentSchema,
   ambientLightComponentSchema,
   scriptComponentSchema,
-]);
+  hitZoneComponentSchema,
+  maskComponentSchema,
+]).superRefine((value, ctx) => {
+  if (value.type === "Mask" && value.mode === "shape" && value.shape === undefined) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Mask shape mode requires shape",
+      path: ["shape"],
+    });
+  }
+});
 
 export const sceneNodeSchema: z.ZodType<SceneNodeData> = z.lazy(() =>
   z.object({
@@ -374,6 +406,7 @@ export const sceneNodeSchema: z.ZodType<SceneNodeData> = z.lazy(() =>
     parentId: z.string().min(1).optional(),
     layer: z.enum(["background", "foreground"]).optional(),
     visible: z.boolean().optional(),
+    alpha: z.number().min(0).max(1).optional(),
     prefab: prefabInstanceLinkSchema.optional(),
     components: z.array(componentSchema),
     children: z.array(sceneNodeSchema),

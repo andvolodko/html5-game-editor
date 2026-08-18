@@ -127,6 +127,9 @@ function overrideLabel(override: PrefabOverride): string {
   if (override.kind === "visible") {
     return "Visible";
   }
+  if (override.kind === "alpha") {
+    return "Alpha";
+  }
   return override.propertyPath;
 }
 

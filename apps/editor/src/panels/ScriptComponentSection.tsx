@@ -22,6 +22,9 @@ interface ScriptComponentSectionProps {
   component: ScriptComponentData;
   definition: ComponentDefinition | undefined;
   dynamicOptions: DynamicEnumOptions;
+  enabled: boolean;
+  enabledOverridden?: boolean;
+  onEnabledCommit: (enabled: boolean) => void;
   onPropertyCommit: (key: string, value: unknown) => void;
   onRemove: () => void;
 }
@@ -30,6 +33,9 @@ export function ScriptComponentSection({
   component,
   definition,
   dynamicOptions,
+  enabled,
+  enabledOverridden,
+  onEnabledCommit,
   onPropertyCommit,
   onRemove,
 }: ScriptComponentSectionProps) {
@@ -38,7 +44,22 @@ export function ScriptComponentSection({
   return (
     <section className="inspector-section">
       <div className="inspector-section-header">
-        <h3>{title}</h3>
+        <label
+          className={
+            enabledOverridden
+              ? "inspector-section-header-title inspector-field-overridden"
+              : "inspector-section-header-title"
+          }
+        >
+          <input
+            type="checkbox"
+            checked={enabled}
+            title="Enabled"
+            aria-label="Enabled"
+            onChange={(event) => onEnabledCommit(event.target.checked)}
+          />
+          <h3>{title}</h3>
+        </label>
         <button type="button" className="inspector-remove-btn" onClick={onRemove}>
           Remove
         </button>
@@ -48,7 +69,11 @@ export function ScriptComponentSection({
           Definition missing for <span className="mono">{component.scriptId}</span>
         </p>
       ) : (
-        <div className="inspector-grid">
+        <div
+          className={
+            enabled ? "inspector-grid" : "inspector-grid inspector-section-disabled"
+          }
+        >
           {Object.entries(definition.properties).map(([key, field]) => (
             <ScriptPropertyField
               key={key}

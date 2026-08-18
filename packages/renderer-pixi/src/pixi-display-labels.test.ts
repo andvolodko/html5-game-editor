@@ -30,7 +30,9 @@ describe("pixi display labels", () => {
     expect(childrenRoot.label).toBe("Hero:children");
     expect(gizmoRoot.label).toBe("Hero:gizmo");
     expect(visualsRoot.getChildByLabel("Hero:placeholder")).not.toBeNull();
-    expect(visualsRoot.getChildByLabel("Hero:selection")).not.toBeNull();
+    const chromeRoot = renderer.getRuntimeChromeRoot(node.id)!;
+    expect(chromeRoot.label).toBe("Hero:chrome");
+    expect(chromeRoot.getChildByLabel("Hero:selection")).not.toBeNull();
 
     node.name = "MainHero";
     renderer.updateNode(node);

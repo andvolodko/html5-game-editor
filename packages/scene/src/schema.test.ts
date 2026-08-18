@@ -4,6 +4,9 @@ import {
   createAnimatedSpriteComponent,
   createBitmapTextComponent,
   createEmptyScene,
+  createHitZoneNode,
+  createMaskComponent,
+  createMaskNode,
   createNodeWithVisual,
   createScriptComponent,
   createSpriteNode,
@@ -48,6 +51,33 @@ describe("scene schema", () => {
     });
     expect(parsed.nodes[0]?.visible).toBeUndefined();
     expect(parsed.nodes[1]?.visible).toBe(false);
+  });
+
+  it("accepts omitted node alpha as the default and persists other values", () => {
+    const faded = createSpriteNode("Faded", { x: 0, y: 0 });
+    faded.alpha = 0.5;
+    const parsed = parseSceneData({
+      id: "scene_1",
+      name: "Demo",
+      version: SCENE_SCHEMA_VERSION,
+      nodes: [
+        {
+          id: "node_1",
+          name: "Opaque",
+          components: faded.components,
+          children: [],
+        },
+        {
+          id: "node_2",
+          name: "Faded",
+          alpha: 0.5,
+          components: faded.components,
+          children: [],
+        },
+      ],
+    });
+    expect(parsed.nodes[0]?.alpha).toBeUndefined();
+    expect(parsed.nodes[1]?.alpha).toBe(0.5);
   });
 
   it("validates a Transform2D scene document", () => {
@@ -194,6 +224,38 @@ describe("scene schema", () => {
         nested: { a: 1 },
       },
     });
+  });
+
+  it("round-trips disabled Script components and treats omitted enabled as on", () => {
+    const scene = createEmptyScene("Scripts");
+    const node = createSpriteNode("Hero", { x: 0, y: 0 });
+    node.components.push(
+      createScriptComponent("example.Off", {}, { enabled: false }),
+    );
+    scene.nodes.push(node);
+
+    const parsed = parseSceneData(JSON.parse(JSON.stringify(scene)) as unknown);
+    const script = parsed.nodes[0]?.components.find((c) => c.type === "Script");
+    expect(script).toMatchObject({
+      type: "Script",
+      scriptId: "example.Off",
+      enabled: false,
+      properties: {},
+    });
+
+    const enabledScene = createEmptyScene("ScriptsOn");
+    const enabledNode = createSpriteNode("Hero", { x: 0, y: 0 });
+    enabledNode.components.push(createScriptComponent("example.On"));
+    enabledScene.nodes.push(enabledNode);
+    const enabledParsed = parseSceneData(
+      JSON.parse(JSON.stringify(enabledScene)) as unknown,
+    );
+    const enabledScript = enabledParsed.nodes[0]?.components.find(
+      (c) => c.type === "Script",
+    );
+    expect(enabledScript && "enabled" in enabledScript ? enabledScript.enabled : undefined).toBe(
+      undefined,
+    );
   });
 
   it("rejects Script components with empty scriptId", () => {
@@ -434,5 +496,91 @@ describe("scene schema", () => {
         fontSize: 50,
       },
     });
+  });
+
+  it("round-trips HitZone and rejects invalid shapes", () => {
+    const scene = createEmptyScene("Hit");
+    scene.nodes.push(
+      createHitZoneNode("Zone", { x: 8, y: 9 }),
+    );
+    const json = JSON.parse(JSON.stringify(scene)) as unknown;
+    const parsed = parseSceneData(json);
+    const zone = parsed.nodes[0]?.components.find((c) => c.type === "HitZone");
+    expect(zone).toMatchObject({
+      type: "HitZone",
+      shape: { type: "rectangle", width: 100, height: 100 },
+    });
+    expect(zone && "enabled" in zone ? zone.enabled : undefined).toBeUndefined();
+
+    expect(() =>
+      parseSceneData({
+        id: "scene_1",
+        name: "Bad",
+        version: SCENE_SCHEMA_VERSION,
+        nodes: [
+          {
+            id: "node_1",
+            name: "N",
+            components: [
+              {
+                type: "HitZone",
+                id: "comp_1",
+                shape: { type: "circle", radius: -1 },
+              },
+            ],
+            children: [],
+          },
+        ],
+      }),
+    ).toThrow();
+  });
+
+  it("round-trips Mask shape and sprite modes and rejects shape without geometry", () => {
+    const scene = createEmptyScene("Mask");
+    scene.nodes.push(createMaskNode("Clip", { x: 1, y: 2 }));
+    const json = JSON.parse(JSON.stringify(scene)) as unknown;
+    const parsed = parseSceneData(json);
+    const mask = parsed.nodes[0]?.components.find((c) => c.type === "Mask");
+    expect(mask).toMatchObject({
+      type: "Mask",
+      mode: "shape",
+      shape: { type: "rectangle", width: 100, height: 100 },
+    });
+    expect(mask && "enabled" in mask ? mask.enabled : undefined).toBeUndefined();
+    expect(mask && "inverse" in mask ? mask.inverse : undefined).toBeUndefined();
+
+    const spriteMask = createMaskComponent({ mode: "sprite", assetId: "asset_tex" });
+    scene.nodes[0]!.components[1] = spriteMask;
+    const parsedSprite = parseSceneData(JSON.parse(JSON.stringify(scene)));
+    expect(
+      parsedSprite.nodes[0]?.components.find((c) => c.type === "Mask"),
+    ).toMatchObject({
+      type: "Mask",
+      mode: "sprite",
+      assetId: "asset_tex",
+    });
+    expect(collectReferencedAssetIds(parsedSprite)).toEqual(["asset_tex"]);
+
+    expect(() =>
+      parseSceneData({
+        id: "scene_1",
+        name: "Bad",
+        version: SCENE_SCHEMA_VERSION,
+        nodes: [
+          {
+            id: "node_1",
+            name: "N",
+            components: [
+              {
+                type: "Mask",
+                id: "comp_1",
+                mode: "shape",
+              },
+            ],
+            children: [],
+          },
+        ],
+      }),
+    ).toThrow();
   });
 });

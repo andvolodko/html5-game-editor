@@ -9,6 +9,13 @@ export const IDENTITY_SCALE_2D: Vec2 = { x: 1, y: 1 };
 /** Identity Transform2D skew in degrees (omitted on serialized transforms). */
 export const IDENTITY_SKEW_2D: Vec2 = { x: 0, y: 0 };
 
+/** Identity node alpha (omit on serialized nodes). */
+export const IDENTITY_NODE_ALPHA = 1;
+/** Inclusive lower bound for serialized node alpha. */
+export const NODE_ALPHA_MIN = 0;
+/** Inclusive upper bound for serialized node alpha. */
+export const NODE_ALPHA_MAX = 1;
+
 /** Identity Transform3D position (reset / factory default). */
 export const IDENTITY_POSITION_3D: Vec3 = { x: 0, y: 0, z: 0 };
 /** Identity Transform3D Euler rotation. */
@@ -37,6 +44,8 @@ export const DEFAULT_NINE_SLICE_BORDER = 20;
 
 export const DEFAULT_TILING_SPRITE_SIZE = 256;
 
+/** Pixi/CSS family used when no catalogue webfont is assigned. */
+export const DEFAULT_TEXT_FONT_FAMILY = "Arial";
 export const DEFAULT_TEXT_FONT_SIZE = 32;
 export const DEFAULT_TEXT_FILL = 0xffffff;
 export const DEFAULT_TEXT_FILL_ALPHA = 1;

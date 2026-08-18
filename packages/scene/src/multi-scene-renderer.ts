@@ -119,6 +119,12 @@ export class MultiSceneRenderer implements SceneRenderer {
     }
   }
 
+  setNodeAlpha(nodeId: string, alpha: number): void {
+    for (const slot of this.slots) {
+      slot.renderer.setNodeAlpha?.(nodeId, alpha);
+    }
+  }
+
   setNodeEditorHidden(nodeId: string, hidden: boolean): void {
     for (const slot of this.slots) {
       slot.renderer.setNodeEditorHidden?.(nodeId, hidden);

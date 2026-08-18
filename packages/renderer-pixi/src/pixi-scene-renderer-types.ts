@@ -1,5 +1,5 @@
 import type { AssetResolver } from "@game-editor/assets";
-import type { Vec2 } from "@game-editor/scene";
+import type { GraphicsShapeData, HitZoneComponentData, MaskComponentData, Vec2 } from "@game-editor/scene";
 import type { PixelGridStyle } from "./pixel-grid.js";
 
 export interface PixiSceneRendererOptions {
@@ -84,6 +84,9 @@ export interface PixiPointerHandlers {
   onGizmoScaleEnd?: (nodeId: string, scale: Vec2) => void;
   onGizmoAnchorEnd?: (nodeId: string, result: PixiGizmoAnchorResult) => void;
   onGizmoFlip?: (nodeId: string, axis: "x" | "y") => void;
+  onHitZoneResizeEnd?: (nodeId: string, hitZone: HitZoneComponentData) => void;
+  onMaskResizeEnd?: (nodeId: string, mask: MaskComponentData) => void;
+  onGraphicsPolygonEnd?: (nodeId: string, shape: GraphicsShapeData) => void;
 }
 
 export interface PixiSyncStats {

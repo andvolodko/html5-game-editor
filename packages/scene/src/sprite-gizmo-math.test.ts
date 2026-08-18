@@ -8,6 +8,7 @@ import {
   normalizeRotationDegrees,
   rotationFromHandleDrag,
   sizeFromHandleDrag,
+  sizeHandleCursor,
   scaleFromAxisDrag,
   spriteGizmoHitOutsets,
   SPRITE_GIZMO_HANDLE_HIT_EXTENT,
@@ -49,6 +50,14 @@ describe("sprite-gizmo-math", () => {
       width: SPRITE_GIZMO_MIN_SIZE,
       height: SPRITE_GIZMO_MIN_SIZE,
     });
+  });
+
+  it("rotates size-handle cursors with the node", () => {
+    expect(sizeHandleCursor("e")).toBe("ew-resize");
+    expect(sizeHandleCursor("e", 90)).toBe("ns-resize");
+    expect(sizeHandleCursor("se", 90)).toBe("nesw-resize");
+    expect(sizeHandleCursor("nw", 90)).toBe("nesw-resize");
+    expect(sizeHandleCursor("e", 0, { x: true, y: false })).toBe("ew-resize");
   });
 
   it("supports uniform corner scaling", () => {

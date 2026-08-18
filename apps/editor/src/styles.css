@@ -372,6 +372,22 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   font-size: 0.85rem;
 }
 
+.panel-inspector {
+  padding: 0.45rem 0.55rem;
+  font-size: 0.75rem;
+}
+
+.panel-inspector .panel-hint {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+}
+
+.panel-inspector button {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  padding: 0.15rem 0.45rem;
+}
+
 .panel-empty {
   margin: 0;
   color: var(--text-muted);
@@ -908,10 +924,10 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
 .inspector-field-overridden::before {
   content: "";
   position: absolute;
-  left: -0.45rem;
-  top: 0.55rem;
-  width: 5px;
-  height: 5px;
+  left: -0.4rem;
+  top: 0.95rem;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: var(--accent);
 }
@@ -925,12 +941,13 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
 
 .inspector-prefab-actions button {
   font: inherit;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
   color: var(--text);
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: 3px;
-  padding: 0.2rem 0.45rem;
+  padding: 0.15rem 0.45rem;
 }
 
 .inspector-prefab-actions button:disabled {
@@ -949,7 +966,7 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .prefab-override-list li span {
@@ -1028,13 +1045,26 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
 
 .inspector-grid {
   display: grid;
-  gap: 0.65rem;
+  gap: 0.35rem;
+}
+
+.inspector-field-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.inspector-field-row > .inspector-checkbox {
+  align-self: end;
+  padding-bottom: 0.15rem;
 }
 
 .inspector-grid label {
   display: grid;
-  gap: 0.25rem;
-  font-size: 0.85rem;
+  gap: 0.12rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 
@@ -1042,23 +1072,25 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
 .inspector-grid select,
 .inspector-grid textarea {
   font: inherit;
+  font-size: 0.75rem;
+  line-height: 1.2;
   color: var(--text);
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: 4px;
-  padding: 0.35rem 0.5rem;
+  padding: 0.15rem 0.45rem;
   width: 100%;
   box-sizing: border-box;
 }
 
 .inspector-grid textarea {
-  min-height: 4.5rem;
+  min-height: 3.5rem;
   resize: vertical;
 }
 
 .inspector-grid input[type="color"] {
-  height: 2rem;
-  padding: 0.15rem;
+  height: 1.45rem;
+  padding: 0.1rem;
   cursor: pointer;
 }
 
@@ -1072,8 +1104,8 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
 
 .inspector-checkbox input[type="checkbox"],
 .inspector-grid .inspector-checkbox input[type="checkbox"] {
-  width: 1rem;
-  height: 1rem;
+  width: 0.85rem;
+  height: 0.85rem;
   padding: 0;
   margin: 0;
   flex-shrink: 0;
@@ -1082,6 +1114,18 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
 
 .inspector-grid .panel-hint {
   margin: 0;
+}
+
+.inspector-polygon-points {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.inspector-polygon-point {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem;
+  align-items: end;
 }
 
 .assets-panel {
@@ -1785,8 +1829,8 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin: 0 0 0.75rem;
-  padding: 0.45rem 0.55rem;
+  margin: 0 0 0.5rem;
+  padding: 0.3rem 0.45rem;
   border: 1px solid var(--border);
   border-radius: 4px;
   background: var(--bg-elevated);
@@ -1794,17 +1838,17 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
 
 .inspector-locked-banner p {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 
 .inspector-section {
-  margin-bottom: 1rem;
+  margin-bottom: 0.65rem;
 }
 
 .inspector-section h3 {
-  margin: 0 0 0.5rem;
-  font-size: 0.9rem;
+  margin: 0 0 0.3rem;
+  font-size: 0.8rem;
 }
 
 .inspector-section-header {
@@ -1812,7 +1856,35 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.inspector-section-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.inspector-section-header-title h3 {
+  margin: 0;
+}
+
+.inspector-section-header-title input[type="checkbox"] {
+  width: 0.85rem;
+  height: 0.85rem;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+}
+
+.inspector-section-header-title.inspector-field-overridden::before {
+  top: 0.35rem;
+}
+
+.inspector-section-disabled {
+  opacity: 0.55;
 }
 
 .inspector-section-header h3 {
@@ -1832,7 +1904,7 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
 
 .add-component {
   position: relative;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 .add-component-btn {
@@ -1840,12 +1912,12 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
 }
 
 .add-component-popover {
-  margin-top: 0.4rem;
+  margin-top: 0.3rem;
   border: 1px solid var(--border);
   background: var(--bg-toolbar);
-  padding: 0.4rem;
+  padding: 0.3rem;
   display: grid;
-  gap: 0.4rem;
+  gap: 0.3rem;
   max-height: 240px;
   overflow: auto;
 }
@@ -1870,7 +1942,9 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   align-items: center;
   gap: 0.5rem;
   text-align: left;
-  padding: 0.35rem 0.4rem;
+  padding: 0.2rem 0.35rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
   background: transparent;
   border: none;
   color: inherit;
@@ -1892,14 +1966,14 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   object-fit: contain;
   background: var(--bg-thumbnail);
   border: 1px solid var(--border);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
 }
 
 .inspector-meta {
   margin: 0;
   display: grid;
-  gap: 0.35rem;
-  font-size: 0.85rem;
+  gap: 0.25rem;
+  font-size: 0.75rem;
 }
 
 .inspector-meta div {

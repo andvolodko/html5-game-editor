@@ -52,6 +52,10 @@ import type {
 
   AmbientLightComponentData,
 
+  HitZoneComponentData,
+
+  MaskComponentData,
+
 } from "./types.js";
 
 import { isLeafVisualComponentType } from "./visual-components.js";
@@ -257,6 +261,28 @@ export function getGraphics(
 ): GraphicsComponentData | undefined {
 
   return getComponentByType(node, "Graphics");
+
+}
+
+
+
+export function getHitZone(
+
+  node: SceneNodeData,
+
+): HitZoneComponentData | undefined {
+
+  return getComponentByType(node, "HitZone");
+
+}
+
+export function getMask(
+
+  node: SceneNodeData,
+
+): MaskComponentData | undefined {
+
+  return getComponentByType(node, "Mask");
 
 }
 

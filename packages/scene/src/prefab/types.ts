@@ -33,11 +33,18 @@ export interface PrefabVisibleOverride {
   value: boolean;
 }
 
+export interface PrefabAlphaOverride {
+  kind: "alpha";
+  sourceNodeId: string;
+  value: number;
+}
+
 export type PrefabOverride =
   | PrefabPropertyOverride
   | PrefabNameOverride
   | PrefabLayerOverride
-  | PrefabVisibleOverride;
+  | PrefabVisibleOverride
+  | PrefabAlphaOverride;
 
 /**
  * Persistent link from a scene node to a prefab source node.

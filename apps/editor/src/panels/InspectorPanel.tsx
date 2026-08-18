@@ -10,6 +10,7 @@ import {
   getAmbientLight,
   getDirectionalLight,
   getModel3D,
+  getNodeAlpha,
   getNodeLayer,
   getNodeVisible,
   getPerspectiveCamera,
@@ -32,9 +33,11 @@ import {
   DirectionalLightInspector,
 } from "./ThreeLightInspector";
 import { ScriptComponentsInspector } from "./ScriptComponentsInspector";
+import { HitZoneInspector } from "./HitZoneInspector";
+import { MaskInspector } from "./MaskInspector";
 import { PrefabInspectorSection } from "./PrefabInspectorSection";
 import { isInspectorPropertyOverridden } from "./prefab-override-flag";
-import { BooleanField } from "./fields/inspector-fields";
+import { BooleanField, InspectorFieldRow, NumberField } from "./fields/inspector-fields";
 import {
   formatInspectorNumber,
   resolveInspectorNumber,
@@ -189,44 +192,46 @@ export function InspectorPanel() {
     const rendererKind = getSceneRendererKind(scene);
 
     return (
-      <div className="panel">
+      <div className="panel panel-inspector">
         <p className="panel-hint">Inspector · Scene</p>
         <section className="inspector-section">
           <h3>Scene</h3>
           <div className="inspector-grid">
-            <label>
-              Name
-              <input
-                value={sceneNameDraft}
-                onChange={(event) => setSceneNameDraft(event.target.value)}
-                onBlur={commitSceneName}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    commitSceneName();
-                  }
-                }}
-              />
-            </label>
-            <label>
-              Renderer
-              <select
-                value={rendererKind}
-                onChange={(event) => {
-                  const next = event.target.value;
-                  if (
-                    next === "pixi" ||
-                    next === "three" ||
-                    next === "hybrid"
-                  ) {
-                    editor.setSceneRenderer(next);
-                  }
-                }}
-              >
-                <option value="pixi">PixiJS (2D)</option>
-                <option value="three">Three.js (3D)</option>
-                <option value="hybrid">Hybrid (Pixi + Three)</option>
-              </select>
-            </label>
+            <InspectorFieldRow>
+              <label>
+                Name
+                <input
+                  value={sceneNameDraft}
+                  onChange={(event) => setSceneNameDraft(event.target.value)}
+                  onBlur={commitSceneName}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      commitSceneName();
+                    }
+                  }}
+                />
+              </label>
+              <label>
+                Renderer
+                <select
+                  value={rendererKind}
+                  onChange={(event) => {
+                    const next = event.target.value;
+                    if (
+                      next === "pixi" ||
+                      next === "three" ||
+                      next === "hybrid"
+                    ) {
+                      editor.setSceneRenderer(next);
+                    }
+                  }}
+                >
+                  <option value="pixi">PixiJS (2D)</option>
+                  <option value="three">Three.js (3D)</option>
+                  <option value="hybrid">Hybrid (Pixi + Three)</option>
+                </select>
+              </label>
+            </InspectorFieldRow>
           </div>
           <dl className="inspector-meta">
             <div>
@@ -241,7 +246,7 @@ export function InspectorPanel() {
 
   if (!node) {
     return (
-      <div className="panel">
+      <div className="panel panel-inspector">
         <p className="panel-hint">Inspector</p>
         <p className="panel-empty">Select a node</p>
       </div>
@@ -423,7 +428,7 @@ export function InspectorPanel() {
   const inspectorLocked = editorFlags.effectivelyLocked;
 
   return (
-    <div className="panel">
+    <div className="panel panel-inspector">
       <p className="panel-hint">Inspector · {node.name}</p>
       {inspectorLocked ? (
         <div className="inspector-locked-banner">
@@ -449,11 +454,18 @@ export function InspectorPanel() {
       <section className="inspector-section">
         <h3>Node</h3>
         <div className="inspector-grid">
-          <BooleanField
-            label="Visible"
-            value={getNodeVisible(node)}
-            onCommit={(visible) => editor.setNodeVisible(node.id, visible)}
-          />
+          <InspectorFieldRow>
+            <BooleanField
+              label="Visible"
+              value={getNodeVisible(node)}
+              onCommit={(visible) => editor.setNodeVisible(node.id, visible)}
+            />
+            <NumberField
+              label="Alpha"
+              value={getNodeAlpha(node)}
+              onCommit={(alpha) => editor.setNodeAlpha(node.id, alpha)}
+            />
+          </InspectorFieldRow>
         </div>
       </section>
 
@@ -486,45 +498,55 @@ export function InspectorPanel() {
           <div className="inspector-grid">
             {(
               [
-                ["Position X", "x"],
-                ["Position Y", "y"],
-                ["Rotation", "rotation"],
-                ["Scale X", "scaleX"],
-                ["Scale Y", "scaleY"],
-                ["Skew X (°)", "skewX"],
-                ["Skew Y (°)", "skewY"],
+                [
+                  ["Position X", "x"],
+                  ["Position Y", "y"],
+                ],
+                [["Rotation", "rotation"]],
+                [
+                  ["Scale X", "scaleX"],
+                  ["Scale Y", "scaleY"],
+                ],
+                [
+                  ["Skew X (°)", "skewX"],
+                  ["Skew Y (°)", "skewY"],
+                ],
               ] as const
-            ).map(([label, key]) => (
-              <label
-                key={key}
-                className={
-                  isInspectorPropertyOverridden(
-                    scene,
-                    node,
-                    transform.id,
-                    transform2DOverridePath(key),
-                  )
-                    ? "inspector-field-overridden"
-                    : undefined
-                }
-              >
-                {label}
-                <input
-                  value={draft[key]}
-                  onChange={(event) =>
-                    setDraft({ ...draft, [key]: event.target.value })
-                  }
-                  onBlur={commitTransform}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      commitTransform();
+            ).map((row) => (
+              <InspectorFieldRow key={row.map(([, key]) => key).join("-")}>
+                {row.map(([label, key]) => (
+                  <label
+                    key={key}
+                    className={
+                      isInspectorPropertyOverridden(
+                        scene,
+                        node,
+                        transform.id,
+                        transform2DOverridePath(key),
+                      )
+                        ? "inspector-field-overridden"
+                        : undefined
                     }
-                  }}
-                />
-              </label>
+                  >
+                    {label}
+                    <input
+                      value={draft[key]}
+                      onChange={(event) =>
+                        setDraft({ ...draft, [key]: event.target.value })
+                      }
+                      onBlur={commitTransform}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          commitTransform();
+                        }
+                      }}
+                    />
+                  </label>
+                ))}
+              </InspectorFieldRow>
             ))}
             {supportsAnchor ? (
-              <>
+              <InspectorFieldRow>
                 <label>
                   Anchor X
                   <input
@@ -555,24 +577,26 @@ export function InspectorPanel() {
                     }}
                   />
                 </label>
-              </>
+              </InspectorFieldRow>
             ) : null}
-            <label className="inspector-checkbox">
-              Flip Horizontal
-              <input
-                type="checkbox"
-                checked={transform.scale.x < 0}
-                onChange={(event) => setFlip("x", event.target.checked)}
-              />
-            </label>
-            <label className="inspector-checkbox">
-              Flip Vertical
-              <input
-                type="checkbox"
-                checked={transform.scale.y < 0}
-                onChange={(event) => setFlip("y", event.target.checked)}
-              />
-            </label>
+            <InspectorFieldRow>
+              <label className="inspector-checkbox">
+                Flip Horizontal
+                <input
+                  type="checkbox"
+                  checked={transform.scale.x < 0}
+                  onChange={(event) => setFlip("x", event.target.checked)}
+                />
+              </label>
+              <label className="inspector-checkbox">
+                Flip Vertical
+                <input
+                  type="checkbox"
+                  checked={transform.scale.y < 0}
+                  onChange={(event) => setFlip("y", event.target.checked)}
+                />
+              </label>
+            </InspectorFieldRow>
           </div>
         </section>
       ) : null}
@@ -583,32 +607,42 @@ export function InspectorPanel() {
           <div className="inspector-grid">
             {(
               [
-                ["Pos X", "x"],
-                ["Pos Y", "y"],
-                ["Pos Z", "z"],
-                ["Rot X", "rotX"],
-                ["Rot Y", "rotY"],
-                ["Rot Z", "rotZ"],
-                ["Scale X", "scaleX"],
-                ["Scale Y", "scaleY"],
-                ["Scale Z", "scaleZ"],
+                [
+                  ["Pos X", "x"],
+                  ["Pos Y", "y"],
+                  ["Pos Z", "z"],
+                ],
+                [
+                  ["Rot X", "rotX"],
+                  ["Rot Y", "rotY"],
+                  ["Rot Z", "rotZ"],
+                ],
+                [
+                  ["Scale X", "scaleX"],
+                  ["Scale Y", "scaleY"],
+                  ["Scale Z", "scaleZ"],
+                ],
               ] as const
-            ).map(([label, key]) => (
-              <label key={key}>
-                {label}
-                <input
-                  value={draft3D[key]}
-                  onChange={(event) =>
-                    setDraft3D({ ...draft3D, [key]: event.target.value })
-                  }
-                  onBlur={commitTransform3D}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      commitTransform3D();
-                    }
-                  }}
-                />
-              </label>
+            ).map((row) => (
+              <InspectorFieldRow key={row.map(([, key]) => key).join("-")}>
+                {row.map(([label, key]) => (
+                  <label key={key}>
+                    {label}
+                    <input
+                      value={draft3D[key]}
+                      onChange={(event) =>
+                        setDraft3D({ ...draft3D, [key]: event.target.value })
+                      }
+                      onBlur={commitTransform3D}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          commitTransform3D();
+                        }
+                      }}
+                    />
+                  </label>
+                ))}
+              </InspectorFieldRow>
             ))}
           </div>
         </section>
@@ -636,36 +670,38 @@ export function InspectorPanel() {
             </p>
           )}
           <div className="inspector-grid">
-            <label>
-              Width
-              <input
-                value={sizeDraft.width}
-                onChange={(event) =>
-                  setSizeDraft({ ...sizeDraft, width: event.target.value })
-                }
-                onBlur={commitSize}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    commitSize();
+            <InspectorFieldRow>
+              <label>
+                Width
+                <input
+                  value={sizeDraft.width}
+                  onChange={(event) =>
+                    setSizeDraft({ ...sizeDraft, width: event.target.value })
                   }
-                }}
-              />
-            </label>
-            <label>
-              Height
-              <input
-                value={sizeDraft.height}
-                onChange={(event) =>
-                  setSizeDraft({ ...sizeDraft, height: event.target.value })
-                }
-                onBlur={commitSize}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    commitSize();
+                  onBlur={commitSize}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      commitSize();
+                    }
+                  }}
+                />
+              </label>
+              <label>
+                Height
+                <input
+                  value={sizeDraft.height}
+                  onChange={(event) =>
+                    setSizeDraft({ ...sizeDraft, height: event.target.value })
                   }
-                }}
-              />
-            </label>
+                  onBlur={commitSize}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      commitSize();
+                    }
+                  }}
+                />
+              </label>
+            </InspectorFieldRow>
           </div>
           <dl className="inspector-meta">
             <div>
@@ -682,6 +718,8 @@ export function InspectorPanel() {
         <VisualComponentInspector editor={editor} node={node} />
       )}
 
+      <HitZoneInspector editor={editor} scene={scene} node={node} />
+      <MaskInspector editor={editor} scene={scene} node={node} />
       <ScriptComponentsInspector node={node} />
       </fieldset>
     </div>

@@ -7,12 +7,22 @@ import {
   getVisualAnchorOrDefault,
   getVisualComponent,
   getVisualDisplaySize,
+  getHitZoneOffset,
+  getMaskOffset,
+  hitZoneShapeSize,
+  maskAsHitZone,
   visualCenterFromAnchor,
   visualComponentSupportsAnchor,
   visualComponentSupportsDisplaySize,
 } from "@game-editor/scene";
+import { applyPixiNodeContentAlpha } from "./pixi-node-alpha.js";
 import { computeGroupingContentBounds } from "./pixi-content-bounds.js";
 import { applyVisualDisplayLabel } from "./pixi-display-labels.js";
+import { chromeHitBounds, effectiveHitZone } from "./pixi-hit-zone-pick.js";
+import { syncHitZoneDisplay } from "./pixi-hit-zone-sync.js";
+import { effectiveMask } from "./pixi-mask-pick.js";
+import { sceneGraphicsPolygon } from "./pixi-graphics-polygon-drag.js";
+import { syncMaskDisplay } from "./pixi-mask-sync.js";
 import { clearVisual, paintVisualComponent } from "./visuals/index.js";
 import type { PixiRuntimeGraph, RuntimeNode } from "./pixi-runtime-nodes.js";
 import type { PixiTextureCache } from "./pixi-texture-cache.js";
@@ -99,13 +109,18 @@ export class PixiNodePainter {
         runtime.placeholder.visible = false;
       }
       this.applyGroupingContentBounds(runtime);
-      this.paintSelection(runtime);
-      this.refreshGroupingAncestors(runtime);
+      this.finishVisualPaint(runtime);
       return;
     }
 
-    // Apply live size / anchor previews for selection-gizmo drags.
+    // Apply live size / anchor / Graphics-polygon previews for gizmo drags.
     let data = visualData;
+    if (runtime.graphicsShapePreview && visualData.type === "Graphics") {
+      data = {
+        ...visualData,
+        shape: runtime.graphicsShapePreview,
+      };
+    }
     if (runtime.sizePreview || runtime.anchorPreview) {
       const sizePatch =
         runtime.sizePreview && visualComponentSupportsDisplaySize(visualData)
@@ -123,7 +138,7 @@ export class PixiNodePainter {
         Object.keys(anchorPatch).length > 0
       ) {
         data = {
-          ...visualData,
+          ...data,
           ...sizePatch,
           ...anchorPatch,
         };
@@ -190,11 +205,21 @@ export class PixiNodePainter {
       result.bounds ??
       provisional ??
       defaultVisualBounds(DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE);
-    this.setVisualsHitArea(runtime, bounds);
+    this.setVisualsHitArea(
+      runtime,
+      chromeHitBounds(runtime, bounds) ?? bounds,
+    );
     // Selection/gizmo depend on final bounds; paintSelection often runs before
     // this async paint resolves, so refresh once metrics are authoritative.
+    this.finishVisualPaint(runtime);
+  }
+
+  private finishVisualPaint(runtime: RuntimeNode): void {
+    applyPixiNodeContentAlpha(runtime);
     this.paintSelection(runtime);
     this.refreshGroupingAncestors(runtime);
+    this.syncPlaybackHitZone(runtime);
+    void this.syncMask(runtime);
   }
 
   paintSelection(runtime: RuntimeNode): void {
@@ -221,9 +246,14 @@ export class PixiNodePainter {
       nodeScale.y,
     );
     const invStroke = Math.min(inv.x, inv.y);
+    this.syncHitZone(runtime, selected, invStroke);
+    void this.syncMask(runtime);
     selection.clear();
     if (!selected) {
       runtime.gizmo?.setVisible(false);
+      runtime.hitZoneGizmo?.setVisible(false);
+      runtime.maskGizmo?.setVisible(false);
+      runtime.graphicsPolygonGizmo?.setVisible(false);
       return;
     }
 
@@ -277,6 +307,9 @@ export class PixiNodePainter {
           anchor: supportsAnchor,
         },
       );
+      this.layoutHitZoneGizmo(runtime, cameraScale, nodeScale);
+      this.layoutMaskGizmo(runtime, cameraScale, nodeScale);
+      this.layoutGraphicsPolygonGizmo(runtime, cameraScale, nodeScale);
       return;
     }
 
@@ -288,6 +321,9 @@ export class PixiNodePainter {
         color: EDITOR_ACCENT_COLOR,
         width: EDITOR_SELECTION_STROKE_WIDTH * invStroke,
       });
+      this.layoutHitZoneGizmo(runtime, cameraScale, nodeScale);
+      this.layoutMaskGizmo(runtime, cameraScale, nodeScale);
+      this.layoutGraphicsPolygonGizmo(runtime, cameraScale, nodeScale);
       return;
     }
     // Empty grouping nodes have no content AABB — mark origin only.
@@ -300,12 +336,133 @@ export class PixiNodePainter {
       color: EDITOR_ACCENT_COLOR,
       width: EDITOR_SELECTION_STROKE_WIDTH * invStroke,
     });
+    this.layoutHitZoneGizmo(runtime, cameraScale, nodeScale);
+    this.layoutMaskGizmo(runtime, cameraScale, nodeScale);
+    this.layoutGraphicsPolygonGizmo(runtime, cameraScale, nodeScale);
+  }
+
+  private layoutHitZoneGizmo(
+    runtime: RuntimeNode,
+    cameraScale: number,
+    nodeScale: { x: number; y: number },
+  ): void {
+    const gizmo = runtime.hitZoneGizmo;
+    if (!gizmo) {
+      return;
+    }
+    const hitZone = effectiveHitZone(runtime);
+    if (!hitZone || runtime.editorLocked) {
+      gizmo.setVisible(false);
+      return;
+    }
+    const offset = getHitZoneOffset(hitZone);
+    const transform = getTransform2D(runtime.node);
+    const chromeScale = {
+      x: cameraScale * nodeScale.x,
+      y: cameraScale * nodeScale.y,
+    };
+    gizmo.root.position.set(offset.x, offset.y);
+    gizmo.setVisible(true);
+    if (hitZone.shape.type === "polygon") {
+      gizmo.layoutPolygon(hitZone.shape.points, chromeScale);
+      return;
+    }
+    const size = hitZoneShapeSize(hitZone.shape);
+    if (!size) {
+      gizmo.setVisible(false);
+      return;
+    }
+    gizmo.layout(
+      size.width,
+      size.height,
+      chromeScale,
+      transform?.rotation ?? 0,
+      {
+        x: (transform?.scale.x ?? 1) < 0,
+        y: (transform?.scale.y ?? 1) < 0,
+      },
+    );
+  }
+
+  private layoutMaskGizmo(
+    runtime: RuntimeNode,
+    cameraScale: number,
+    nodeScale: { x: number; y: number },
+  ): void {
+    const gizmo = runtime.maskGizmo;
+    if (!gizmo) {
+      return;
+    }
+    const mask = effectiveMask(runtime);
+    const zone = mask ? maskAsHitZone(mask) : undefined;
+    if (!mask || !zone || runtime.editorLocked) {
+      gizmo.setVisible(false);
+      return;
+    }
+    const offset = getMaskOffset(mask);
+    const transform = getTransform2D(runtime.node);
+    const chromeScale = {
+      x: cameraScale * nodeScale.x,
+      y: cameraScale * nodeScale.y,
+    };
+    gizmo.root.position.set(offset.x, offset.y);
+    gizmo.setVisible(true);
+    if (mask.mode === "shape" && zone.shape.type === "polygon") {
+      gizmo.layoutPolygon(zone.shape.points, chromeScale);
+      return;
+    }
+    const size = hitZoneShapeSize(zone.shape);
+    if (!size) {
+      gizmo.setVisible(false);
+      return;
+    }
+    gizmo.layout(
+      size.width,
+      size.height,
+      chromeScale,
+      transform?.rotation ?? 0,
+      {
+        x: (transform?.scale.x ?? 1) < 0,
+        y: (transform?.scale.y ?? 1) < 0,
+      },
+    );
+  }
+
+  private layoutGraphicsPolygonGizmo(
+    runtime: RuntimeNode,
+    cameraScale: number,
+    nodeScale: { x: number; y: number },
+  ): void {
+    const gizmo = runtime.graphicsPolygonGizmo;
+    if (!gizmo) {
+      return;
+    }
+    const shape = sceneGraphicsPolygon(runtime);
+    if (!shape || runtime.editorLocked) {
+      gizmo.setVisible(false);
+      return;
+    }
+    gizmo.root.position.set(0, 0);
+    gizmo.setVisible(true);
+    gizmo.layoutPolygon(shape.points, {
+      x: cameraScale * nodeScale.x,
+      y: cameraScale * nodeScale.y,
+    });
   }
 
   invalidateStaleTextures(): void {
     this.host.textureCache.evictStale((assetId) =>
       this.host.getAssetResolver()?.resolveUrl(assetId),
     );
+  }
+
+  refreshChromeHitArea(runtime: RuntimeNode): void {
+    const bounds = chromeHitBounds(runtime, runtime.visualBounds);
+    if (bounds) {
+      this.setVisualsHitArea(runtime, bounds);
+    } else {
+      this.clearVisualsHitArea(runtime);
+    }
   }
 
   /** Recompute a grouping node's content AABB and ancestor grouping bounds. */
@@ -353,13 +510,62 @@ export class PixiNodePainter {
     if (getVisualComponent(runtime.node)) {
       return;
     }
-    const bounds = computeGroupingContentBounds(runtime, this.host.graph);
+    const childBounds = computeGroupingContentBounds(runtime, this.host.graph);
+    const bounds = chromeHitBounds(runtime, childBounds);
     runtime.visualBounds = bounds;
     if (bounds) {
       this.setVisualsHitArea(runtime, bounds);
     } else {
       this.clearVisualsHitArea(runtime);
     }
+  }
+
+  private syncHitZone(
+    runtime: RuntimeNode,
+    selected: boolean,
+    strokeScale: number,
+  ): void {
+    syncHitZoneDisplay(runtime, { selected, strokeScale });
+  }
+
+  private syncPlaybackHitZone(runtime: RuntimeNode): void {
+    if (runtime.editable) {
+      return;
+    }
+    syncHitZoneDisplay(runtime, { selected: false, strokeScale: 1 });
+  }
+
+  private async syncMask(runtime: RuntimeNode): Promise<void> {
+    const selected = this.host.getSelectedNodeIds().has(runtime.node.id);
+    const cameraScale = this.host.getCameraScale();
+    const nodeScale = localScaleTowardAncestor(
+      runtime.container,
+      this.host.graph.world,
+    );
+    const inv = viewportChromeInvScaleAxes(
+      cameraScale,
+      nodeScale.x,
+      nodeScale.y,
+    );
+    const assetResolver = this.host.getAssetResolver();
+    await syncMaskDisplay(runtime, {
+      selected,
+      strokeScale: Math.min(inv.x, inv.y),
+      textures: {
+        loadTexture: (assetId, url) => this.loadTexture(assetId, url),
+        resolveUrl: (assetId) => assetResolver?.resolveUrl(assetId),
+        warnMissingAsset: (assetId) => {
+          if (!runtime.warnedMissingMaskAsset) {
+            runtime.warnedMissingMaskAsset = true;
+            console.warn("[renderer] missing asset", {
+              category: "renderer",
+              assetId,
+              nodeId: runtime.node.id,
+            });
+          }
+        },
+      },
+    });
   }
 
   private refreshGroupingAncestors(runtime: RuntimeNode): void {

@@ -6,7 +6,7 @@ import type { Editor } from "@game-editor/editor-core";
 import type { VisualComponentData } from "@game-editor/scene";
 import { TileAtlasThumb } from "../../assets/TileAtlasThumb";
 import { useEditorState } from "../../hooks/useEditorState";
-import { AssetSelectField, NumberField } from "../fields/inspector-fields";
+import { AssetSelectField, InspectorFieldRow, NumberField } from "../fields/inspector-fields";
 import type { VisualCommit } from "./types";
 
 const PALETTE_CELL_SIZE = 32;
@@ -52,22 +52,24 @@ export function TilemapFields({
           });
         }}
       />
-      <NumberField
-        label="Tile Width"
-        integer
-        value={visual.tileWidth}
-        onCommit={(tileWidth) =>
-          commit({ tileWidth: Math.max(1, tileWidth) })
-        }
-      />
-      <NumberField
-        label="Tile Height"
-        integer
-        value={visual.tileHeight}
-        onCommit={(tileHeight) =>
-          commit({ tileHeight: Math.max(1, tileHeight) })
-        }
-      />
+      <InspectorFieldRow>
+        <NumberField
+          label="Tile Width"
+          integer
+          value={visual.tileWidth}
+          onCommit={(tileWidth) =>
+            commit({ tileWidth: Math.max(1, tileWidth) })
+          }
+        />
+        <NumberField
+          label="Tile Height"
+          integer
+          value={visual.tileHeight}
+          onCommit={(tileHeight) =>
+            commit({ tileHeight: Math.max(1, tileHeight) })
+          }
+        />
+      </InspectorFieldRow>
       {tileset && imageUrl && imageSize && count > 0 ? (
         <div className="tile-palette">
           <div className="tile-palette-label">Tile Palette</div>

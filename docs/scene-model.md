@@ -77,6 +77,7 @@ interface SceneNodeData {
   parentId?: string;
   layer?: "background" | "foreground";  // hybrid Pixi stack; ignored for 3D
   visible?: boolean;                    // omit = true; persist false when hidden
+  alpha?: number;                       // omit = 1; persist when not fully opaque
   prefab?: PrefabInstanceLink;          // only on prefab-instance nodes
   components: ComponentData[];
   children: SceneNodeData[];
@@ -89,7 +90,9 @@ Nodes are generic. Behaviour and look come from **components**, not subclasses (
 Node
 ├── Transform2D
 ├── Sprite          (assetId)
-└── Script          (scriptId: shared.ChangeScene)
+├── HitZone         (optional click/touch region)
+├── Mask            (optional 2D clip: shape or sprite)
+└── Script          (scriptId: shared.Button)
 ```
 
 A 3D entity is the same idea with `Transform3D` + `Model3D` / lights / camera.
@@ -114,11 +117,13 @@ Discriminated union `ComponentData` on `type`:
 | `AnimatedSprite` | `visual-components.ts` | frame `assetId`s or Aseprite `assetId` + `animation` tag |
 | `Spine` | `visual-components.ts` | skeleton + atlas catalogue id |
 | `Tilemap` | `tilemap-data.ts` | `tileSetId` + chunked cells |
+| `HitZone` | `hit-zone-component.ts` | Optional 2D pointer region (Graphics shapes + offset). Not a leaf visual, not physics. One per node. |
+| `Mask` | `mask-component.ts` | Optional 2D clip (shape or sprite/alpha, optional inverse). Not a leaf visual. One per node. Pixi-only. |
 | `Model3D` | `three-components.ts` | glTF `assetId`, clip / loop / playing |
 | `PerspectiveCamera`, `DirectionalLight`, `AmbientLight` | `three-components.ts` | |
 | `Script` | `types.ts` | `scriptId` + JSON `properties` — no class instances |
 
-Factories: `packages/scene/src/factories/` (`createEmptyScene`, `createSpriteComponent`, `createScriptComponent`, …). Queries: `findNodeById`, `getTransform2D`, `getVisualComponent`, `flattenNodes` in `queries.ts`. Hierarchy mutations: `node-ops.ts` / `hierarchy.ts`.
+Factories: `packages/scene/src/factories/` (`createEmptyScene`, `createSpriteComponent`, `createHitZoneComponent`, `createMaskComponent`, `createScriptComponent`, …). Queries: `findNodeById`, `getTransform2D`, `getVisualComponent`, `getHitZone`, `getMask`, `flattenNodes` in `queries.ts`. Hierarchy mutations: `node-ops.ts` / `hierarchy.ts`.
 
 IDs come from `createId(prefix)` in `@game-editor/shared`: `scene_`, `node_`, `comp_`, `asset_`, `prefab_`, `pinst_` (prefab instance).
 
@@ -158,9 +163,10 @@ Keep files Git-friendly: deterministic field order from the writer, no Pixi/Thre
 
 ---
 
-## Visibility and layers
+## Visibility, alpha, and layers
 
 - **`visible`** — runtime/export. Omit when `true`. Inspector **Visible** writes this field (undoable). Hierarchy eye does not.
+- **`alpha`** — runtime/export opacity (0–1). Omit when `1`. Inspector **Alpha** writes this field (undoable). Pixi applies it to the node container (children inherit).
 - **`layer`** — `"background"` \| `"foreground"` on 2D nodes in a hybrid scene (Pixi under vs over Three). Default `"background"`. Ignored for `Transform3D` nodes.
 - **`renderer`** on `SceneData` — `"pixi"` \| `"three"` \| `"hybrid"`. Must match the game’s package dependencies (`project.json` `renderers`).
 
@@ -190,7 +196,7 @@ interface PrefabInstanceLink {
   sourceNodeId: string;
   componentSources: Record<string, string>; // scene comp id → source comp id
   isRoot?: boolean;
-  overrides?: PrefabOverride[];             // property / name / layer / visible
+  overrides?: PrefabOverride[];             // property / name / layer / visible / alpha
 }
 ```
 
@@ -221,11 +227,12 @@ interface ScriptComponentData {
   type: "Script";
   id: string;
   scriptId: string;  // e.g. "shared.ChangeScene"
+  enabled?: boolean; // omit = true; persist false when the behaviour should not run
   properties: Record<string, unknown>;
 }
 ```
 
-`scriptId` is a registry id, never a file path. Unknown ids still deserialize so old scenes load; the editor warns if the definition is missing. Behaviour **classes and functions are not persisted** — `GameRuntime` / preview construct them from `ComponentRegistry.create`.
+`scriptId` is a registry id, never a file path. Unknown ids still deserialize so old scenes load; the editor warns if the definition is missing. Behaviour **classes and functions are not persisted** — `GameRuntime` / preview construct them from `ComponentRegistry.create` when `enabled` is not `false`.
 
 ---
 

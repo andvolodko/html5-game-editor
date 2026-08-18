@@ -112,16 +112,41 @@ export function isSpriteFlipHandle(
   return handle === "flipH" || handle === "flipV";
 }
 
-export function sizeHandleCursor(handle: SpriteSizeHandle): string {
-  switch (handle) {
-    case "nw":
-    case "se":
+const SIZE_HANDLE_OUTWARD_DEG: Record<SpriteSizeHandle, number> = {
+  e: 0,
+  se: 45,
+  sw: 135,
+  w: 180,
+  nw: 225,
+  ne: 315,
+};
+
+export function sizeHandleCursor(
+  handle: SpriteSizeHandle,
+  rotationDeg = 0,
+  flip?: { x: boolean; y: boolean },
+): string {
+  let angle = SIZE_HANDLE_OUTWARD_DEG[handle];
+  if (flip?.x) {
+    angle = 180 - angle;
+  }
+  if (flip?.y) {
+    angle = -angle;
+  }
+  angle += rotationDeg;
+  const sector = Math.round(angle / 45) * 45;
+  const snapped = ((sector % 360) + 360) % 360;
+  switch (snapped) {
+    case 45:
+    case 225:
       return "nwse-resize";
-    case "ne":
-    case "sw":
+    case 135:
+    case 315:
       return "nesw-resize";
-    case "w":
-    case "e":
+    case 90:
+    case 270:
+      return "ns-resize";
+    default:
       return "ew-resize";
   }
 }

@@ -24,6 +24,7 @@ import {
   cloneObjectComponent,
   installCloneObjectRuntime,
 } from "./clone-object.js";
+import { cloudComponent, installCloudRuntime } from "./cloud.js";
 
 /** Registers shared + editor-features-demo script components into the catalog. */
 export function registerGameComponents(registry: ComponentRegistry): void {
@@ -33,6 +34,7 @@ export function registerGameComponents(registry: ComponentRegistry): void {
   registry.register(goSpineButtonComponent);
   registry.register(raptorComponent);
   registry.register(cloneObjectComponent);
+  registry.register(cloudComponent);
 }
 
 /** Bus events for Inspector dynamicEnum source `busEvents`. */
@@ -55,6 +57,7 @@ export function installEditorFeaturesDemoRuntime(registry: ComponentRegistry): v
   installGoSpineButtonRuntime(registry);
   installRaptorRuntime(registry);
   installCloneObjectRuntime(registry);
+  installCloudRuntime(registry);
 }
 
 /** Standard hook discovered by the editor via import.meta.glob. */
@@ -79,3 +82,8 @@ export {
   installCloneObjectRuntime,
   CloneObjectBehaviour,
 } from "./clone-object.js";
+export {
+  cloudComponent,
+  installCloudRuntime,
+  CloudBehaviour,
+} from "./cloud.js";

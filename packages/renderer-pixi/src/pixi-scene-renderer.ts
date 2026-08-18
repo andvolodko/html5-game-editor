@@ -10,6 +10,9 @@ import {
   type SceneRenderer,
   type SceneRenderStats,
   type SpriteGizmoHandle,
+  type HitZoneComponentData,
+  type MaskComponentData,
+  type GraphicsShapeData,
   type Vec2,
 } from "@game-editor/scene";
 import { samplePixiRenderStats } from "./pixi-render-stats.js";
@@ -26,12 +29,18 @@ import { PixiTextureCache } from "./pixi-texture-cache.js";
 import { PixiNodeDragController } from "./pixi-node-drag.js";
 import { PixiNodeClickController } from "./pixi-node-click.js";
 import { PixiGizmoDragController } from "./pixi-gizmo-drag.js";
+import { PixiHitZoneDragController } from "./pixi-hit-zone-drag.js";
+import { PixiMaskDragController } from "./pixi-mask-drag.js";
+import { PixiGraphicsPolygonDragController } from "./pixi-graphics-polygon-drag.js";
+import type { HitZoneGizmoHandle } from "./pixi-hit-zone-gizmo.js";
 import { ViewportCameraController } from "./viewport-camera-controller.js";
 import type { ViewportCameraState, WorldRect } from "./viewport-camera.js";
 import { ScreenGuidesOverlay } from "./screen-guides.js";
 import { DEFAULT_SNAP_GRID_SIZE } from "./snap-to-grid.js";
 import { DEFAULT_EDITOR_BACKGROUND } from "./editor-chrome.js";
 import { PixiNodePainter } from "./pixi-node-painter.js";
+import { applyPixiNodeContentAlpha } from "./pixi-node-alpha.js";
+import { pickAreaIfHit } from "./pixi-hit-zone-pick.js";
 import { PixiNodePreviewController } from "./pixi-node-preview.js";
 import { redrawEditorOverlays as syncEditorOverlays } from "./pixi-editor-overlay-sync.js";
 import { PixiAppLifecycle } from "./pixi-app-lifecycle.js";
@@ -65,6 +74,9 @@ export class PixiSceneRenderer implements SceneRenderer {
   private readonly nodeDrag = new PixiNodeDragController();
   private readonly nodeClick = new PixiNodeClickController();
   private readonly gizmoDragController = new PixiGizmoDragController();
+  private readonly hitZoneDrag = new PixiHitZoneDragController();
+  private readonly maskDrag = new PixiMaskDragController();
+  private readonly graphicsPolygonDrag = new PixiGraphicsPolygonDragController();
   private readonly painter: PixiNodePainter;
   private readonly preview: PixiNodePreviewController;
   private readonly lifecycle: PixiAppLifecycle;
@@ -335,6 +347,21 @@ export class PixiSceneRenderer implements SceneRenderer {
       onGizmoHandlePointerDown: (live, handle, event) => {
         this.beginGizmoDrag(live, handle, event);
       },
+      onHitZoneHandlePointerDown: (live, handle, event) => {
+        this.beginHitZoneDrag(live, handle, event);
+      },
+      onHitZoneBodyPointerDown: (live, event) => {
+        this.beginHitZoneMove(live, event);
+      },
+      onMaskHandlePointerDown: (live, handle, event) => {
+        this.beginMaskDrag(live, handle, event);
+      },
+      onMaskBodyPointerDown: (live, event) => {
+        this.beginMaskMove(live, event);
+      },
+      onGraphicsPolygonHandlePointerDown: (live, handle, event) => {
+        this.beginGraphicsPolygonDrag(live, handle, event);
+      },
     });
     if (this.editable) {
       this.nodeDrag.attach(runtime, createNodeDragHost(this.interactionSource()));
@@ -346,6 +373,7 @@ export class PixiSceneRenderer implements SceneRenderer {
     }
     this.painter.paint(runtime);
     this.applyDisplayVisible(runtime);
+    this.applyDisplayAlpha(runtime);
     this.syncStats.created += 1;
   }
 
@@ -356,11 +384,15 @@ export class PixiSceneRenderer implements SceneRenderer {
     }
     runtime.node = node;
     this.applyDisplayVisible(runtime);
+    this.applyDisplayAlpha(runtime);
     this.graph.syncDisplayLabels(node.id);
     this.syncStats.updated += 1;
     if (
       this.nodeDrag.isActiveFor(node.id) ||
-      this.gizmoDragController.isActiveFor(node.id)
+      this.gizmoDragController.isActiveFor(node.id) ||
+      this.hitZoneDrag.isActiveFor(node.id) ||
+      this.maskDrag.isActiveFor(node.id) ||
+      this.graphicsPolygonDrag.isActiveFor(node.id)
     ) {
       void this.painter.paintVisuals(runtime);
       this.painter.paintSelection(runtime);
@@ -368,6 +400,15 @@ export class PixiSceneRenderer implements SceneRenderer {
     }
     runtime.sizePreview = undefined;
     runtime.anchorPreview = undefined;
+    if (!this.hitZoneDrag.isActiveFor(node.id)) {
+      runtime.hitZonePreview = undefined;
+    }
+    if (!this.maskDrag.isActiveFor(node.id)) {
+      runtime.maskPreview = undefined;
+    }
+    if (!this.graphicsPolygonDrag.isActiveFor(node.id)) {
+      runtime.graphicsShapePreview = undefined;
+    }
     this.painter.paint(runtime);
   }
 
@@ -502,6 +543,18 @@ export class PixiSceneRenderer implements SceneRenderer {
       getNodeVisible(runtime.node) && !runtime.editorHidden;
   }
 
+  setNodeAlpha(nodeId: string, alpha: number): void {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    applyPixiNodeContentAlpha(runtime, alpha);
+  }
+
+  private applyDisplayAlpha(runtime: RuntimeNode): void {
+    applyPixiNodeContentAlpha(runtime);
+  }
+
   setNodeLocked(nodeId: string, locked: boolean): void {
     const runtime = this.graph.get(nodeId);
     if (!runtime) {
@@ -523,6 +576,9 @@ export class PixiSceneRenderer implements SceneRenderer {
     }
     runtime.container.cursor = cursor;
     runtime.visualsRoot.cursor = cursor;
+    if (runtime.hitZoneTarget) {
+      runtime.hitZoneTarget.cursor = cursor;
+    }
   }
 
   getNodeCursor(nodeId: string): string | undefined {
@@ -564,24 +620,12 @@ export class PixiSceneRenderer implements SceneRenderer {
       if (!isPixiWorldVisible(runtime.container)) {
         continue;
       }
-      const target = runtime.visual ?? runtime.visualsRoot;
-      if (!target || !target.visible) {
+      const area = pickAreaIfHit(runtime, screen);
+      if (area === undefined || area >= bestArea) {
         continue;
       }
-      const bounds = target.getBounds();
-      if (
-        screen.x < bounds.x ||
-        screen.y < bounds.y ||
-        screen.x > bounds.x + bounds.width ||
-        screen.y > bounds.y + bounds.height
-      ) {
-        continue;
-      }
-      const area = Math.max(1, bounds.width * bounds.height);
-      if (area < bestArea) {
-        bestArea = area;
-        bestId = nodeId;
-      }
+      bestArea = area;
+      bestId = nodeId;
     }
     return bestId;
   }
@@ -601,6 +645,132 @@ export class PixiSceneRenderer implements SceneRenderer {
       event,
       createGizmoDragHost(this.interactionSource()),
     );
+  }
+
+  private beginHitZoneDrag(
+    runtime: RuntimeNode,
+    handle: HitZoneGizmoHandle,
+    event: FederatedPointerEvent,
+  ): void {
+    this.hitZoneDrag.beginHandle(runtime, handle, event, this.hitZoneDragHost());
+  }
+
+  private beginHitZoneMove(
+    runtime: RuntimeNode,
+    event: FederatedPointerEvent,
+  ): void {
+    this.hitZoneDrag.beginMove(runtime, event, this.hitZoneDragHost());
+  }
+
+  private hitZoneDragHost() {
+    return {
+      getApp: () => this.lifecycle.app,
+      world: this.graph.world,
+      getRuntime: (nodeId: string) => this.graph.get(nodeId),
+      previewHitZone: (nodeId: string, hitZone: HitZoneComponentData) =>
+        this.previewHitZone(nodeId, hitZone),
+      paintSelection: (nodeId: string) => {
+        const live = this.graph.get(nodeId);
+        if (live) {
+          this.painter.paintSelection(live);
+        }
+      },
+      onHitZoneResizeEnd: (nodeId: string, hitZone: HitZoneComponentData) =>
+        this.pointerHandlers?.onHitZoneResizeEnd?.(nodeId, hitZone),
+    };
+  }
+
+  private beginMaskDrag(
+    runtime: RuntimeNode,
+    handle: HitZoneGizmoHandle,
+    event: FederatedPointerEvent,
+  ): void {
+    this.maskDrag.beginHandle(runtime, handle, event, this.maskDragHost());
+  }
+
+  private beginMaskMove(
+    runtime: RuntimeNode,
+    event: FederatedPointerEvent,
+  ): void {
+    this.maskDrag.beginMove(runtime, event, this.maskDragHost());
+  }
+
+  private maskDragHost() {
+    return {
+      getApp: () => this.lifecycle.app,
+      world: this.graph.world,
+      getRuntime: (nodeId: string) => this.graph.get(nodeId),
+      previewMask: (nodeId: string, mask: MaskComponentData) =>
+        this.previewMask(nodeId, mask),
+      paintSelection: (nodeId: string) => {
+        const live = this.graph.get(nodeId);
+        if (live) {
+          this.painter.paintSelection(live);
+        }
+      },
+      onMaskResizeEnd: (nodeId: string, mask: MaskComponentData) =>
+        this.pointerHandlers?.onMaskResizeEnd?.(nodeId, mask),
+    };
+  }
+
+  private previewMask(nodeId: string, mask: MaskComponentData): void {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    runtime.maskPreview = mask;
+    this.painter.paintSelection(runtime);
+  }
+
+  private beginGraphicsPolygonDrag(
+    runtime: RuntimeNode,
+    handle: HitZoneGizmoHandle,
+    event: FederatedPointerEvent,
+  ): void {
+    this.graphicsPolygonDrag.beginHandle(
+      runtime,
+      handle,
+      event,
+      this.graphicsPolygonDragHost(),
+    );
+  }
+
+  private graphicsPolygonDragHost() {
+    return {
+      getApp: () => this.lifecycle.app,
+      world: this.graph.world,
+      getRuntime: (nodeId: string) => this.graph.get(nodeId),
+      previewGraphicsShape: (nodeId: string, shape: GraphicsShapeData) =>
+        this.previewGraphicsShape(nodeId, shape),
+      paintSelection: (nodeId: string) => {
+        const live = this.graph.get(nodeId);
+        if (live) {
+          this.painter.paintSelection(live);
+        }
+      },
+      onGraphicsPolygonEnd: (nodeId: string, shape: GraphicsShapeData) =>
+        this.pointerHandlers?.onGraphicsPolygonEnd?.(nodeId, shape),
+    };
+  }
+
+  private previewGraphicsShape(nodeId: string, shape: GraphicsShapeData): void {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    runtime.graphicsShapePreview = shape;
+    void this.painter.paintVisuals(runtime);
+    this.painter.paintSelection(runtime);
+  }
+
+  private previewHitZone(nodeId: string, hitZone: HitZoneComponentData): void {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    runtime.hitZonePreview = hitZone;
+    this.painter.refreshChromeHitArea(runtime);
+    this.painter.paintSelection(runtime);
   }
 
   /**
@@ -647,6 +817,44 @@ export class PixiSceneRenderer implements SceneRenderer {
     return this.graph.get(nodeId)?.gizmo?.root;
   }
 
+  /** Test/diagnostics: playback HitZone hit target. */
+  getRuntimeHitZoneTarget(nodeId: string): Container | undefined {
+    return this.graph.get(nodeId)?.hitZoneTarget;
+  }
+
+  /** Test/diagnostics: editor HitZone overlay. */
+  getRuntimeHitZoneOverlay(nodeId: string): Container | undefined {
+    return this.graph.get(nodeId)?.hitZoneOverlay;
+  }
+
+  getRuntimeHitZoneGizmoRoot(nodeId: string): Container | undefined {
+    return this.graph.get(nodeId)?.hitZoneGizmo?.root;
+  }
+
+  getRuntimeContentRoot(nodeId: string): Container | undefined {
+    return this.graph.get(nodeId)?.contentRoot;
+  }
+
+  getRuntimeChromeRoot(nodeId: string): Container | undefined {
+    return this.graph.get(nodeId)?.chromeRoot;
+  }
+
+  getRuntimeMaskStencil(nodeId: string): Container | undefined {
+    return this.graph.get(nodeId)?.maskStencil;
+  }
+
+  getRuntimeMaskOverlay(nodeId: string): Container | undefined {
+    return this.graph.get(nodeId)?.maskOverlay;
+  }
+
+  getRuntimeMaskGizmoRoot(nodeId: string): Container | undefined {
+    return this.graph.get(nodeId)?.maskGizmo?.root;
+  }
+
+  getRuntimeGraphicsPolygonGizmoRoot(nodeId: string): Container | undefined {
+    return this.graph.get(nodeId)?.graphicsPolygonGizmo?.root;
+  }
+
   getSyncStats(): Readonly<PixiSyncStats> {
     return { ...this.syncStats };
   }
@@ -663,7 +871,11 @@ export class PixiSceneRenderer implements SceneRenderer {
     return {
       getApp: () => this.lifecycle.app,
       world: this.graph.world,
-      isGizmoDragging: () => this.gizmoDragController.isDragging,
+      isGizmoDragging: () =>
+        this.gizmoDragController.isDragging ||
+        this.hitZoneDrag.isDragging ||
+        this.maskDrag.isDragging ||
+        this.graphicsPolygonDrag.isDragging,
       getRuntime: (nodeId) => this.graph.get(nodeId),
       getSnapGridSize: () => this.snapGridSize,
       getPointerHandlers: () => this.pointerHandlers,

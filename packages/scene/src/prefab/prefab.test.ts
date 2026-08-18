@@ -159,6 +159,23 @@ describe("prefab overrides", () => {
     expect(resolved.node.visible).toBeUndefined();
   });
 
+  it("copies runtime alpha and records an alpha override", () => {
+    const prefab = buildPlayerPrefab();
+    prefab.root.alpha = 0.4;
+    const { node } = instantiatePrefab(prefab, { prefabAssetId: PREFAB_ASSET_ID });
+    expect(node.alpha).toBe(0.4);
+    delete node.alpha;
+    const overrides = computePrefabOverrides(prefab.root, node);
+    expect(overrides).toContainEqual({
+      kind: "alpha",
+      sourceNodeId: prefab.root.id,
+      value: 1,
+    });
+    node.prefab!.overrides = overrides;
+    const resolved = resolvePrefabInstance(prefab, node, catalogOf(prefab));
+    expect(resolved.node.alpha).toBeUndefined();
+  });
+
   it("non-overridden prefab updates propagate", () => {
     const prefab = buildPlayerPrefab();
     const { node } = instantiatePrefab(prefab, { prefabAssetId: PREFAB_ASSET_ID });

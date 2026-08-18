@@ -16,6 +16,7 @@ export {
 } from "./factories/sprites.js";
 export {
   createDefaultTextStyle,
+  applyTextStyleWebFont,
   createTextComponent,
   createBitmapTextComponent,
   createHTMLTextComponent,
@@ -37,3 +38,13 @@ export {
   createAmbientLightComponent,
 } from "./factories/three.js";
 export { createScriptComponent } from "./factories/script.js";
+export {
+  createHitZoneComponent,
+  createHitZoneNode,
+  defaultHitZoneShapeForNode,
+} from "./factories/hit-zone.js";
+export {
+  createMaskComponent,
+  createMaskNode,
+  defaultMaskShapeForNode,
+} from "./factories/mask.js";

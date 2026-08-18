@@ -79,4 +79,6 @@ Do not import editor packages from this resolution path.
 
 Game behaviours live under `games/<name>/src/components` or `packages/game-components`. They use `defineComponent` plus an OOP class that implements `ScriptInstance`. Class instances are not persisted in scene JSON.
 
+`Script.enabled` (omit = true) is a scene-level flag. Disabled scripts are not constructed and do not receive `update`. This is independent of any `properties.enabled` field a behaviour may define.
+
 See `.cursor/skills/create-game-component/SKILL.md`.

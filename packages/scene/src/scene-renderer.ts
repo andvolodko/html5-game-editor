@@ -83,6 +83,11 @@ export interface SceneRenderer {
    */
   setNodeVisible?(nodeId: string, visible: boolean): void;
   /**
+   * Transient script opacity. Does not write `SceneNodeData.alpha`.
+   * Serialized alpha is applied on create/update.
+   */
+  setNodeAlpha?(nodeId: string, alpha: number): void;
+  /**
    * Editor-only hide overlay. Combined with serialized `node.visible`
    * (`runtimeVisible && !editorHidden`) on the display object.
    */
