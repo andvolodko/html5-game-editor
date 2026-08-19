@@ -170,6 +170,9 @@ importers:
       vite:
         specifier: ^7.0.6
         version: 7.3.6(@types/node@22.20.1)(tsx@4.23.12)
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@22.20.1)(tsx@4.23.12)
 
   games/example-game-2:
     dependencies:

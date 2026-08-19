@@ -207,6 +207,12 @@ export {
 } from "./schema.js";
 
 export type { SceneRenderer, SceneRenderStats, BoneWorldTransform } from "./scene-renderer.js";
+export type { RuntimeTransform2D } from "./runtime-transform-2d.js";
+export {
+  bindRuntimeTransform2D,
+  createDetachedRuntimeTransform2D,
+  resolveSceneRuntimeTransform2D,
+} from "./runtime-transform-2d.js";
 export {
   EMPTY_SCENE_RENDER_STATS,
   addSceneRenderStats,

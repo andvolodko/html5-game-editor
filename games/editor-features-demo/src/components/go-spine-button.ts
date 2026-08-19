@@ -23,31 +23,49 @@ function readProps(raw: Readonly<Record<string, unknown>>): Props {
 
 /** Live instance — on click, navigates to the selected scene. */
 export class GoSpineButtonBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private sceneName = DEFAULT_SCENE_ID;
   private unsubscribers: Array<() => void> = [];
 
   constructor(private readonly ctx: ScriptCreateContext) {
-    this.props = readProps(ctx.properties);
-    this.onEnable();
+    this.applyProperties(ctx.properties);
   }
 
-  private onEnable(): void {
+  start(): void {
+    this.bind();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
+  }
+
+  destroy(): void {
+    this.unbind();
+  }
+
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    this.sceneName = readProps(raw).sceneName;
+  }
+
+  private unbind(): void {
+    for (const off of this.unsubscribers) {
+      off();
+    }
+    this.unsubscribers = [];
+  }
+
+  private bind(): void {
+    this.unbind();
     const { onNodeClick, changeScene } = this.ctx.services;
     if (!onNodeClick) {
       return;
     }
     this.unsubscribers.push(
       onNodeClick(this.ctx.nodeId, () => {
-        void changeScene(this.props.sceneName);
+        void changeScene(this.sceneName);
       }),
     );
-  }
-
-  destroy(): void {
-    for (const off of this.unsubscribers) {
-      off();
-    }
-    this.unsubscribers = [];
   }
 }
 
@@ -72,8 +90,5 @@ export const goSpineButtonComponent = defineComponent({
 
 /** Re-attach create after a metadata-only catalog load (editor / preview). */
 export function installGoSpineButtonRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(goSpineButtonComponent.id);
-  if (existing && goSpineButtonComponent.create) {
-    existing.create = goSpineButtonComponent.create;
-  }
+  registry.attachRuntime(goSpineButtonComponent.id, goSpineButtonComponent.create);
 }

@@ -50,7 +50,7 @@ function pointerTargetIds(
  * blocked before a user gesture. Hover child (if present) is shown on pointerover.
  */
 export class AudioContainerBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private props: Props;
   private readonly ctx: ScriptCreateContext;
   private onId: string | undefined;
   private offId: string | undefined;
@@ -59,7 +59,29 @@ export class AudioContainerBehaviour implements ScriptInstance {
   constructor(ctx: ScriptCreateContext) {
     this.ctx = ctx;
     this.props = readProps(ctx.properties);
+  }
+
+  start(): void {
+    this.bind();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.props = readProps(properties);
+    this.bind();
+  }
+
+  private bind(): void {
+    this.unbind();
     this.onEnable();
+  }
+
+  private unbind(): void {
+    for (const off of this.unsubscribers) {
+      off();
+    }
+    this.unsubscribers = [];
   }
 
   private onEnable(): void {
@@ -119,10 +141,7 @@ export class AudioContainerBehaviour implements ScriptInstance {
   }
 
   destroy(): void {
-    for (const off of this.unsubscribers) {
-      off();
-    }
-    this.unsubscribers = [];
+    this.unbind();
   }
 }
 
@@ -153,8 +172,5 @@ export const audioContainerComponent = defineComponent({
 });
 
 export function installAudioContainerRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(audioContainerComponent.id);
-  if (existing && audioContainerComponent.create) {
-    existing.create = audioContainerComponent.create;
-  }
+  registry.attachRuntime(audioContainerComponent.id, audioContainerComponent.create);
 }

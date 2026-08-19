@@ -16,6 +16,10 @@ import {
   type Vec2,
 } from "@game-editor/scene";
 import { samplePixiRenderStats } from "./pixi-render-stats.js";
+import {
+  advanceHostDrivenVisuals,
+  detachSharedTickerVisuals,
+} from "./pixi-playback-visuals.js";
 import { clientPointToScreen } from "./viewport-math.js";
 import { PixelGridOverlay } from "./pixel-grid.js";
 import { TilemapGridOverlay } from "./tilemap-grid-overlay.js";
@@ -25,6 +29,7 @@ import {
   PixiRuntimeGraph,
   type RuntimeNode,
 } from "./pixi-runtime-nodes.js";
+import { PixiRuntimeTransform2D } from "./pixi-runtime-transform-2d.js";
 import { PixiTextureCache } from "./pixi-texture-cache.js";
 import { PixiNodeDragController } from "./pixi-node-drag.js";
 import { PixiNodeClickController } from "./pixi-node-click.js";
@@ -90,6 +95,7 @@ export class PixiSceneRenderer implements SceneRenderer {
   private readonly camera = new ViewportCameraController();
   /** When set, node-move drags quantize to this world-space cell size. */
   private snapGridSize: number | undefined;
+  private playbackPaused = false;
   private syncStats: PixiSyncStats = {
     created: 0,
     destroyed: 0,
@@ -158,8 +164,12 @@ export class PixiSceneRenderer implements SceneRenderer {
           this.lifecycle.syncViewportSize();
           this.redrawEditorOverlays();
         },
-        onTick: (deltaMs) => {
-          this.advanceTileAnimations(deltaMs);
+        onTick: (ticker) => {
+          if (this.playbackPaused) {
+            return;
+          }
+          this.advanceTileAnimations(ticker.deltaMS);
+          advanceHostDrivenVisuals(this.graph.values(), ticker);
         },
       },
       options.headless === true,
@@ -179,6 +189,14 @@ export class PixiSceneRenderer implements SceneRenderer {
 
   setPointerHandlers(handlers: PixiPointerHandlers | undefined): void {
     this.pointerHandlers = handlers;
+  }
+
+  setPlaybackPaused(paused: boolean): void {
+    this.playbackPaused = paused;
+    if (paused) {
+      detachSharedTickerVisuals(this.graph.values());
+    }
+    this.lifecycle.setTickerPaused(paused);
   }
 
   setAssetResolver(resolver: AssetResolver | undefined): void {
@@ -465,6 +483,9 @@ export class PixiSceneRenderer implements SceneRenderer {
 
   render(): void {
     if (!this.editable) {
+      if (this.playbackPaused) {
+        this.lifecycle.renderFrame();
+      }
       return;
     }
     for (const runtime of this.graph.values()) {
@@ -519,6 +540,19 @@ export class PixiSceneRenderer implements SceneRenderer {
 
   hasNode(nodeId: string): boolean {
     return this.graph.has(nodeId);
+  }
+
+  getRuntimeTransform2D(nodeId: string) {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return undefined;
+    }
+    let transform = runtime.runtimeTransform;
+    if (!transform) {
+      transform = new PixiRuntimeTransform2D(runtime.container);
+      runtime.runtimeTransform = transform;
+    }
+    return transform;
   }
 
   setNodeVisible(nodeId: string, visible: boolean): void {

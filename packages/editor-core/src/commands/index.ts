@@ -45,6 +45,7 @@ export { DeleteNodesCommand } from "./delete-nodes-command.js";
 export { createDeleteSelectionCommand } from "./create-delete-selection-command.js";
 export { DuplicateNodeCommand } from "./duplicate-node-command.js";
 export { PasteNodesCommand } from "./paste-nodes-command.js";
+export { PasteComponentCommand } from "./paste-component-command.js";
 export { RenameSceneFileCommand } from "./rename-scene-file-command.js";
 export { DeleteSceneFileCommand } from "./delete-scene-file-command.js";
 export { RenameAssetCommand } from "./rename-asset-command.js";

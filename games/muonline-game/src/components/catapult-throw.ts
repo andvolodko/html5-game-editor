@@ -151,7 +151,7 @@ function randomFlySpin(): Vec3 {
 }
 
 export class CatapultThrowBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private props: Props;
   private readonly ctx: ScriptCreateContext;
   private readonly stones: CatapultStonePool;
   private phase: Phase = "idle";
@@ -169,9 +169,18 @@ export class CatapultThrowBehaviour implements ScriptInstance {
       name: STONE_NODE_NAME,
       size: STONE_POOL_SIZE,
     });
-    void ctx.services.preloadSceneAsset?.(this.props.stoneAssetId);
+  }
+
+  start(): void {
+    void this.ctx.services.preloadSceneAsset?.(this.props.stoneAssetId);
     this.stones.ensureFilled();
     this.enterIdle();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.props = readProps(properties);
   }
 
   update(dt: number): void {
@@ -465,8 +474,5 @@ export const catapultThrowComponent = defineComponent({
 });
 
 export function installCatapultThrowRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(catapultThrowComponent.id);
-  if (existing && catapultThrowComponent.create) {
-    existing.create = catapultThrowComponent.create;
-  }
+  registry.attachRuntime(catapultThrowComponent.id, catapultThrowComponent.create);
 }

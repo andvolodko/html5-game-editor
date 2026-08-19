@@ -18,25 +18,48 @@ const CHANGE_SCENE_PROPERTIES: ComponentDefinition["properties"] = {
   },
 };
 
+export class ChangeSceneBehaviour implements ScriptInstance {
+  private eventId = "game.start";
+  private sceneName = "main";
+  private unsubscribe: (() => void) | undefined;
+
+  constructor(private readonly ctx: ScriptCreateContext) {
+    this.applyProperties(ctx.properties);
+  }
+
+  start(): void {
+    this.subscribe();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
+    this.subscribe();
+  }
+
+  destroy(): void {
+    this.unsubscribe?.();
+    this.unsubscribe = undefined;
+  }
+
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    this.eventId =
+      typeof raw.event === "string" ? raw.event : "game.start";
+    this.sceneName =
+      typeof raw.sceneName === "string" ? raw.sceneName : "main";
+  }
+
+  private subscribe(): void {
+    this.unsubscribe?.();
+    this.unsubscribe = this.ctx.services.bus.on(this.eventId, () => {
+      void this.ctx.services.changeScene(this.sceneName);
+    });
+  }
+}
+
 function createChangeSceneInstance(context: ScriptCreateContext): ScriptInstance {
-  const eventId =
-    typeof context.properties.event === "string"
-      ? context.properties.event
-      : "game.start";
-  const sceneName =
-    typeof context.properties.sceneName === "string"
-      ? context.properties.sceneName
-      : "main";
-
-  const unsubscribe = context.services.bus.on(eventId, () => {
-    void context.services.changeScene(sceneName);
-  });
-
-  return {
-    destroy() {
-      unsubscribe();
-    },
-  };
+  return new ChangeSceneBehaviour(context);
 }
 
 /**

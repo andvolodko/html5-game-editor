@@ -11,3 +11,4 @@ export {
   DEFAULT_PROJECT_SERVER_PORT,
   DEFAULT_EDITOR_DEV_PORT,
 } from "./ports.js";
+export { seededUnitFloat } from "./seeded-unit-float.js";

@@ -12,6 +12,8 @@ description: >-
 
 Use this workflow for changes that cross package boundaries or alter persisted formats. Do not use it for a localized Inspector/UI/test fix.
 
+Persisted JSON field/union work: follow `.cursor/skills/modify-scene-schema/SKILL.md` for the schema pipeline (this skill stays the planning wrapper). Node types / asset kinds / runtime vs editor: `add-node-type`, `add-asset-type`, `implement-runtime-feature`, `implement-editor-feature`.
+
 ## 1. Orient, then read only what you need
 
 Consult `PROJECT.md` for repository orientation. Developer index: `docs/README.md`.

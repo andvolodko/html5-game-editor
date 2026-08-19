@@ -10,7 +10,9 @@ import { projectBackgroundToPixiColor } from "@game-editor/project";
 import { PixiSceneRenderer, preloadPixiSceneAsset } from "@game-editor/renderer-pixi";
 import { ThreeGltfCache, ThreeSceneRenderer } from "@game-editor/renderer-three";
 import {
+  flattenNodes,
   getSceneRendererKind,
+  getScriptComponents,
   nodeBelongsToPixiBackground,
   nodeBelongsToPixiForeground,
   nodeBelongsToThree,
@@ -85,6 +87,7 @@ export class GamePreviewSession {
   private startToken = 0;
   private rafId = 0;
   private lastFrameMs = 0;
+  private paused = false;
   private audioPlayer: HtmlAudioPlayerHandle | undefined;
   private sceneChangeSeq = 0;
   private switchScene:
@@ -95,12 +98,17 @@ export class GamePreviewSession {
     return this.runtime !== undefined;
   }
 
+  get isPaused(): boolean {
+    return this.paused;
+  }
+
   /** Preview-session event bus (available while running). */
   getBus(): EventBus | undefined {
     return this.bus;
   }
 
   async start(options: GamePreviewStartOptions): Promise<void> {
+    this.paused = false;
     const token = ++this.startToken;
     await this.disposeInternal();
 
@@ -248,6 +256,36 @@ export class GamePreviewSession {
     await this.switchScene?.(sceneId);
   }
 
+  setPaused(paused: boolean): void {
+    this.paused = paused;
+    this.runtime?.setPaused(paused);
+    this.audioPlayer?.setPaused(paused);
+  }
+
+  notifyScriptProperties(
+    nodeId: string,
+    componentId: string,
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.runtime?.notifyScriptProperties(nodeId, componentId, properties);
+  }
+
+  syncScriptPropertiesFromScene(scene: SceneData): void {
+    const runtime = this.runtime;
+    if (!runtime) {
+      return;
+    }
+    for (const node of flattenNodes(scene)) {
+      for (const component of getScriptComponents(node)) {
+        runtime.notifyScriptProperties(
+          node.id,
+          component.id,
+          component.properties,
+        );
+      }
+    }
+  }
+
   async stop(): Promise<void> {
     this.startToken += 1;
     await this.disposeInternal();
@@ -276,6 +314,7 @@ export class GamePreviewSession {
       cancelAnimationFrame(this.rafId);
       this.rafId = 0;
     }
+    this.paused = false;
     this.runtime?.dispose();
     this.runtime = undefined;
     this.switchScene = undefined;

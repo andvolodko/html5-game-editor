@@ -11,6 +11,7 @@ import {
   NumberField,
   StringField,
 } from "./fields/inspector-fields";
+import { InspectorComponentHeaderActions } from "./InspectorComponentHeaderActions";
 
 export interface DynamicEnumOptions {
   scenes: readonly string[];
@@ -26,6 +27,7 @@ interface ScriptComponentSectionProps {
   enabledOverridden?: boolean;
   onEnabledCommit: (enabled: boolean) => void;
   onPropertyCommit: (key: string, value: unknown) => void;
+  onCopy: () => void;
   onRemove: () => void;
 }
 
@@ -37,6 +39,7 @@ export function ScriptComponentSection({
   enabledOverridden,
   onEnabledCommit,
   onPropertyCommit,
+  onCopy,
   onRemove,
 }: ScriptComponentSectionProps) {
   const title = definition?.displayName ?? component.scriptId;
@@ -60,9 +63,7 @@ export function ScriptComponentSection({
           />
           <h3>{title}</h3>
         </label>
-        <button type="button" className="inspector-remove-btn" onClick={onRemove}>
-          Remove
-        </button>
+        <InspectorComponentHeaderActions onCopy={onCopy} onRemove={onRemove} />
       </div>
       {!definition ? (
         <p className="panel-error">
@@ -104,6 +105,26 @@ function ScriptPropertyField({
   onCommit: (value: unknown) => void;
 }) {
   const label = humanizePropertyKey(name);
+  const control = renderScriptPropertyControl(
+    label,
+    field,
+    value,
+    dynamicOptions,
+    onCommit,
+  );
+  if (!field.description) {
+    return control;
+  }
+  return <div title={field.description}>{control}</div>;
+}
+
+function renderScriptPropertyControl(
+  label: string,
+  field: ComponentPropertyDefinition,
+  value: unknown,
+  dynamicOptions: DynamicEnumOptions,
+  onCommit: (value: unknown) => void,
+) {
   switch (field.kind) {
     case "number": {
       const num =

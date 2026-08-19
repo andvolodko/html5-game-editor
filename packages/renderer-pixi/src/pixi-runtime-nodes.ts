@@ -4,6 +4,7 @@ import type {
   GraphicsShapeData,
   HitZoneComponentData,
   MaskComponentData,
+  RuntimeTransform2D,
   SceneNodeData,
   SpriteGizmoHandle,
   Transform2DComponentData,
@@ -28,6 +29,11 @@ export interface RuntimeNode {
   readonly editable: boolean;
   /** Transform root attached under parent `childrenRoot` (or world). */
   container: Container;
+  /**
+   * Persistent live 2D transform adapter for scripts.
+   * Created lazily on first `getRuntimeTransform2D`.
+   */
+  runtimeTransform?: RuntimeTransform2D;
   /**
    * Mask target: clips leaf visual + scene children.
    * Editor: dedicated container. Playback: same as `container`.

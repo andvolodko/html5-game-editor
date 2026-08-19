@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { listCopyableComponents } from "@game-editor/editor-core";
 import {
   findScript,
   getModel3D,
@@ -11,6 +12,50 @@ import { useEditorState } from "../hooks/useEditorState";
 import { AddComponentMenu } from "./AddComponentMenu";
 import { ScriptComponentSection } from "./ScriptComponentSection";
 import { isInspectorPropertyOverridden } from "./prefab-override-flag";
+
+function CopyAllComponentsButton({ node }: { node: SceneNodeData }) {
+  const editor = useEditor();
+  const copyable = listCopyableComponents(node);
+  if (copyable.length === 0) {
+    return null;
+  }
+  return (
+    <div className="add-component">
+      <button
+        type="button"
+        className="add-component-btn"
+        onClick={() => editor.copyComponents(node.id)}
+      >
+        Copy All Components
+      </button>
+    </div>
+  );
+}
+
+function PasteComponentButton({ nodeId }: { nodeId: string }) {
+  const editor = useEditor();
+  const hasCopied = useEditorState((ed) => ed.hasCopiedComponent());
+  const label = useEditorState((ed) => ed.copiedComponentLabel());
+  const blocked = useEditorState((ed) =>
+    ed.pasteComponentBlockedReason(nodeId),
+  );
+  if (!hasCopied) {
+    return null;
+  }
+  return (
+    <div className="add-component">
+      <button
+        type="button"
+        className="add-component-btn"
+        disabled={blocked !== undefined}
+        title={blocked}
+        onClick={() => editor.pasteComponent(nodeId)}
+      >
+        Paste {label ?? "Components"}
+      </button>
+    </div>
+  );
+}
 
 interface ScriptComponentsInspectorProps {
   node: SceneNodeData;
@@ -104,9 +149,12 @@ export function ScriptComponentsInspector({
               [key]: value,
             });
           }}
+          onCopy={() => editor.copyComponent(node.id, component.id)}
           onRemove={() => editor.removeComponent(node.id, component.id)}
         />
       ))}
+      <CopyAllComponentsButton node={node} />
+      <PasteComponentButton nodeId={node.id} />
       <AddComponentMenu
         groups={addableGroups}
         onAdd={(scriptId) => {

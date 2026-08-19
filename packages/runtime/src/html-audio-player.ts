@@ -18,6 +18,8 @@ export interface HtmlAudioPlayerHandle {
   stop(assetId?: string): void;
   /** Mute/unmute looping audio. Enabling retries clips blocked by autoplay. */
   setEnabled(enabled: boolean): void;
+  /** Preview/runtime pause. Holds looping clips without dropping them. */
+  setPaused(paused: boolean): void;
 }
 
 /**
@@ -29,6 +31,24 @@ export function createHtmlAudioPlayer(
 ): HtmlAudioPlayerHandle {
   const looping = new Map<string, HTMLAudioElement>();
   let enabled = true;
+  let paused = false;
+
+  const canAudiblyPlay = (): boolean => enabled && !paused;
+
+  const pauseLooping = (): void => {
+    for (const audio of looping.values()) {
+      audio.pause();
+    }
+  };
+
+  const resumeLooping = (): void => {
+    if (!canAudiblyPlay()) {
+      return;
+    }
+    for (const audio of looping.values()) {
+      tryPlay(audio);
+    }
+  };
 
   const stopOne = (assetId: string): void => {
     const audio = looping.get(assetId);
@@ -53,12 +73,12 @@ export function createHtmlAudioPlayer(
         audio.loop = true;
         audio.volume = volume;
         looping.set(assetId, audio);
-        if (enabled) {
+        if (canAudiblyPlay()) {
           tryPlay(audio);
         }
         return;
       }
-      if (!enabled) {
+      if (!canAudiblyPlay()) {
         return;
       }
       const audio = new Audio(url);
@@ -77,14 +97,18 @@ export function createHtmlAudioPlayer(
     setEnabled(nextEnabled) {
       enabled = nextEnabled;
       if (!enabled) {
-        for (const audio of looping.values()) {
-          audio.pause();
-        }
+        pauseLooping();
         return;
       }
-      for (const audio of looping.values()) {
-        tryPlay(audio);
+      resumeLooping();
+    },
+    setPaused(nextPaused) {
+      paused = nextPaused;
+      if (paused) {
+        pauseLooping();
+        return;
       }
+      resumeLooping();
     },
   };
 }

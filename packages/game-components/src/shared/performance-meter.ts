@@ -119,17 +119,30 @@ export function formatPerformanceMeterText(
  * Add to a text node in play/preview; requires host `setText` (+ optional stats).
  */
 export class PerformanceMeterBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private enabled = DEFAULT_ENABLED;
+  private refreshIntervalMs = DEFAULT_REFRESH_INTERVAL_MS;
   private elapsedSinceRefreshMs = 0;
   private smoothedFps = 0;
   private lastText = "";
 
   constructor(private readonly ctx: ScriptCreateContext) {
-    this.props = readProps(ctx.properties);
+    this.applyProperties(ctx.properties);
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
+  }
+
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    const props = readProps(raw);
+    this.enabled = props.enabled;
+    this.refreshIntervalMs = props.refreshIntervalMs;
   }
 
   update(dt: number): void {
-    if (!this.props.enabled || dt <= 0) {
+    if (!this.enabled || dt <= 0) {
       return;
     }
 
@@ -146,7 +159,7 @@ export class PerformanceMeterBehaviour implements ScriptInstance {
         : this.smoothedFps + (instantFps - this.smoothedFps) * FPS_SMOOTHING;
 
     this.elapsedSinceRefreshMs += frameTimeMs;
-    if (this.elapsedSinceRefreshMs < this.props.refreshIntervalMs) {
+    if (this.elapsedSinceRefreshMs < this.refreshIntervalMs) {
       return;
     }
     this.elapsedSinceRefreshMs = 0;

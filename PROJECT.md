@@ -32,7 +32,7 @@ Start at [`docs/README.md`](./docs/README.md) for “I want to…” links. Use 
 | Package boundaries, quality, errors, performance | [`docs/architecture.md`](./docs/architecture.md) |
 | MVP phases and planned work | [`docs/roadmap.md`](./docs/roadmap.md) |
 
-Cursor: `.cursor/rules/` (constraints) and `.cursor/skills/` (workflows). Use `architecture-change` for multi-package or schema/boundary work; `implement-editor-feature` for editor features.
+Cursor: `.cursor/rules/` (constraints) and `.cursor/skills/` (workflows). Specialized slices: `add-node-type`, `add-asset-type`, `add-editor-command`, `add-editor-panel`, `modify-scene-schema`, `implement-runtime-feature`. Broader planning: `architecture-change` (multi-package / boundaries), `implement-editor-feature` (editor features that are not one of those slices). Scaffolding: `create-game`, `create-game-component`. Docs/perf: `update-documentation`, `performance-audit`.
 
 ---
 

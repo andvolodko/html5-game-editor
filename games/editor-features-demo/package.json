@@ -12,7 +12,8 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build --configLoader runner",
     "preview": "vite preview --configLoader runner",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint src --max-warnings=0"
+    "lint": "eslint src --max-warnings=0",
+    "test": "vitest run"
   },
   "dependencies": {
     "@game-editor/core": "workspace:*",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "typescript": "^5.9.2",
-    "vite": "^7.0.6"
+    "vite": "^7.0.6",
+    "vitest": "^3.2.4"
   }
 }

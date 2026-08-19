@@ -16,6 +16,11 @@ export interface SpinePlaybackOptions {
   loop: boolean;
   timeScale: number;
   playing: boolean;
+  /**
+   * Scene / preview host ticker calls `Spine.update`.
+   * Leave false for Asset Preview (`Ticker.shared` via `autoUpdate`).
+   */
+  hostDriven?: boolean;
 }
 
 /** Load a Spine view from resolved URLs. Does not attach playback until `applySpinePlayback`. */
@@ -81,7 +86,7 @@ export function applySpinePlayback(
     view.skeleton.setupPose();
   }
   view.state.timeScale = options.timeScale;
-  view.autoUpdate = options.playing;
+  view.autoUpdate = options.hostDriven === true ? false : options.playing;
   if (!options.playing) {
     view.update(0);
   }

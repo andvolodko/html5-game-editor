@@ -87,6 +87,7 @@ function paintAnimated(
   const view = new AnimatedSprite({
     textures,
     autoPlay: false,
+    autoUpdate: false,
   });
   view.animationSpeed = data.animationSpeed;
   view.loop = data.loop;

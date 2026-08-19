@@ -60,7 +60,7 @@ function readProps(raw: Readonly<Record<string, unknown>>): Props {
 
 /** Klondike (draw 1/3) using SmallCards sprites. Tap to select and move. */
 export class KlondikeBoardBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private props: Props;
   private readonly table = new KlondikeTable();
   private readonly rules = new KlondikeRules();
   private readonly spawner: CardSpawner;
@@ -76,7 +76,16 @@ export class KlondikeBoardBehaviour implements ScriptInstance {
     this.props = readProps(ctx.properties);
     this.spawner = new CardSpawner(ctx.services);
     this.view = new KlondikeView(ctx.services);
+  }
+
+  start(): void {
     this.onEnable();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.props = readProps(properties);
   }
 
   private onEnable(): void {
@@ -327,8 +336,5 @@ export const klondikeBoardComponent = defineComponent({
 });
 
 export function installKlondikeBoardRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(klondikeBoardComponent.id);
-  if (existing && klondikeBoardComponent.create) {
-    existing.create = klondikeBoardComponent.create;
-  }
+  registry.attachRuntime(klondikeBoardComponent.id, klondikeBoardComponent.create);
 }

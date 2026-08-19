@@ -11,7 +11,9 @@ const CLICK_LOG_MESSAGE = "test message";
 export class MainButtonBehaviour implements ScriptInstance {
   private unsubscribers: Array<() => void> = [];
 
-  constructor(private readonly ctx: ScriptCreateContext) {
+  constructor(private readonly ctx: ScriptCreateContext) {}
+
+  start(): void {
     this.onEnable();
   }
 
@@ -48,8 +50,5 @@ export const mainButtonComponent = defineComponent({
 
 /** Re-attach create after a metadata-only catalog load (editor / preview). */
 export function installMainButtonRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(mainButtonComponent.id);
-  if (existing && mainButtonComponent.create) {
-    existing.create = mainButtonComponent.create;
-  }
+  registry.attachRuntime(mainButtonComponent.id, mainButtonComponent.create);
 }

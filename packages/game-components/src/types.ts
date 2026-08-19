@@ -1,4 +1,7 @@
 import type { EventBus } from "@game-editor/core";
+import type { RuntimeTransform2D } from "@game-editor/scene";
+
+export type { RuntimeTransform2D };
 
 /**
  * Property field kinds for Script components (inspector + defaults).
@@ -39,7 +42,12 @@ export const NODE_POINTER_EVENTS = [
 
 export type NodePointerEventName = (typeof NODE_POINTER_EVENTS)[number];
 
-export interface ComponentPropertyNumber {
+/** Optional inspector tooltip; omitted from older catalogs. */
+interface ComponentPropertyBase {
+  description?: string;
+}
+
+export interface ComponentPropertyNumber extends ComponentPropertyBase {
   kind: "number";
   default: number;
   min?: number;
@@ -47,17 +55,17 @@ export interface ComponentPropertyNumber {
   step?: number;
 }
 
-export interface ComponentPropertyString {
+export interface ComponentPropertyString extends ComponentPropertyBase {
   kind: "string";
   default: string;
 }
 
-export interface ComponentPropertyBoolean {
+export interface ComponentPropertyBoolean extends ComponentPropertyBase {
   kind: "boolean";
   default: boolean;
 }
 
-export interface ComponentPropertyEnum {
+export interface ComponentPropertyEnum extends ComponentPropertyBase {
   kind: "enum";
   default: string;
   options: readonly string[];
@@ -71,14 +79,14 @@ export interface ComponentPropertyEnum {
  */
 export type DynamicEnumSource = "scenes" | "busEvents" | "gltfAnimations";
 
-export interface ComponentPropertyDynamicEnum {
+export interface ComponentPropertyDynamicEnum extends ComponentPropertyBase {
   kind: "dynamicEnum";
   default: string;
   source: DynamicEnumSource;
 }
 
 /** Catalogue-backed asset id picker; empty string means unset. */
-export interface ComponentPropertyAsset {
+export interface ComponentPropertyAsset extends ComponentPropertyBase {
   kind: "asset";
   assetType: ComponentAssetType;
   default: string;
@@ -97,8 +105,20 @@ export type ComponentPropertyDefinition =
  * Instances must never be stored in SceneData.
  */
 export interface ScriptInstance {
-  /** Optional per-frame hook; v1 host may not call this yet. */
+  /**
+   * Once after attach, when the runtime node and `ctx.transform` are ready.
+   * Use for rest-pose captures and subscriptions.
+   */
+  start?(): void;
+  /** Optional per-frame hook; GameRuntime.tick drives this. */
   update?(dt: number): void;
+  /**
+   * Live Inspector / runtime property edits on this existing instance.
+   * Ordinary property changes must not require recreation.
+   */
+  onPropertiesChanged?(
+    properties: Readonly<Record<string, unknown>>,
+  ): void;
   destroy?(): void;
 }
 
@@ -242,18 +262,23 @@ export interface ScriptRuntimeServices {
    * `true` also retries looping clips that the browser blocked before a user gesture.
    */
   setAudioEnabled?: (enabled: boolean) => void;
-  /** Read the host node's Transform2D (undefined if missing). */
+  /** Read a node's Transform2D snapshot (undefined if missing). Prefer `ctx.transform` for the host node. */
   getTransform2D?: (nodeId: string) => ScriptTransform2D | undefined;
   /**
    * Patch Transform2D on a node and sync registered renderers.
    * Runtime-only; does not write scene files.
+   * Prefer `ctx.transform` when mutating this component's own node every frame.
    */
   setTransform2D?: (nodeId: string, patch: ScriptTransform2DPatch) => void;
-  /** Read the host node's Transform3D (undefined if missing). */
+  /**
+   * Read a node's Transform3D (undefined if missing).
+   * Prefer `ctx.transform3D` for the host node.
+   */
   getTransform3D?: (nodeId: string) => ScriptTransform3D | undefined;
   /**
    * Patch Transform3D on a node and sync registered renderers.
    * Runtime-only; does not write scene files.
+   * Prefer `ctx.transform3D` when mutating this component's own node.
    */
   setTransform3D?: (nodeId: string, patch: ScriptTransform3DPatch) => void;
   /** Read Model3D playback on a node (undefined if missing). */
@@ -261,16 +286,21 @@ export interface ScriptRuntimeServices {
   /**
    * Patch Model3D clip / loop / playing and sync registered renderers.
    * Runtime-only; does not write scene files.
+   * Prefer `ctx.animations` for the host node.
    */
   setModel3DPlayback?: (
     nodeId: string,
     patch: ScriptModel3DPlaybackPatch,
   ) => void;
-  /** Clip names on the node's current glTF asset (empty until the host has loaded it). */
+  /**
+   * Clip names on the node's current glTF asset (empty until the host has loaded it).
+   * Prefer `ctx.animations.list()` for the host node.
+   */
   listModel3DAnimations?: (nodeId: string) => readonly string[];
   /**
    * Authored clip length in seconds (before `timeScale`).
    * Undefined when the host has not loaded the asset.
+   * Prefer `ctx.animations.duration()` for the host node.
    */
   getModel3DAnimationDuration?: (
     nodeId: string,
@@ -342,12 +372,70 @@ export interface ScriptRuntimeServices {
   setNodeCursor?: (nodeId: string, cursor: string) => void;
 }
 
+/**
+ * High-level Transform3D of the host node.
+ * Getters read the current runtime pose; they are not snapshots from `create`.
+ */
+export interface ScriptTransformApi {
+  readonly position: Readonly<ScriptTransform3D["position"]>;
+  readonly rotation: Readonly<ScriptTransform3D["rotation"]>;
+  readonly scale: Readonly<ScriptTransform3D["scale"]>;
+  setPosition(position: ScriptTransform3D["position"]): void;
+  setRotation(rotation: ScriptTransform3D["rotation"]): void;
+  setScale(scale: ScriptTransform3D["scale"]): void;
+  set(transform: ScriptTransform3DPatch): void;
+}
+
+/** Options for `ctx.animations.play`. */
+export interface ScriptPlayAnimationOptions {
+  loop?: boolean;
+}
+
+/**
+ * High-level Model3D clip playback for the host node.
+ * Clip names stay generic; games resolve role-specific names themselves.
+ */
+export interface ScriptAnimationsApi {
+  list(): readonly string[];
+  play(clip: string, options?: ScriptPlayAnimationOptions): void;
+  /** Halt playback; leaves loop and clip as they are. */
+  stop(): void;
+  /** Halt playback and disable looping (hold the current pose). */
+  freeze(): void;
+  /**
+   * Wall-clock clip length in seconds (`authored / timeScale`).
+   * Uses a short fallback when the host has not loaded the clip yet.
+   */
+  duration(clip?: string): number;
+}
+
 export interface ScriptCreateContext {
   nodeId: string;
   componentId: string;
   scriptId: string;
   properties: Readonly<Record<string, unknown>>;
+  /**
+   * Low-level runtime bridge. Prefer `transform` / `transform3D` /
+   * `animations` when they cover the need.
+   */
   services: ScriptRuntimeServices;
+  /**
+   * Persistent live 2D transform of this component's node.
+   * Prefer `transform.x = …` in `update` over per-frame `setTransform2D`.
+   * Rotation is degrees. Assignments update the rendered node immediately
+   * and do not write editor history or scene files.
+   */
+  transform: RuntimeTransform2D;
+  /**
+   * Current Transform3D of this component's node.
+   * Prefer this over `services.getTransform3D` / `setTransform3D`.
+   */
+  transform3D: ScriptTransformApi;
+  /**
+   * Model3D clip playback for this component's node.
+   * Prefer this over `services.setModel3DPlayback`.
+   */
+  animations: ScriptAnimationsApi;
 }
 
 export interface ComponentDefinition {

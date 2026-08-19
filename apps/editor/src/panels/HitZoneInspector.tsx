@@ -17,6 +17,7 @@ import {
   NumberField,
 } from "./fields/inspector-fields";
 import { PolygonPointsEditor } from "./PolygonPointsEditor";
+import { InspectorComponentHeaderActions } from "./InspectorComponentHeaderActions";
 
 const SHAPE_TYPES: readonly GraphicsShapeData["type"][] = [
   "rectangle",
@@ -61,13 +62,10 @@ export function HitZoneInspector({ editor, scene, node }: Props) {
     <section className="inspector-section">
       <div className="inspector-section-header">
         <h3>Hit Zone</h3>
-        <button
-          type="button"
-          className="inspector-remove-btn"
-          onClick={() => editor.removeComponent(node.id, hitZone.id)}
-        >
-          Remove
-        </button>
+        <InspectorComponentHeaderActions
+          onCopy={() => editor.copyComponent(node.id, hitZone.id)}
+          onRemove={() => editor.removeComponent(node.id, hitZone.id)}
+        />
       </div>
       <div className="inspector-grid">
         <BooleanField

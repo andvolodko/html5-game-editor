@@ -22,6 +22,8 @@ import {
   isNodeHiddenInEditor,
   isNodeLocked,
   parseEditorSceneNodeMetadata,
+  sceneHasHiddenNodes,
+  sceneHasLockedNodes,
 } from "./editor-node-metadata.js";
 import { EditorNodeMetadataStore } from "./editor-node-metadata-store.js";
 import { Editor } from "./editor.js";
@@ -192,6 +194,17 @@ describe("EditorNodeMetadataStore", () => {
       false,
     );
     expect(isNodeLocked(store.getSnapshot(), tree.id)).toBe(true);
+    store.hideAll(scene);
+    expect(isNodeHiddenInEditor(store.getSnapshot(), environment.id)).toBe(
+      true,
+    );
+    expect(isNodeHiddenInEditor(store.getSnapshot(), tree.id)).toBe(true);
+    store.showAll(scene);
+    store.unlockAll(scene);
+    expect(isNodeLocked(store.getSnapshot(), tree.id)).toBe(false);
+    store.lockAll(scene);
+    expect(isNodeLocked(store.getSnapshot(), environment.id)).toBe(true);
+    expect(isNodeLocked(store.getSnapshot(), tree.id)).toBe(true);
     store.unlockAll(scene);
     expect(isNodeLocked(store.getSnapshot(), tree.id)).toBe(false);
   });
@@ -284,6 +297,33 @@ describe("Editor node hide/lock façade", () => {
       x: 3,
       y: 4,
     });
+  });
+
+  it("toggles hide-all and lock-all from mixed flags", () => {
+    const { scene, environment, tree } = sceneWithTree();
+    const editor = new Editor({ scene });
+    expect(sceneHasHiddenNodes(scene, editor.nodeMetadata.getSnapshot())).toBe(
+      false,
+    );
+    expect(sceneHasLockedNodes(scene, editor.nodeMetadata.getSnapshot())).toBe(
+      false,
+    );
+    editor.setNodeHidden(environment.id, true);
+    editor.setNodeLocked(tree.id, true);
+    expect(sceneHasHiddenNodes(scene, editor.nodeMetadata.getSnapshot())).toBe(
+      true,
+    );
+    expect(sceneHasLockedNodes(scene, editor.nodeMetadata.getSnapshot())).toBe(
+      true,
+    );
+    editor.toggleAllNodesHidden();
+    editor.toggleAllNodesLocked();
+    expect(editor.isNodeHiddenInEditor(environment.id)).toBe(false);
+    expect(editor.isNodeLocked(tree.id)).toBe(false);
+    editor.toggleAllNodesHidden();
+    editor.toggleAllNodesLocked();
+    expect(editor.isNodeHiddenInEditor(environment.id)).toBe(true);
+    expect(editor.isNodeLocked(tree.id)).toBe(true);
   });
 
   it("child hidden state survives parent hide/show through the Editor API", () => {

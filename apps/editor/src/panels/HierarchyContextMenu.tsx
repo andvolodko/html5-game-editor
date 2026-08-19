@@ -189,6 +189,16 @@ export function HierarchyContextMenu({
             </button>
           </li>
           <li>
+            <button type="button" onClick={() => onAction("hide-all")}>
+              Hide All
+            </button>
+          </li>
+          <li>
+            <button type="button" onClick={() => onAction("lock-all")}>
+              Lock All
+            </button>
+          </li>
+          <li>
             <button type="button" onClick={() => onAction("unlock-all")}>
               Unlock All
             </button>

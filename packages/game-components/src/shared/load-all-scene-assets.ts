@@ -60,15 +60,30 @@ async function downloadUrl(url: string, signal: AbortSignal): Promise<void> {
  * Text / HTMLText / BitmapText, then emits `completeEvent`.
  */
 export class LoadAllSceneAssetsBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private completeEvent = DEFAULT_COMPLETE_EVENT;
+  private template = DEFAULT_TEMPLATE;
   private readonly abort = new AbortController();
   private finished = false;
   private lastText = "";
+  private started = false;
 
   constructor(private readonly ctx: ScriptCreateContext) {
-    this.props = readProps(ctx.properties);
+    this.applyProperties(ctx.properties);
+  }
+
+  start(): void {
+    if (this.started) {
+      return;
+    }
+    this.started = true;
     this.writePercent(0);
     void this.run();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
   }
 
   destroy(): void {
@@ -76,12 +91,18 @@ export class LoadAllSceneAssetsBehaviour implements ScriptInstance {
     this.abort.abort();
   }
 
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    const props = readProps(raw);
+    this.completeEvent = props.completeEvent;
+    this.template = props.template;
+  }
+
   private writePercent(percent: number): void {
     const setText = this.ctx.services.setText;
     if (!setText) {
       return;
     }
-    const nextText = formatLoadAllSceneAssetsText(this.props.template, percent);
+    const nextText = formatLoadAllSceneAssetsText(this.template, percent);
     if (nextText === this.lastText) {
       return;
     }
@@ -95,7 +116,7 @@ export class LoadAllSceneAssetsBehaviour implements ScriptInstance {
     }
     this.finished = true;
     this.writePercent(PERCENT_COMPLETE);
-    this.ctx.services.bus.emit(this.props.completeEvent);
+    this.ctx.services.bus.emit(this.completeEvent);
   }
 
   private async preloadOne(assetId: string): Promise<void> {

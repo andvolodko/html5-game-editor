@@ -7,6 +7,10 @@ export type {
 export { Editor, isChordLetter } from "./editor.js";
 export type { EditorOptions, RenameRequestTarget } from "./editor.js";
 export {
+  isCopyableComponent,
+  listCopyableComponents,
+} from "./component-clipboard.js";
+export {
   EditorConsole,
   EDITOR_CONSOLE_CATEGORY_SCENE,
   EDITOR_CONSOLE_EVENT_SCENE_OPENED,
@@ -27,7 +31,13 @@ export {
   isToggleSelectionKey,
 } from "./list-selection.js";
 export type { ListSelectionModifiers } from "./list-selection.js";
-export { flattenVisibleNodeIds } from "./hierarchy-visible.js";
+export {
+  flattenVisibleNodeIds,
+  hierarchyQueryMatchesName,
+  hierarchySearchExpandIds,
+  hierarchySearchVisibleIds,
+  isHierarchySearching,
+} from "./hierarchy-visible.js";
 export {
   HIERARCHY_CHROME_ATTR,
   isHierarchyChromeEventTarget,
@@ -47,6 +57,8 @@ export {
   isNodeEffectivelyVisible,
   isNodeHiddenInEditor,
   isNodeLocked,
+  sceneHasHiddenNodes,
+  sceneHasLockedNodes,
   subtreeNodeIds,
 } from "./editor-node-metadata.js";
 export type {
@@ -82,6 +94,7 @@ export {
   DeleteNodesCommand,
   DuplicateNodeCommand,
   PasteNodesCommand,
+  PasteComponentCommand,
   RenameSceneFileCommand,
   DeleteSceneFileCommand,
   RenameAssetCommand,
@@ -164,6 +177,7 @@ export type {
   ScriptInstance,
   ScriptCreateContext,
   ScriptRuntimeServices,
+  RuntimeTransform2D,
   ScriptTransform2D,
   ScriptTransform2DPatch,
   ScriptPerformanceStats,

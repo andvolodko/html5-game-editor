@@ -84,4 +84,33 @@ describe("MultiSceneRenderer", () => {
     multi.syncTransform(sprite);
     expect(pixi.syncTransform).not.toHaveBeenCalled();
   });
+
+  it("returns the owning slot's live 2D transform handle", () => {
+    const live = { x: 1, y: 2, rotation: 0, scaleX: 1, scaleY: 1 };
+    const pixi = createMockRenderer();
+    pixi.getRuntimeTransform2D = vi.fn((id: string) =>
+      id === "node_a" ? live : undefined,
+    );
+    const three = createMockRenderer();
+    const multi = new MultiSceneRenderer([
+      { renderer: pixi },
+      { renderer: three },
+    ]);
+    expect(multi.getRuntimeTransform2D("node_a")).toBe(live);
+    expect(multi.getRuntimeTransform2D("missing")).toBeUndefined();
+  });
+
+  it("forwards setPlaybackPaused to every slot", () => {
+    const pixi = createMockRenderer();
+    pixi.setPlaybackPaused = vi.fn();
+    const three = createMockRenderer();
+    three.setPlaybackPaused = vi.fn();
+    const multi = new MultiSceneRenderer([
+      { renderer: pixi },
+      { renderer: three },
+    ]);
+    multi.setPlaybackPaused(true);
+    expect(pixi.setPlaybackPaused).toHaveBeenCalledWith(true);
+    expect(three.setPlaybackPaused).toHaveBeenCalledWith(true);
+  });
 });

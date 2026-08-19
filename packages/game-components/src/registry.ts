@@ -19,6 +19,25 @@ export class ComponentRegistry {
     this.byId.set(definition.id, definition);
   }
 
+  /**
+   * Attach a `create` factory to a metadata-only catalog entry
+   * (editor / preview after JSON catalog load). No-op when the id is
+   * unknown or `create` is missing. Does not serialize functions.
+   */
+  attachRuntime(
+    componentId: string,
+    create: ComponentDefinition["create"],
+  ): void {
+    if (!create) {
+      return;
+    }
+    const existing = this.byId.get(componentId);
+    if (!existing) {
+      return;
+    }
+    existing.create = create;
+  }
+
   get(id: string): ComponentDefinition | undefined {
     return this.byId.get(id);
   }

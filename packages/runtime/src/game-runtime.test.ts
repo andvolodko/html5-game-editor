@@ -8,6 +8,7 @@ import {
 } from "@game-editor/game-components";
 import {
   createContainerNode,
+  createDetachedRuntimeTransform2D,
   createEmptyScene,
   createModel3DComponent,
   createNodeWithTransform3D,
@@ -15,6 +16,7 @@ import {
   createScriptComponent,
   createSpriteNode,
   createTextComponent,
+  getTransform2D,
   type SceneNodeData,
   type SceneRenderer,
 } from "@game-editor/scene";
@@ -401,6 +403,134 @@ describe("GameRuntime.loadScene", () => {
     });
   });
 
+  it("exposes a stable ctx.transform that updates the live node without setTransform2D", () => {
+    const node = createSpriteNode("Hero", { x: 100, y: 50 });
+    const live = createDetachedRuntimeTransform2D({
+      x: 100,
+      y: 50,
+      scaleX: 1,
+      scaleY: 1,
+    });
+    const renderer = createMockRenderer();
+    renderer.getRuntimeTransform2D = vi.fn((nodeId: string) =>
+      nodeId === node.id ? live : undefined,
+    );
+
+    let captured:
+      | {
+          transform: typeof live;
+          startX: number;
+          startY: number;
+        }
+      | undefined;
+    const setTransform2D = vi.fn();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.DirectMover",
+        displayName: "DirectMover",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => {
+          captured = {
+            transform: ctx.transform,
+            startX: ctx.transform.x,
+            startY: ctx.transform.y,
+          };
+          return {
+            update() {
+              ctx.transform.x = captured!.startX + 10;
+              ctx.transform.y = captured!.startY + 5;
+              ctx.transform.rotation = 90;
+              ctx.transform.scaleX = -2;
+              ctx.transform.scaleY = 3;
+            },
+          };
+        },
+      }),
+    );
+
+    const runtime = new GameRuntime({
+      components: registry,
+      services: {
+        bus: new EventBus(),
+        changeScene: () => undefined,
+        setTransform2D,
+      },
+    });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+
+    node.components.push(createScriptComponent("test.DirectMover"));
+    const scene = createEmptyScene("DirectMove");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    expect(captured).toBeDefined();
+    expect(captured!.startX).toBe(100);
+    expect(captured!.startY).toBe(50);
+    expect(captured!.transform).toBe(live);
+    expect(captured!.transform).toBe(captured!.transform);
+
+    runtime.tick(1 / 60);
+
+    expect(live.x).toBe(110);
+    expect(live.y).toBe(55);
+    expect(live.rotation).toBe(90);
+    expect(live.scaleX).toBe(-2);
+    expect(live.scaleY).toBe(3);
+    expect(setTransform2D).not.toHaveBeenCalled();
+    expect(renderer.syncTransform).not.toHaveBeenCalled();
+    expect(getTransform2D(runtime.getScene()!.nodes[0]!)).toMatchObject({
+      position: { x: 100, y: 50 },
+      rotation: 0,
+      scale: { x: 1, y: 1 },
+    });
+  });
+
+  it("reads initial pose from ctx.transform when no renderer handle exists", () => {
+    const renderer = createMockRenderer();
+    let startX = -1;
+    let startY = -1;
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.InitPose",
+        displayName: "InitPose",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => {
+          startX = ctx.transform.x;
+          startY = ctx.transform.y;
+          return {};
+        },
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+
+    const node = createSpriteNode("Cloud", { x: 28, y: 14 });
+    node.components.push(createScriptComponent("test.InitPose"));
+    const scene = createEmptyScene("Init");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    expect(startX).toBe(28);
+    expect(startY).toBe(14);
+  });
+
   it("exposes getTransform3D / setTransform3D and Model3D playback", () => {
     const renderer = createMockRenderer();
     const registry = new ComponentRegistry();
@@ -469,6 +599,82 @@ describe("GameRuntime.loadScene", () => {
     expect(seenClip).toBe("walk");
     expect(renderer.syncTransform).toHaveBeenCalled();
     expect(renderer.updateNode).toHaveBeenCalled();
+    expect(runtime.getScene()?.nodes[0]?.components).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: "Transform3D",
+          position: { x: 1, y: 2, z: 5 },
+        }),
+        expect.objectContaining({
+          type: "Model3D",
+          animation: "walk",
+          loop: true,
+          timeScale: 0.6,
+        }),
+      ]),
+    );
+  });
+
+  it("exposes ctx.transform3D and ctx.animations bound to the host node", () => {
+    const renderer = createMockRenderer();
+    const registry = new ComponentRegistry();
+    let seenZ = 0;
+    let listed: readonly string[] = [];
+    registry.register(
+      defineComponent({
+        id: "test.HighLevelWalker3D",
+        displayName: "HighLevelWalker3D",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            listed = ctx.animations.list();
+            const { position } = ctx.transform3D;
+            seenZ = position.z + 2;
+            ctx.transform3D.setPosition({
+              x: position.x,
+              y: position.y,
+              z: seenZ,
+            });
+            ctx.animations.play("walk", { loop: true });
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({
+      components: registry,
+      services: {
+        bus: new EventBus(),
+        changeScene: () => undefined,
+        listModel3DAnimations: () => ["idle", "walk"],
+      },
+    });
+    runtime.registerRenderer({
+      kind: "three",
+      renderer,
+      layer: { id: "main", renderer: "three", order: 0 },
+    });
+
+    const node = createNodeWithTransform3D(
+      "Monster",
+      { x: 1, y: 2, z: 3 },
+      createModel3DComponent({
+        assetId: "asset_m",
+        animation: "idle",
+        timeScale: 0.6,
+      }),
+    );
+    node.components.push(createScriptComponent("test.HighLevelWalker3D"));
+    const scene = createEmptyScene("Move3DHighLevel", { renderer: "three" });
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    runtime.tick(1 / 60);
+    expect(seenZ).toBe(5);
+    expect(listed).toEqual(["idle", "walk"]);
     expect(runtime.getScene()?.nodes[0]?.components).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -914,5 +1120,312 @@ describe("GameRuntime.loadScene", () => {
       host.id,
       "bone_12_Bone02",
     );
+  });
+
+  it("invokes start once, update each tick, and destroy exactly once", () => {
+    const hooks = { create: 0, start: 0, update: 0, destroy: 0 };
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.Lifecycle",
+        displayName: "Lifecycle",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: () => {
+          hooks.create += 1;
+          return {
+            start() {
+              hooks.start += 1;
+            },
+            update() {
+              hooks.update += 1;
+            },
+            destroy() {
+              hooks.destroy += 1;
+            },
+          };
+        },
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: createMockRenderer(),
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+    const node = createSpriteNode("Hero", { x: 0, y: 0 });
+    node.components.push(createScriptComponent("test.Lifecycle"));
+    const scene = createEmptyScene("Lifecycle");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    expect(hooks).toEqual({ create: 1, start: 1, update: 0, destroy: 0 });
+    runtime.tick(1 / 60);
+    runtime.tick(1 / 60);
+    expect(hooks.update).toBe(2);
+    runtime.dispose();
+    runtime.dispose();
+    expect(hooks.destroy).toBe(1);
+  });
+
+  it("lets start() read the node's initial ctx.transform pose", () => {
+    let startX = -1;
+    let startY = -1;
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.StartPose",
+        displayName: "StartPose",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          start() {
+            startX = ctx.transform.x;
+            startY = ctx.transform.y;
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: createMockRenderer(),
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+    const node = createSpriteNode("Cloud", { x: 28, y: 14 });
+    node.components.push(createScriptComponent("test.StartPose"));
+    const scene = createEmptyScene("StartPose");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    expect(startX).toBe(28);
+    expect(startY).toBe(14);
+  });
+
+  it("notifies the existing instance on property edits without recreating it", () => {
+    let created = 0;
+    let seenSpeed = 0;
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.LiveProps",
+        displayName: "LiveProps",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {
+          speed: { kind: "number", default: 1 },
+        },
+        create: (ctx) => {
+          created += 1;
+          seenSpeed =
+            typeof ctx.properties.speed === "number" ? ctx.properties.speed : 0;
+          return {
+            onPropertiesChanged(properties) {
+              seenSpeed =
+                typeof properties.speed === "number" ? properties.speed : 0;
+            },
+          };
+        },
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: createMockRenderer(),
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+    const node = createSpriteNode("Hero", { x: 0, y: 0 });
+    const script = createScriptComponent(
+      "test.LiveProps",
+      { speed: 1 },
+      { id: "comp_live" },
+    );
+    node.components.push(script);
+    const scene = createEmptyScene("LiveProps");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    expect(created).toBe(1);
+    expect(seenSpeed).toBe(1);
+
+    runtime.notifyScriptProperties(node.id, "comp_live", { speed: 2.5 });
+    expect(created).toBe(1);
+    expect(seenSpeed).toBe(2.5);
+    expect(
+      runtime
+        .getScene()
+        ?.nodes[0]?.components.find((component) => component.id === "comp_live"),
+    ).toMatchObject({ properties: { speed: 2.5 } });
+
+    runtime.notifyScriptProperties(node.id, "comp_live", { speed: 2.5 });
+    expect(created).toBe(1);
+    expect(seenSpeed).toBe(2.5);
+  });
+
+  it("isolates lifecycle errors so other components still run", () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const secondStart = vi.fn();
+    const secondUpdate = vi.fn();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.Broken",
+        displayName: "Broken",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: () => ({
+          start() {
+            throw new Error("start failed");
+          },
+          update() {
+            throw new Error("update failed");
+          },
+        }),
+      }),
+    );
+    registry.register(
+      defineComponent({
+        id: "test.Healthy",
+        displayName: "Healthy",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: () => ({
+          start: secondStart,
+          update: secondUpdate,
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: createMockRenderer(),
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+    const broken = createSpriteNode("Broken", { x: 0, y: 0 });
+    broken.components.push(createScriptComponent("test.Broken"));
+    const healthy = createSpriteNode("Healthy", { x: 1, y: 1 });
+    healthy.components.push(createScriptComponent("test.Healthy"));
+    const scene = createEmptyScene("Isolation");
+    scene.nodes = [broken, healthy];
+    runtime.loadScene(scene);
+
+    expect(secondStart).toHaveBeenCalledTimes(1);
+    runtime.tick(1 / 60);
+    expect(secondUpdate).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+});
+
+describe("GameRuntime.setPaused", () => {
+  it("skips update and pointer events while paused", () => {
+    const update = vi.fn();
+    const onTap = vi.fn();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.Pausable",
+        displayName: "Pausable",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => {
+          ctx.services.onNodePointerEvent?.(ctx.nodeId, "pointertap", onTap);
+          return { update };
+        },
+      }),
+    );
+
+    const renderer = createMockRenderer();
+    renderer.setPlaybackPaused = vi.fn();
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+    const node = createSpriteNode("Hero", { x: 0, y: 0 });
+    node.components.push(createScriptComponent("test.Pausable"));
+    const scene = createEmptyScene("Pause");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    runtime.setPaused(true);
+    expect(runtime.isPaused()).toBe(true);
+    expect(renderer.setPlaybackPaused).toHaveBeenCalledWith(true);
+
+    runtime.tick(1 / 60);
+    runtime.emitNodePointerEvent(node.id, "pointertap");
+    runtime.emitNodeClick(node.id);
+    expect(update).not.toHaveBeenCalled();
+    expect(onTap).not.toHaveBeenCalled();
+
+    runtime.setPaused(false);
+    runtime.tick(1 / 60);
+    runtime.emitNodePointerEvent(node.id, "pointertap");
+    expect(update).toHaveBeenCalledTimes(1);
+    expect(onTap).toHaveBeenCalledTimes(1);
+  });
+
+  it("applies pause to renderers registered after setPaused", () => {
+    const runtime = new GameRuntime();
+    runtime.setPaused(true);
+    const renderer = createMockRenderer();
+    renderer.setPlaybackPaused = vi.fn();
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+    expect(renderer.setPlaybackPaused).toHaveBeenCalledWith(true);
+  });
+
+  it("still delivers Inspector property edits while paused", () => {
+    let seenSpeed = 0;
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.PausedProps",
+        displayName: "Paused Props",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: () => ({
+          onPropertiesChanged(properties) {
+            seenSpeed =
+              typeof properties.speed === "number" ? properties.speed : 0;
+          },
+        }),
+      }),
+    );
+    const runtime = new GameRuntime({ components: registry });
+    const node = createSpriteNode("Hero", { x: 0, y: 0 });
+    const script = createScriptComponent(
+      "test.PausedProps",
+      { speed: 1 },
+      { id: "comp_paused" },
+    );
+    node.components.push(script);
+    const scene = createEmptyScene("PausedProps");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+    runtime.setPaused(true);
+    runtime.notifyScriptProperties(node.id, "comp_paused", { speed: 4 });
+    expect(seenSpeed).toBe(4);
   });
 });

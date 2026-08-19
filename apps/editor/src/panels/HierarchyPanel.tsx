@@ -5,7 +5,13 @@ import {
   EDITOR_ASSET_MIME,
   flattenVisibleNodeIds,
   getEditorNodeFlags,
+  hierarchyQueryMatchesName,
+  hierarchySearchExpandIds,
+  hierarchySearchVisibleIds,
+  isHierarchySearching,
   isToggleSelectionKey,
+  sceneHasHiddenNodes,
+  sceneHasLockedNodes,
 } from "@game-editor/editor-core";
 import {
   findNodeById,
@@ -18,8 +24,10 @@ import { MOUSE_BUTTON_PRIMARY } from "@game-editor/shared";
 import { useAssetPreviewSelection } from "../assets/asset-preview-selection";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
+import { treeIndentPadding } from "../ui/tree-indent";
 import { HierarchyContextMenu } from "./HierarchyContextMenu";
 import { HierarchyNodeRow } from "./HierarchyNodeRow";
+import { HierarchyToolbar } from "./HierarchyToolbar";
 import type { HierarchyContextMenuState } from "./hierarchy-types";
 import { useHierarchyDnD } from "./useHierarchyDnD";
 import { useHierarchyRename } from "./useHierarchyRename";
@@ -33,6 +41,7 @@ export function HierarchyPanel() {
   const sceneSelected = useEditorState((ed) => ed.selection.isSceneSelected());
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const [sceneExpanded, setSceneExpanded] = useState(true);
+  const [query, setQuery] = useState("");
   const [contextMenu, setContextMenu] = useState<HierarchyContextMenuState | null>(
     null,
   );
@@ -45,11 +54,32 @@ export function HierarchyPanel() {
     editor,
     treeRef,
   );
+  const searching = isHierarchySearching(query);
+  const sceneNameMatches = hierarchyQueryMatchesName(scene.name, query);
+  const searchVisibleIds = useMemo(() => {
+    if (!searching || sceneNameMatches) {
+      return undefined;
+    }
+    return hierarchySearchVisibleIds(scene.nodes, query);
+  }, [query, scene, sceneNameMatches, searching]);
+  const displayExpanded = useMemo(() => {
+    if (searchVisibleIds === undefined) {
+      return expanded;
+    }
+    return hierarchySearchExpandIds(scene.nodes, searchVisibleIds);
+  }, [expanded, scene, searchVisibleIds]);
+  const displaySceneExpanded = searching ? true : sceneExpanded;
   const visibleNodeIds = useMemo(
     () =>
-      sceneExpanded ? flattenVisibleNodeIds(scene.nodes, expanded) : [],
-    [scene, sceneExpanded, expanded],
+      displaySceneExpanded
+        ? flattenVisibleNodeIds(scene.nodes, displayExpanded, searchVisibleIds)
+        : [],
+    [displayExpanded, displaySceneExpanded, scene, searchVisibleIds],
   );
+  const rootNodes =
+    searchVisibleIds === undefined
+      ? scene.nodes
+      : scene.nodes.filter((node) => searchVisibleIds.has(node.id));
   const { renamingTarget, setRenamingTarget } = useHierarchyRename(
     editor,
     scene,
@@ -104,7 +134,7 @@ export function HierarchyPanel() {
       return;
     }
     rowRefs.current.get(primaryId)?.scrollIntoView({ block: "nearest" });
-  }, [primaryId, sceneSelected, expanded, sceneExpanded]);
+  }, [primaryId, sceneSelected, displayExpanded, displaySceneExpanded]);
 
   const toggleExpanded = (nodeId: string) => {
     setExpanded((prev) => {
@@ -167,6 +197,14 @@ export function HierarchyPanel() {
     }
     if (action === "show-all") {
       editor.showAllNodes();
+      return;
+    }
+    if (action === "hide-all") {
+      editor.hideAllNodes();
+      return;
+    }
+    if (action === "lock-all") {
+      editor.lockAllNodes();
       return;
     }
     if (action === "unlock-all") {
@@ -299,16 +337,19 @@ export function HierarchyPanel() {
     }
   };
 
+  const anyHidden = sceneHasHiddenNodes(scene, metadata);
+  const anyLocked = sceneHasLockedNodes(scene, metadata);
+
   return (
     <div className="panel hierarchy-panel" onClick={closeMenu}>
-      <div className="hierarchy-toolbar">
-        <button type="button" onClick={() => editor.showAllNodes()}>
-          Show All
-        </button>
-        <button type="button" onClick={() => editor.unlockAllNodes()}>
-          Unlock All
-        </button>
-      </div>
+      <HierarchyToolbar
+        query={query}
+        anyHidden={anyHidden}
+        anyLocked={anyLocked}
+        onQueryChange={setQuery}
+        onToggleHidden={() => editor.toggleAllNodesHidden()}
+        onToggleLocked={() => editor.toggleAllNodesLocked()}
+      />
       <div
         ref={treeRef}
         className={
@@ -379,7 +420,7 @@ export function HierarchyPanel() {
             ]
               .filter(Boolean)
               .join(" ")}
-            style={{ paddingLeft: "8px" }}
+            style={{ paddingLeft: treeIndentPadding(0) }}
             onContextMenu={(event) => {
               event.preventDefault();
               event.stopPropagation();
@@ -404,13 +445,14 @@ export function HierarchyPanel() {
               type="button"
               data-expand
               className="hierarchy-expand"
-              aria-label={sceneExpanded ? "Collapse" : "Expand"}
+              aria-label={displaySceneExpanded ? "Collapse" : "Expand"}
+              disabled={searching}
               onClick={(event) => {
                 event.stopPropagation();
                 setSceneExpanded((prev) => !prev);
               }}
             >
-              {sceneExpanded ? "▼" : "▶"}
+              {displaySceneExpanded ? "▼" : "▶"}
             </button>
             <span className="hierarchy-icon" aria-hidden>
               ◈
@@ -438,13 +480,15 @@ export function HierarchyPanel() {
               <span className="hierarchy-label">{scene.name}</span>
             )}
           </div>
-          {sceneExpanded
-            ? scene.nodes.map((node) => (
+          {displaySceneExpanded ? (
+            <>
+              {rootNodes.map((node) => (
                 <HierarchyNodeRow
                   key={node.id}
                   node={node}
                   depth={1}
-                  expanded={expanded}
+                  expanded={displayExpanded}
+                  includeIds={searchVisibleIds}
                   selectedIds={selected}
                   draggingIds={draggingIds}
                   dropIndicator={dropIndicator}
@@ -503,8 +547,12 @@ export function HierarchyPanel() {
                     }
                   }}
                 />
-              ))
-            : null}
+              ))}
+              {searching && rootNodes.length === 0 ? (
+                <p className="panel-empty hierarchy-tree-empty">No matching nodes</p>
+              ) : null}
+            </>
+          ) : null}
         </div>
       </div>
 

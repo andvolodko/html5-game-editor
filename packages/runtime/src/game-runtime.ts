@@ -12,9 +12,12 @@ import {
   flattenNodes,
   flattenSubtree,
   findNodeById,
+  getScriptComponents,
   moveNodeInScene,
   resolveScenePrefabs,
+  resolveSceneRuntimeTransform2D,
   type PrefabCatalog,
+  type RuntimeTransform2D,
   type SceneData,
   type SceneNodeData,
   type SceneRenderStats,
@@ -84,6 +87,7 @@ export class GameRuntime {
   private lastTickMs = 0;
   private lastRenderPassMs = 0;
   private lastFrameDt = 0;
+  private paused = false;
   private readonly spawnedNodeIds = new Set<string>();
   private prefabs: PrefabCatalog;
   private performanceStats: ScriptPerformanceStats = {
@@ -282,7 +286,9 @@ export class GameRuntime {
         this.setNodeCursor(nodeId, cursor);
       },
     };
-    this.scriptHost = new ScriptHost(options.components, services);
+    this.scriptHost = new ScriptHost(options.components, services, (nodeId) =>
+      this.resolveNodeTransform(nodeId),
+    );
     this.prefabs = options.prefabs ?? new Map();
   }
 
@@ -299,6 +305,9 @@ export class GameRuntime {
    * No-op when an external `onNodeClick` was provided in options.
    */
   emitNodeClick(nodeId: string): void {
+    if (this.paused) {
+      return;
+    }
     const set = this.nodeClickHandlers.get(nodeId);
     if (!set) {
       return;
@@ -314,6 +323,9 @@ export class GameRuntime {
    * Also fans `pointertap` into legacy `onNodeClick` subscribers.
    */
   emitNodePointerEvent(nodeId: string, event: NodePointerEventName): void {
+    if (this.paused) {
+      return;
+    }
     let current: string | undefined = nodeId;
     const visited = new Set<string>();
     while (current !== undefined && !visited.has(current)) {
@@ -344,6 +356,9 @@ export class GameRuntime {
 
   registerRenderer(registration: RuntimeRendererRegistration): void {
     this.renderers.set(registration.layer.id, registration);
+    if (this.paused) {
+      registration.renderer.setPlaybackPaused?.(true);
+    }
   }
 
   /** Drop renderer registrations. Call after destroying the previous stack. */
@@ -380,15 +395,51 @@ export class GameRuntime {
     return this.scriptHost.getInstanceCount();
   }
 
+  /**
+   * Push Inspector property edits onto an existing live script instance.
+   * Does not recreate the component.
+   */
+  notifyScriptProperties(
+    nodeId: string,
+    componentId: string,
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    const node = this.scene ? findNodeById(this.scene, nodeId) : undefined;
+    const script = node
+      ? getScriptComponents(node).find(
+          (component) => component.id === componentId,
+        )
+      : undefined;
+    if (script) {
+      script.properties = { ...properties };
+    }
+    this.scriptHost.notifyPropertiesChanged(nodeId, componentId, properties);
+  }
+
   /** Tear down live scripts (stops looping audio, unsubscribes bus handlers). */
   dispose(): void {
     this.scriptHost.clear();
+  }
+
+  /** Freeze script `update` and playback input. Renderers may still present. */
+  setPaused(paused: boolean): void {
+    this.paused = paused;
+    for (const registration of this.renderers.values()) {
+      registration.renderer.setPlaybackPaused?.(paused);
+    }
+  }
+
+  isPaused(): boolean {
+    return this.paused;
   }
 
   /**
    * Optional per-frame hook for script `update`. Not driven automatically in v1.
    */
   tick(dt: number): void {
+    if (this.paused) {
+      return;
+    }
     this.lastFrameDt = Math.max(0, dt);
     const startedMs = performance.now();
     this.scriptHost.tick(dt);
@@ -685,6 +736,20 @@ export class GameRuntime {
     for (const registration of this.renderers.values()) {
       registration.renderer.setNodeCursor?.(nodeId, cursor);
     }
+  }
+
+  /**
+   * Resolve a persistent live transform for a script context.
+   * Prefers a renderer handle so assignments skip scene patches / syncTransform.
+   */
+  private resolveNodeTransform(nodeId: string): RuntimeTransform2D {
+    for (const registration of this.renderers.values()) {
+      const live = registration.renderer.getRuntimeTransform2D?.(nodeId);
+      if (live) {
+        return live;
+      }
+    }
+    return resolveSceneRuntimeTransform2D(this.scene, nodeId);
   }
 
   private destroySpawnedNode(nodeId: string): void {

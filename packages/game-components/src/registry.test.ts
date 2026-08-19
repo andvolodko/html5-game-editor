@@ -158,4 +158,64 @@ describe("ComponentRegistry", () => {
       default: "asset_stone",
     });
   });
+
+  it("preserves property descriptions in catalog round-trips", () => {
+    const catalog = buildComponentCatalog((registry) => {
+      registry.register(
+        defineComponent({
+          id: "t.Described",
+          displayName: "Described",
+          category: "Test",
+          categoryOrder: 0,
+          order: 0,
+          properties: {
+            speed: {
+              kind: "number",
+              default: 0.18,
+              description: "Oscillation cycles per second",
+            },
+          },
+        }),
+      );
+    });
+    const parsed = parseComponentCatalogData(
+      JSON.parse(JSON.stringify(catalog)) as unknown,
+    );
+    expect(parsed.components[0]?.properties.speed).toEqual({
+      kind: "number",
+      default: 0.18,
+      description: "Oscillation cycles per second",
+    });
+  });
+
+  it("attaches runtime create onto a metadata-only catalog entry", () => {
+    const create = () => ({ update() {} });
+    const catalog = buildComponentCatalog((registry) => {
+      registry.register(
+        defineComponent({
+          id: "t.Cloud",
+          displayName: "Cloud",
+          category: "Test",
+          categoryOrder: 0,
+          order: 0,
+          properties: {},
+          create,
+        }),
+      );
+    });
+    expect(catalog.components[0]).not.toHaveProperty("create");
+
+    const registry = new ComponentRegistry();
+    applyComponentCatalog(registry, catalog);
+    expect(registry.get("t.Cloud")?.create).toBeUndefined();
+
+    registry.attachRuntime("t.Cloud", create);
+    expect(registry.get("t.Cloud")?.create).toBe(create);
+
+    registry.attachRuntime("missing.id", create);
+    expect(registry.has("missing.id")).toBe(false);
+
+    registry.attachRuntime("t.Cloud", undefined);
+    expect(registry.get("t.Cloud")?.create).toBe(create);
+  });
 });

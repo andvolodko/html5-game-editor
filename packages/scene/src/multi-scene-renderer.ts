@@ -91,6 +91,12 @@ export class MultiSceneRenderer implements SceneRenderer {
     }
   }
 
+  setPlaybackPaused(paused: boolean): void {
+    for (const slot of this.slots) {
+      slot.renderer.setPlaybackPaused?.(paused);
+    }
+  }
+
   getRenderStats() {
     let merged = EMPTY_SCENE_RENDER_STATS;
     for (const slot of this.slots) {
@@ -106,6 +112,16 @@ export class MultiSceneRenderer implements SceneRenderer {
   getBoneWorldTransform(nodeId: string, boneName: string) {
     for (const slot of this.slots) {
       const transform = slot.renderer.getBoneWorldTransform?.(nodeId, boneName);
+      if (transform) {
+        return transform;
+      }
+    }
+    return undefined;
+  }
+
+  getRuntimeTransform2D(nodeId: string) {
+    for (const slot of this.slots) {
+      const transform = slot.renderer.getRuntimeTransform2D?.(nodeId);
       if (transform) {
         return transform;
       }

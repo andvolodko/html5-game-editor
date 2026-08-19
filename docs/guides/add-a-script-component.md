@@ -34,14 +34,14 @@ The behaviour class is created by `defineComponent({ create })` when `GameRuntim
 | This game only | `games/<name>/src/components/<kebab>.ts` | `<game>.PascalName` — e.g. `editor-features-demo.LoadingScene` |
 | Reuse across games | `packages/game-components/src/shared/<kebab>.ts` | `shared.PascalName` — e.g. `shared.ChangeScene` |
 
-Shared components stay runtime-safe: no React, Pixi, Three, or `editor-core`. They talk to the world through `ScriptRuntimeServices` (`bus`, `changeScene`, `setTransform2D`, `playAudio`, …) defined in `packages/game-components/src/types.ts`.
+Shared components stay runtime-safe: no React, Pixi, Three, or `editor-core`. They talk to the world through `ScriptCreateContext` (`transform`, `transform3D`, `animations`, and `services` for anything else) defined in `packages/game-components/src/types.ts`.
 
 Existing examples:
 
 | File | Pattern |
 | --- | --- |
-| `games/editor-features-demo/src/components/clone-object.ts` | OOP `CloneObjectBehaviour` |
-| `games/editor-features-demo/src/components/loading-scene.ts` | Small `create` closure + `install*Runtime` |
+| `games/editor-features-demo/src/components/cloud.ts` | OOP lifecycle + `ctx.transform` + live properties |
+| `games/editor-features-demo/src/components/clone-object.ts` | Pointer subscribe in `start()`, cleanup in `destroy()` |
 | `packages/game-components/src/shared/change-scene.ts` | Shared: bus event → `changeScene(sceneId)` |
 
 Prefer a **behaviour class** that implements `ScriptInstance` for anything beyond a few lines.
@@ -50,7 +50,7 @@ Prefer a **behaviour class** that implements `ScriptInstance` for anything beyon
 
 ## 1. Define the component
 
-One file, one behaviour class (`PascalCase` + `Behaviour`). Read props once; subscribe in the constructor; unsubscribe in `destroy`.
+One file, one behaviour class (`PascalCase` + `Behaviour`). Constructor stores context and parsed properties only. Subscribe and capture rest pose in `start()`. Unsubscribe in `destroy()`.
 
 ```ts
 import {
@@ -74,28 +74,57 @@ function readProps(raw: Readonly<Record<string, unknown>>): Props {
 }
 
 export class SpinControllerBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private speed = 1;
+  private enabled = true;
   private unsubscribers: Array<() => void> = [];
 
   constructor(private readonly ctx: ScriptCreateContext) {
-    this.props = readProps(ctx.properties);
-    const { bus } = ctx.services;
+    this.applyProperties(ctx.properties);
+  }
+
+  start(): void {
+    const { bus } = this.ctx.services;
     this.unsubscribers.push(
       bus.on("game.tick", () => {
-        if (!this.props.enabled) return;
-        // use ctx.nodeId, ctx.services.setTransform2D, …
+        if (!this.enabled) return;
+        // use ctx.nodeId, ctx.transform, ctx.services …
       }),
     );
+  }
+
+  update(dt: number): void {
+    if (!this.enabled || dt <= 0) {
+      return;
+    }
+    this.ctx.transform.rotation += this.speed * dt;
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
   }
 
   destroy(): void {
     for (const off of this.unsubscribers) off();
     this.unsubscribers = [];
   }
+
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    const props = readProps(raw);
+    this.speed = props.speed;
+    this.enabled = props.enabled;
+  }
 }
 
 const PROPERTIES: ComponentDefinition["properties"] = {
-  speed: { kind: "number", default: 1, min: 0, step: 0.1 },
+  speed: {
+    kind: "number",
+    default: 1,
+    min: 0,
+    step: 0.1,
+    description: "Degrees per second",
+  },
   enabled: { kind: "boolean", default: true },
 };
 
@@ -112,16 +141,60 @@ export const spinControllerComponent = defineComponent({
 
 /** Re-attach create after a metadata-only catalog load (editor / preview). */
 export function installSpinControllerRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(spinControllerComponent.id);
-  if (existing && spinControllerComponent.create) {
-    existing.create = spinControllerComponent.create;
-  }
+  registry.attachRuntime(spinControllerComponent.id, spinControllerComponent.create);
 }
 ```
 
 `id` is stable forever once scenes reference it. `displayName` / `category` are Inspector only.
 
-Scene changes at runtime go through `ctx.services.changeScene("main")` (file id), not filesystem paths. Renderer objects stay in the adapter; use services such as `setTransform2D` / `setSpriteAssetId` / `setText` instead.
+Lifecycle (all hooks optional; `update`-only components still work):
+
+```text
+constructor → start() once → update(dt) each frame
+           ↘ onPropertiesChanged(properties) on Inspector edits
+           ↘ destroy() once on scene unload / disable
+```
+
+Do not assume the runtime node is fully ready in the constructor. Capture rest pose and subscribe in `start()`. Per-node deterministic variation can use `seededUnitFloat(seed, salt)` from `@game-editor/game-components` (`[0, 1)`, no global RNG).
+
+Scene changes at runtime go through `ctx.services.changeScene("main")` (file id), not filesystem paths. Renderer objects stay in the adapter. For this component's own 2D pose, use `ctx.transform` (`x` / `y` / `rotation` / `scaleX` / `scaleY`). For 3D pose, use `ctx.transform3D`. For Model3D clips on this node, use `ctx.animations`. Use `setTransform2D` / `setSpriteAssetId` / `setText` when targeting another node or doing a one-off service call.
+
+Preferred 3D style:
+
+```ts
+export const movementComponent = defineComponent({
+  id: "game.Movement",
+  displayName: "Movement",
+  category: "Gameplay",
+  categoryOrder: 10,
+  order: 10,
+  properties: {},
+  create(ctx) {
+    return {
+      update(dt) {
+        const { position } = ctx.transform3D;
+        ctx.transform3D.setPosition({
+          x: position.x + dt,
+          y: position.y,
+          z: position.z,
+        });
+      },
+    };
+  },
+});
+```
+
+```ts
+const clips = ctx.animations.list();
+
+if (clips.includes("Idle")) {
+  ctx.animations.play("Idle", {
+    loop: true,
+  });
+}
+```
+
+`ctx.services` is the low-level runtime bridge (`getTransform3D`, `setModel3DPlayback`, …). Prefer the high-level context APIs when they cover the need.
 
 ---
 
@@ -171,6 +244,8 @@ Add entries in `games/<name>/src/events/bus-events.ts` and export them through `
 
 `assetType` values: `texture`, `spine`, `audio`, `gltf`, `aseprite`, `font`, `webfont`, `tileset` (`COMPONENT_ASSET_TYPES`). Empty string means unset.
 
+Optional `description` on any property is shown as an Inspector tooltip.
+
 Adding a Script to a node in the editor is `AddScriptComponentCommand` (`packages/editor-core/src/commands/add-script-component-command.ts`): it copies defaults from the definition into `properties`.
 
 ---
@@ -182,11 +257,14 @@ Adding a Script to a node in the editor is `AddScriptComponentCommand` (`package
 - `bus` — typed `EventBus` from `@game-editor/core`
 - `changeScene(sceneId)` — switch scene by file id
 - `onNodePointerEvent(nodeId, "pointertap", handler)` — playback clicks
-- `getTransform2D` / `setTransform2D` (and 3D equivalents) — live pose, not saved
+- `getTransform2D` / `setTransform2D` (and 3D equivalents) — other nodes or non-hot-path pose; not saved
+- `ctx.transform` — persistent live 2D pose of **this** node (`x`/`y`/`rotation`/`scaleX`/`scaleY`). Assignments update the rendered object immediately and do not write editor history or scene files.
+- `ctx.transform3D` — current Transform3D of **this** node (`position` / `rotation` / `scale`). Getters are live; setters do not write editor history or scene files.
+- `ctx.animations` — Model3D clips on **this** node (`list` / `play` / `stop` / `freeze` / `duration`)
 - `playAudio` / `stopAudio` / `preloadSceneAsset` / `resolveAssetUrl`
 - `cloneNodeByName` / `spawnModel3D` / `destroyNode` — runtime-only graph edits
 
-`update(dt)` on `ScriptInstance` is optional; `GameRuntime.tick` drives it when implemented. Always `destroy()` subscriptions and timers.
+`start` / `update` / `onPropertiesChanged` / `destroy` on `ScriptInstance` are optional; `GameRuntime.tick` drives `update` when implemented. Always `destroy()` subscriptions and timers.
 
 ---
 
@@ -194,7 +272,7 @@ Adding a Script to a node in the editor is `AddScriptComponentCommand` (`package
 
 - Behaviour implements `ScriptInstance`; `create: (ctx) => new …Behaviour(ctx)`
 - Stable `id`, `properties` with defaults, registered in `registerGameComponents`
-- `install*Runtime` hooked from `installGameRuntime`
+- `install*Runtime` uses `registry.attachRuntime(id, create)` and is hooked from `installGameRuntime`
 - Bus events listed if you use `source: "busEvents"`
 - No class instances or functions in scene JSON
 - Shared scripts still have no renderer/editor imports

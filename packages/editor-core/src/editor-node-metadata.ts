@@ -115,6 +115,22 @@ export function isNodeLocked(
   return metadata.nodes[nodeId]?.locked === true;
 }
 
+export function sceneHasHiddenNodes(
+  scene: SceneData,
+  metadata: EditorSceneNodeMetadata,
+): boolean {
+  return flattenNodes(scene).some((node) =>
+    isNodeHiddenInEditor(metadata, node.id),
+  );
+}
+
+export function sceneHasLockedNodes(
+  scene: SceneData,
+  metadata: EditorSceneNodeMetadata,
+): boolean {
+  return flattenNodes(scene).some((node) => isNodeLocked(metadata, node.id));
+}
+
 export function isNodeEffectivelyHidden(
   scene: SceneData,
   metadata: EditorSceneNodeMetadata,

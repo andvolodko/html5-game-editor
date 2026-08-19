@@ -1,3 +1,4 @@
+import type { RuntimeTransform2D } from "./runtime-transform-2d.js";
 import type { SceneNodeData, Vec3 } from "./types.js";
 
 /** Optional GPU / canvas counters sampled after a frame (performance overlays). */
@@ -45,7 +46,7 @@ export interface SceneRenderer {
   updateNode(node: SceneNodeData): void;
   /**
    * Apply Transform2D only — do not rebuild visuals.
-   * Used by gameplay scripts that move/flip nodes every frame.
+   * Used by `setTransform2D` when mutating a node through services.
    */
   syncTransform(node: SceneNodeData): void;
   destroyNode(nodeId: string): void;
@@ -63,10 +64,21 @@ export interface SceneRenderer {
    * MultiSceneRenderer uses this to avoid calling ops on filtered-out slots.
    */
   hasNode?(nodeId: string): boolean;
+  /**
+   * Persistent live 2D transform handle for a runtime node.
+   * Assignments update the rendered object immediately and must not
+   * allocate a new object per access.
+   */
+  getRuntimeTransform2D?(nodeId: string): RuntimeTransform2D | undefined;
   /** Remove all runtime objects. Domain scene is unaffected. */
   clear(): void;
   resize(width: number, height: number): void;
   render(): void;
+  /**
+   * Freeze playback-driven animation (Pixi ticker, glTF mixers).
+   * Editor tools and one-shot `render()` presents are unaffected.
+   */
+  setPlaybackPaused?(paused: boolean): void;
   /** Optional draw-call / triangle / canvas sample for performance meters. */
   getRenderStats?(): SceneRenderStats;
   /**

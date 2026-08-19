@@ -1,4 +1,4 @@
-import { Application } from "pixi.js";
+import { Application, type Ticker } from "pixi.js";
 import type { FederatedPointerEvent } from "pixi.js";
 import { MOUSE_BUTTON_MIDDLE } from "@game-editor/shared";
 import type { Vec2 } from "@game-editor/scene";
@@ -62,7 +62,7 @@ export interface PixiAppLifecycleHost {
   onWorldPointerMove?(world: Vec2): void;
   onWorldPointerUp?(world: Vec2): void;
   onResize(): void;
-  onTick?(deltaMs: number): void;
+  onTick?(ticker: Ticker): void;
 }
 
 /**
@@ -75,6 +75,7 @@ export class PixiAppLifecycle {
   ready = false;
   private parentResizeObserver: ResizeObserver | undefined;
   private readonly initPromise: Promise<void>;
+  private tickerPaused = false;
 
   constructor(
     private readonly host: PixiAppLifecycleHost,
@@ -214,9 +215,30 @@ export class PixiAppLifecycle {
     }
     this.syncViewportSize();
     app.ticker.add((ticker) => {
-      this.host.onTick?.(ticker.deltaMS);
+      this.host.onTick?.(ticker);
     });
+    if (this.tickerPaused) {
+      app.ticker.stop();
+    }
     this.ready = true;
+  }
+
+  setTickerPaused(paused: boolean): void {
+    this.tickerPaused = paused;
+    const app = this.app;
+    if (!app) {
+      return;
+    }
+    if (paused) {
+      app.ticker.stop();
+      return;
+    }
+    app.ticker.start();
+  }
+
+  /** Present the current stage without advancing the ticker. */
+  renderFrame(): void {
+    this.app?.render();
   }
 
   syncViewportSize(): void {

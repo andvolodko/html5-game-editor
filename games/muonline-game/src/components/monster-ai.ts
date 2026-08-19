@@ -4,7 +4,6 @@ import {
   type ComponentRegistry,
   type ScriptCreateContext,
   type ScriptInstance,
-  type ScriptRuntimeServices,
 } from "@game-editor/game-components";
 import {
   getCombatant,
@@ -20,7 +19,6 @@ import {
   resolveMonsterClip,
   type MonsterClipProps,
 } from "../monster-clips.js";
-import { clipWallDurationSeconds, freezeModelClip, playModelClip } from "../play-model-clip.js";
 import {
   clampXz,
   moveToward,
@@ -104,8 +102,7 @@ function boundsOf(props: Props): XzBounds {
 
 export class MonsterAiBehaviour implements ScriptInstance, Combatant {
   readonly nodeId: string;
-  private readonly props: Props;
-  private readonly services: ScriptRuntimeServices;
+  private props: Props;
   private readonly spawn: {
     x: number;
     y: number;
@@ -124,19 +121,32 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
 
   constructor(private readonly ctx: ScriptCreateContext) {
     this.nodeId = ctx.nodeId;
-    this.services = ctx.services;
     this.props = readProps(ctx.properties);
-    const transform = ctx.services.getTransform3D?.(ctx.nodeId);
-    this.spawn = {
-      x: transform?.position.x ?? 0,
-      y: transform?.position.y ?? 0,
-      z: transform?.position.z ?? 0,
-      rotation: transform?.rotation ?? { x: 0, y: 0, z: 0 },
-      scale: transform?.scale ?? { x: 1, y: 1, z: 1 },
-    };
     this.hp = this.props.hitPoints;
+    this.spawn = {
+      x: 0,
+      y: 0,
+      z: 0,
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
+    };
+  }
+
+  start(): void {
+    const { position, rotation, scale } = this.ctx.transform3D;
+    this.spawn.x = position.x;
+    this.spawn.y = position.y;
+    this.spawn.z = position.z;
+    this.spawn.rotation = { ...rotation };
+    this.spawn.scale = { ...scale };
     registerCombatant(this);
     this.enterIdle();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.props = readProps(properties);
   }
 
   isAlive(): boolean {
@@ -148,8 +158,8 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
   }
 
   xz(): { x: number; z: number } {
-    const position = this.services.getTransform3D?.(this.nodeId)?.position;
-    return { x: position?.x ?? this.spawn.x, z: position?.z ?? this.spawn.z };
+    const position = this.ctx.transform3D.position;
+    return { x: position.x, z: position.z };
   }
 
   receiveHit(): void {
@@ -218,18 +228,18 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
     if (this.clipsReady) {
       return;
     }
-    const names = this.services.listModel3DAnimations?.(this.nodeId) ?? [];
+    const names = this.ctx.animations.list();
     if (names.length === 0) {
       return;
     }
     this.clipsReady = true;
     if (this.phase === "die") {
       const clip = this.playRole("dieAnimation", false);
-      this.timer = clipWallDurationSeconds(this.services, this.nodeId, clip);
+      this.timer = this.ctx.animations.duration(clip);
       return;
     }
     if (this.phase === "corpse") {
-      freezeModelClip(this.services, this.nodeId);
+      this.ctx.animations.freeze();
       return;
     }
     if (this.phase === "respawn") {
@@ -237,7 +247,7 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
     }
     if (this.phase === "hurt") {
       const clip = this.playRole("receiveKickAnimation", false);
-      this.timer = clipWallDurationSeconds(this.services, this.nodeId, clip);
+      this.timer = this.ctx.animations.duration(clip);
       return;
     }
     if (this.phase === "fight") {
@@ -276,7 +286,7 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
     this.phase = "hurt";
     this.fightTargetId = undefined;
     const clip = this.playRole("receiveKickAnimation", false);
-    this.timer = clipWallDurationSeconds(this.services, this.nodeId, clip);
+    this.timer = this.ctx.animations.duration(clip);
   }
 
   private resumeAfterHurt(): void {
@@ -297,12 +307,12 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
     this.fightTargetId = undefined;
     this.walkTarget = undefined;
     const clip = this.playRole("dieAnimation", false);
-    this.timer = clipWallDurationSeconds(this.services, this.nodeId, clip);
+    this.timer = this.ctx.animations.duration(clip);
   }
 
   private enterCorpse(): void {
     this.phase = "corpse";
-    freezeModelClip(this.services, this.nodeId);
+    this.ctx.animations.freeze();
     this.timer = randomDuration(
       DEFAULT_CORPSE_MIN_SECONDS,
       DEFAULT_CORPSE_MAX_SECONDS,
@@ -311,8 +321,8 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
 
   private enterRespawn(): void {
     this.phase = "respawn";
-    this.services.setTransform3D?.(this.nodeId, { scale: HIDDEN_SCALE });
-    this.services.setModel3DPlayback?.(this.nodeId, { playing: false });
+    this.ctx.transform3D.setScale(HIDDEN_SCALE);
+    this.ctx.animations.stop();
     this.timer = randomDuration(
       DEFAULT_HIDE_MIN_SECONDS,
       DEFAULT_HIDE_MAX_SECONDS,
@@ -321,7 +331,7 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
 
   private finishRespawn(): void {
     this.hp = this.props.hitPoints;
-    this.services.setTransform3D?.(this.nodeId, {
+    this.ctx.transform3D.set({
       position: { x: this.spawn.x, y: this.spawn.y, z: this.spawn.z },
       rotation: { ...this.spawn.rotation },
       scale: { ...this.spawn.scale },
@@ -376,7 +386,7 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
 
   private startAttackSwing(): void {
     const clip = this.playRole("attackAnimation", true);
-    const duration = clipWallDurationSeconds(this.services, this.nodeId, clip);
+    const duration = this.ctx.animations.duration(clip);
     this.hitInterval = duration;
     this.hitCooldown = duration * ATTACK_HIT_RATIO;
   }
@@ -416,16 +426,14 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
       moveToward(origin, target, this.props.speed * dt),
       boundsOf(this.props),
     );
-    this.services.setTransform3D?.(this.nodeId, {
+    this.ctx.transform3D.set({
       position: { x: next.x, y: this.spawn.y, z: next.z },
       rotation: this.rotationFacing(origin, next),
     });
   }
 
   private faceFrom(from: XzPoint, to: XzPoint): void {
-    this.services.setTransform3D?.(this.nodeId, {
-      rotation: this.rotationFacing(from, to),
-    });
+    this.ctx.transform3D.setRotation(this.rotationFacing(from, to));
   }
 
   private rotationFacing(
@@ -433,16 +441,16 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
     to: XzPoint,
   ): { x: number; y: number; z: number } {
     const yaw = yawFromTo(from, to);
-    const current = this.services.getTransform3D?.(this.nodeId)?.rotation;
+    const current = this.ctx.transform3D.rotation;
     return {
       x: this.spawn.rotation.x,
       y: this.spawn.rotation.y,
-      z: yaw ?? current?.z ?? this.spawn.rotation.z,
+      z: yaw ?? current.z ?? this.spawn.rotation.z,
     };
   }
 
   private playRole(role: ClipRole, loop: boolean): string | undefined {
-    const names = this.services.listModel3DAnimations?.(this.nodeId) ?? [];
+    const names = this.ctx.animations.list();
     const clip = resolveMonsterClip(
       names,
       this.props[role],
@@ -451,7 +459,7 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
     if (!clip) {
       return undefined;
     }
-    playModelClip(this.services, this.nodeId, clip, loop);
+    this.ctx.animations.play(clip, { loop });
     return clip;
   }
 }
@@ -491,8 +499,5 @@ export const monsterAiComponent = defineComponent({
 });
 
 export function installMonsterAiRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(monsterAiComponent.id);
-  if (existing && monsterAiComponent.create) {
-    existing.create = monsterAiComponent.create;
-  }
+  registry.attachRuntime(monsterAiComponent.id, monsterAiComponent.create);
 }

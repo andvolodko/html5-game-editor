@@ -42,25 +42,54 @@ function pointerTargetIds(
  * Swaps child visuals named regular/pressed and shows a pointer cursor.
  */
 export class ButtonBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private regularChildName = DEFAULT_REGULAR_CHILD;
+  private pressedChildName = DEFAULT_PRESSED_CHILD;
   private regularId: string | undefined;
   private pressedId: string | undefined;
   private unsubscribers: Array<() => void> = [];
 
   constructor(private readonly ctx: ScriptCreateContext) {
-    this.props = readProps(ctx.properties);
-    this.onEnable();
+    this.applyProperties(ctx.properties);
   }
 
-  private onEnable(): void {
+  start(): void {
+    this.bind();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
+    this.bind();
+  }
+
+  destroy(): void {
+    this.unbind();
+  }
+
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    const props = readProps(raw);
+    this.regularChildName = props.regularChildName;
+    this.pressedChildName = props.pressedChildName;
+  }
+
+  private unbind(): void {
+    for (const off of this.unsubscribers) {
+      off();
+    }
+    this.unsubscribers = [];
+  }
+
+  private bind(): void {
+    this.unbind();
     const { listChildNodes, setNodeCursor, onNodePointerEvent } =
       this.ctx.services;
     const children = listChildNodes?.(this.ctx.nodeId) ?? [];
     this.regularId = children.find(
-      (child) => child.name === this.props.regularChildName,
+      (child) => child.name === this.regularChildName,
     )?.id;
     this.pressedId = children.find(
-      (child) => child.name === this.props.pressedChildName,
+      (child) => child.name === this.pressedChildName,
     )?.id;
 
     this.applyPressed(false);
@@ -93,13 +122,6 @@ export class ButtonBehaviour implements ScriptInstance {
     if (this.pressedId) {
       setNodeVisible(this.pressedId, pressed);
     }
-  }
-
-  destroy(): void {
-    for (const off of this.unsubscribers) {
-      off();
-    }
-    this.unsubscribers = [];
   }
 }
 

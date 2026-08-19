@@ -81,6 +81,14 @@ export class EditorNodeMetadataStore {
     this.setFlagForAll(scene, "hidden", false);
   }
 
+  hideAll(scene: SceneData): void {
+    this.setFlagForAll(scene, "hidden", true);
+  }
+
+  lockAll(scene: SceneData): void {
+    this.setFlagForAll(scene, "locked", true);
+  }
+
   unlockAll(scene: SceneData): void {
     this.setFlagForAll(scene, "locked", false);
   }

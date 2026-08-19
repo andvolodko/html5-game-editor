@@ -81,4 +81,25 @@ Game behaviours live under `games/<name>/src/components` or `packages/game-compo
 
 `Script.enabled` (omit = true) is a scene-level flag. Disabled scripts are not constructed and do not receive `update`. This is independent of any `properties.enabled` field a behaviour may define.
 
+Lifecycle on `ScriptInstance` (all hooks optional):
+
+```text
+constructor → start() once (node + ctx.transform ready)
+           → update(dt) each GameRuntime.tick
+           → onPropertiesChanged(properties) on live Inspector edits
+           → destroy() once on unload
+```
+
+`GameRuntime.setPaused(true)` skips `tick` / playback pointer events and calls `SceneRenderer.setPlaybackPaused` so Pixi tickers and glTF mixers freeze. Spine and AnimatedSprite (Aseprite) attach to Pixi `Ticker.shared` by default; preview pause detaches them and drives updates from the Application ticker instead. Inspector `onPropertiesChanged` still runs. Editor preview Pause uses this plus `HtmlAudioPlayer.setPaused`.
+
+`ScriptHost` isolates hook errors (script id, component id, node id, hook name) so one broken behaviour does not stop the rest of the loop.
+
+Own-node 2D motion should use `ctx.transform` (a persistent live handle). Do not call `getTransform2D` / `setTransform2D` every frame for the host node.
+
+Own-node 3D motion should use `ctx.transform3D` (`position` / `rotation` / `scale` getters plus `setPosition` / `setRotation` / `setScale` / `set`). Model clips on the host node should use `ctx.animations`. `ctx.services` remains the low-level escape hatch (other nodes, audio, scene graph, …).
+
+Metadata catalogs stay function-free. After a catalog load, games call `registry.attachRuntime(componentId, create)` from `installGameRuntime`.
+
+Per-node deterministic values: `seededUnitFloat(seed, salt)` in `@game-editor/shared` / `@game-editor/game-components` (`[0, 1)`).
+
 See `.cursor/skills/create-game-component/SKILL.md`.

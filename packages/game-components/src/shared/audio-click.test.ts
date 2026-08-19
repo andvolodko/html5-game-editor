@@ -1,19 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 import { EventBus } from "@game-editor/core";
 import { AudioClickBehaviour } from "./audio-click.js";
+import { createScriptContext } from "../script-context.js";
 import type { ScriptCreateContext } from "../types.js";
 
 function createContext(
   properties: Record<string, unknown>,
   services: ScriptCreateContext["services"],
 ): ScriptCreateContext {
-  return {
+  return createScriptContext({
     nodeId: "node_btn",
     componentId: "comp_1",
     scriptId: "shared.AudioClick",
     properties,
     services,
-  };
+  });
 }
 
 describe("AudioClickBehaviour", () => {
@@ -39,6 +40,7 @@ describe("AudioClickBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     handler?.();
     expect(playAudio).toHaveBeenCalledWith("asset_sfx");
@@ -64,6 +66,7 @@ describe("AudioClickBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     handler?.();
     expect(playAudio).toHaveBeenCalledWith("asset_sfx");
@@ -88,6 +91,7 @@ describe("AudioClickBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     handler?.();
     expect(playAudio).not.toHaveBeenCalled();

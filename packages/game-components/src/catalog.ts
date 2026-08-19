@@ -98,6 +98,12 @@ function isPropertyDefinition(
   if (!isRecord(value) || typeof value.kind !== "string") {
     return false;
   }
+  if (
+    value.description !== undefined &&
+    typeof value.description !== "string"
+  ) {
+    return false;
+  }
   switch (value.kind) {
     case "number":
       return typeof value.default === "number";

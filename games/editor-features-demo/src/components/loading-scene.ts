@@ -6,57 +6,79 @@ import {
   type ScriptInstance,
 } from "@game-editor/game-components";
 
+const DEFAULT_COMPLETE_EVENT = "loading.complete";
+const DEFAULT_NEXT_SCENE = "main";
+const DEFAULT_MIN_DISPLAY_MS = 500;
+
 /**
  * Loading Scene controller.
  * After `minDisplayMs`, dispatches `completeEvent` (default `loading.complete`)
  * on the bus, then navigates to `nextScene`.
  */
-function createLoadingSceneInstance(context: ScriptCreateContext): ScriptInstance {
-  const completeEvent =
-    typeof context.properties.completeEvent === "string"
-      ? context.properties.completeEvent
-      : "loading.complete";
-  const nextScene =
-    typeof context.properties.nextScene === "string"
-      ? context.properties.nextScene
-      : "main";
-  const minDisplayMs =
-    typeof context.properties.minDisplayMs === "number"
-      ? context.properties.minDisplayMs
-      : 500;
+export class LoadingSceneBehaviour implements ScriptInstance {
+  private completeEvent = DEFAULT_COMPLETE_EVENT;
+  private nextScene = DEFAULT_NEXT_SCENE;
+  private minDisplayMs = DEFAULT_MIN_DISPLAY_MS;
+  private finished = false;
+  private timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-  let finished = false;
-  const timeoutId = setTimeout(() => {
-    if (finished) {
-      return;
+  constructor(private readonly ctx: ScriptCreateContext) {
+    this.applyProperties(ctx.properties);
+  }
+
+  start(): void {
+    this.timeoutId = setTimeout(() => {
+      if (this.finished) {
+        return;
+      }
+      this.finished = true;
+      this.ctx.services.bus.emit(this.completeEvent);
+      void this.ctx.services.changeScene(this.nextScene);
+    }, Math.max(0, this.minDisplayMs));
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
+  }
+
+  destroy(): void {
+    this.finished = true;
+    if (this.timeoutId !== undefined) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = undefined;
     }
-    finished = true;
-    context.services.bus.emit(completeEvent);
-    void context.services.changeScene(nextScene);
-  }, Math.max(0, minDisplayMs));
+  }
 
-  return {
-    destroy() {
-      finished = true;
-      clearTimeout(timeoutId);
-    },
-  };
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    this.completeEvent =
+      typeof raw.completeEvent === "string"
+        ? raw.completeEvent
+        : DEFAULT_COMPLETE_EVENT;
+    this.nextScene =
+      typeof raw.nextScene === "string" ? raw.nextScene : DEFAULT_NEXT_SCENE;
+    this.minDisplayMs =
+      typeof raw.minDisplayMs === "number"
+        ? raw.minDisplayMs
+        : DEFAULT_MIN_DISPLAY_MS;
+  }
 }
 
 const LOADING_SCENE_PROPERTIES: ComponentDefinition["properties"] = {
   completeEvent: {
     kind: "dynamicEnum",
-    default: "loading.complete",
+    default: DEFAULT_COMPLETE_EVENT,
     source: "busEvents",
   },
   nextScene: {
     kind: "dynamicEnum",
-    default: "main",
+    default: DEFAULT_NEXT_SCENE,
     source: "scenes",
   },
   minDisplayMs: {
     kind: "number",
-    default: 500,
+    default: DEFAULT_MIN_DISPLAY_MS,
     min: 0,
     step: 50,
   },
@@ -70,15 +92,12 @@ export const loadingSceneComponent = defineComponent({
   order: 20,
   allowMultiple: false,
   properties: LOADING_SCENE_PROPERTIES,
-  create: createLoadingSceneInstance,
+  create: (ctx) => new LoadingSceneBehaviour(ctx),
 });
 
 /** Re-attach create after a metadata-only catalog load (editor / preview). */
 export function installLoadingSceneRuntime(
   registry: ComponentRegistry,
 ): void {
-  const existing = registry.get(loadingSceneComponent.id);
-  if (existing && loadingSceneComponent.create) {
-    existing.create = loadingSceneComponent.create;
-  }
+  registry.attachRuntime(loadingSceneComponent.id, loadingSceneComponent.create);
 }

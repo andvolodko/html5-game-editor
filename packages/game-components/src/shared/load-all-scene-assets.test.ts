@@ -4,19 +4,20 @@ import {
   formatLoadAllSceneAssetsText,
   LoadAllSceneAssetsBehaviour,
 } from "./load-all-scene-assets.js";
+import { createScriptContext } from "../script-context.js";
 import type { ScriptCreateContext } from "../types.js";
 
 function createContext(
   properties: Record<string, unknown>,
   services: ScriptCreateContext["services"],
 ): ScriptCreateContext {
-  return {
+  return createScriptContext({
     nodeId: "node_text",
     componentId: "comp_1",
     scriptId: "shared.LoadAllSceneAssets",
     properties,
     services,
-  };
+  });
 }
 
 describe("formatLoadAllSceneAssetsText", () => {
@@ -52,6 +53,7 @@ describe("LoadAllSceneAssetsBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     expect(setText).toHaveBeenCalledWith("node_text", "0%");
 
@@ -86,6 +88,7 @@ describe("LoadAllSceneAssetsBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     await vi.waitFor(() => {
       expect(complete).toHaveBeenCalledTimes(1);
@@ -111,6 +114,7 @@ describe("LoadAllSceneAssetsBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     await vi.waitFor(() => {
       expect(complete).toHaveBeenCalledTimes(1);
@@ -140,6 +144,7 @@ describe("LoadAllSceneAssetsBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
     behaviour.destroy();
     resolvePreload?.();
     await Promise.resolve();

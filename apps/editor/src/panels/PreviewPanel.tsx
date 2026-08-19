@@ -27,6 +27,7 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
     [],
   );
   const [selectedSceneId, setSelectedSceneId] = useState(editorSceneFileId);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     const session = sessionRef.current;
@@ -84,6 +85,7 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
       }
       void sessionRef.current.stop().then(() => {
         setStatus("idle");
+        setPaused(false);
         setError(null);
       });
     });
@@ -104,6 +106,7 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
       return;
     }
     setError(null);
+    setPaused(false);
     setStatus("starting");
     void resolvePreviewScene(editor, selectedSceneId)
       .then((snapshot) =>
@@ -154,8 +157,19 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
   const handleStop = () => {
     void sessionRef.current.stop().then(() => {
       setStatus("idle");
+      setPaused(false);
       setError(null);
     });
+  };
+
+  const handleTogglePause = () => {
+    const session = sessionRef.current;
+    if (!session.isRunning) {
+      return;
+    }
+    const next = !session.isPaused;
+    session.setPaused(next);
+    setPaused(next);
   };
 
   const handleToggleMaximize = () => {
@@ -182,6 +196,16 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
     });
   };
 
+  useEffect(() => {
+    if (status !== "running") {
+      return;
+    }
+    const session = sessionRef.current;
+    return editor.subscribe(() => {
+      session.syncScriptPropertiesFromScene(editor.getScene());
+    });
+  }, [editor, status]);
+
   const busy = status === "starting";
   const running = status === "running";
   const poppedOut = isPopoutGroupLocation({ type: locationType });
@@ -196,6 +220,15 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
           onClick={handlePlay}
         >
           Play
+        </button>
+        <button
+          type="button"
+          className="scene-toolbar-btn"
+          disabled={!running}
+          aria-pressed={paused}
+          onClick={handleTogglePause}
+        >
+          {paused ? "Resume" : "Pause"}
         </button>
         <button
           type="button"
@@ -249,7 +282,7 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
           </p>
         ) : null}
         {busy ? (
-          <p className="panel-empty preview-idle-hint">Starting preview‚Ä¶</p>
+          <p className="panel-empty preview-idle-hint">Starting previewù</p>
         ) : null}
       </div>
       {error ? <p className="panel-error preview-error">{error}</p> : null}

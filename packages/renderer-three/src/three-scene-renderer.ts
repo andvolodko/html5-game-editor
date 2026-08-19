@@ -110,6 +110,7 @@ export class ThreeSceneRenderer implements SceneRenderer {
   /** Coalesce ResizeObserver bursts onto one animation frame. */
   private resizeRafId = 0;
   private pendingResize: { width: number; height: number } | undefined;
+  private playbackPaused = false;
 
   constructor(options: ThreeSceneRendererOptions = {}) {
     this.headless = options.headless === true;
@@ -485,7 +486,7 @@ export class ThreeSceneRenderer implements SceneRenderer {
     }
     const now = performance.now();
     const dt =
-      this.lastFrameMs === 0
+      this.playbackPaused || this.lastFrameMs === 0
         ? 0
         : Math.min(0.1, Math.max(0, (now - this.lastFrameMs) / 1000));
     this.lastFrameMs = now;
@@ -501,6 +502,13 @@ export class ThreeSceneRenderer implements SceneRenderer {
 
   getSize(): { width: number; height: number } {
     return { width: this.width, height: this.height };
+  }
+
+  setPlaybackPaused(paused: boolean): void {
+    this.playbackPaused = paused;
+    if (!paused) {
+      this.lastFrameMs = performance.now();
+    }
   }
 
   getRenderStats(): SceneRenderStats {

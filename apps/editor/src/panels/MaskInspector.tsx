@@ -24,6 +24,7 @@ import {
   NumberField,
 } from "./fields/inspector-fields";
 import { PolygonPointsEditor } from "./PolygonPointsEditor";
+import { InspectorComponentHeaderActions } from "./InspectorComponentHeaderActions";
 
 const SHAPE_TYPES: readonly GraphicsShapeData["type"][] = [
   "rectangle",
@@ -71,13 +72,10 @@ export function MaskInspector({ editor, scene, node }: Props) {
     <section className="inspector-section">
       <div className="inspector-section-header">
         <h3>Mask</h3>
-        <button
-          type="button"
-          className="inspector-remove-btn"
-          onClick={() => editor.removeComponent(node.id, mask.id)}
-        >
-          Remove
-        </button>
+        <InspectorComponentHeaderActions
+          onCopy={() => editor.copyComponent(node.id, mask.id)}
+          onRemove={() => editor.removeComponent(node.id, mask.id)}
+        />
       </div>
       <div className="inspector-grid">
         <BooleanField

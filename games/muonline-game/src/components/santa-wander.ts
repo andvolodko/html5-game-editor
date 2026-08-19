@@ -35,7 +35,7 @@ function readProps(raw: Readonly<Record<string, unknown>>): Props {
 }
 
 export class SantaWanderBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private props: Props;
   private readonly ctx: ScriptCreateContext;
   private timer = 0;
   private lastClip: string | undefined;
@@ -43,7 +43,16 @@ export class SantaWanderBehaviour implements ScriptInstance {
   constructor(ctx: ScriptCreateContext) {
     this.ctx = ctx;
     this.props = readProps(ctx.properties);
+  }
+
+  start(): void {
     this.playNext();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.props = readProps(properties);
   }
 
   update(dt: number): void {
@@ -109,8 +118,5 @@ export const santaWanderComponent = defineComponent({
 });
 
 export function installSantaWanderRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(santaWanderComponent.id);
-  if (existing && santaWanderComponent.create) {
-    existing.create = santaWanderComponent.create;
-  }
+  registry.attachRuntime(santaWanderComponent.id, santaWanderComponent.create);
 }

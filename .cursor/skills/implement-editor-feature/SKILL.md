@@ -1,12 +1,31 @@
 ---
-
 name: implement-editor-feature
-description: Plan and implement a production-quality feature in the hybrid PixiJS/Three.js game editor while preserving architecture, undo/redo, persistence and tests.
------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+description: >-
+  Plan and implement a production-quality feature in the hybrid PixiJS/Three.js
+  game editor while preserving architecture, undo/redo, persistence and tests.
+  Use for editor UI/core work that is not a specialized add-node-type,
+  add-asset-type, add-editor-command, add-editor-panel, or modify-scene-schema slice.
+---
 
 # Implement Editor Feature
 
-Use this workflow whenever implementing a meaningful feature in the editor.
+Use this workflow whenever implementing a meaningful **editor** feature that does not already have a dedicated vertical-slice skill.
+
+## Related skills (prefer the specialized one)
+
+| If the work is mainly… | Use |
+| --- | --- |
+| New Hierarchy/Node-menu type + renderer | `.cursor/skills/add-node-type/SKILL.md` |
+| New catalogue format / importer | `.cursor/skills/add-asset-type/SKILL.md` |
+| Undoable mutation | `.cursor/skills/add-editor-command/SKILL.md` |
+| New dockview panel | `.cursor/skills/add-editor-panel/SKILL.md` |
+| Persisted JSON shape | `.cursor/skills/modify-scene-schema/SKILL.md` |
+| Gameplay / `GameRuntime` / scripts | `.cursor/skills/implement-runtime-feature/SKILL.md` or `create-game-component` |
+| Multi-package / boundaries | `.cursor/skills/architecture-change/SKILL.md` |
+| Docs after a user-visible change | `.cursor/skills/update-documentation/SKILL.md` |
+| Jank / FPS | `.cursor/skills/performance-audit/SKILL.md` |
+
+Keep using **this** skill for planning a feature that spans several of those layers, or for editor work that is not one of those slices.
 
 ## Step 1 — Understand the request
 
@@ -119,15 +138,7 @@ Continuous pointer interaction should create one command on completion.
 
 ## Step 6 — Persistence analysis
 
-If serialized data changes:
-
-1. update TypeScript model;
-2. update runtime validation schema;
-3. update format version if needed;
-4. create migration when compatibility requires it;
-5. update serialization tests.
-
-Do not change persisted formats casually.
+If serialized data changes, follow `.cursor/skills/modify-scene-schema/SKILL.md` (types, Zod, parse defaults, tests). There is no scene migration runner yet — do not invent one. Do not change persisted formats casually.
 
 ---
 

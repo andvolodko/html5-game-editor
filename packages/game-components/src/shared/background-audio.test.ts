@@ -1,19 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 import { EventBus } from "@game-editor/core";
 import { BackgroundAudioBehaviour } from "./background-audio.js";
+import { createScriptContext } from "../script-context.js";
 import type { ScriptCreateContext } from "../types.js";
 
 function createContext(
   properties: Record<string, unknown>,
   services: ScriptCreateContext["services"],
 ): ScriptCreateContext {
-  return {
+  return createScriptContext({
     nodeId: "node_audio",
     componentId: "comp_1",
     scriptId: "shared.BackgroundAudio",
     properties,
     services,
-  };
+  });
 }
 
 describe("BackgroundAudioBehaviour", () => {
@@ -31,6 +32,7 @@ describe("BackgroundAudioBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     expect(playAudio).toHaveBeenCalledWith("asset_bgm", {
       loop: true,
@@ -54,6 +56,7 @@ describe("BackgroundAudioBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     expect(playAudio).not.toHaveBeenCalled();
     behaviour.destroy();
@@ -72,6 +75,7 @@ describe("BackgroundAudioBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     expect(playAudio).toHaveBeenCalledWith("asset_bgm", {
       loop: true,

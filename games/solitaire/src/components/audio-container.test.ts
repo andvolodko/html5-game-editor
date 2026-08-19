@@ -1,26 +1,29 @@
 import { describe, expect, it, vi } from "vitest";
 import { EventBus } from "@game-editor/runtime";
 import { AudioContainerBehaviour } from "./audio-container.js";
-import type { ScriptCreateContext } from "@game-editor/game-components";
+import {
+  createScriptContext,
+  type ScriptCreateContext,
+} from "@game-editor/game-components";
 
 function createContext(
   properties: Record<string, unknown>,
   services: ScriptCreateContext["services"],
 ): ScriptCreateContext {
-  return {
+  return createScriptContext({
     nodeId: "node_audio",
     componentId: "comp_1",
     scriptId: "solitaire.AudioContainer",
     properties,
     services,
-  };
+  });
 }
 
 describe("AudioContainerBehaviour", () => {
   it("sets a pointer cursor and hides hover children", () => {
     const setNodeCursor = vi.fn();
     const setNodeVisible = vi.fn();
-    new AudioContainerBehaviour(
+    const behaviour = new AudioContainerBehaviour(
       createContext(
         {},
         {
@@ -46,6 +49,7 @@ describe("AudioContainerBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     expect(setNodeVisible).toHaveBeenCalledWith("node_on_hover", false);
     expect(setNodeVisible).toHaveBeenCalledWith("node_off_hover", false);
@@ -58,7 +62,7 @@ describe("AudioContainerBehaviour", () => {
   it("enables audio on on-click and disables on off-click", () => {
     const setAudioEnabled = vi.fn();
     const handlers = new Map<string, () => void>();
-    new AudioContainerBehaviour(
+    const behaviour = new AudioContainerBehaviour(
       createContext(
         {},
         {
@@ -81,6 +85,7 @@ describe("AudioContainerBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     handlers.get("node_off:pointertap")?.();
     expect(setAudioEnabled).toHaveBeenCalledWith(false);
@@ -92,7 +97,7 @@ describe("AudioContainerBehaviour", () => {
   it("toggles hover child visibility on pointerover and pointerout", () => {
     const setNodeVisible = vi.fn();
     const handlers = new Map<string, () => void>();
-    new AudioContainerBehaviour(
+    const behaviour = new AudioContainerBehaviour(
       createContext(
         {},
         {
@@ -115,6 +120,7 @@ describe("AudioContainerBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     setNodeVisible.mockClear();
     handlers.get("node_on:pointerover")?.();

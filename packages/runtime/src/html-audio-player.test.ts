@@ -107,6 +107,50 @@ describe("createHtmlAudioPlayer", () => {
     expect(created[0]?.play).toHaveBeenCalledTimes(2);
   });
 
+  it("pauses looping audio and skips one-shots until resumed", () => {
+    const created: FakeAudio[] = [];
+    vi.stubGlobal(
+      "Audio",
+      class extends FakeAudio {
+        constructor(url: string) {
+          super(url);
+          created.push(this);
+        }
+      },
+    );
+    const player = createHtmlAudioPlayer((id) => `https://example/${id}.ogg`);
+    player.play("asset_bgm", { loop: true });
+    expect(created[0]?.play).toHaveBeenCalledTimes(1);
+
+    player.setPaused(true);
+    expect(created[0]?.pause).toHaveBeenCalledTimes(1);
+    expect(created[0]?.src).toBe("https://example/asset_bgm.ogg");
+
+    player.play("asset_sfx");
+    expect(created).toHaveLength(1);
+
+    player.setPaused(false);
+    expect(created[0]?.play).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not resume looping audio when enabled while paused", () => {
+    const created: FakeAudio[] = [];
+    vi.stubGlobal(
+      "Audio",
+      class extends FakeAudio {
+        constructor(url: string) {
+          super(url);
+          created.push(this);
+        }
+      },
+    );
+    const player = createHtmlAudioPlayer((id) => `https://example/${id}.ogg`);
+    player.play("asset_bgm", { loop: true });
+    player.setPaused(true);
+    player.setEnabled(true);
+    expect(created[0]?.play).toHaveBeenCalledTimes(1);
+  });
+
   it("skips one-shots while disabled and does not play looping clips until enabled", () => {
     const created: FakeAudio[] = [];
     vi.stubGlobal(

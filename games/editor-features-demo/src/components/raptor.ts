@@ -25,33 +25,30 @@ function readProps(raw: Readonly<Record<string, unknown>>): Props {
 
 /** Patrols left ↔ right; flips with `scale.x *= -1` at each turn. */
 export class RaptorBehaviour implements ScriptInstance {
-  private readonly props: Props;
-  private readonly startX: number;
+  private startX = 0;
   private direction = 1;
+  private speed = DEFAULT_SPEED;
+  private range = DEFAULT_RANGE;
+  private enabled = true;
 
   constructor(private readonly ctx: ScriptCreateContext) {
-    this.props = readProps(ctx.properties);
-    this.startX = ctx.services.getTransform2D?.(ctx.nodeId)?.position.x ?? 0;
+    this.applyProperties(ctx.properties);
+  }
+
+  start(): void {
+    this.startX = this.ctx.transform.x;
   }
 
   update(dt: number): void {
-    if (!this.props.enabled || dt <= 0) {
-      return;
-    }
-    const { getTransform2D, setTransform2D } = this.ctx.services;
-    if (!getTransform2D || !setTransform2D) {
-      return;
-    }
-
-    const transform = getTransform2D(this.ctx.nodeId);
-    if (!transform) {
+    if (!this.enabled || dt <= 0) {
       return;
     }
 
     const minX = this.startX;
-    const maxX = this.startX + Math.max(0, this.props.range);
-    let nextX = transform.position.x + this.direction * this.props.speed * dt;
-    let scaleX = transform.scale.x;
+    const maxX = this.startX + Math.max(0, this.range);
+    const transform = this.ctx.transform;
+    let nextX = transform.x + this.direction * this.speed * dt;
+    let scaleX = transform.scaleX;
 
     if (nextX >= maxX) {
       nextX = maxX;
@@ -63,10 +60,21 @@ export class RaptorBehaviour implements ScriptInstance {
       scaleX *= -1;
     }
 
-    setTransform2D(this.ctx.nodeId, {
-      position: { x: nextX, y: transform.position.y },
-      scale: { x: scaleX, y: transform.scale.y },
-    });
+    transform.x = nextX;
+    transform.scaleX = scaleX;
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
+  }
+
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    const props = readProps(raw);
+    this.speed = props.speed;
+    this.range = props.range;
+    this.enabled = props.enabled;
   }
 }
 
@@ -99,8 +107,5 @@ export const raptorComponent = defineComponent({
 
 /** Re-attach create after a metadata-only catalog load (editor / preview). */
 export function installRaptorRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(raptorComponent.id);
-  if (existing && raptorComponent.create) {
-    existing.create = raptorComponent.create;
-  }
+  registry.attachRuntime(raptorComponent.id, raptorComponent.create);
 }

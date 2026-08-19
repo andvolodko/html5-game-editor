@@ -739,16 +739,27 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
 .hierarchy-panel {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.45rem;
   min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.hierarchy-panel .panel-toolbar {
+  margin-bottom: 0;
+  flex: 0 0 auto;
+  align-items: stretch;
+  gap: 0.25rem;
 }
 
 .hierarchy-tree {
   flex: 1;
-  min-height: 120px;
+  min-height: 0;
   overflow: auto;
-  border: 1px solid transparent;
+  border: 1px solid var(--border);
   border-radius: 4px;
+  background: var(--bg-panel);
+  padding: 0.2rem 0;
   user-select: none;
 }
 
@@ -765,8 +776,8 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  min-height: 26px;
-  padding-right: 0.4rem;
+  min-height: 24px;
+  padding-right: 0.45rem;
   border: 1px solid transparent;
   border-radius: 3px;
   cursor: grab;
@@ -893,15 +904,29 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   outline-offset: -1px;
 }
 
-.hierarchy-toolbar {
-  display: flex;
-  gap: 0.35rem;
-  padding: 0.35rem 0.45rem 0.2rem;
+.hierarchy-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  cursor: pointer;
+  flex: 0 0 auto;
 }
 
-.hierarchy-toolbar button {
-  font-size: 0.75rem;
-  padding: 0.15rem 0.45rem;
+.hierarchy-toolbar-btn:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.hierarchy-toolbar-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .hierarchy-prefab-badge,
@@ -1174,6 +1199,7 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   font-size: 0.8rem;
 }
 
+.panel-search,
 .asset-search {
   flex: 1;
   min-width: 0;
@@ -1217,7 +1243,8 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   padding: 0.2rem 0;
 }
 
-.asset-tree-empty {
+.asset-tree-empty,
+.hierarchy-tree-empty {
   padding: 0.35rem 0.75rem 0.55rem 2rem;
   margin: 0;
 }
@@ -1889,6 +1916,12 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
 
 .inspector-section-header h3 {
   margin: 0;
+}
+
+.inspector-section-header-actions {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
 }
 
 .inspector-remove-btn {

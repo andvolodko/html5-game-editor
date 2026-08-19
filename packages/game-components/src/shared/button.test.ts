@@ -1,26 +1,27 @@
 import { describe, expect, it, vi } from "vitest";
 import { EventBus } from "@game-editor/core";
 import { ButtonBehaviour } from "./button.js";
+import { createScriptContext } from "../script-context.js";
 import type { ScriptCreateContext } from "../types.js";
 
 function createContext(
   properties: Record<string, unknown>,
   services: ScriptCreateContext["services"],
 ): ScriptCreateContext {
-  return {
+  return createScriptContext({
     nodeId: "node_btn",
     componentId: "comp_1",
     scriptId: "shared.Button",
     properties,
     services,
-  };
+  });
 }
 
 describe("ButtonBehaviour", () => {
   it("hides pressed, shows regular, and sets a pointer cursor", () => {
     const setNodeVisible = vi.fn();
     const setNodeCursor = vi.fn();
-    new ButtonBehaviour(
+    const behaviour = new ButtonBehaviour(
       createContext(
         {},
         {
@@ -36,6 +37,7 @@ describe("ButtonBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     expect(setNodeVisible).toHaveBeenCalledWith("node_regular", true);
     expect(setNodeVisible).toHaveBeenCalledWith("node_pressed", false);
@@ -47,7 +49,7 @@ describe("ButtonBehaviour", () => {
   it("swaps regular/pressed on pointerdown and pointerup", () => {
     const setNodeVisible = vi.fn();
     const handlers = new Map<string, () => void>();
-    new ButtonBehaviour(
+    const behaviour = new ButtonBehaviour(
       createContext(
         {},
         {
@@ -65,6 +67,7 @@ describe("ButtonBehaviour", () => {
         },
       ),
     );
+    behaviour.start();
 
     setNodeVisible.mockClear();
     handlers.get("node_btn:pointerdown")?.();

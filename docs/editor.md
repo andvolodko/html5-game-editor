@@ -223,7 +223,7 @@ Docking is `DockLayout` / dockview (`apps/editor/src/layout/`). Layout is UI chr
 └────────────┴──────────────────────────┴─────────────┘
 ```
 
-Pixi and Three are used in the scene viewport (and game Preview). Standard chrome stays DOM/React.
+Pixi and Three are used in the scene viewport (and game Preview). Standard chrome stays DOM/React. Preview Play / Pause / Stop drives an isolated `GameRuntime`; Pause freezes scripts, input, audio, and playback animation without writing into the open document. Inspector Script property edits still reach the live preview via `onPropertiesChanged`.
 
 ---
 

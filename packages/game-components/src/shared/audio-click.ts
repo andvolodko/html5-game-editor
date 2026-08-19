@@ -35,40 +35,62 @@ function readProps(raw: Readonly<Record<string, unknown>>): Props {
  * playback pointer event (preview / runtime).
  */
 export class AudioClickBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private audioAssetId = "";
+  private mouseEvent: NodePointerEventName = DEFAULT_MOUSE_EVENT;
   private unsubscribers: Array<() => void> = [];
 
   constructor(private readonly ctx: ScriptCreateContext) {
-    this.props = readProps(ctx.properties);
-    this.onEnable();
+    this.applyProperties(ctx.properties);
   }
 
-  private onEnable(): void {
-    const { onNodePointerEvent, onNodeClick, playAudio } = this.ctx.services;
-    const handler = (): void => {
-      if (!this.props.audioAssetId || !playAudio) {
-        return;
-      }
-      playAudio(this.props.audioAssetId);
-    };
+  start(): void {
+    this.bind();
+  }
 
-    if (onNodePointerEvent) {
-      this.unsubscribers.push(
-        onNodePointerEvent(this.ctx.nodeId, this.props.mouseEvent, handler),
-      );
-      return;
-    }
-
-    if (this.props.mouseEvent === "pointertap" && onNodeClick) {
-      this.unsubscribers.push(onNodeClick(this.ctx.nodeId, handler));
-    }
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
+    this.bind();
   }
 
   destroy(): void {
+    this.unbind();
+  }
+
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    const props = readProps(raw);
+    this.audioAssetId = props.audioAssetId;
+    this.mouseEvent = props.mouseEvent;
+  }
+
+  private unbind(): void {
     for (const off of this.unsubscribers) {
       off();
     }
     this.unsubscribers = [];
+  }
+
+  private bind(): void {
+    this.unbind();
+    const { onNodePointerEvent, onNodeClick, playAudio } = this.ctx.services;
+    const handler = (): void => {
+      if (!this.audioAssetId || !playAudio) {
+        return;
+      }
+      playAudio(this.audioAssetId);
+    };
+
+    if (onNodePointerEvent) {
+      this.unsubscribers.push(
+        onNodePointerEvent(this.ctx.nodeId, this.mouseEvent, handler),
+      );
+      return;
+    }
+
+    if (this.mouseEvent === "pointertap" && onNodeClick) {
+      this.unsubscribers.push(onNodeClick(this.ctx.nodeId, handler));
+    }
   }
 }
 

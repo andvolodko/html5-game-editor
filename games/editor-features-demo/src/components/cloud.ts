@@ -1,5 +1,6 @@
 import {
   defineComponent,
+  seededUnitFloat,
   type ComponentDefinition,
   type ComponentRegistry,
   type ScriptCreateContext,
@@ -12,8 +13,6 @@ const DEFAULT_RANGE_Y = 14;
 const FULL_TURN = Math.PI * 2;
 /** Keeps vertical drift off the same period as horizontal so the path is not a line. */
 const VERTICAL_FREQUENCY_RATIO = 0.73;
-const HASH_MULTIPLIER = 31;
-const UNSIGNED_32_RANGE = 0x1_0000_0000;
 const PHASE_SALT_X = 17;
 const PHASE_SALT_Y = 41;
 
@@ -31,60 +30,53 @@ function readProps(raw: Readonly<Record<string, unknown>>): Props {
   };
 }
 
-function phaseFromSeed(seed: string, salt: number): number {
-  let hash = salt;
-  for (let i = 0; i < seed.length; i += 1) {
-    hash = (hash * HASH_MULTIPLIER + seed.charCodeAt(i)) | 0;
-  }
-  return ((hash >>> 0) / UNSIGNED_32_RANGE) * FULL_TURN;
-}
-
 /** Drifts the host sprite a little left ↔ right and up ↔ down around its rest pose. */
 export class CloudBehaviour implements ScriptInstance {
-  private readonly props: Props;
-  private readonly startX: number;
-  private readonly startY: number;
+  private startX = 0;
+  private startY = 0;
+  private elapsed = 0;
+  private angularSpeed = DEFAULT_SPEED * FULL_TURN;
+  private rangeX = DEFAULT_RANGE_X;
+  private rangeY = DEFAULT_RANGE_Y;
   private readonly phaseX: number;
   private readonly phaseY: number;
-  private elapsed = 0;
 
   constructor(private readonly ctx: ScriptCreateContext) {
-    this.props = readProps(ctx.properties);
-    const transform = ctx.services.getTransform2D?.(ctx.nodeId);
-    this.startX = transform?.position.x ?? 0;
-    this.startY = transform?.position.y ?? 0;
-    this.phaseX = phaseFromSeed(ctx.nodeId, PHASE_SALT_X);
-    this.phaseY = phaseFromSeed(ctx.nodeId, PHASE_SALT_Y);
+    this.applyProperties(ctx.properties);
+    this.phaseX = seededUnitFloat(ctx.nodeId, PHASE_SALT_X) * FULL_TURN;
+    this.phaseY = seededUnitFloat(ctx.nodeId, PHASE_SALT_Y) * FULL_TURN;
+  }
+
+  start(): void {
+    this.startX = this.ctx.transform.x;
+    this.startY = this.ctx.transform.y;
   }
 
   update(dt: number): void {
     if (dt <= 0) {
       return;
     }
-    const { getTransform2D, setTransform2D } = this.ctx.services;
-    if (!getTransform2D || !setTransform2D) {
-      return;
-    }
-
-    const transform = getTransform2D(this.ctx.nodeId);
-    if (!transform) {
-      return;
-    }
 
     this.elapsed += dt;
-    const angularSpeed = this.props.speed * FULL_TURN;
-    const nextX =
-      this.startX +
-      Math.sin(this.elapsed * angularSpeed + this.phaseX) * this.props.rangeX;
-    const nextY =
+    const angle = this.elapsed * this.angularSpeed;
+    this.ctx.transform.x =
+      this.startX + Math.sin(angle + this.phaseX) * this.rangeX;
+    this.ctx.transform.y =
       this.startY +
-      Math.sin(
-        this.elapsed * angularSpeed * VERTICAL_FREQUENCY_RATIO + this.phaseY,
-      ) * this.props.rangeY;
+      Math.sin(angle * VERTICAL_FREQUENCY_RATIO + this.phaseY) * this.rangeY;
+  }
 
-    setTransform2D(this.ctx.nodeId, {
-      position: { x: nextX, y: nextY },
-    });
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
+  }
+
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    const props = readProps(raw);
+    this.angularSpeed = props.speed * FULL_TURN;
+    this.rangeX = props.rangeX;
+    this.rangeY = props.rangeY;
   }
 }
 
@@ -94,6 +86,7 @@ const PROPERTIES: ComponentDefinition["properties"] = {
     default: DEFAULT_SPEED,
     min: 0,
     step: 0.01,
+    description: "Oscillation cycles per second",
   },
   rangeX: {
     kind: "number",
@@ -122,8 +115,5 @@ export const cloudComponent = defineComponent({
 
 /** Re-attach create after a metadata-only catalog load (editor / preview). */
 export function installCloudRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(cloudComponent.id);
-  if (existing && cloudComponent.create) {
-    existing.create = cloudComponent.create;
-  }
+  registry.attachRuntime(cloudComponent.id, cloudComponent.create);
 }

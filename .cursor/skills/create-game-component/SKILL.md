@@ -11,6 +11,8 @@ description: >-
 
 Prefer an **OOP behaviour class** that implements `ScriptInstance`, then wrap it with `defineComponent({ create: (ctx) => new MyBehaviour(ctx) })`.
 
+This skill is **only** Script components (`type: "Script"`). Scene node types → `.cursor/skills/add-node-type/SKILL.md`. Runtime services / `GameRuntime` / audio host (not a new `defineComponent`) → `.cursor/skills/implement-runtime-feature/SKILL.md`. New game package → `.cursor/skills/create-game/SKILL.md`.
+
 Do **not** put large logic in a bare `create` closure. Do **not** store class instances in scene JSON.
 
 ## Placement
@@ -47,30 +49,53 @@ function readProps(raw: Readonly<Record<string, unknown>>): Props {
 
 /** Live instance — one per Script component on a node. */
 export class SpinControllerBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private speed = 1;
+  private enabled = true;
   private unsubscribers: Array<() => void> = [];
 
   constructor(private readonly ctx: ScriptCreateContext) {
-    this.props = readProps(ctx.properties);
-    this.onEnable();
+    this.applyProperties(ctx.properties);
   }
 
-  private onEnable(): void {
+  start(): void {
+    this.bind();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
+  }
+
+  update(dt: number): void {
+    if (!this.enabled || dt <= 0) {
+      return;
+    }
+    this.ctx.transform.rotation += this.speed * dt;
+  }
+
+  destroy(): void {
+    this.unbind();
+  }
+
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    const props = readProps(raw);
+    this.speed = props.speed;
+    this.enabled = props.enabled;
+  }
+
+  private bind(): void {
+    this.unbind();
     const { bus } = this.ctx.services;
     this.unsubscribers.push(
       bus.on("game.tick", () => {
-        if (!this.props.enabled) return;
-        // game logic using this.ctx.nodeId / this.props / services
+        if (!this.enabled) return;
+        // use ctx.nodeId, ctx.transform, ctx.transform3D, ctx.animations, services
       }),
     );
   }
 
-  update(dt: number): void {
-    // optional per-frame (when runtime.tick(dt) is driven)
-    void dt;
-  }
-
-  destroy(): void {
+  private unbind(): void {
     for (const off of this.unsubscribers) off();
     this.unsubscribers = [];
   }
@@ -94,10 +119,7 @@ export const spinControllerComponent = defineComponent({
 
 /** Re-attach create after metadata-only catalog load. */
 export function installSpinControllerRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(spinControllerComponent.id);
-  if (existing && spinControllerComponent.create) {
-    existing.create = spinControllerComponent.create;
-  }
+  registry.attachRuntime(spinControllerComponent.id, spinControllerComponent.create);
 }
 ```
 
@@ -105,11 +127,13 @@ export function installSpinControllerRuntime(registry: ComponentRegistry): void 
 
 1. **One behaviour class per file** (PascalCase + `Behaviour` suffix).
 2. Construct from `ScriptCreateContext`; keep `ctx` private.
-3. Read typed props once in the constructor (or a `readProps` helper).
-4. Subscribe to `ctx.services.bus` in `onEnable` / constructor; unsubscribe in `destroy`.
-5. Use `ctx.services.changeScene(sceneId)` for scene changes — never hardcode FS paths.
-6. `update(dt)` optional; `destroy()` mandatory if anything was subscribed/timed.
-7. Never hold `PIXI.*` / `THREE.*` or mutate renderer objects from the behaviour.
+3. Parse properties in the constructor via `applyProperties`; update them in `onPropertiesChanged`.
+4. Subscribe and capture rest pose in `start()` (node + `ctx.transform` are ready). Unsubscribe in `destroy()`.
+5. Own-node 2D motion uses `ctx.transform`. Own-node 3D motion uses `ctx.transform3D`. Host Model3D clips use `ctx.animations`. Use `getTransform2D` / `setTransform2D` for other nodes.
+6. Use `ctx.services.changeScene(sceneId)` for scene changes — never hardcode FS paths.
+7. Per-node deterministic variation: `seededUnitFloat(seed, salt)` in `[0, 1)`.
+8. `start` / `update` / `onPropertiesChanged` / `destroy` are optional; `destroy()` is required if anything was subscribed or timed.
+9. Never hold `PIXI.*` / `THREE.*` or mutate renderer objects from the behaviour.
 
 ## Wire into the game barrel
 
@@ -142,12 +166,14 @@ export function installGameRuntime(registry: ComponentRegistry): void {
 | `dynamicEnum` + `source: "busEvents"` | Game bus event catalog |
 | `dynamicEnum` + `source: "gltfAnimations"` | Clip names on the host node's Model3D glTF |
 
+Optional `description` is an Inspector tooltip.
+
 ## Checklist
 
 - [ ] Behaviour class implements `ScriptInstance`
 - [ ] `defineComponent` with stable `id`, `properties`, `create: (ctx) => new …`
 - [ ] Registered in `registerGameComponents`
-- [ ] `install*Runtime` hooked from `installGameRuntime`
+- [ ] `install*Runtime` uses `registry.attachRuntime` and is hooked from `installGameRuntime`
 - [ ] Bus events listed if using `dynamicEnum` / `busEvents`
 - [ ] No instances or functions persisted in scene JSON
 - [ ] Game `typecheck` / `lint` pass
@@ -157,6 +183,7 @@ export function installGameRuntime(registry: ComponentRegistry): void {
 - Human guide: `docs/guides/add-a-script-component.md`
 - Scene persistence: `docs/scene-model.md`
 - Shared Change Scene: `packages/game-components/src/shared/change-scene.ts`
+- Cloud (reference 2D motion): `games/editor-features-demo/src/components/cloud.ts`
 - Game Loading Scene (emit + navigate): `games/editor-features-demo/src/components/loading-scene.ts`
-- Types: `packages/game-components/src/types.ts` (`ScriptCreateContext`, `ScriptRuntimeServices`)
+- Types: `packages/game-components/src/types.ts` (`ScriptCreateContext`, `ScriptRuntimeServices`, `ctx.transform3D`, `ctx.animations`)
 - Catalog load: project-server `GET /components/catalog` + editor `installActiveGameRuntime`

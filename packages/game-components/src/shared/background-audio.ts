@@ -35,29 +35,50 @@ function readProps(raw: Readonly<Record<string, unknown>>): Props {
  * (preview / runtime). Volume is linear 0–1.
  */
 export class BackgroundAudioBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private audioAssetId = "";
+  private volume = DEFAULT_VOLUME;
   private readonly ctx: ScriptCreateContext;
 
   constructor(ctx: ScriptCreateContext) {
     this.ctx = ctx;
-    this.props = readProps(ctx.properties);
-    this.start();
+    this.applyProperties(ctx.properties);
+  }
+
+  start(): void {
+    this.play();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    const previousAssetId = this.audioAssetId;
+    this.applyProperties(properties);
+    if (previousAssetId && previousAssetId !== this.audioAssetId) {
+      this.ctx.services.stopAudio?.(previousAssetId);
+    }
+    this.play();
   }
 
   destroy(): void {
-    if (!this.props.audioAssetId) {
+    if (!this.audioAssetId) {
       return;
     }
-    this.ctx.services.stopAudio?.(this.props.audioAssetId);
+    this.ctx.services.stopAudio?.(this.audioAssetId);
   }
 
-  private start(): void {
-    if (!this.props.audioAssetId || !this.ctx.services.playAudio) {
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    const props = readProps(raw);
+    this.audioAssetId = props.audioAssetId;
+    this.volume = props.volume;
+  }
+
+  private play(): void {
+    if (!this.audioAssetId || !this.ctx.services.playAudio) {
       return;
     }
-    this.ctx.services.playAudio(this.props.audioAssetId, {
+    this.ctx.services.playAudio(this.audioAssetId, {
       loop: true,
-      volume: this.props.volume,
+      volume: this.volume,
     });
   }
 }

@@ -40,7 +40,7 @@ export const spinePainter: PixiVisualPainter = {
 
     try {
       const view = await loadSpine(urls);
-      applySpinePlayback(view, data);
+      applySpinePlayback(view, { ...data, hostDriven: true });
       ctx.hidePlaceholder();
       destroyVisual(ctx.visual);
       ensureChild(ctx.visualsRoot, view);

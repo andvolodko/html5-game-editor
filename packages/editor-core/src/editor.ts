@@ -34,6 +34,7 @@ import {
   DeleteNodeCommand,
   DuplicateNodeCommand,
   PasteNodesCommand,
+  PasteComponentCommand,
   RenameSceneFileCommand,
   DeleteSceneFileCommand,
   RenameAssetCommand,
@@ -107,6 +108,14 @@ import type { ProjectApiClient } from "./project-api-client.js";
 import type { ComponentCatalogApiClient } from "./component-catalog-api-client.js";
 import { bindEditorHotkeys } from "./editor-hotkeys.js";
 import { NodeClipboard, resolvePasteLocation } from "./node-clipboard.js";
+import {
+  ComponentClipboard,
+  describeCopiedComponents,
+  isCopyableComponent,
+  listCopyableComponents,
+  pasteComponentsBlockedReason,
+  selectPasteableComponents,
+} from "./component-clipboard.js";
 import { isAsyncCommand, type SceneFileHistoryHost } from "./scene-file-history-host.js";
 import type { AssetHistoryHost } from "./asset-history-host.js";
 import {
@@ -151,6 +160,8 @@ import {
   isNodeEffectivelyVisible,
   isNodeHiddenInEditor,
   isNodeLocked,
+  sceneHasHiddenNodes,
+  sceneHasLockedNodes,
   subtreeNodeIds,
   type EditorNodeFlags,
 } from "./editor-node-metadata.js";
@@ -201,6 +212,7 @@ export class Editor {
   private readonly listeners = new Set<Listener>();
   private readonly renameBus = new RenameRequestBus();
   private readonly nodeClipboard = new NodeClipboard();
+  private readonly componentClipboard = new ComponentClipboard();
   private historyBusy = false;
   private readonly unsubscribers: Array<() => void> = [];
   /** Bumps on every façade emit (document, selection, assets, dirty, …). */
@@ -1091,8 +1103,32 @@ export class Editor {
     this.nodeMetadata.showAll(this.getScene());
   }
 
+  hideAllNodes(): void {
+    this.nodeMetadata.hideAll(this.getScene());
+  }
+
+  lockAllNodes(): void {
+    this.nodeMetadata.lockAll(this.getScene());
+  }
+
   unlockAllNodes(): void {
     this.nodeMetadata.unlockAll(this.getScene());
+  }
+
+  toggleAllNodesHidden(): void {
+    if (sceneHasHiddenNodes(this.getScene(), this.nodeMetadata.getSnapshot())) {
+      this.showAllNodes();
+      return;
+    }
+    this.hideAllNodes();
+  }
+
+  toggleAllNodesLocked(): void {
+    if (sceneHasLockedNodes(this.getScene(), this.nodeMetadata.getSnapshot())) {
+      this.unlockAllNodes();
+      return;
+    }
+    this.lockAllNodes();
   }
 
   /**
@@ -1172,6 +1208,109 @@ export class Editor {
     this.execute(
       new RemoveComponentCommand(this.document, nodeId, componentId),
     );
+  }
+
+  /**
+   * Copy a Script, HitZone, or Mask onto the component clipboard.
+   * Does not mutate the scene.
+   */
+  copyComponent(nodeId: string, componentId: string): boolean {
+    const node = findNodeById(this.document.getScene(), nodeId);
+    const component = node?.components.find((entry) => entry.id === componentId);
+    if (!component || !isCopyableComponent(component)) {
+      return false;
+    }
+    this.componentClipboard.copy([component]);
+    this.emit();
+    return true;
+  }
+
+  /**
+   * Copy every Script, HitZone, and Mask on the node onto the clipboard.
+   * Does not mutate the scene.
+   */
+  copyComponents(nodeId: string): boolean {
+    const node = findNodeById(this.document.getScene(), nodeId);
+    if (!node) {
+      return false;
+    }
+    if (!this.componentClipboard.copy(listCopyableComponents(node))) {
+      return false;
+    }
+    this.emit();
+    return true;
+  }
+
+  hasCopiedComponent(): boolean {
+    return this.componentClipboard.hasContent();
+  }
+
+  copiedComponentLabel(): string | undefined {
+    return describeCopiedComponents(
+      this.componentClipboard.templates(),
+      this.components,
+    );
+  }
+
+  /** Why paste is blocked on this node, or `undefined` if at least one can paste. */
+  pasteComponentBlockedReason(nodeId: string): string | undefined {
+    const templates = this.componentClipboard.templates();
+    if (templates.length === 0) {
+      return "No component on the clipboard";
+    }
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return "Node is locked";
+    }
+    const node = findNodeById(this.document.getScene(), nodeId);
+    if (!node) {
+      return "Unknown node";
+    }
+    return pasteComponentsBlockedReason(node, templates, this.components);
+  }
+
+  canPasteComponent(nodeId: string): boolean {
+    return this.pasteComponentBlockedReason(nodeId) === undefined;
+  }
+
+  /**
+   * Paste copied Script / HitZone / Mask components onto a node (one undo step).
+   * Skips items the target cannot accept. New component ids.
+   */
+  pasteComponent(nodeId: string): readonly string[] {
+    if (this.pasteComponentBlockedReason(nodeId) !== undefined) {
+      return [];
+    }
+    const node = findNodeById(this.document.getScene(), nodeId);
+    if (!node) {
+      return [];
+    }
+    const pasteable = selectPasteableComponents(
+      node,
+      this.componentClipboard.templates(),
+      this.components,
+    );
+    const commands = pasteable.map(
+      (template) =>
+        new PasteComponentCommand(
+          this.document,
+          nodeId,
+          template,
+          this.components,
+        ),
+    );
+    if (commands.length === 0) {
+      return [];
+    }
+    if (commands.length === 1) {
+      const command = commands[0];
+      if (!command) {
+        return [];
+      }
+      this.execute(command);
+      return [command.addedComponentId];
+    }
+    this.execute(new CompositeCommand("PasteComponents", commands));
+    return commands.map((command) => command.addedComponentId);
   }
 
   /** Patch Script.properties (one undo step). */

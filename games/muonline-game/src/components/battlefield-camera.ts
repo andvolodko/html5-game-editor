@@ -74,25 +74,34 @@ function damp(current: number, target: number, lambda: number, dt: number): numb
 }
 
 export class BattlefieldCameraBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private props: Props;
   private readonly services: ScriptRuntimeServices;
   private readonly nodeId: string;
-  private angle: number;
+  private angle = 0;
   private omega = 0;
   private phase: Phase = "fly";
-  private timer: number;
+  private timer = 0;
 
   constructor(ctx: ScriptCreateContext) {
     this.nodeId = ctx.nodeId;
     this.services = ctx.services;
     this.props = readProps(ctx.properties);
-    const position = ctx.services.getTransform3D?.(ctx.nodeId)?.position;
+  }
+
+  start(): void {
+    const position = this.services.getTransform3D?.(this.nodeId)?.position;
     this.angle = Math.atan2(
       (position?.x ?? this.props.radius) - this.props.lookAtX,
       (position?.z ?? this.props.radius) - this.props.lookAtZ,
     );
     this.timer = randomDuration(this.props.flyMin, this.props.flyMax);
     this.applyPose();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.props = readProps(properties);
   }
 
   update(dt: number): void {
@@ -176,8 +185,8 @@ export const battlefieldCameraComponent = defineComponent({
 export function installBattlefieldCameraRuntime(
   registry: ComponentRegistry,
 ): void {
-  const existing = registry.get(battlefieldCameraComponent.id);
-  if (existing && battlefieldCameraComponent.create) {
-    existing.create = battlefieldCameraComponent.create;
-  }
+  registry.attachRuntime(
+    battlefieldCameraComponent.id,
+    battlefieldCameraComponent.create,
+  );
 }

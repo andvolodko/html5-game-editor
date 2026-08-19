@@ -13,6 +13,7 @@ export type {
   ScriptInstance,
   ScriptCreateContext,
   ScriptRuntimeServices,
+  RuntimeTransform2D,
   ScriptSpawnModel3DOptions,
   ScriptChildNodeRef,
   PlayAudioOptions,
@@ -20,6 +21,9 @@ export type {
   ScriptTransform2DPatch,
   ScriptTransform3D,
   ScriptTransform3DPatch,
+  ScriptTransformApi,
+  ScriptAnimationsApi,
+  ScriptPlayAnimationOptions,
   ScriptModel3DPlayback,
   ScriptModel3DPlaybackPatch,
   ScriptPerformanceStats,
@@ -29,7 +33,11 @@ export type {
   DefineComponentInput,
   BusEventDefinition,
 } from "./types.js";
+export { createDetachedRuntimeTransform2D } from "@game-editor/scene";
+export { createScriptContext } from "./script-context.js";
+export type { CreateScriptContextInput } from "./script-context.js";
 export { NODE_POINTER_EVENTS, COMPONENT_ASSET_TYPES } from "./types.js";
+export { seededUnitFloat } from "@game-editor/shared";
 export {
   defineComponent,
   defaultPropertiesFromDefinition,

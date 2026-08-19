@@ -13,6 +13,7 @@ export interface HierarchyNodeRowProps {
   node: SceneNodeData;
   depth: number;
   expanded: ReadonlySet<string>;
+  includeIds?: ReadonlySet<string>;
   selectedIds: readonly string[];
   draggingIds: readonly string[];
   dropIndicator: HierarchyDropIndicator;
@@ -34,6 +35,7 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
     node,
     depth,
     expanded,
+    includeIds,
     selectedIds,
     draggingIds,
     dropIndicator,
@@ -49,7 +51,11 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
     onCancelRename,
     registerRow,
   } = props;
-  const hasChildren = node.children.length > 0;
+  const childNodes =
+    includeIds === undefined
+      ? node.children
+      : node.children.filter((child) => includeIds.has(child.id));
+  const hasChildren = childNodes.length > 0;
   const isExpanded = expanded.has(node.id);
   const isSelected = selectedIds.includes(node.id);
   const isRenaming = renamingId === node.id;
@@ -226,12 +232,13 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
         </span>
       </div>
       {hasChildren && isExpanded
-        ? node.children.map((child) => (
+        ? childNodes.map((child) => (
             <HierarchyNodeRow
               key={child.id}
               node={child}
               depth={depth + 1}
               expanded={expanded}
+              includeIds={includeIds}
               selectedIds={selectedIds}
               draggingIds={draggingIds}
               dropIndicator={dropIndicator}

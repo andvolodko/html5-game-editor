@@ -25,24 +25,52 @@ function readProps(raw: Readonly<Record<string, unknown>>): Props {
 
 /** On click, clones a named scene node (2D or 3D) `count` times. */
 export class CloneObjectBehaviour implements ScriptInstance {
-  private readonly props: Props;
+  private objectName = "";
+  private count = DEFAULT_COUNT;
   private nextIndex = 0;
   private unsubscribers: Array<() => void> = [];
 
   constructor(private readonly ctx: ScriptCreateContext) {
-    this.props = readProps(ctx.properties);
-    this.onEnable();
+    this.applyProperties(ctx.properties);
   }
 
-  private onEnable(): void {
+  start(): void {
+    this.bind();
+  }
+
+  onPropertiesChanged(
+    properties: Readonly<Record<string, unknown>>,
+  ): void {
+    this.applyProperties(properties);
+  }
+
+  destroy(): void {
+    this.unbind();
+  }
+
+  private applyProperties(raw: Readonly<Record<string, unknown>>): void {
+    const props = readProps(raw);
+    this.objectName = props.objectName;
+    this.count = props.count;
+  }
+
+  private unbind(): void {
+    for (const off of this.unsubscribers) {
+      off();
+    }
+    this.unsubscribers = [];
+  }
+
+  private bind(): void {
+    this.unbind();
     const { onNodePointerEvent, onNodeClick, cloneNodeByName } =
       this.ctx.services;
     const handler = (): void => {
-      if (!this.props.objectName || !cloneNodeByName) {
+      if (!this.objectName || !cloneNodeByName) {
         return;
       }
-      for (let i = 0; i < this.props.count; i += 1) {
-        cloneNodeByName(this.props.objectName, this.nextIndex, COLUMNS_PER_ROW);
+      for (let i = 0; i < this.count; i += 1) {
+        cloneNodeByName(this.objectName, this.nextIndex, COLUMNS_PER_ROW);
         this.nextIndex += 1;
       }
     };
@@ -57,13 +85,6 @@ export class CloneObjectBehaviour implements ScriptInstance {
     if (onNodeClick) {
       this.unsubscribers.push(onNodeClick(this.ctx.nodeId, handler));
     }
-  }
-
-  destroy(): void {
-    for (const off of this.unsubscribers) {
-      off();
-    }
-    this.unsubscribers = [];
   }
 }
 
@@ -93,8 +114,5 @@ export const cloneObjectComponent = defineComponent({
 
 /** Re-attach create after a metadata-only catalog load (editor / preview). */
 export function installCloneObjectRuntime(registry: ComponentRegistry): void {
-  const existing = registry.get(cloneObjectComponent.id);
-  if (existing && cloneObjectComponent.create) {
-    existing.create = cloneObjectComponent.create;
-  }
+  registry.attachRuntime(cloneObjectComponent.id, cloneObjectComponent.create);
 }

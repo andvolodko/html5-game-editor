@@ -51,7 +51,7 @@ Guides are written as developer how-tos. A few topic pages still mix “what exi
 | --- | --- |
 | [Add a script component](./guides/add-a-script-component.md) | `defineComponent` + behaviour class, catalog, Inspector, runtime install |
 
-Scaffolding an entire game: copy an existing `games/*` package (see [README — Working with games](../README.md#working-with-games)) or follow `.cursor/skills/create-game/`.
+Scaffolding an entire game: copy an existing `games/*` package (see [README — Working with games](../README.md#working-with-games)) or follow `.cursor/skills/create-game/`. Other Cursor workflows (`add-node-type`, `add-asset-type`, `add-editor-command`, `add-editor-panel`, `implement-runtime-feature`, `modify-scene-schema`, …) live under `.cursor/skills/` — see `PROJECT.md`.
 
 ---
 

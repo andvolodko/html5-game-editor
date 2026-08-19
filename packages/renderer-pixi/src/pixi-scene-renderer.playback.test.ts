@@ -70,6 +70,41 @@ describe("PixiSceneRenderer playback mode", () => {
     await renderer.destroy();
   });
 
+  it("exposes a stable live transform that writes through to the container", async () => {
+    const host = { appendChild() {} } as unknown as HTMLElement;
+    const renderer = new PixiSceneRenderer({
+      canvasParent: host,
+      headless: true,
+      editable: false,
+    });
+    await renderer.whenReady();
+
+    const node = createSpriteNode("Mover", { x: 40, y: 50 });
+    renderer.createNode(node);
+
+    const transform = renderer.getRuntimeTransform2D(node.id);
+    expect(transform).toBeDefined();
+    expect(transform).toBe(renderer.getRuntimeTransform2D(node.id));
+    expect(transform?.x).toBe(40);
+    expect(transform?.y).toBe(50);
+
+    transform!.x = 80;
+    transform!.y = 90;
+    transform!.rotation = 90;
+    transform!.scaleX = -1.5;
+    transform!.scaleY = 2;
+
+    const container = renderer.getRuntimeContainer(node.id)!;
+    expect(container.position.x).toBe(80);
+    expect(container.position.y).toBe(90);
+    expect(container.rotation).toBeCloseTo(Math.PI / 2);
+    expect(container.scale.x).toBe(-1.5);
+    expect(container.scale.y).toBe(2);
+    expect(transform?.rotation).toBeCloseTo(90);
+
+    await renderer.destroy();
+  });
+
   it("keeps identity camera when editable is false", async () => {
     const host = { appendChild() {} } as unknown as HTMLElement;
     const renderer = new PixiSceneRenderer({
