@@ -102,7 +102,7 @@ constructor → start() once (node + ctx.transform ready)
 
 Own-node 2D motion should use `ctx.transform` (a persistent live handle: `x` / `y` or `position` / `scale`). Do not call `getTransform2D` / `setTransform2D` every frame for the host node.
 
-Own-node 3D motion should use `ctx.transform3D` (`position` / `rotation` / `scale` live axes plus `setPosition` / `setRotation` / `setScale` / `set`). Model clips on the host node should use `ctx.animations` (`play`, `stop`, `isPlaying`, `duration`, `names`). Catalogue audio should use `ctx.audio`. Host-node visibility and lookup should use `ctx.node` / `ctx.scene`. AnimatedSprite (Aseprite) clips use `ctx.services.setAnimatedSpritePlayback`. `ctx.services` remains the low-level escape hatch (other nodes, spawn, scene graph, …).
+Own-node 3D motion should use `ctx.transform3D` (`position` / `rotation` / `scale` live axes plus `setPosition` / `setRotation` / `setScale` / `set`). When a Three renderer owns the node, assignments write the live `Object3D` and skip scene patches. Model clips on the host node should use `ctx.animations` (`play`, `stop`, `isPlaying`, `duration`, `names`). Catalogue audio should use `ctx.audio`. Bus subscriptions should use `ctx.events`. Host-node visibility and lookup should use `ctx.node` / `ctx.scene`. AnimatedSprite (Aseprite) clips use `ctx.services.setAnimatedSpritePlayback`. `ctx.services` remains the low-level escape hatch (other nodes, spawn, `changeScene`, pointer subscribe, …).
 
 Metadata catalogs stay function-free. After a catalog load, games call `registry.attachRuntime(componentId, create)` from `installGameRuntime`.
 

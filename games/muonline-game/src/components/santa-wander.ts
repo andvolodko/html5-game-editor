@@ -6,7 +6,6 @@ import {
   type ScriptInstance,
 } from "@game-editor/game-components";
 import { pickRandomClipName } from "../action-clips.js";
-import { clipWallDurationSeconds, playModelClip } from "../play-model-clip.js";
 
 const DEFAULT_MIN_DELAY_SECONDS = 0.6;
 const DEFAULT_MAX_DELAY_SECONDS = 3.2;
@@ -66,21 +65,15 @@ export class SantaWanderBehaviour implements ScriptInstance {
   }
 
   private playNext(): void {
-    const names =
-      this.ctx.services.listModel3DAnimations?.(this.ctx.nodeId) ?? [];
+    const names = this.ctx.animations.names();
     const clip = pickRandomClipName(names, this.lastClip);
     if (!clip) {
       this.timer = 0;
       return;
     }
     this.lastClip = clip;
-    playModelClip(this.ctx.services, this.ctx.nodeId, clip, false);
-    const duration = clipWallDurationSeconds(
-      this.ctx.services,
-      this.ctx.nodeId,
-      clip,
-    );
-    this.timer = duration + this.randomDelay();
+    this.ctx.animations.play(clip, { loop: false });
+    this.timer = this.ctx.animations.duration(clip) + this.randomDelay();
   }
 
   private randomDelay(): number {

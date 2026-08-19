@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { EventBus } from "@game-editor/core";
-import { createDetachedRuntimeTransform2D } from "@game-editor/scene";
+import { createDetachedRuntimeTransform2D, createDetachedRuntimeTransform3D } from "@game-editor/scene";
 import { createScriptContext } from "./script-context.js";
 
 describe("createScriptContext", () => {
@@ -47,5 +47,29 @@ describe("createScriptContext", () => {
     expect(ctx.events).toBe(ctx.services.bus);
     ctx.audio.play("asset_hit");
     expect(playAudio).toHaveBeenCalledWith("asset_hit");
+  });
+
+  it("uses a provided live transform3D handle instead of services", () => {
+    const live = createDetachedRuntimeTransform3D({
+      position: { x: 1, y: 2, z: 3 },
+    });
+    const setTransform3D = vi.fn();
+    const ctx = createScriptContext({
+      nodeId: "node_host",
+      componentId: "comp_1",
+      scriptId: "test.Mover",
+      properties: {},
+      services: {
+        bus: new EventBus(),
+        changeScene: () => undefined,
+        setTransform3D,
+      },
+      transform3D: live,
+    });
+
+    expect(ctx.transform3D).toBe(live);
+    ctx.transform3D.position.z = 10;
+    expect(live.position.z).toBe(10);
+    expect(setTransform3D).not.toHaveBeenCalled();
   });
 });

@@ -35,20 +35,21 @@ import {
   type NodePointerEventMode,
   SceneIndex,
 } from "@game-editor/scene";
+import {
+  replaceComponentInPlace,
+  requireDocumentNode,
+} from "./document-component-apply.js";
+import {
+  DocumentDirtyTracker,
+  type DocumentContentSnapshot,
+  type DocumentDirtyState,
+} from "./document-dirty.js";
 
-export type DocumentDirtyState = "clean" | "dirty" | "saving" | "save-error";
-
-export interface DocumentContentSnapshot {
-  scene: SceneData;
-  savedSnapshot: string;
-  dirtyState: DocumentDirtyState;
-  saveError: string | undefined;
-}
-
-/** True when leaving/reloading the document would discard unpersisted edits. */
-export function hasUnsavedChanges(state: DocumentDirtyState): boolean {
-  return state === "dirty" || state === "save-error";
-}
+export {
+  hasUnsavedChanges,
+  type DocumentContentSnapshot,
+  type DocumentDirtyState,
+} from "./document-dirty.js";
 
 export type SceneMutation =
   | { kind: "create"; nodeId: string }
@@ -79,15 +80,13 @@ export class DocumentManager {
   private scene: SceneData;
   private readonly sceneIndex = new SceneIndex();
   private revision = 0;
-  private savedSnapshot: string;
-  private dirtyState: DocumentDirtyState = "clean";
-  private saveError: string | undefined;
+  private readonly dirty: DocumentDirtyTracker;
   private readonly listeners = new Set<DocumentListener>();
 
   constructor(scene: SceneData = createEmptyScene("Main Scene")) {
     this.scene = scene;
     this.sceneIndex.rebuild(scene);
-    this.savedSnapshot = stableSceneSnapshot(scene);
+    this.dirty = new DocumentDirtyTracker(scene);
   }
 
   getScene(): SceneData {
@@ -103,11 +102,11 @@ export class DocumentManager {
   }
 
   getDirtyState(): DocumentDirtyState {
-    return this.dirtyState;
+    return this.dirty.dirtyState;
   }
 
   getSaveError(): string | undefined {
-    return this.saveError;
+    return this.dirty.saveError;
   }
 
   subscribe(listener: DocumentListener): () => void {
@@ -118,20 +117,13 @@ export class DocumentManager {
   }
 
   captureSnapshot(): DocumentContentSnapshot {
-    return {
-      scene: JSON.parse(JSON.stringify(this.scene)) as SceneData,
-      savedSnapshot: this.savedSnapshot,
-      dirtyState: this.dirtyState,
-      saveError: this.saveError,
-    };
+    return this.dirty.capture(this.scene);
   }
 
   restoreSnapshot(snapshot: DocumentContentSnapshot): void {
     this.scene = snapshot.scene;
     this.sceneIndex.rebuild(snapshot.scene);
-    this.savedSnapshot = snapshot.savedSnapshot;
-    this.dirtyState = snapshot.dirtyState;
-    this.saveError = snapshot.saveError;
+    this.dirty.restore(snapshot);
     this.revision += 1;
     this.emit({ kind: "reload" });
   }
@@ -141,9 +133,7 @@ export class DocumentManager {
     this.scene = scene;
     this.sceneIndex.rebuild(scene);
     this.revision += 1;
-    this.savedSnapshot = stableSceneSnapshot(scene);
-    this.dirtyState = "clean";
-    this.saveError = undefined;
+    this.dirty.markClean(scene);
     this.emit({ kind: "reload" });
   }
 
@@ -183,10 +173,7 @@ export class DocumentManager {
   }
 
   setPrefabLink(nodeId: string, prefab: PrefabInstanceLink | undefined): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    if (!node) {
-      throw new Error(`DocumentManager: unknown node ${nodeId}`);
-    }
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
     if (prefab === undefined) {
       delete node.prefab;
     } else {
@@ -200,8 +187,8 @@ export class DocumentManager {
   }
 
   setPrefabOverrides(nodeId: string, overrides: PrefabOverride[]): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    if (!node?.prefab) {
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
+    if (!node.prefab) {
       throw new Error(`DocumentManager: node ${nodeId} is not a prefab instance`);
     }
     if (overrides.length === 0) {
@@ -227,10 +214,7 @@ export class DocumentManager {
   }
 
   renameNode(nodeId: string, name: string): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    if (!node) {
-      throw new Error(`DocumentManager: unknown node ${nodeId}`);
-    }
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
     node.name = name;
     this.afterContentMutation({
       kind: "update",
@@ -297,23 +281,12 @@ export class DocumentManager {
 
   /** Replace a Three leaf component (Model3D / camera / light) in-place. */
   applyThreeComponent(nodeId: string, values: ThreeComponentData): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    if (!node) {
-      throw new Error(`DocumentManager: unknown node ${nodeId}`);
-    }
-    const index = node.components.findIndex((c) => c.type === values.type);
-    if (index < 0) {
-      throw new Error(
-        `DocumentManager: node ${nodeId} missing ${values.type}`,
-      );
-    }
-    const existing = node.components[index];
-    if (!existing || existing.id !== values.id) {
-      throw new Error(
-        `DocumentManager: ${values.type} identity mismatch on ${nodeId}`,
-      );
-    }
-    node.components[index] = structuredClone(values);
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
+    replaceComponentInPlace(node, values, {
+      find: (component) => component.type === values.type,
+      missing: `DocumentManager: node ${nodeId} missing ${values.type}`,
+      mismatch: `DocumentManager: ${values.type} identity mismatch on ${nodeId}`,
+    });
 
     this.afterContentMutation({
       kind: "update",
@@ -335,10 +308,7 @@ export class DocumentManager {
     nodeId: string,
     layer: "background" | "foreground" | undefined,
   ): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    if (!node) {
-      throw new Error(`DocumentManager: unknown node ${nodeId}`);
-    }
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
     if (layer === undefined || layer === "background") {
       delete node.layer;
     } else {
@@ -352,10 +322,7 @@ export class DocumentManager {
   }
 
   setNodeVisible(nodeId: string, visible: boolean): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    if (!node) {
-      throw new Error(`DocumentManager: unknown node ${nodeId}`);
-    }
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
     setNodeVisibleField(node, visible);
     this.afterContentMutation({
       kind: "update",
@@ -365,10 +332,7 @@ export class DocumentManager {
   }
 
   setNodeAlpha(nodeId: string, alpha: number): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    if (!node) {
-      throw new Error(`DocumentManager: unknown node ${nodeId}`);
-    }
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
     setNodeAlphaField(node, alpha);
     this.afterContentMutation({
       kind: "update",
@@ -385,10 +349,7 @@ export class DocumentManager {
       children?: boolean;
     },
   ): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    if (!node) {
-      throw new Error(`DocumentManager: unknown node ${nodeId}`);
-    }
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
     if (patch.eventMode !== undefined) {
       setNodePointerEventModeField(node, patch.eventMode);
     }
@@ -431,10 +392,7 @@ export class DocumentManager {
     component: ComponentData,
     index?: number,
   ): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    if (!node) {
-      throw new Error(`DocumentManager: unknown node ${nodeId}`);
-    }
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
     if (node.components.some((c) => c.id === component.id)) {
       throw new Error(
         `DocumentManager: duplicate component id ${component.id} on ${nodeId}`,
@@ -459,10 +417,7 @@ export class DocumentManager {
    * Three leaves are not removable through this API.
    */
   removeComponent(nodeId: string, componentId: string): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    if (!node) {
-      throw new Error(`DocumentManager: unknown node ${nodeId}`);
-    }
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
     const index = node.components.findIndex((c) => c.id === componentId);
     const component = index >= 0 ? node.components[index] : undefined;
     if (
@@ -485,23 +440,24 @@ export class DocumentManager {
 
   /** Replace a Script component in-place (same id / scriptId). */
   applyScriptComponent(nodeId: string, values: ScriptComponentData): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    if (!node) {
-      throw new Error(`DocumentManager: unknown node ${nodeId}`);
-    }
-    const index = node.components.findIndex((c) => c.id === values.id);
-    const current = index >= 0 ? node.components[index] : undefined;
-    if (!current || current.type !== "Script") {
-      throw new Error(
-        `DocumentManager: node ${nodeId} missing Script component ${values.id}`,
-      );
-    }
-    if (current.scriptId !== values.scriptId) {
-      throw new Error(
-        `DocumentManager: scriptId mismatch on ${nodeId}/${values.id}`,
-      );
-    }
-    node.components[index] = structuredClone(values);
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
+    replaceComponentInPlace(node, values, {
+      find: (component) => component.id === values.id,
+      missing: `DocumentManager: node ${nodeId} missing Script component ${values.id}`,
+      mismatch: `DocumentManager: node ${nodeId} missing Script component ${values.id}`,
+      validate: (existing) => {
+        if (existing.type !== "Script") {
+          throw new Error(
+            `DocumentManager: node ${nodeId} missing Script component ${values.id}`,
+          );
+        }
+        if (existing.scriptId !== values.scriptId) {
+          throw new Error(
+            `DocumentManager: scriptId mismatch on ${nodeId}/${values.id}`,
+          );
+        }
+      },
+    });
     this.afterContentMutation({
       kind: "update",
       nodeId,
@@ -511,23 +467,16 @@ export class DocumentManager {
 
   /** Replace a HitZone component in-place (same id). */
   applyHitZoneComponent(nodeId: string, values: HitZoneComponentData): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    const hitZone = node ? getHitZone(node) : undefined;
-    if (!node || !hitZone) {
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
+    const hitZone = getHitZone(node);
+    if (!hitZone) {
       throw new Error(`DocumentManager: node ${nodeId} missing HitZone`);
     }
-    if (hitZone.id !== values.id) {
-      throw new Error(
-        `DocumentManager: HitZone identity mismatch on ${nodeId}`,
-      );
-    }
-    const index = node.components.findIndex(
-      (component) => component.id === hitZone.id,
-    );
-    if (index < 0) {
-      throw new Error(`DocumentManager: HitZone missing from ${nodeId}`);
-    }
-    node.components[index] = structuredClone(values);
+    replaceComponentInPlace(node, values, {
+      find: (component) => component.id === hitZone.id,
+      missing: `DocumentManager: HitZone missing from ${nodeId}`,
+      mismatch: `DocumentManager: HitZone identity mismatch on ${nodeId}`,
+    });
     this.afterContentMutation({
       kind: "update",
       nodeId,
@@ -537,23 +486,16 @@ export class DocumentManager {
 
   /** Replace a Mask component in-place (same id). */
   applyMaskComponent(nodeId: string, values: MaskComponentData): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    const mask = node ? getMask(node) : undefined;
-    if (!node || !mask) {
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
+    const mask = getMask(node);
+    if (!mask) {
       throw new Error(`DocumentManager: node ${nodeId} missing Mask`);
     }
-    if (mask.id !== values.id) {
-      throw new Error(
-        `DocumentManager: Mask identity mismatch on ${nodeId}`,
-      );
-    }
-    const index = node.components.findIndex(
-      (component) => component.id === mask.id,
-    );
-    if (index < 0) {
-      throw new Error(`DocumentManager: Mask missing from ${nodeId}`);
-    }
-    node.components[index] = structuredClone(values);
+    replaceComponentInPlace(node, values, {
+      find: (component) => component.id === mask.id,
+      missing: `DocumentManager: Mask missing from ${nodeId}`,
+      mismatch: `DocumentManager: Mask identity mismatch on ${nodeId}`,
+    });
     this.afterContentMutation({
       kind: "update",
       nodeId,
@@ -563,28 +505,23 @@ export class DocumentManager {
 
   /** Replace the node's leaf visual component in-place (same component id/type). */
   applyVisualComponent(nodeId: string, values: VisualComponentData): void {
-    const node = this.sceneIndex.getNode(nodeId);
-    const visual = node ? getVisualComponent(node) : undefined;
-    if (!node || !visual) {
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
+    const visual = getVisualComponent(node);
+    if (!visual) {
       throw new Error(
         `DocumentManager: node ${nodeId} missing visual component`,
       );
     }
-    if (visual.type !== values.type || visual.id !== values.id) {
+    if (visual.type !== values.type) {
       throw new Error(
         `DocumentManager: visual component identity mismatch on ${nodeId}`,
       );
     }
-
-    const index = node.components.findIndex(
-      (component) => component.id === visual.id,
-    );
-    if (index < 0) {
-      throw new Error(
-        `DocumentManager: visual component missing from ${nodeId}`,
-      );
-    }
-    node.components[index] = structuredClone(values);
+    replaceComponentInPlace(node, values, {
+      find: (component) => component.id === visual.id,
+      missing: `DocumentManager: visual component missing from ${nodeId}`,
+      mismatch: `DocumentManager: visual component identity mismatch on ${nodeId}`,
+    });
 
     this.afterContentMutation({
       kind: "update",
@@ -650,8 +587,7 @@ export class DocumentManager {
   }
 
   beginSave(): void {
-    this.dirtyState = "saving";
-    this.saveError = undefined;
+    this.dirty.beginSave();
     this.emit({ kind: "state" });
   }
 
@@ -660,15 +596,12 @@ export class DocumentManager {
       this.scene = savedScene;
       this.sceneIndex.rebuild(savedScene);
     }
-    this.savedSnapshot = stableSceneSnapshot(this.scene);
-    this.dirtyState = "clean";
-    this.saveError = undefined;
+    this.dirty.markClean(this.scene);
     this.emit({ kind: "state" });
   }
 
   failSave(message: string): void {
-    this.dirtyState = "save-error";
-    this.saveError = message;
+    this.dirty.failSave(message);
     this.emit({ kind: "state" });
   }
 
@@ -677,13 +610,8 @@ export class DocumentManager {
    * Enables undo back to a clean document.
    */
   syncDirtyFromContent(): void {
-    if (this.dirtyState === "saving") {
+    if (!this.dirty.syncFromContent(this.scene)) {
       return;
-    }
-    const matches = stableSceneSnapshot(this.scene) === this.savedSnapshot;
-    this.dirtyState = matches ? "clean" : "dirty";
-    if (matches) {
-      this.saveError = undefined;
     }
     this.emit({ kind: "state" });
   }
@@ -695,10 +623,7 @@ export class DocumentManager {
 
   private afterContentMutation(mutation: SceneMutation): void {
     this.revision += 1;
-    if (this.dirtyState !== "saving") {
-      this.dirtyState = "dirty";
-      this.saveError = undefined;
-    }
+    this.dirty.markDirtyUnlessSaving();
     this.emit(mutation);
   }
 
@@ -707,8 +632,4 @@ export class DocumentManager {
       listener(mutation);
     }
   }
-}
-
-function stableSceneSnapshot(scene: SceneData): string {
-  return JSON.stringify(scene);
 }

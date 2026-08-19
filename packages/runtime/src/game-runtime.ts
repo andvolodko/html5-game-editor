@@ -6,32 +6,17 @@ import type {
   ScriptRuntimeServices,
 } from "@game-editor/game-components";
 import {
-  canMoveNode,
-  flattenNodes,
-  flattenSubtree,
   findNodeByName,
   getScriptComponents,
-  moveNodeInScene,
-  resolveScenePrefabs,
+  IDENTITY_SCALE_3D,
   resolveSceneRuntimeTransform2D,
-  SceneIndex,
   type PrefabCatalog,
   type RuntimeTransform2D,
+  type RuntimeTransform3D,
   type SceneData,
-  type SceneNodeData,
-  type SceneRenderer,
+  type SceneIndex,
 } from "@game-editor/scene";
 import { ScriptHost } from "./script-host.js";
-import {
-  patchAnimatedSpritePlayback,
-  patchModel3DPlayback,
-  patchNodeText,
-  patchSpriteAssetId,
-  patchTransform2D,
-  patchTransform3D,
-} from "./script-scene-io.js";
-import { destroyNodeInScene, spawnModel3DInScene } from "./script-scene-spawn.js";
-import { cloneNamedNodeInScene } from "./script-scene-clone.js";
 import { RuntimeNodeEvents } from "./runtime-node-events.js";
 import {
   buildPerformanceStats,
@@ -41,6 +26,7 @@ import {
   RuntimeRendererHost,
   type RuntimeRendererRegistration,
 } from "./runtime-renderer-host.js";
+import { RuntimeSceneHost } from "./runtime-scene-host.js";
 import {
   createRuntimeScriptServices,
   type RuntimeScriptServiceHost,
@@ -70,10 +56,9 @@ export interface GameRuntimeOptions {
  */
 export class GameRuntime implements RuntimeScriptServiceHost {
   readonly bus: EventBus;
-  readonly sceneIndex = new SceneIndex();
   private readonly rendererHost = new RuntimeRendererHost();
+  private readonly sceneHost = new RuntimeSceneHost(this.rendererHost);
   private readonly nodeEvents = new RuntimeNodeEvents();
-  private scene: SceneData | undefined;
   private readonly scriptHost: ScriptHost;
   private changeSceneHandler:
     | ((sceneId: string) => void | Promise<void>)
@@ -82,8 +67,6 @@ export class GameRuntime implements RuntimeScriptServiceHost {
   private lastRenderPassMs = 0;
   private lastFrameDt = 0;
   private paused = false;
-  private readonly spawnedNodeIds = new Set<string>();
-  private prefabs: PrefabCatalog;
   private disposed = false;
   private performanceStats: ScriptPerformanceStats = {
     frameTimeMs: 0,
@@ -99,6 +82,9 @@ export class GameRuntime implements RuntimeScriptServiceHost {
   constructor(options: GameRuntimeOptions = {}) {
     this.bus = options.services?.bus ?? new EventBus();
     this.changeSceneHandler = options.services?.changeScene;
+    if (options.prefabs) {
+      this.sceneHost.setPrefabCatalog(options.prefabs);
+    }
     const services = createRuntimeScriptServices(this, options.services ?? {});
     this.scriptHost = new ScriptHost(
       options.components,
@@ -107,11 +93,17 @@ export class GameRuntime implements RuntimeScriptServiceHost {
       () => ({
         getNode: (nodeId) => this.sceneIndex.getNode(nodeId),
         getParentId: (nodeId) => this.sceneIndex.getParentId(nodeId),
-        findByName: (name) =>
-          this.scene ? findNodeByName(this.scene, name) : undefined,
+        findByName: (name) => {
+          const scene = this.getScene();
+          return scene ? findNodeByName(scene, name) : undefined;
+        },
       }),
+      (nodeId) => this.resolveNodeTransform3D(nodeId),
     );
-    this.prefabs = options.prefabs ?? new Map();
+  }
+
+  get sceneIndex(): SceneIndex {
+    return this.sceneHost.sceneIndex;
   }
 
   getChangeSceneHandler():
@@ -133,7 +125,7 @@ export class GameRuntime implements RuntimeScriptServiceHost {
   }
 
   setPrefabCatalog(prefabs: PrefabCatalog): void {
-    this.prefabs = prefabs;
+    this.sceneHost.setPrefabCatalog(prefabs);
   }
 
   getBus(): EventBus {
@@ -193,29 +185,13 @@ export class GameRuntime implements RuntimeScriptServiceHost {
 
   loadScene(scene: SceneData): void {
     this.disposed = false;
-    this.spawnedNodeIds.clear();
     this.nodeEvents.clear();
-    const { scene: resolved, warnings } = resolveScenePrefabs(scene, this.prefabs);
-    for (const warning of warnings) {
-      console.warn(`[prefab] ${warning.message}`);
-    }
-    this.scene = resolved;
-    this.sceneIndex.rebuild(resolved);
-    const nodes = flattenNodes(resolved);
-    for (const registration of this.rendererHost.getOrdered()) {
-      registration.renderer.clear();
-      for (const node of nodes) {
-        if (registration.accepts && !registration.accepts(node)) {
-          continue;
-        }
-        registration.renderer.createNode(node);
-      }
-    }
+    const resolved = this.sceneHost.loadScene(scene);
     this.scriptHost.attachScene(resolved);
   }
 
   getScene(): SceneData | undefined {
-    return this.scene;
+    return this.sceneHost.getScene();
   }
 
   /** Number of live script instances attached after the last loadScene. */
@@ -246,9 +222,12 @@ export class GameRuntime implements RuntimeScriptServiceHost {
 
   /** Tear down live scripts (stops looping audio, unsubscribes bus handlers). */
   dispose(): void {
+    if (this.disposed) {
+      return;
+    }
     this.scriptHost.clear();
     this.nodeEvents.clear();
-    this.spawnedNodeIds.clear();
+    this.sceneHost.unload();
     this.disposed = true;
   }
 
@@ -305,26 +284,14 @@ export class GameRuntime implements RuntimeScriptServiceHost {
     nodeId: string,
     patch: Parameters<NonNullable<ScriptRuntimeServices["setTransform2D"]>>[1],
   ): void {
-    const node = patchTransform2D(this.scene, nodeId, patch, this.sceneIndex);
-    if (!node) {
-      return;
-    }
-    this.forOwningRenderers(node, (renderer) => {
-      renderer.syncTransform(node);
-    });
+    this.sceneHost.writeTransform2D(nodeId, patch);
   }
 
   writeTransform3D(
     nodeId: string,
     patch: Parameters<NonNullable<ScriptRuntimeServices["setTransform3D"]>>[1],
   ): void {
-    const node = patchTransform3D(this.scene, nodeId, patch, this.sceneIndex);
-    if (!node) {
-      return;
-    }
-    this.forOwningRenderers(node, (renderer) => {
-      renderer.syncTransform(node);
-    });
+    this.sceneHost.writeTransform3D(nodeId, patch);
   }
 
   writeModel3DPlayback(
@@ -333,38 +300,15 @@ export class GameRuntime implements RuntimeScriptServiceHost {
       NonNullable<ScriptRuntimeServices["setModel3DPlayback"]>
     >[1],
   ): void {
-    const node = patchModel3DPlayback(
-      this.scene,
-      nodeId,
-      patch,
-      this.sceneIndex,
-    );
-    if (!node) {
-      return;
-    }
-    this.forOwningRenderers(node, (renderer) => {
-      renderer.updateNode(node);
-    });
+    this.sceneHost.writeModel3DPlayback(nodeId, patch);
   }
 
   writeText(nodeId: string, text: string): void {
-    const node = patchNodeText(this.scene, nodeId, text, this.sceneIndex);
-    if (!node) {
-      return;
-    }
-    this.forOwningRenderers(node, (renderer) => {
-      renderer.updateNode(node);
-    });
+    this.sceneHost.writeText(nodeId, text);
   }
 
   writeSpriteAssetId(nodeId: string, assetId: string): void {
-    const node = patchSpriteAssetId(this.scene, nodeId, assetId, this.sceneIndex);
-    if (!node) {
-      return;
-    }
-    this.forOwningRenderers(node, (renderer) => {
-      renderer.updateNode(node);
-    });
+    this.sceneHost.writeSpriteAssetId(nodeId, assetId);
   }
 
   writeAnimatedSpritePlayback(
@@ -373,18 +317,7 @@ export class GameRuntime implements RuntimeScriptServiceHost {
       NonNullable<ScriptRuntimeServices["setAnimatedSpritePlayback"]>
     >[1],
   ): void {
-    const node = patchAnimatedSpritePlayback(
-      this.scene,
-      nodeId,
-      patch,
-      this.sceneIndex,
-    );
-    if (!node) {
-      return;
-    }
-    this.forOwningRenderers(node, (renderer) => {
-      renderer.updateNode(node);
-    });
+    this.sceneHost.writeAnimatedSpritePlayback(nodeId, patch);
   }
 
   reparentLiveNode(
@@ -392,25 +325,7 @@ export class GameRuntime implements RuntimeScriptServiceHost {
     parentId: string | undefined,
     index?: number,
   ): void {
-    if (!this.scene || !canMoveNode(this.scene, nodeId, parentId)) {
-      return;
-    }
-    const siblings =
-      parentId === undefined
-        ? this.scene.nodes
-        : this.sceneIndex.getNode(parentId)?.children;
-    if (!siblings) {
-      return;
-    }
-    const insertIndex =
-      index === undefined
-        ? siblings.length
-        : Math.max(0, Math.min(Math.floor(index), siblings.length));
-    const moved = moveNodeInScene(this.scene, nodeId, parentId, insertIndex);
-    this.sceneIndex.reparentNode(nodeId, parentId);
-    this.forOwningRenderers(moved.node, (renderer) => {
-      renderer.reparentNode(nodeId, parentId, moved.toIndex);
-    });
+    this.sceneHost.reparentLiveNode(nodeId, parentId, index);
   }
 
   readBoneWorldTransform(
@@ -428,7 +343,7 @@ export class GameRuntime implements RuntimeScriptServiceHost {
         return {
           position: transform.position,
           rotation: transform.rotation,
-          scale: { x: 1, y: 1, z: 1 },
+          scale: { ...IDENTITY_SCALE_3D },
         };
       }
     }
@@ -440,19 +355,7 @@ export class GameRuntime implements RuntimeScriptServiceHost {
       NonNullable<ScriptRuntimeServices["spawnModel3D"]>
     >[0],
   ): string | undefined {
-    if (!this.scene) {
-      return undefined;
-    }
-    const node = spawnModel3DInScene(this.scene, options);
-    if (!node) {
-      return undefined;
-    }
-    this.spawnedNodeIds.add(node.id);
-    this.sceneIndex.addNode(node);
-    this.forAcceptingRenderers(node, (renderer) => {
-      renderer.createNode(node);
-    });
-    return node.id;
+    return this.sceneHost.spawnModel3DNode(options);
   }
 
   cloneNamedNode(
@@ -460,58 +363,23 @@ export class GameRuntime implements RuntimeScriptServiceHost {
     index: number,
     columns?: number,
   ): string | undefined {
-    if (!this.scene) {
-      return undefined;
-    }
-    const node = cloneNamedNodeInScene(
-      this.scene,
-      sourceName,
-      index,
-      columns,
-    );
-    if (!node) {
-      return undefined;
-    }
-    this.sceneIndex.addNode(node);
-    for (const created of flattenSubtree(node)) {
-      this.spawnedNodeIds.add(created.id);
-      this.forAcceptingRenderers(created, (renderer) => {
-        renderer.createNode(created);
-      });
-    }
-    return node.id;
+    return this.sceneHost.cloneNamedNode(sourceName, index, columns);
   }
 
   setNodeVisible(nodeId: string, visible: boolean): void {
-    for (const registration of this.rendererHost.getOrdered()) {
-      registration.renderer.setNodeVisible?.(nodeId, visible);
-    }
+    this.sceneHost.setNodeVisible(nodeId, visible);
   }
 
   setNodeAlpha(nodeId: string, alpha: number): void {
-    for (const registration of this.rendererHost.getOrdered()) {
-      registration.renderer.setNodeAlpha?.(nodeId, alpha);
-    }
+    this.sceneHost.setNodeAlpha(nodeId, alpha);
   }
 
   setNodeCursor(nodeId: string, cursor: string): void {
-    for (const registration of this.rendererHost.getOrdered()) {
-      registration.renderer.setNodeCursor?.(nodeId, cursor);
-    }
+    this.sceneHost.setNodeCursor(nodeId, cursor);
   }
 
   destroySpawnedNode(nodeId: string): void {
-    if (!this.scene || !this.spawnedNodeIds.has(nodeId)) {
-      return;
-    }
-    const removed = destroyNodeInScene(this.scene, nodeId);
-    this.sceneIndex.removeNode(nodeId);
-    for (const node of removed) {
-      this.spawnedNodeIds.delete(node.id);
-      for (const registration of this.rendererHost.getOrdered()) {
-        registration.renderer.destroyNode(node.id);
-      }
-    }
+    this.sceneHost.destroySpawnedNode(nodeId);
   }
 
   /**
@@ -525,7 +393,21 @@ export class GameRuntime implements RuntimeScriptServiceHost {
         return live;
       }
     }
-    return resolveSceneRuntimeTransform2D(this.scene, nodeId);
+    return resolveSceneRuntimeTransform2D(
+      this.getScene(),
+      nodeId,
+      this.sceneIndex,
+    );
+  }
+
+  private resolveNodeTransform3D(nodeId: string): RuntimeTransform3D | undefined {
+    for (const registration of this.rendererHost.getOrdered()) {
+      const live = registration.renderer.getRuntimeTransform3D?.(nodeId);
+      if (live) {
+        return live;
+      }
+    }
+    return undefined;
   }
 
   private refreshPerformanceStats(): void {
@@ -535,39 +417,5 @@ export class GameRuntime implements RuntimeScriptServiceHost {
       renderPassMs: this.lastRenderPassMs,
       renderStats: sampleRendererStats(this.rendererHost.getOrdered()),
     });
-  }
-
-  private forAcceptingRenderers(
-    node: SceneNodeData,
-    fn: (renderer: SceneRenderer) => void,
-  ): void {
-    for (const registration of this.rendererHost.getOrdered()) {
-      if (registration.accepts && !registration.accepts(node)) {
-        continue;
-      }
-      fn(registration.renderer);
-    }
-  }
-
-  /**
-   * Hybrid stacks register multiple renderers; only the slot that accepted
-   * the node at loadScene owns a runtime object for it.
-   */
-  private forOwningRenderers(
-    node: SceneNodeData,
-    fn: (renderer: SceneRenderer) => void,
-  ): void {
-    for (const registration of this.rendererHost.getOrdered()) {
-      if (registration.accepts && !registration.accepts(node)) {
-        continue;
-      }
-      if (
-        registration.renderer.hasNode &&
-        !registration.renderer.hasNode(node.id)
-      ) {
-        continue;
-      }
-      fn(registration.renderer);
-    }
   }
 }

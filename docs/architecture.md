@@ -107,6 +107,8 @@ Use integration tests for filesystem project operations, asset imports, scene lo
 
 UI tests should focus on valuable workflows rather than implementation details.
 
+PR quality gates live in `.github/workflows/ci.yml`. GitHub Pages deploy (`.github/workflows/deploy-editor-demo.yml`) runs `pnpm build:pages` after a successful `CI` on `master`; it does not re-run typecheck, lint, or tests.
+
 ---
 
 ## Code quality

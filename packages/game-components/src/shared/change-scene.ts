@@ -52,7 +52,7 @@ export class ChangeSceneBehaviour implements ScriptInstance {
 
   private subscribe(): void {
     this.unsubscribe?.();
-    this.unsubscribe = this.ctx.services.bus.on(this.eventId, () => {
+    this.unsubscribe = this.ctx.events.on(this.eventId, () => {
       void this.ctx.services.changeScene(this.sceneName);
     });
   }
@@ -64,7 +64,7 @@ function createChangeSceneInstance(context: ScriptCreateContext): ScriptInstance
 
 /**
  * On bus `event`, navigate to `sceneName`.
- * Uses `ScriptCreateContext.services` (GameRuntime / preview).
+ * Uses `ctx.events` and `ctx.services.changeScene` (GameRuntime / preview).
  */
 export const changeSceneComponent = defineComponent({
   id: "shared.ChangeScene",

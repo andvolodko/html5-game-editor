@@ -2,17 +2,16 @@ import type { EventBus } from "@game-editor/core";
 import {
   createScriptContext,
   type ComponentRegistry,
-  type RuntimeTransform2D,
   type ScriptInstance,
   type ScriptRuntimeServices,
   type ScriptSceneLookup,
 } from "@game-editor/game-components";
 import {
-  findNodeById,
-  findNodeByName,
   flattenNodes,
   getScriptComponents,
   isScriptEnabled,
+  type RuntimeTransform2D,
+  type RuntimeTransform3D,
   type SceneData,
 } from "@game-editor/scene";
 
@@ -48,6 +47,9 @@ export class ScriptHost {
     private readonly services: ScriptRuntimeServices | undefined,
     private readonly resolveTransform: (nodeId: string) => RuntimeTransform2D,
     private readonly resolveLookup?: () => ScriptSceneLookup | undefined,
+    private readonly resolveTransform3D?: (
+      nodeId: string,
+    ) => RuntimeTransform3D | undefined,
   ) {}
 
   clear(): void {
@@ -83,11 +85,8 @@ export class ScriptHost {
               properties: component.properties,
               services: this.services,
               transform: this.resolveTransform(node.id),
-              lookup: this.resolveLookup?.() ?? {
-                getNode: (nodeId) => findNodeById(scene, nodeId),
-                getParentId: (nodeId) => findNodeById(scene, nodeId)?.parentId,
-                findByName: (name) => findNodeByName(scene, name),
-              },
+              transform3D: this.resolveTransform3D?.(node.id),
+              lookup: this.resolveLookup?.(),
             }),
           );
         } catch (error) {

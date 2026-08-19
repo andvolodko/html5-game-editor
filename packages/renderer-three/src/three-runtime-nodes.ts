@@ -1,5 +1,6 @@
 import type { AnimationClip, AnimationMixer, Object3D } from "three";
 import type { Model3DComponentData } from "@game-editor/scene";
+import type { ThreeRuntimeTransform3D } from "./three-runtime-transform-3d.js";
 
 export interface Model3DPlaybackState {
   animation?: string;
@@ -11,6 +12,11 @@ export interface Model3DPlaybackState {
 export interface ThreeRuntimeEntry {
   object: Object3D;
   parentId: string | undefined;
+  /**
+   * Persistent live 3D transform adapter for scripts.
+   * Created lazily on first `getRuntimeTransform3D`.
+   */
+  runtimeTransform?: ThreeRuntimeTransform3D;
   /** Component kind last painted (for rebuild detection). */
   kind: string;
   /** Last Model3D assetId (if any). */

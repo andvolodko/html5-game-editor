@@ -1,6 +1,7 @@
 import {
   createDetachedRuntimeTransform2D,
   type RuntimeTransform2D,
+  type RuntimeTransform3D,
 } from "@game-editor/scene";
 import { createScriptAnimationsApi } from "./script-animations-api.js";
 import { createScriptAudioApi } from "./script-audio-api.js";
@@ -20,6 +21,7 @@ export interface CreateScriptContextInput {
   properties: Readonly<Record<string, unknown>>;
   services: ScriptRuntimeServices;
   transform?: RuntimeTransform2D;
+  transform3D?: RuntimeTransform3D;
   lookup?: ScriptSceneLookup;
 }
 
@@ -40,7 +42,9 @@ export function createScriptContext(
     services: input.services,
     events: input.services.bus,
     transform: input.transform ?? createDetachedRuntimeTransform2D(),
-    transform3D: createScriptTransformApi(input.nodeId, input.services),
+    transform3D:
+      input.transform3D ??
+      createScriptTransformApi(input.nodeId, input.services),
     animations: createScriptAnimationsApi(input.nodeId, input.services),
     node: cache.get(input.nodeId),
     audio: createScriptAudioApi(input.services),

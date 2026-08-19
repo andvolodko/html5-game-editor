@@ -193,4 +193,27 @@ describe("createHtmlAudioPlayer", () => {
     player.setVolume("asset_bgm", 0.25);
     expect(created[0]?.volume).toBe(0.25);
   });
+
+  it("dispose stops all looping clips", () => {
+    const created: FakeAudio[] = [];
+    vi.stubGlobal(
+      "Audio",
+      class extends FakeAudio {
+        constructor(url: string) {
+          super(url);
+          created.push(this);
+        }
+      },
+    );
+    const player = createHtmlAudioPlayer((id) => `https://example/${id}.ogg`);
+    player.play("asset_a", { loop: true });
+    player.play("asset_b", { loop: true });
+    player.dispose();
+    expect(created[0]?.pause).toHaveBeenCalled();
+    expect(created[1]?.pause).toHaveBeenCalled();
+    expect(created[0]?.src).toBe("");
+    expect(created[1]?.src).toBe("");
+    player.play("asset_c", { loop: true });
+    expect(created).toHaveLength(3);
+  });
 });

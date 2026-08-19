@@ -75,6 +75,73 @@ describe("ThreeSceneRenderer", () => {
     expect(renderer.getNodeCount()).toBe(0);
   });
 
+  it("exposes a stable live Transform3D handle that writes the Object3D pose", () => {
+    const node = createNodeWithTransform3D(
+      "M",
+      { x: 2, y: 0, z: 3 },
+      createModel3DComponent(),
+    );
+    const renderer = new ThreeSceneRenderer({ headless: true });
+    renderer.createNode(node);
+    const first = renderer.getRuntimeTransform3D(node.id);
+    const second = renderer.getRuntimeTransform3D(node.id);
+    expect(first).toBeDefined();
+    expect(first).toBe(second);
+    first!.position.z = 11;
+    expect(second!.position.z).toBe(11);
+    renderer.destroyNode(node.id);
+  });
+
+  it("keeps the live playback pose when updateNode refreshes Model3D playback", () => {
+    const node = createNodeWithTransform3D(
+      "M",
+      { x: 2, y: 0, z: 3 },
+      createModel3DComponent(),
+    );
+    const renderer = new ThreeSceneRenderer({
+      headless: true,
+      editable: false,
+    });
+    renderer.createNode(node);
+    const handle = renderer.getRuntimeTransform3D(node.id)!;
+    handle.setPosition({ x: 10, y: 1, z: 20 });
+    handle.setRotation({ x: 0.1, y: 0.2, z: 0.3 });
+
+    renderer.updateNode(node);
+
+    expect(handle.position.x).toBe(10);
+    expect(handle.position.y).toBe(1);
+    expect(handle.position.z).toBe(20);
+    expect(handle.rotation.z).toBeCloseTo(0.3);
+    renderer.destroyNode(node.id);
+  });
+
+  it("keeps the live Transform3D handle when the Model3D visual is replaced", () => {
+    const node = createNodeWithTransform3D(
+      "M",
+      { x: 2, y: 0, z: 3 },
+      createModel3DComponent({ assetId: "asset_missing" }),
+    );
+    const renderer = new ThreeSceneRenderer({ headless: true });
+    renderer.createNode(node);
+    const handle = renderer.getRuntimeTransform3D(node.id);
+    expect(handle).toBeDefined();
+    handle!.setPosition({ x: 4, y: 5, z: 6 });
+
+    renderer.updateNode({
+      ...node,
+      components: [
+        ...node.components.filter((component) => component.type !== "Model3D"),
+        createPerspectiveCameraComponent({ active: true }),
+      ],
+    });
+
+    expect(renderer.getRuntimeTransform3D(node.id)).toBe(handle);
+    handle!.setPosition({ x: 10, y: 11, z: 12 });
+    expect(handle!.position).toEqual({ x: 10, y: 11, z: 12 });
+    renderer.destroyNode(node.id);
+  });
+
   it("applies viewport aspect to scene cameras on resize", () => {
     const camera = createNodeWithTransform3D(
       "Cam",

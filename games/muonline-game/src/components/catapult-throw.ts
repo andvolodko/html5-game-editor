@@ -392,8 +392,7 @@ export class CatapultThrowBehaviour implements ScriptInstance {
   }
 
   private resolveThrowClip(): string | undefined {
-    const names =
-      this.ctx.services.listModel3DAnimations?.(this.ctx.nodeId) ?? [];
+    const names = this.ctx.animations.names();
     if (
       this.props.throwAnimation.length > 0 &&
       names.includes(this.props.throwAnimation)
@@ -404,8 +403,7 @@ export class CatapultThrowBehaviour implements ScriptInstance {
   }
 
   private resolveClip(actionIndex: number): string | undefined {
-    const names =
-      this.ctx.services.listModel3DAnimations?.(this.ctx.nodeId) ?? [];
+    const names = this.ctx.animations.names();
     return actionClipName(names, actionIndex) ?? names[0];
   }
 }

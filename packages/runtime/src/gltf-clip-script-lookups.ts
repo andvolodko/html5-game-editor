@@ -1,5 +1,10 @@
 import type { ScriptRuntimeServices } from "@game-editor/game-components";
-import { getModel3D, findNodeById, type SceneData } from "@game-editor/scene";
+import {
+  getModel3D,
+  findNodeById,
+  type SceneData,
+  type SceneIndex,
+} from "@game-editor/scene";
 
 export interface GltfClipLookupHost {
   listNames(assetId: string): readonly string[];
@@ -13,11 +18,17 @@ export interface GltfClipLookupHost {
 export function createGltfClipScriptLookups(
   getScene: () => SceneData | undefined,
   host: GltfClipLookupHost,
+  getIndex?: () => SceneIndex | undefined,
 ): Pick<
   ScriptRuntimeServices,
   "listModel3DAnimations" | "getModel3DAnimationDuration"
 > {
   const assetIdOf = (nodeId: string): string | undefined => {
+    const index = getIndex?.();
+    if (index) {
+      const indexed = index.getNode(nodeId);
+      return indexed ? getModel3D(indexed)?.assetId : undefined;
+    }
     const scene = getScene();
     const node = scene ? findNodeById(scene, nodeId) : undefined;
     return node ? getModel3D(node)?.assetId : undefined;

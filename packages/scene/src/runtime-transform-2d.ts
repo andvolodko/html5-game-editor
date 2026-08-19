@@ -4,6 +4,7 @@ import {
   IDENTITY_ROTATION_2D,
   IDENTITY_SCALE_2D,
 } from "./defaults.js";
+import type { SceneIndex } from "./scene-index.js";
 import type { SceneData, Transform2DComponentData } from "./types.js";
 
 /** Live 2D vector that writes through to a persistent transform handle. */
@@ -179,8 +180,13 @@ export function bindRuntimeTransform2D(
 export function resolveSceneRuntimeTransform2D(
   scene: SceneData | undefined,
   nodeId: string,
+  index?: SceneIndex,
 ): RuntimeTransform2D {
-  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const node = index
+    ? index.getNode(nodeId)
+    : scene
+      ? findNodeById(scene, nodeId)
+      : undefined;
   const transform = node ? getTransform2D(node) : undefined;
   if (!transform) {
     return createDetachedRuntimeTransform2D();

@@ -21,6 +21,8 @@ export interface HtmlAudioPlayerHandle {
   /** Preview/runtime pause. Holds looping clips without dropping them. */
   setPaused(paused: boolean): void;
   setVolume(assetId: string, volume: number): void;
+  /** Stop all looping clips and release HTMLAudioElements. */
+  dispose(): void;
 }
 
 /**
@@ -117,6 +119,11 @@ export function createHtmlAudioPlayer(
         return;
       }
       audio.volume = clampVolume(volume);
+    },
+    dispose() {
+      for (const id of [...looping.keys()]) {
+        stopOne(id);
+      }
     },
   };
 }

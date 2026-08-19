@@ -35,11 +35,15 @@ function readProps(raw: Readonly<Record<string, unknown>>): Props {
 }
 
 function pointerTargetIds(
+  ctx: ScriptCreateContext,
   nodeId: string,
-  listChildNodes: ScriptCreateContext["services"]["listChildNodes"],
 ): string[] {
   const ids = [nodeId];
-  for (const child of listChildNodes?.(nodeId) ?? []) {
+  const node = ctx.scene.getNode(nodeId);
+  if (!node) {
+    return ids;
+  }
+  for (const child of node.children) {
     ids.push(child.id);
   }
   return ids;
@@ -85,9 +89,8 @@ export class AudioContainerBehaviour implements ScriptInstance {
   }
 
   private onEnable(): void {
-    const { listChildNodes, setNodeCursor, onNodePointerEvent } =
-      this.ctx.services;
-    const children = listChildNodes?.(this.ctx.nodeId) ?? [];
+    const { setNodeCursor, onNodePointerEvent } = this.ctx.services;
+    const children = this.ctx.node.children;
     this.onId = children.find(
       (child) => child.name === this.props.onChildName,
     )?.id;
@@ -100,7 +103,7 @@ export class AudioContainerBehaviour implements ScriptInstance {
         continue;
       }
       this.setHoverVisible(buttonId, false);
-      for (const nodeId of pointerTargetIds(buttonId, listChildNodes)) {
+      for (const nodeId of pointerTargetIds(this.ctx, buttonId)) {
         setNodeCursor?.(nodeId, POINTER_CURSOR);
       }
     }
@@ -131,13 +134,13 @@ export class AudioContainerBehaviour implements ScriptInstance {
   }
 
   private setHoverVisible(buttonId: string, hovered: boolean): void {
-    const hoverId = this.ctx.services
-      .listChildNodes?.(buttonId)
-      ?.find((child) => child.name === this.props.hoverChildName)?.id;
-    if (!hoverId) {
+    const hover = this.ctx.scene
+      .getNode(buttonId)
+      ?.children.find((child) => child.name === this.props.hoverChildName);
+    if (!hover) {
       return;
     }
-    this.ctx.services.setNodeVisible?.(hoverId, hovered);
+    hover.visible = hovered;
   }
 
   destroy(): void {

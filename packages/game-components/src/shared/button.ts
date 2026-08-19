@@ -45,25 +45,28 @@ function findChildId(
 }
 
 function setPairVisible(
-  setNodeVisible: (nodeId: string, visible: boolean) => void,
+  ctx: ScriptCreateContext,
   regularId: string | undefined,
   pressedId: string | undefined,
   pressed: boolean,
 ): void {
   if (regularId) {
-    setNodeVisible(regularId, !pressed);
+    const node = ctx.scene.getNode(regularId);
+    if (node) {
+      node.visible = !pressed;
+    }
   }
   if (pressedId) {
-    setNodeVisible(pressedId, pressed);
+    const node = ctx.scene.getNode(pressedId);
+    if (node) {
+      node.visible = pressed;
+    }
   }
 }
 
-function pointerTargetIds(
-  nodeId: string,
-  listChildNodes: ScriptCreateContext["services"]["listChildNodes"],
-): string[] {
-  const ids = [nodeId];
-  for (const child of listChildNodes?.(nodeId) ?? []) {
+function pointerTargetIds(ctx: ScriptCreateContext): string[] {
+  const ids = [ctx.nodeId];
+  for (const child of ctx.node.children) {
     ids.push(child.id);
   }
   return ids;
@@ -122,9 +125,8 @@ export class ButtonBehaviour implements ScriptInstance {
 
   private bind(): void {
     this.unbind();
-    const { listChildNodes, setNodeCursor, onNodePointerEvent } =
-      this.ctx.services;
-    const children = listChildNodes?.(this.ctx.nodeId) ?? [];
+    const { setNodeCursor, onNodePointerEvent } = this.ctx.services;
+    const children = this.ctx.node.children;
     this.regularId = findChildId(children, this.regularChildName);
     this.pressedId = findChildId(children, this.pressedChildName);
     this.textRegularId = findChildId(children, this.textRegularChildName);
@@ -136,7 +138,7 @@ export class ButtonBehaviour implements ScriptInstance {
       this.ctx.services.hasHitZone?.(this.ctx.nodeId) === true;
     const cursorIds = hostHasHitZone
       ? [this.ctx.nodeId]
-      : pointerTargetIds(this.ctx.nodeId, listChildNodes);
+      : pointerTargetIds(this.ctx);
     for (const nodeId of cursorIds) {
       setNodeCursor?.(nodeId, POINTER_CURSOR);
     }
@@ -155,17 +157,8 @@ export class ButtonBehaviour implements ScriptInstance {
   }
 
   private applyPressed(pressed: boolean): void {
-    const { setNodeVisible } = this.ctx.services;
-    if (!setNodeVisible) {
-      return;
-    }
-    setPairVisible(setNodeVisible, this.regularId, this.pressedId, pressed);
-    setPairVisible(
-      setNodeVisible,
-      this.textRegularId,
-      this.textPressedId,
-      pressed,
-    );
+    setPairVisible(this.ctx, this.regularId, this.pressedId, pressed);
+    setPairVisible(this.ctx, this.textRegularId, this.textPressedId, pressed);
   }
 }
 

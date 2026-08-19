@@ -242,7 +242,7 @@ pnpm build:demo        # editor snapshot in apps/editor/dist
 pnpm build:pages       # editor + every games/* player (GitHub Pages artifact)
 ```
 
-Push to `master` deploys via GitHub Actions. In the repo: **Settings → Pages → Source: GitHub Actions**.
+Push to `master` runs **CI**; a successful CI run deploys Pages (quality gates stay in CI, not in the deploy workflow). In the repo: **Settings → Pages → Source: GitHub Actions**.
 
 ---
 

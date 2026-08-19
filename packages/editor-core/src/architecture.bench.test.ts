@@ -57,7 +57,7 @@ describe("architecture benchmarks", () => {
     expect(redone).toBe(undone);
 
     const serializeStarted = performance.now();
-    const json = JSON.stringify(editor.getScene());
+    const json = JSON.stringify(loaded.getScene());
     const serializeMs = performance.now() - serializeStarted;
     expect(json.length).toBeGreaterThan(0);
 

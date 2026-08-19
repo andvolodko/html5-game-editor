@@ -5,6 +5,7 @@ import {
   createSpriteNode,
   findScript,
   getSprite,
+  getTransform2D,
   parseSceneData,
   PREFAB_SCHEMA_VERSION,
   type PrefabData,
@@ -89,6 +90,27 @@ describe("architecture integration", () => {
     expect(parsed.nodes[0]?.prefab?.prefabAssetId).toBe("asset_prefab_button");
     expect(parsed.nodes[0]?.prefab?.overrides?.length).toBeGreaterThan(0);
     expect(getSprite(parsed.nodes[0]!.children[0]!)?.tint).toBe(0xff0000);
+  });
+
+  it("scene mutate then stringify reloads through parseSceneData", () => {
+    const editor = new Editor({ scene: createEmptyScene("Main") });
+    const parentId = editor.createContainer();
+    editor.renameNode(parentId, "Folder");
+    const childId = editor.createSprite("Hero", { x: 4, y: 8 });
+    editor.moveNode(childId, parentId, 0);
+    editor.setNodeVisible(childId, false);
+    editor.setTransform2D(childId, { position: { x: 16, y: 24 } });
+
+    const json = JSON.stringify(editor.getScene());
+    const parsed = parseSceneData(JSON.parse(json));
+    const child = parsed.nodes[0]?.children[0];
+    expect(parsed.nodes).toHaveLength(1);
+    expect(parsed.nodes[0]?.name).toBe("Folder");
+    expect(parsed.nodes[0]?.children).toHaveLength(1);
+    expect(child?.name).toBe("Hero");
+    expect(child?.visible).toBe(false);
+    expect(getTransform2D(child!)?.position).toEqual({ x: 16, y: 24 });
+    expect(JSON.parse(JSON.stringify(parsed))).toEqual(JSON.parse(json));
   });
 });
 

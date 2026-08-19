@@ -129,6 +129,16 @@ export class MultiSceneRenderer implements SceneRenderer {
     return undefined;
   }
 
+  getRuntimeTransform3D(nodeId: string) {
+    for (const slot of this.slots) {
+      const transform = slot.renderer.getRuntimeTransform3D?.(nodeId);
+      if (transform) {
+        return transform;
+      }
+    }
+    return undefined;
+  }
+
   setNodeVisible(nodeId: string, visible: boolean): void {
     for (const slot of this.slots) {
       slot.renderer.setNodeVisible?.(nodeId, visible);

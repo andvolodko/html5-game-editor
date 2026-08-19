@@ -151,6 +151,7 @@ session.runtime = new GameRuntime({
           return clip?.duration;
         },
       },
+      () => session.runtime?.sceneIndex,
     ),
   },
 });

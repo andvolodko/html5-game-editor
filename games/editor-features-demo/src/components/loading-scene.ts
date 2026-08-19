@@ -89,7 +89,7 @@ export class LoadingSceneBehaviour implements ScriptInstance {
 
   private subscribe(): void {
     this.unsubscribe?.();
-    this.unsubscribe = this.ctx.services.bus.on(this.completeEvent, () => {
+    this.unsubscribe = this.ctx.events.on(this.completeEvent, () => {
       this.loadComplete = true;
       this.tryNavigate();
     });

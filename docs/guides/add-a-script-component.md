@@ -159,7 +159,7 @@ constructor → start() once → update(dt) each frame
 
 Do not assume the runtime node is fully ready in the constructor. Capture rest pose and subscribe in `start()`. Per-node deterministic variation can use `seededUnitFloat(seed, salt)` from `@game-editor/game-components` (`[0, 1)`, no global RNG).
 
-Scene changes at runtime go through `ctx.services.changeScene("main")` (file id), not filesystem paths. Renderer objects stay in the adapter. For this component's own 2D pose, use `ctx.transform` (`x` / `y` / `rotation` / `scaleX` / `scaleY`). For 3D pose, use `ctx.transform3D`. For Model3D clips on this node, use `ctx.animations`. Use `setTransform2D` / `setSpriteAssetId` / `setText` when targeting another node or doing a one-off service call.
+Scene changes at runtime go through `ctx.services.changeScene("main")` (file id), not filesystem paths. Subscribe with `ctx.events` (`ctx.events` is `services.bus`). Renderer objects stay in the adapter. For this component's own 2D pose, use `ctx.transform` (`x` / `y` / `rotation` / `scaleX` / `scaleY`). For 3D pose, use `ctx.transform3D`. For Model3D clips on this node, use `ctx.animations`. Use `setTransform2D` / `setSpriteAssetId` / `setText` when targeting another node or doing a one-off service call.
 
 Preferred 3D style:
 

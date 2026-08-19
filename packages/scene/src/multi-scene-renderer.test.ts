@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  createDetachedRuntimeTransform3D,
   createEmptyScene,
   createNodeWithTransform3D,
   createNodeWithVisual,
@@ -98,6 +99,23 @@ describe("MultiSceneRenderer", () => {
     ]);
     expect(multi.getRuntimeTransform2D("node_a")).toBe(live);
     expect(multi.getRuntimeTransform2D("missing")).toBeUndefined();
+  });
+
+  it("returns the owning slot's live 3D transform handle", () => {
+    const live = createDetachedRuntimeTransform3D({
+      position: { x: 1, y: 2, z: 3 },
+    });
+    const three = createMockRenderer();
+    three.getRuntimeTransform3D = vi.fn((id: string) =>
+      id === "node_b" ? live : undefined,
+    );
+    const pixi = createMockRenderer();
+    const multi = new MultiSceneRenderer([
+      { renderer: pixi },
+      { renderer: three },
+    ]);
+    expect(multi.getRuntimeTransform3D("node_b")).toBe(live);
+    expect(multi.getRuntimeTransform3D("missing")).toBeUndefined();
   });
 
   it("forwards setPlaybackPaused to every slot", () => {

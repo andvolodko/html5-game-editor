@@ -98,4 +98,70 @@ describe("GameRuntime lifecycle", () => {
     expect(second.destroy).toBe(1);
     expect(second.update).toBe(1);
   });
+
+  it("clears scene lookups and renderer nodes on dispose, then accepts a new register", () => {
+    const attached = { create: 0, destroy: 0 };
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.LifecycleHost",
+        displayName: "LifecycleHost",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: () => {
+          attached.create += 1;
+          return {
+            destroy() {
+              attached.destroy += 1;
+            },
+          };
+        },
+      }),
+    );
+
+    const renderer = createMockRenderer();
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+
+    const { scene, node } = sceneWithScript("Host", "test.LifecycleHost");
+    runtime.loadScene(scene);
+    expect(runtime.getScriptInstanceCount()).toBe(1);
+    expect(attached.create).toBe(1);
+
+    runtime.tick(1 / 60);
+    const spawnedId = runtime.spawnModel3DNode({
+      assetId: "asset_stone",
+      name: "Stone",
+      position: { x: 1, y: 2, z: 3 },
+    });
+    expect(spawnedId).toBeDefined();
+    expect(runtime.sceneIndex.getNode(spawnedId!)).toBeDefined();
+
+    runtime.destroySpawnedNode(spawnedId!);
+    expect(runtime.sceneIndex.getNode(spawnedId!)).toBeUndefined();
+
+    runtime.dispose();
+    expect(attached.destroy).toBe(1);
+    expect(runtime.getScriptInstanceCount()).toBe(0);
+    expect(runtime.getScene()).toBeUndefined();
+    expect(runtime.sceneIndex.getNode(node.id)).toBeUndefined();
+    expect(renderer.clear).toHaveBeenCalled();
+
+    const nextRenderer = createMockRenderer();
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: nextRenderer,
+      layer: { id: "replay", renderer: "pixi", order: 1 },
+    });
+    runtime.loadScene(scene);
+    expect(runtime.getScriptInstanceCount()).toBe(1);
+    expect(attached.create).toBe(2);
+    expect(nextRenderer.createNode).toHaveBeenCalled();
+  });
 });

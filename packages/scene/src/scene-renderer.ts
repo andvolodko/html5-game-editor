@@ -1,4 +1,5 @@
 import type { RuntimeTransform2D } from "./runtime-transform-2d.js";
+import type { RuntimeTransform3D } from "./runtime-transform-3d.js";
 import type { SceneNodeData, Vec3 } from "./types.js";
 
 /** Optional GPU / canvas counters sampled after a frame (performance overlays). */
@@ -70,6 +71,12 @@ export interface SceneRenderer {
    * allocate a new object per access.
    */
   getRuntimeTransform2D?(nodeId: string): RuntimeTransform2D | undefined;
+  /**
+   * Persistent live 3D transform handle for a runtime node.
+   * Assignments update the rendered object immediately and must not
+   * allocate a new object per access.
+   */
+  getRuntimeTransform3D?(nodeId: string): RuntimeTransform3D | undefined;
   /** Remove all runtime objects. Domain scene is unaffected. */
   clear(): void;
   resize(width: number, height: number): void;

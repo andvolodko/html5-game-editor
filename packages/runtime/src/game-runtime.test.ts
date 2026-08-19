@@ -10,6 +10,7 @@ import {
   createAnimatedSpriteComponent,
   createContainerNode,
   createDetachedRuntimeTransform2D,
+  createDetachedRuntimeTransform3D,
   createEmptyScene,
   createHitZoneComponent,
   createModel3DComponent,
@@ -534,6 +535,59 @@ describe("GameRuntime.loadScene", () => {
       rotation: 0,
       scale: { x: 1, y: 1 },
     });
+  });
+
+  it("exposes a stable ctx.transform3D that updates the live node without setTransform3D", () => {
+    const node = createNodeWithTransform3D("Monster", { x: 1, y: 2, z: 3 });
+    const live = createDetachedRuntimeTransform3D({
+      position: { x: 1, y: 2, z: 3 },
+    });
+    const renderer = createMockRenderer();
+    renderer.getRuntimeTransform3D = vi.fn((nodeId: string) =>
+      nodeId === node.id ? live : undefined,
+    );
+
+    const setTransform3D = vi.fn();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.DirectMover3D",
+        displayName: "DirectMover3D",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            ctx.transform3D.position.z = 10;
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({
+      components: registry,
+      services: {
+        bus: new EventBus(),
+        changeScene: () => undefined,
+        setTransform3D,
+      },
+    });
+    runtime.registerRenderer({
+      kind: "three",
+      renderer,
+      layer: { id: "main", renderer: "three", order: 0 },
+    });
+
+    node.components.push(createScriptComponent("test.DirectMover3D"));
+    const scene = createEmptyScene("DirectMove3D", { renderer: "three" });
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+    runtime.tick(1 / 60);
+
+    expect(live.position.z).toBe(10);
+    expect(setTransform3D).not.toHaveBeenCalled();
+    expect(renderer.syncTransform).not.toHaveBeenCalled();
   });
 
   it("reads initial pose from ctx.transform when no renderer handle exists", () => {
@@ -1159,12 +1213,14 @@ describe("GameRuntime.loadScene", () => {
 
     runtime.tick(1 / 60);
     expect(spawnedIds).toHaveLength(1);
+    const spawnedId = spawnedIds[0]!;
     expect(runtime.getScene()?.nodes).toHaveLength(2);
     expect(renderer.created.map((node) => node.name)).toEqual(["Host", "Stone"]);
 
     runtime.dispose();
-    expect(renderer.destroyNode).toHaveBeenCalledWith(spawnedIds[0]);
-    expect(runtime.getScene()?.nodes).toHaveLength(1);
+    expect(renderer.destroyNode).toHaveBeenCalledWith(spawnedId);
+    expect(runtime.getScene()).toBeUndefined();
+    expect(runtime.sceneIndex.getNode(spawnedId)).toBeUndefined();
   });
 
   it("cloneNodeByName copies a 2D node into the live scene", () => {

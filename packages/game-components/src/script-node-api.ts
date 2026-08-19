@@ -11,13 +11,17 @@ import type {
 
 export class ScriptNodeHandleCache {
   private readonly handles = new Map<string, HostScriptNodeHandle>();
+  private readonly listedNames = new Map<string, string>();
 
   constructor(
     private readonly services: ScriptRuntimeServices,
     private readonly lookup: ScriptSceneLookup | undefined,
   ) {}
 
-  get(nodeId: string): HostScriptNodeHandle {
+  get(nodeId: string, listedName?: string): HostScriptNodeHandle {
+    if (listedName !== undefined) {
+      this.listedNames.set(nodeId, listedName);
+    }
     let handle = this.handles.get(nodeId);
     if (!handle) {
       handle = new HostScriptNodeHandle(nodeId, this.services, this.lookup, this);
@@ -32,6 +36,10 @@ export class ScriptNodeHandleCache {
     }
     return this.get(nodeId);
   }
+
+  listedName(nodeId: string): string | undefined {
+    return this.listedNames.get(nodeId);
+  }
 }
 
 class HostScriptNodeHandle implements ScriptNodeHandle {
@@ -43,7 +51,11 @@ class HostScriptNodeHandle implements ScriptNodeHandle {
   ) {}
 
   get name(): string {
-    return this.lookup?.getNode(this.id)?.name ?? "";
+    return (
+      this.lookup?.getNode(this.id)?.name ??
+      this.cache.listedName(this.id) ??
+      ""
+    );
   }
 
   set name(value: string) {
@@ -76,7 +88,7 @@ class HostScriptNodeHandle implements ScriptNodeHandle {
       return node.children.map((child) => this.cache.get(child.id));
     }
     return (this.services.listChildNodes?.(this.id) ?? []).map((child) =>
-      this.cache.get(child.id),
+      this.cache.get(child.id, child.name),
     );
   }
 

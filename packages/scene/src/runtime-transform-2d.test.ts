@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createSpriteNode, createEmptyScene } from "./factories/scene.js";
 import { getTransform2D } from "./queries.js";
+import { SceneIndex } from "./scene-index.js";
 import {
   bindRuntimeTransform2D,
   createDetachedRuntimeTransform2D,
@@ -51,6 +52,17 @@ describe("RuntimeTransform2D", () => {
     const transform = resolveSceneRuntimeTransform2D(scene, node.id);
     transform.x = 7;
     expect(getTransform2D(node)?.position.x).toBe(7);
+  });
+
+  it("resolveSceneRuntimeTransform2D uses SceneIndex when provided", () => {
+    const node = createSpriteNode("Cloud", { x: 5, y: 6 });
+    const scene = createEmptyScene("Sky");
+    scene.nodes = [node];
+    const index = new SceneIndex();
+    index.rebuild(scene);
+    const transform = resolveSceneRuntimeTransform2D(undefined, node.id, index);
+    transform.x = 9;
+    expect(getTransform2D(node)?.position.x).toBe(9);
   });
 
   it("resolveSceneRuntimeTransform2D falls back to a detached transform", () => {

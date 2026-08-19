@@ -192,6 +192,7 @@ export class GamePreviewSession {
               return clip?.duration;
             },
           },
+          () => runtimeRef.current?.sceneIndex,
         ),
       },
     });
@@ -326,7 +327,7 @@ export class GamePreviewSession {
     this.runtime?.dispose();
     this.runtime = undefined;
     this.switchScene = undefined;
-    this.audioPlayer?.stop();
+    this.audioPlayer?.dispose();
     this.audioPlayer = undefined;
     this.bus?.clear();
     this.bus = undefined;

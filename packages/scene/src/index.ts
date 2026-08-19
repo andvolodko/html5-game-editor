@@ -214,6 +214,17 @@ export {
   createDetachedRuntimeTransform2D,
   resolveSceneRuntimeTransform2D,
 } from "./runtime-transform-2d.js";
+export type {
+  RuntimeTransform3D,
+  RuntimeTransform3DPatch,
+  RuntimeVec3,
+} from "./runtime-transform-3d.js";
+export {
+  bindRuntimeTransform3D,
+  bindRuntimeVec3,
+  createDetachedRuntimeTransform3D,
+  resolveSceneRuntimeTransform3D,
+} from "./runtime-transform-3d.js";
 export {
   EMPTY_SCENE_RENDER_STATS,
   addSceneRenderStats,

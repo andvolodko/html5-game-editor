@@ -62,6 +62,7 @@ import {
   ThreeRuntimeGraph,
   type ThreeRuntimeEntry,
 } from "./three-runtime-nodes.js";
+import { ThreeRuntimeTransform3D } from "./three-runtime-transform-3d.js";
 import { readBoneWorldTransform } from "./three-bone-world.js";
 import type {
   ThreePointerHandlers,
@@ -247,6 +248,19 @@ export class ThreeSceneRenderer implements SceneRenderer {
     return this.graph.has(nodeId);
   }
 
+  getRuntimeTransform3D(nodeId: string) {
+    const entry = this.graph.get(nodeId);
+    if (!entry) {
+      return undefined;
+    }
+    let transform = entry.runtimeTransform;
+    if (!transform) {
+      transform = new ThreeRuntimeTransform3D(entry.object);
+      entry.runtimeTransform = transform;
+    }
+    return transform;
+  }
+
   setNodeVisible(nodeId: string, visible: boolean): void {
     const entry = this.graph.get(nodeId);
     if (!entry) {
@@ -358,7 +372,12 @@ export class ThreeSceneRenderer implements SceneRenderer {
       this.replaceObject(node, nextKind, nextAssetId);
       return;
     }
-    this.applyTransform(entry.object, node);
+    // Playback pose is owned by `ctx.transform3D` (live Object3D handle), not
+    // scene Transform3D. Re-applying the authored pose here snaps monsters
+    // back to spawn on every clip change (idle → walk → attack).
+    if (this.editable) {
+      this.applyTransform(entry.object, node);
+    }
     this.applyLightOrCameraProps(entry.object, node);
     entry.runtimeVisible = getNodeVisible(node);
     this.applyDisplayVisible(entry);
@@ -791,6 +810,7 @@ export class ThreeSceneRenderer implements SceneRenderer {
     tagObjectWithNodeId(next, node.id);
     this.applyTransform(next, node);
     entry.object = next;
+    entry.runtimeTransform?.retarget(next);
     entry.kind = kind;
     entry.assetId = assetId;
     entry.playback = snapshotModelPlayback(getModel3D(node));
@@ -888,6 +908,7 @@ export class ThreeSceneRenderer implements SceneRenderer {
     visual.scale.copy(scale);
     tagObjectWithNodeId(visual, nodeId);
     entry.object = visual;
+    entry.runtimeTransform?.retarget(visual);
     parent.add(visual);
     this.applyDisplayVisible(entry);
     if (this.selectedNodeIds.has(nodeId)) {

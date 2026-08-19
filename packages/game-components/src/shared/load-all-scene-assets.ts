@@ -117,7 +117,7 @@ export class LoadAllSceneAssetsBehaviour implements ScriptInstance {
     }
     this.finished = true;
     this.writePercent(PERCENT_COMPLETE);
-    this.ctx.services.bus.emit(this.completeEvent);
+    this.ctx.events.emit(this.completeEvent);
   }
 
   private async preloadOne(assetId: string): Promise<void> {
