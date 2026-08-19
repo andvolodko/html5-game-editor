@@ -1,5 +1,6 @@
 import type { AssetResolver } from "@game-editor/assets";
 import type { GraphicsShapeData, HitZoneComponentData, MaskComponentData, Vec2 } from "@game-editor/scene";
+import type { ViewportPointerModifiers } from "@game-editor/shared";
 import type { PixelGridStyle } from "./pixel-grid.js";
 
 export interface PixiSceneRendererOptions {
@@ -52,18 +53,33 @@ export interface PixiGizmoAnchorResult {
   position: Vec2;
 }
 
+export interface NodePositionDrag {
+  nodeId: string;
+  start: Vec2;
+  end: Vec2;
+}
+
 export interface PixiPointerHandlers {
   onBackgroundPointerDown?: () => void;
   /**
    * Stage-level world pointer (capture). Return true to consume the gesture
-   * (skip node drag / background clear). Used by tilemap painting.
+   * (skip node drag / background clear). Used by tilemap painting and marquee.
    */
-  onWorldPointerDown?: (world: Vec2, button: number) => boolean;
+  onWorldPointerDown?: (
+    world: Vec2,
+    button: number,
+    modifiers: ViewportPointerModifiers,
+    client: { x: number; y: number },
+  ) => boolean;
   onWorldPointerMove?: (world: Vec2) => void;
   onWorldPointerUp?: (world: Vec2) => void;
-  onNodePointerDown?: (nodeId: string, world: Vec2) => void;
+  onNodePointerDown?: (
+    nodeId: string,
+    world: Vec2,
+    modifiers?: ViewportPointerModifiers,
+  ) => void;
   onNodePointerMove?: (nodeId: string, world: Vec2) => void;
-  onNodePointerUp?: (nodeId: string, start: Vec2, end: Vec2) => void;
+  onNodePointerUp?: (moves: readonly NodePositionDrag[]) => void;
   /** Playback / preview: press+release without drag on a node. */
   onNodeClick?: (nodeId: string) => void;
   /**

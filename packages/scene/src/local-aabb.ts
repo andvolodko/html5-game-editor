@@ -71,3 +71,28 @@ export function unionLocalAabb(
     height: maxY - minY,
   };
 }
+
+/** True when two AABBs overlap (edges touching counts as a hit). */
+export function aabbIntersects(a: LocalAabb, b: LocalAabb): boolean {
+  return (
+    a.x <= b.x + b.width &&
+    a.x + a.width >= b.x &&
+    a.y <= b.y + b.height &&
+    a.y + a.height >= b.y
+  );
+}
+
+/** Axis-aligned box spanning two corners (either direction). */
+export function aabbFromCorners(
+  a: { x: number; y: number },
+  b: { x: number; y: number },
+): LocalAabb {
+  const minX = Math.min(a.x, b.x);
+  const minY = Math.min(a.y, b.y);
+  return {
+    x: minX,
+    y: minY,
+    width: Math.abs(b.x - a.x),
+    height: Math.abs(b.y - a.y),
+  };
+}

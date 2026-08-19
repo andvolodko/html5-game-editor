@@ -278,6 +278,19 @@ describe("scene schema", () => {
     });
   });
 
+  it("collects catalogue asset ids from Script properties", () => {
+    const scene = createEmptyScene("Audio");
+    const node = createSpriteNode("Btn", { x: 0, y: 0 });
+    node.components.push(
+      createScriptComponent("shared.AudioClick", {
+        audioAssetId: "asset_sfx",
+        mouseEvent: "pointertap",
+      }),
+    );
+    scene.nodes.push(node);
+    expect(collectReferencedAssetIds(scene)).toEqual(["asset_sfx"]);
+  });
+
   it("round-trips disabled Script components and treats omitted enabled as on", () => {
     const scene = createEmptyScene("Scripts");
     const node = createSpriteNode("Hero", { x: 0, y: 0 });

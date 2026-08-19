@@ -21,7 +21,12 @@ import {
   sceneModulesById,
   type LoadedGameProject,
 } from "@game-editor/runtime";
-import { parseSceneData, type SceneData } from "@game-editor/scene";
+import {
+  getSceneRendererKind,
+  parseSceneData,
+  type SceneData,
+  type SceneRendererKind,
+} from "@game-editor/scene";
 import projectJson from "../project.json";
 import assetsJson from "../.project/assets.json";
 import {
@@ -56,6 +61,7 @@ const session: {
   loaded?: LoadedGameProject;
   screen?: GameScreenHost;
   renderers?: { destroy(): Promise<void> };
+  rendererKind?: SceneRendererKind;
 } = {};
 
 function readScene(sceneId: string): SceneData {
@@ -105,14 +111,18 @@ async function changeScene(sceneId: string): Promise<void> {
   }
   const design = loaded.project.resolution;
   const next = readScene(sceneId);
-  await session.renderers?.destroy();
-  session.renderers = await mountPixiRenderer({
-    frame: screen.frame,
-    assetResolver: loaded.assetResolver,
-    design,
-    backgroundColor: projectBackgroundToPixiColor(loaded.project.background),
-    runtime,
-  });
+  const nextKind = getSceneRendererKind(next);
+  if (session.rendererKind !== nextKind) {
+    await session.renderers?.destroy();
+    session.renderers = await mountPixiRenderer({
+      frame: screen.frame,
+      assetResolver: loaded.assetResolver,
+      design,
+      backgroundColor: projectBackgroundToPixiColor(loaded.project.background),
+      runtime,
+    });
+    session.rendererKind = nextKind;
+  }
   runtime.loadScene(next);
   runtime.resize(design.width, design.height);
   runtime.render();
@@ -181,6 +191,7 @@ async function boot(): Promise<void> {
     backgroundColor: projectBackgroundToPixiColor(background),
     runtime,
   });
+  session.rendererKind = getSceneRendererKind(session.loaded.scene);
 
   runtime.loadScene(session.loaded.scene);
   runtime.resize(design.width, design.height);

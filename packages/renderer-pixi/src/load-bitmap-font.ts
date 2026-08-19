@@ -1,6 +1,7 @@
 import { Assets, BitmapFont, Cache } from "pixi.js";
 import type { Texture } from "pixi.js";
 import type { BitmapFontAssetUrls } from "@game-editor/assets";
+import { fetchCachedText } from "./cached-asset-fetch.js";
 import { parseBitmapFontXml } from "./parse-bitmap-font-xml.js";
 
 const loaded = new Map<string, Promise<string>>();
@@ -49,11 +50,7 @@ async function installBitmapFont(urls: BitmapFontAssetUrls): Promise<string> {
     return urls.fontFamily;
   }
 
-  const response = await fetch(urls.xmlUrl);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch bitmap font (${String(response.status)})`);
-  }
-  const xmlText = await response.text();
+  const xmlText = await fetchCachedText(urls.xmlUrl);
   const data = parseBitmapFontXml(xmlText);
   const textures: Texture[] = [];
   for (const page of data.pages) {

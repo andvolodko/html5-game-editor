@@ -93,8 +93,12 @@ export function FolderBranch(props: FolderBranchProps) {
         <button
           type="button"
           className="hierarchy-expand"
+          tabIndex={-1}
           aria-label={expanded ? "Collapse" : "Expand"}
-          onPointerDown={(event) => event.stopPropagation()}
+          onPointerDown={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          }}
           onClick={(event) => {
             event.stopPropagation();
             model.toggleExpanded(path);

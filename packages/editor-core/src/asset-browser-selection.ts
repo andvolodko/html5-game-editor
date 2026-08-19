@@ -1,8 +1,11 @@
 import type { AssetRecord } from "@game-editor/assets";
 import {
   ASSETS_ROOT_FOLDER,
+  SCENES_FOLDER,
   isFolderOrDescendant,
   listFolderEntries,
+  parentFolder,
+  type AssetBrowserEntry,
 } from "./asset-browser-model.js";
 
 export type AssetBrowserSelectionItem =
@@ -37,6 +40,39 @@ export function assetBrowserItemsEqual(
   right: AssetBrowserSelectionItem,
 ): boolean {
   return assetBrowserItemKey(left) === assetBrowserItemKey(right);
+}
+
+export function assetBrowserEntryItem(
+  entry: AssetBrowserEntry,
+): AssetBrowserSelectionItem {
+  if (entry.kind === "folder") {
+    return { kind: "folder", path: entry.path };
+  }
+  if (entry.kind === "scene") {
+    return { kind: "scene", id: entry.id };
+  }
+  return { kind: "asset", id: entry.asset.id };
+}
+
+/** Parent folder row for a catalogue item, if any. */
+export function assetBrowserItemParent(
+  item: AssetBrowserSelectionItem,
+  assets: readonly AssetRecord[],
+): AssetBrowserSelectionItem | undefined {
+  if (item.kind === "folder") {
+    if (item.path === ASSETS_ROOT_FOLDER) {
+      return undefined;
+    }
+    return { kind: "folder", path: parentFolder(item.path) };
+  }
+  if (item.kind === "asset") {
+    const asset = assets.find((entry) => entry.id === item.id);
+    if (!asset) {
+      return undefined;
+    }
+    return { kind: "folder", path: parentFolder(asset.path) };
+  }
+  return { kind: "folder", path: SCENES_FOLDER };
 }
 
 /**

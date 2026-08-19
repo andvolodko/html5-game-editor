@@ -6,9 +6,37 @@
 import type { SceneData, SceneNodeData } from "./types.js";
 import type { PrefabCatalog, PrefabData } from "./prefab/types.js";
 
+const CATALOGUE_ASSET_ID_PREFIX = "asset_";
+
 function addAssetId(ids: Set<string>, value: unknown): void {
   if (typeof value === "string" && value.length > 0) {
     ids.add(value);
+  }
+}
+
+function addCatalogueAssetIdsFromValue(
+  ids: Set<string>,
+  value: unknown,
+): void {
+  if (typeof value === "string") {
+    if (
+      value.startsWith(CATALOGUE_ASSET_ID_PREFIX) &&
+      value.length > CATALOGUE_ASSET_ID_PREFIX.length
+    ) {
+      ids.add(value);
+    }
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const entry of value) {
+      addCatalogueAssetIdsFromValue(ids, entry);
+    }
+    return;
+  }
+  if (value !== null && typeof value === "object") {
+    for (const entry of Object.values(value as Record<string, unknown>)) {
+      addCatalogueAssetIdsFromValue(ids, entry);
+    }
   }
 }
 
@@ -83,6 +111,9 @@ function visitNodes(
       }
       if (component.type === "Tilemap") {
         addAssetId(ids, component.tileSetId);
+      }
+      if (component.type === "Script") {
+        addCatalogueAssetIdsFromValue(ids, component.properties);
       }
     }
     visitNodes(node.children, ids, onPrefabAsset);

@@ -42,7 +42,9 @@ Existing examples:
 | --- | --- |
 | `games/editor-features-demo/src/components/cloud.ts` | OOP lifecycle + `ctx.transform` + live properties |
 | `games/editor-features-demo/src/components/clone-object.ts` | Pointer subscribe in `start()`, cleanup in `destroy()` |
+| `games/editor-features-demo/src/components/loading-scene.ts` | Wait for Load All Scene Assets event + `minDisplayMs`, then `changeScene` |
 | `packages/game-components/src/shared/change-scene.ts` | Shared: bus event → `changeScene(sceneId)` |
+| `packages/game-components/src/shared/load-all-scene-assets.ts` | Shared: preload catalogue assets, emit `completeEvent` |
 
 Prefer a **behaviour class** that implements `ScriptInstance` for anything beyond a few lines.
 

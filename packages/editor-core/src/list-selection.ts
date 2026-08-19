@@ -76,3 +76,29 @@ export function applyListSelection(
 
   return { selected: [clickedId], anchor: clickedId };
 }
+
+/**
+ * Marquee hits replace the selection, or union with it when additive
+ * (Ctrl/Cmd/Shift drag). Empty additive hits keep the current selection.
+ */
+export function applyMarqueeSelection(
+  currentIds: readonly string[],
+  hitIds: readonly string[],
+  additive: boolean,
+): string[] {
+  if (!additive) {
+    return [...hitIds];
+  }
+  if (hitIds.length === 0) {
+    return [...currentIds];
+  }
+  const seen = new Set(currentIds);
+  const next = [...currentIds];
+  for (const id of hitIds) {
+    if (!seen.has(id)) {
+      seen.add(id);
+      next.push(id);
+    }
+  }
+  return next;
+}

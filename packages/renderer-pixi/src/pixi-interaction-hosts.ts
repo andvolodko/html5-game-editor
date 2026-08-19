@@ -12,6 +12,7 @@ export interface InteractionHostSource {
   isGizmoDragging(): boolean;
   getRuntime(nodeId: string): RuntimeNode | undefined;
   getSnapGridSize(): number | undefined;
+  getSelectedNodeIds(): ReadonlySet<string>;
   getPointerHandlers(): PixiPointerHandlers | undefined;
   pickNodeId?(clientX: number, clientY: number): string | undefined;
   previewNodePosition(nodeId: string, position: Vec2): void;
@@ -31,15 +32,16 @@ export function createNodeDragHost(source: InteractionHostSource): NodeDragHost 
     isGizmoDragging: () => source.isGizmoDragging(),
     getRuntime: (nodeId) => source.getRuntime(nodeId),
     getSnapGridSize: () => source.getSnapGridSize(),
+    getSelectedNodeIds: () => source.getSelectedNodeIds(),
     previewNodePosition: (nodeId, position) =>
       source.previewNodePosition(nodeId, position),
     pickNodeId: (clientX, clientY) => source.pickNodeId?.(clientX, clientY),
-    onNodePointerDown: (nodeId, world) =>
-      source.getPointerHandlers()?.onNodePointerDown?.(nodeId, world),
+    onNodePointerDown: (nodeId, world, modifiers) =>
+      source.getPointerHandlers()?.onNodePointerDown?.(nodeId, world, modifiers),
     onNodePointerMove: (nodeId, world) =>
       source.getPointerHandlers()?.onNodePointerMove?.(nodeId, world),
-    onNodePointerUp: (nodeId, start, end) =>
-      source.getPointerHandlers()?.onNodePointerUp?.(nodeId, start, end),
+    onNodePointerUp: (moves) =>
+      source.getPointerHandlers()?.onNodePointerUp?.(moves),
   };
 }
 

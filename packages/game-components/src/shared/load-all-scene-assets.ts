@@ -56,8 +56,9 @@ async function downloadUrl(url: string, signal: AbortSignal): Promise<void> {
 
 /**
  * Preloads every bundled scene asset via the host (`preloadSceneAsset` →
- * Pixi Assets / Three glTF cache), writes load percent onto the host
- * Text / HTMLText / BitmapText, then emits `completeEvent`.
+ * Pixi Assets / Three glTF cache / fetch body cache), writes load percent
+ * onto the host Text / HTMLText / BitmapText, then emits `completeEvent`.
+ * Pair with Loading Scene so `changeScene` waits until this event fires.
  */
 export class LoadAllSceneAssetsBehaviour implements ScriptInstance {
   private completeEvent = DEFAULT_COMPLETE_EVENT;

@@ -146,6 +146,54 @@ export function applyAff2Point(m: Aff2, point: Vec2): Vec2 {
   };
 }
 
+/** Linear part only — use for world/local translation deltas, not points. */
+export function applyAff2Vector(m: Aff2, vector: Vec2): Vec2 {
+  return {
+    x: m.a * vector.x + m.c * vector.y,
+    y: m.b * vector.x + m.d * vector.y,
+  };
+}
+
+/** World-space translation implied by a local-position change on `nodeId`. */
+export function worldDeltaFromLocalPositions(
+  scene: SceneData,
+  nodeId: string,
+  startLocal: Vec2,
+  endLocal: Vec2,
+): Vec2 {
+  const parentId = findParentNode(scene, nodeId)?.id;
+  const parentWorld = getParentWorldAff2(scene, parentId);
+  return applyAff2Vector(parentWorld, {
+    x: endLocal.x - startLocal.x,
+    y: endLocal.y - startLocal.y,
+  });
+}
+
+/**
+ * Parent-local position after translating `nodeId` by a world-space delta.
+ * Returns undefined when the node has no Transform2D.
+ */
+export function localPositionAfterWorldDelta(
+  scene: SceneData,
+  nodeId: string,
+  worldDelta: Vec2,
+): Vec2 | undefined {
+  const node = findNodeById(scene, nodeId);
+  const transform = node ? getTransform2D(node) : undefined;
+  if (!transform) {
+    return undefined;
+  }
+  const parentId = findParentNode(scene, nodeId)?.id;
+  const localDelta = applyAff2Vector(
+    invertAff2(getParentWorldAff2(scene, parentId)),
+    worldDelta,
+  );
+  return {
+    x: transform.position.x + localDelta.x,
+    y: transform.position.y + localDelta.y,
+  };
+}
+
 /** Convert a world-space point into the local space of `parentId` (or root). */
 export function worldPointToLocal(
   scene: SceneData,

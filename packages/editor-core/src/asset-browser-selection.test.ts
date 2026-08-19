@@ -5,7 +5,9 @@ import {
   SCENES_FOLDER,
 } from "./asset-browser-model.js";
 import {
+  assetBrowserEntryItem,
   assetBrowserItemKey,
+  assetBrowserItemParent,
   flattenVisibleBrowserItems,
   parseAssetBrowserItemKey,
   rootMostFolderPaths,
@@ -68,5 +70,25 @@ describe("asset-browser-selection", () => {
     expect(
       rootMostFolderPaths(["assets/a", "assets/a/b", "assets/c"]),
     ).toEqual(["assets/a", "assets/c"]);
+  });
+
+  it("maps folder entries and finds catalogue parents", () => {
+    expect(
+      assetBrowserEntryItem({
+        kind: "folder",
+        path: "assets/symbols",
+        name: "symbols",
+      }),
+    ).toEqual({ kind: "folder", path: "assets/symbols" });
+    expect(assetBrowserItemParent({ kind: "asset", id: "asset_b" }, assets)).toEqual(
+      { kind: "folder", path: "assets/symbols" },
+    );
+    expect(
+      assetBrowserItemParent({ kind: "folder", path: ASSETS_ROOT_FOLDER }, assets),
+    ).toBeUndefined();
+    expect(assetBrowserItemParent({ kind: "scene", id: "main" }, assets)).toEqual({
+      kind: "folder",
+      path: SCENES_FOLDER,
+    });
   });
 });

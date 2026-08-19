@@ -1,16 +1,10 @@
 import { Assets } from "pixi.js";
 import type { AssetResolver } from "@game-editor/assets";
+import { fetchCachedArrayBuffer } from "./cached-asset-fetch.js";
 import { loadPixiSpritesheet } from "./load-pixi-spritesheet.js";
+import { retainPreloadedPixiUrl } from "./pixi-texture-cache.js";
 
 const TEXTURE_PARSER = "texture";
-
-async function downloadBody(url: string, signal?: AbortSignal): Promise<void> {
-  const response = await fetch(url, signal ? { signal } : undefined);
-  if (!response.ok) {
-    throw new Error(`Failed to download ${url}: ${response.status}`);
-  }
-  await response.arrayBuffer();
-}
 
 function throwIfAborted(signal?: AbortSignal): void {
   if (signal?.aborted) {
@@ -18,10 +12,26 @@ function throwIfAborted(signal?: AbortSignal): void {
   }
 }
 
+async function loadAndRetainTexture(
+  url: string,
+  format?: string,
+): Promise<void> {
+  if (format !== undefined) {
+    await Assets.load({
+      src: url,
+      parser: TEXTURE_PARSER,
+      format,
+    });
+  } else {
+    await Assets.load(url);
+  }
+  retainPreloadedPixiUrl(url);
+}
+
 /**
- * Warm Pixi `Assets` (and HTTP cache for spine JSON/atlas) without attaching
- * to a renderer-owned PixiTextureCache. Scene-change destroy/evict then still
- * hits Assets on the next paint.
+ * Warm Pixi `Assets` (and an in-memory fetch cache for spine JSON/atlas) without
+ * attaching to a renderer-owned PixiTextureCache. URLs are pinned so a later
+ * renderer destroy/evict does not unload them.
  *
  * glTF ids are skipped — those belong to ThreeGltfCache.
  */
@@ -35,13 +45,19 @@ export async function preloadPixiSceneAsset(
     return;
   }
 
+  const tileset = resolver.resolveTileSet?.(assetId);
+  if (tileset && tileset.imageAssetId !== assetId) {
+    await preloadPixiSceneAsset(resolver, tileset.imageAssetId, signal);
+    return;
+  }
+
   const spine = resolver.resolveSpineUrls?.(assetId);
   if (spine) {
-    await downloadBody(spine.atlasUrl, signal);
-    await downloadBody(spine.skeletonUrl, signal);
+    await fetchCachedArrayBuffer(spine.atlasUrl, signal);
+    await fetchCachedArrayBuffer(spine.skeletonUrl, signal);
     for (const pageUrl of Object.values(spine.pageUrls)) {
       throwIfAborted(signal);
-      await Assets.load(pageUrl);
+      await loadAndRetainTexture(pageUrl);
     }
     return;
   }
@@ -49,15 +65,17 @@ export async function preloadPixiSceneAsset(
   const aseprite = resolver.resolveAsepriteUrls?.(assetId);
   if (aseprite) {
     await loadPixiSpritesheet(aseprite.jsonUrl);
+    retainPreloadedPixiUrl(aseprite.jsonUrl);
+    retainPreloadedPixiUrl(aseprite.imageUrl);
     return;
   }
 
   const font = resolver.resolveBitmapFontUrls?.(assetId);
   if (font) {
-    await downloadBody(font.xmlUrl, signal);
+    await fetchCachedArrayBuffer(font.xmlUrl, signal);
     for (const pageUrl of Object.values(font.pageUrls)) {
       throwIfAborted(signal);
-      await Assets.load(pageUrl);
+      await loadAndRetainTexture(pageUrl);
     }
     return;
   }
@@ -69,6 +87,7 @@ export async function preloadPixiSceneAsset(
       parser: "web-font",
       data: { family: webfont.fontFamily },
     });
+    retainPreloadedPixiUrl(webfont.url);
     return;
   }
 
@@ -78,12 +97,8 @@ export async function preloadPixiSceneAsset(
   }
   const format = resolver.resolveTextureFormat?.(assetId);
   if (format !== undefined) {
-    await Assets.load({
-      src: url,
-      parser: TEXTURE_PARSER,
-      format,
-    });
+    await loadAndRetainTexture(url, format);
     return;
   }
-  await downloadBody(url, signal);
+  await fetchCachedArrayBuffer(url, signal);
 }

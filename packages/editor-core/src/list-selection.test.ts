@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   applyListSelection,
+  applyMarqueeSelection,
   idsBetweenInclusive,
   isToggleSelectionKey,
 } from "./list-selection.js";
@@ -57,6 +58,19 @@ describe("applyListSelection", () => {
     expect(
       applyListSelection(ORDER, [], "c", { shiftKey: true, toggleKey: false }, undefined),
     ).toEqual({ selected: ["c"], anchor: "c" });
+  });
+});
+
+describe("applyMarqueeSelection", () => {
+  it("replaces on a plain marquee and unions when additive", () => {
+    expect(applyMarqueeSelection(["a"], ["c", "d"], false)).toEqual(["c", "d"]);
+    expect(applyMarqueeSelection(["a", "b"], ["b", "c"], true)).toEqual([
+      "a",
+      "b",
+      "c",
+    ]);
+    expect(applyMarqueeSelection(["a"], [], true)).toEqual(["a"]);
+    expect(applyMarqueeSelection(["a"], [], false)).toEqual([]);
   });
 });
 

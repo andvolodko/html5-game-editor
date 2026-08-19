@@ -19,7 +19,12 @@ import {
   sceneModulesById,
   type LoadedGameProject,
 } from "@game-editor/runtime";
-import { parseSceneData, type SceneData } from "@game-editor/scene";
+import {
+  getSceneRendererKind,
+  parseSceneData,
+  type SceneData,
+  type SceneRendererKind,
+} from "@game-editor/scene";
 import projectJson from "../project.json";
 import assetsJson from "../.project/assets.json";
 import {
@@ -53,6 +58,7 @@ const session: {
   loaded?: LoadedGameProject;
   screen?: GameScreenHost;
   renderers?: { destroy(): Promise<void> };
+  rendererKind?: SceneRendererKind;
   gltfCache: ThreeGltfCache;
 } = {
   gltfCache: new ThreeGltfCache(),
@@ -73,16 +79,21 @@ async function changeScene(sceneId: string): Promise<void> {
   }
   const design = loaded.project.resolution;
   const next = readScene(sceneId);
-  await session.renderers?.destroy();
-  session.renderers = await mountMuonlineGameRenderers({
-    frame: screen.frame,
-    scene: next,
-    assetResolver: loaded.assetResolver,
-    design,
-    backgroundColor: projectBackgroundToPixiColor(loaded.project.background),
-    runtime,
-    gltfCache: session.gltfCache,
-  });
+  const nextKind = getSceneRendererKind(next);
+  if (session.rendererKind !== nextKind) {
+    await session.renderers?.destroy();
+    runtime.clearRenderers();
+    session.renderers = await mountMuonlineGameRenderers({
+      frame: screen.frame,
+      scene: next,
+      assetResolver: loaded.assetResolver,
+      design,
+      backgroundColor: projectBackgroundToPixiColor(loaded.project.background),
+      runtime,
+      gltfCache: session.gltfCache,
+    });
+    session.rendererKind = nextKind;
+  }
   runtime.loadScene(next);
   runtime.resize(design.width, design.height);
   runtime.render();
@@ -171,6 +182,7 @@ async function boot(): Promise<void> {
     runtime,
     gltfCache: session.gltfCache,
   });
+  session.rendererKind = getSceneRendererKind(session.loaded.scene);
 
   runtime.loadScene(session.loaded.scene);
   runtime.resize(design.width, design.height);

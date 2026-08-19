@@ -23,6 +23,7 @@
     "@game-editor/assets": "workspace:*",
     "@game-editor/core": "workspace:*",
     "@game-editor/scene": "workspace:*",
+    "@game-editor/shared": "workspace:*",
     "three": "^0.185.1"
   },
   "devDependencies": {

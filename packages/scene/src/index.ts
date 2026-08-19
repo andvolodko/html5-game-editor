@@ -472,6 +472,12 @@ export {
 
   applyAff2Point,
 
+  applyAff2Vector,
+
+  worldDeltaFromLocalPositions,
+
+  localPositionAfterWorldDelta,
+
   worldPointToLocal,
 
 } from "./transform-math.js";
@@ -520,10 +526,14 @@ export {
 
 export type { Aff2 } from "./transform-math.js";
 
-export { transformLocalAabb, unionLocalAabb } from "./local-aabb.js";
+export { aabbFromCorners, aabbIntersects, transformLocalAabb, unionLocalAabb } from "./local-aabb.js";
 
 export type { LocalAabb } from "./local-aabb.js";
-export { collectSceneContentBounds2D } from "./content-bounds-2d.js";
+export {
+  collectSceneContentBounds2D,
+  nodeWorldContentAabb2D,
+  nodesIntersectingWorldAabb,
+} from "./content-bounds-2d.js";
 
 export {
   isHitZoneEnabled,

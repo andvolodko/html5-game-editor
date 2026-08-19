@@ -1,20 +1,43 @@
 import type { Application, Container } from "pixi.js";
 import type { FederatedPointerEvent } from "pixi.js";
 import { getTransform2D, getVisualComponent, type Vec2 } from "@game-editor/scene";
-import { MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_SECONDARY } from "@game-editor/shared";
+import {
+  MOUSE_BUTTON_MIDDLE,
+  MOUSE_BUTTON_SECONDARY,
+  viewportPointerModifiersFrom,
+  type ViewportPointerModifiers,
+} from "@game-editor/shared";
 import type { RuntimeNode } from "./pixi-runtime-nodes.js";
 import { POINTER_CLICK_MAX_MOVE_PX } from "./pixi-pointer-constants.js";
 import { snapPositionToGrid } from "./snap-to-grid.js";
+import type { NodePositionDrag } from "./pixi-scene-renderer-types.js";
+import {
+  captureFrozenParentSpace,
+  collectGroupDragMemberIds,
+  localAfterWorldDelta,
+  applyMatrixInversePoint,
+  applyMatrixPoint,
+  screenToWorld,
+  type FrozenParentSpace,
+} from "./pixi-group-drag.js";
+
+interface DragMember {
+  nodeId: string;
+  startPosition: Vec2;
+  currentPosition: Vec2;
+  space: FrozenParentSpace;
+}
 
 interface DragState {
   nodeId: string;
   pointerId: number;
-  offsetX: number;
-  offsetY: number;
   startPosition: Vec2;
   currentPosition: Vec2;
   startGlobalX: number;
   startGlobalY: number;
+  startPointerWorld: Vec2;
+  grabbedSpace: FrozenParentSpace;
+  members: DragMember[];
 }
 
 export interface NodeDragHost {
@@ -24,15 +47,21 @@ export interface NodeDragHost {
   getRuntime(nodeId: string): RuntimeNode | undefined;
   /** When set and positive, node-move positions are quantized to this world size. */
   getSnapGridSize?(): number | undefined;
+  getSelectedNodeIds?(): ReadonlySet<string> | readonly string[];
   previewNodePosition(nodeId: string, position: Vec2): void;
   pickNodeId?(clientX: number, clientY: number): string | undefined;
-  onNodePointerDown?(nodeId: string, world: Vec2): void;
+  onNodePointerDown?(
+    nodeId: string,
+    world: Vec2,
+    modifiers?: ViewportPointerModifiers,
+  ): void;
   onNodePointerMove?(nodeId: string, world: Vec2): void;
-  onNodePointerUp?(nodeId: string, start: Vec2, end: Vec2): void;
+  onNodePointerUp?(moves: readonly NodePositionDrag[]): void;
 }
 
 /**
  * Node-move pointer drag. One interaction → one command on pointerup (host).
+ * Dragging an already-selected node translates the whole (root-most) selection.
  */
 export class PixiNodeDragController {
   private drag: DragState | undefined;
@@ -61,10 +90,15 @@ export class PixiNodeDragController {
       const transform = getTransform2D(live.node);
       const parentSpace = live.container.parent ?? host.world;
       const local = event.getLocalPosition(parentSpace);
-      host.onNodePointerDown?.(live.node.id, {
-        x: local.x,
-        y: local.y,
-      });
+      const modifiers = viewportPointerModifiersFrom(event);
+      host.onNodePointerDown?.(
+        live.node.id,
+        {
+          x: local.x,
+          y: local.y,
+        },
+        modifiers,
+      );
 
       if (!transform || live.editorLocked) {
         return;
@@ -74,15 +108,30 @@ export class PixiNodeDragController {
         return;
       }
 
+      // Ctrl/Cmd-click toggles selection; do not start a move.
+      if (modifiers.ctrlKey || modifiers.metaKey) {
+        return;
+      }
+
+      const startLocal = { ...transform.position };
+      const grabbedSpace = captureFrozenParentSpace(
+        host.world,
+        parentSpace,
+        startLocal,
+      );
       this.drag = {
         nodeId: live.node.id,
         pointerId: event.pointerId,
-        offsetX: local.x - transform.position.x,
-        offsetY: local.y - transform.position.y,
-        startPosition: { ...transform.position },
-        currentPosition: { ...transform.position },
+        startPosition: startLocal,
+        currentPosition: startLocal,
         startGlobalX: event.global.x,
         startGlobalY: event.global.y,
+        startPointerWorld: screenToWorld(host.world, {
+          x: event.global.x,
+          y: event.global.y,
+        }),
+        grabbedSpace,
+        members: collectDragMembers(host, live.node.id),
       };
       live.container.cursor = "grabbing";
 
@@ -90,20 +139,29 @@ export class PixiNodeDragController {
         if (!this.drag || moveEvent.pointerId !== this.drag.pointerId) {
           return;
         }
-        const parent = live.container.parent ?? host.world;
-        const point = moveEvent.getLocalPosition(parent);
-        const raw = {
-          x: point.x - this.drag.offsetX,
-          y: point.y - this.drag.offsetY,
+        const pointerWorld = screenToWorld(host.world, {
+          x: moveEvent.global.x,
+          y: moveEvent.global.y,
+        });
+        const pointerDelta = {
+          x: pointerWorld.x - this.drag.startPointerWorld.x,
+          y: pointerWorld.y - this.drag.startPointerWorld.y,
         };
+        const unsnappedEnd = {
+          x: this.drag.grabbedSpace.startWorld.x + pointerDelta.x,
+          y: this.drag.grabbedSpace.startWorld.y + pointerDelta.y,
+        };
+        let leaderLocal = applyMatrixInversePoint(
+          this.drag.grabbedSpace.parentToWorld,
+          unsnappedEnd,
+        );
         const gridSize = host.getSnapGridSize?.();
-        const next =
-          gridSize !== undefined && gridSize > 0
-            ? snapPositionToGrid(raw, gridSize)
-            : raw;
-        this.drag.currentPosition = next;
-        host.previewNodePosition(this.drag.nodeId, next);
-        host.onNodePointerMove?.(this.drag.nodeId, next);
+        if (gridSize !== undefined && gridSize > 0) {
+          leaderLocal = snapPositionToGrid(leaderLocal, gridSize);
+        }
+        this.drag.currentPosition = leaderLocal;
+        previewGroupDrag(host, this.drag, leaderLocal);
+        host.onNodePointerMove?.(this.drag.nodeId, leaderLocal);
       };
 
       const onUp = (upEvent: FederatedPointerEvent) => {
@@ -122,7 +180,7 @@ export class PixiNodeDragController {
             upEvent.global.y,
           )
         ) {
-          host.previewNodePosition(finished.nodeId, finished.startPosition);
+          revertGroupDrag(host, finished);
           const picked = host.pickNodeId?.(upEvent.clientX, upEvent.clientY);
           if (
             picked &&
@@ -137,9 +195,11 @@ export class PixiNodeDragController {
           return;
         }
         host.onNodePointerUp?.(
-          finished.nodeId,
-          finished.startPosition,
-          finished.currentPosition,
+          finished.members.map((member) => ({
+            nodeId: member.nodeId,
+            start: member.startPosition,
+            end: member.currentPosition,
+          })),
         );
       };
 
@@ -158,6 +218,86 @@ export class PixiNodeDragController {
       app.stage.on("pointerup", onUp);
       app.stage.on("pointerupoutside", onUp);
     });
+  }
+}
+
+function collectDragMembers(host: NodeDragHost, grabbedId: string): DragMember[] {
+  const selected = host.getSelectedNodeIds?.() ?? [];
+  const selectedIds = [...selected];
+  const memberIds = collectGroupDragMemberIds({
+    grabbedId,
+    selectedIds,
+    getParentId: (id) => host.getRuntime(id)?.node.parentId,
+    canMove: (id) => {
+      const runtime = host.getRuntime(id);
+      return Boolean(
+        runtime && !runtime.editorLocked && getTransform2D(runtime.node),
+      );
+    },
+  });
+  const members: DragMember[] = [];
+  for (const id of memberIds) {
+    const member = createDragMember(host, id);
+    if (member) {
+      members.push(member);
+    }
+  }
+  if (members.length > 0) {
+    return members;
+  }
+  const grabbed = createDragMember(host, grabbedId);
+  return grabbed ? [grabbed] : [];
+}
+
+function createDragMember(
+  host: NodeDragHost,
+  nodeId: string,
+): DragMember | undefined {
+  const runtime = host.getRuntime(nodeId);
+  const transform = runtime ? getTransform2D(runtime.node) : undefined;
+  if (!runtime || !transform) {
+    return undefined;
+  }
+  const startPosition = { ...transform.position };
+  return {
+    nodeId,
+    startPosition,
+    currentPosition: { ...startPosition },
+    space: captureFrozenParentSpace(
+      host.world,
+      runtime.container.parent ?? host.world,
+      startPosition,
+    ),
+  };
+}
+
+function previewGroupDrag(
+  host: NodeDragHost,
+  drag: DragState,
+  leaderLocal: Vec2,
+): void {
+  const leaderWorld = applyMatrixPoint(drag.grabbedSpace.parentToWorld, leaderLocal);
+  const worldDelta = {
+    x: leaderWorld.x - drag.grabbedSpace.startWorld.x,
+    y: leaderWorld.y - drag.grabbedSpace.startWorld.y,
+  };
+  for (const member of drag.members) {
+    const next =
+      member.nodeId === drag.nodeId
+        ? leaderLocal
+        : localAfterWorldDelta(member.space, worldDelta);
+    member.currentPosition = next;
+    host.previewNodePosition(member.nodeId, next);
+  }
+}
+
+function revertGroupDrag(host: NodeDragHost, drag: DragState): void {
+  for (const member of drag.members) {
+    member.currentPosition = member.startPosition;
+    host.previewNodePosition(member.nodeId, member.startPosition);
+  }
+  if (!drag.members.some((member) => member.nodeId === drag.nodeId)) {
+    host.previewNodePosition(drag.nodeId, drag.startPosition);
   }
 }
 

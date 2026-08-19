@@ -1,4 +1,4 @@
-import type { Editor } from "@game-editor/editor-core";
+import { isToggleSelectionKey, type Editor } from "@game-editor/editor-core";
 import type { ThreeSceneRenderer } from "@game-editor/renderer-three";
 
 /**
@@ -13,8 +13,14 @@ export function bindThreeTransformTool(
     onBackgroundPointerDown: () => {
       editor.clearSelection();
     },
-    onNodePointerDown: (nodeId) => {
-      editor.selectNodes([nodeId]);
+    onNodePointerDown: (nodeId, modifiers) => {
+      if (modifiers && isToggleSelectionKey(modifiers)) {
+        editor.toggleNodeSelection(nodeId);
+        return;
+      }
+      if (!editor.selection.getSelectedNodeIds().includes(nodeId)) {
+        editor.selectNodes([nodeId]);
+      }
     },
     onGizmoTransformEnd: (nodeId, transform) => {
       if (editor.isNodeEffectivelyLocked(nodeId)) {

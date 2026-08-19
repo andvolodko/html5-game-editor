@@ -82,6 +82,7 @@ function onceDestroyable(bundle: PreviewRendererBundle): PreviewRendererBundle {
 export class GamePreviewSession {
   private screen: GameScreenHost | undefined;
   private bundle: PreviewRendererBundle | undefined;
+  private rendererKind: ReturnType<typeof getSceneRendererKind> | undefined;
   private runtime: GameRuntime | undefined;
   private bus: EventBus | undefined;
   private startToken = 0;
@@ -197,31 +198,37 @@ export class GamePreviewSession {
 
     applySceneRef.current = async (sceneId, scene) => {
       const changeSeq = ++this.sceneChangeSeq;
-      const previous = this.bundle;
-      this.bundle = undefined;
-      if (previous) {
-        await previous.destroy();
+      const nextKind = getSceneRendererKind(scene);
+      const canReuse = this.bundle !== undefined && this.rendererKind === nextKind;
+      if (!canReuse) {
+        const previous = this.bundle;
+        this.bundle = undefined;
+        this.rendererKind = undefined;
+        if (previous) {
+          await previous.destroy();
+        }
+        if (token !== this.startToken || changeSeq !== this.sceneChangeSeq) {
+          return;
+        }
+        runtime.clearRenderers();
+        const nextBundle = onceDestroyable(
+          await mountPreviewRenderers({
+            frame: screen.frame,
+            kind: nextKind,
+            assetResolver: options.assetResolver,
+            design,
+            pixiBgColor,
+            runtime,
+            gltfCache,
+          }),
+        );
+        if (token !== this.startToken || changeSeq !== this.sceneChangeSeq) {
+          await nextBundle.destroy();
+          return;
+        }
+        this.bundle = nextBundle;
+        this.rendererKind = nextKind;
       }
-      if (token !== this.startToken || changeSeq !== this.sceneChangeSeq) {
-        return;
-      }
-      runtime.clearRenderers();
-      const nextBundle = onceDestroyable(
-        await mountPreviewRenderers({
-          frame: screen.frame,
-          kind: getSceneRendererKind(scene),
-          assetResolver: options.assetResolver,
-          design,
-          pixiBgColor,
-          runtime,
-          gltfCache,
-        }),
-      );
-      if (token !== this.startToken || changeSeq !== this.sceneChangeSeq) {
-        await nextBundle.destroy();
-        return;
-      }
-      this.bundle = nextBundle;
       runtime.loadScene(scene);
       runtime.resize(design.width, design.height);
       runtime.render();
@@ -324,6 +331,7 @@ export class GamePreviewSession {
     this.bus = undefined;
     const bundle = this.bundle;
     this.bundle = undefined;
+    this.rendererKind = undefined;
     if (bundle) {
       await bundle.destroy();
     }

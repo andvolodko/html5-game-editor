@@ -52,7 +52,7 @@ export interface EditorHotkeyHost {
 }
 
 /** True for inputs/textareas/contentEditable (safe without DOM constructors). */
-function isEditableDomTarget(eventTarget: EventTarget | null): boolean {
+export function isEditableDomTarget(eventTarget: EventTarget | null): boolean {
   if (eventTarget == null || typeof eventTarget !== "object") {
     return false;
   }
@@ -69,11 +69,10 @@ function isEditableDomTarget(eventTarget: EventTarget | null): boolean {
   );
 }
 
-/**
- * Assets panel owns Delete/Backspace/F2 for catalogue items. Scene/hierarchy
- * hotkeys must not run while focus is inside that panel.
- */
-export function isAssetsPanelKeyTarget(eventTarget: EventTarget | null): boolean {
+function isEditorPanelKeyTarget(
+  eventTarget: EventTarget | null,
+  panelId: string,
+): boolean {
   if (eventTarget == null || typeof eventTarget !== "object") {
     return false;
   }
@@ -82,7 +81,22 @@ export function isAssetsPanelKeyTarget(eventTarget: EventTarget | null): boolean
   }
   // Call as a method so DOM Element.closest keeps its receiver (`this`).
   const el = eventTarget as { closest(selector: string): unknown };
-  return el.closest('[data-editor-panel="assets"]') != null;
+  return el.closest(`[data-editor-panel="${panelId}"]`) != null;
+}
+
+/**
+ * Assets panel owns Delete/Backspace/F2 for catalogue items. Scene/hierarchy
+ * hotkeys must not run while focus is inside that panel.
+ */
+export function isAssetsPanelKeyTarget(eventTarget: EventTarget | null): boolean {
+  return isEditorPanelKeyTarget(eventTarget, "assets");
+}
+
+/** True while focus is inside the Hierarchy tree panel. */
+export function isHierarchyPanelKeyTarget(
+  eventTarget: EventTarget | null,
+): boolean {
+  return isEditorPanelKeyTarget(eventTarget, "hierarchy");
 }
 
 /** True when the user has highlighted DOM text (let the browser copy it). */
@@ -173,8 +187,11 @@ export function bindEditorHotkeys(
     }
 
     // Arrow keys nudge selection (1px, or 10px with Shift). Skip Ctrl/Cmd/Alt
-    // so browser/OS chords keep working.
+    // so browser/OS chords keep working. Hierarchy owns arrows while focused.
     if (!mod && !event.altKey) {
+      if (isHierarchyPanelKeyTarget(event.target)) {
+        return;
+      }
       const step = event.shiftKey
         ? KEYBOARD_NUDGE_SHIFT_PIXELS
         : KEYBOARD_NUDGE_PIXELS;

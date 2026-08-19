@@ -9,6 +9,11 @@ import {
   TextureAtlas,
 } from "@esotericsoftware/spine-pixi-v8";
 import type { SpineAssetUrls } from "@game-editor/assets";
+import {
+  fetchCachedArrayBuffer,
+  fetchCachedJson,
+  fetchCachedText,
+} from "./cached-asset-fetch.js";
 
 export interface SpinePlaybackOptions {
   skin?: string;
@@ -25,11 +30,7 @@ export interface SpinePlaybackOptions {
 
 /** Load a Spine view from resolved URLs. Does not attach playback until `applySpinePlayback`. */
 export async function loadSpine(urls: SpineAssetUrls): Promise<Spine> {
-  const atlasResponse = await fetch(urls.atlasUrl);
-  if (!atlasResponse.ok) {
-    throw new Error(`Failed to fetch spine atlas (${String(atlasResponse.status)})`);
-  }
-  const atlasText = await atlasResponse.text();
+  const atlasText = await fetchCachedText(urls.atlasUrl);
   const atlas = new TextureAtlas(atlasText);
 
   for (const page of atlas.pages) {
@@ -46,20 +47,13 @@ export async function loadSpine(urls: SpineAssetUrls): Promise<Spine> {
   }
 
   const attachmentLoader = new AtlasAttachmentLoader(atlas);
-  const skeletonResponse = await fetch(urls.skeletonUrl);
-  if (!skeletonResponse.ok) {
-    throw new Error(
-      `Failed to fetch spine skeleton (${String(skeletonResponse.status)})`,
-    );
-  }
-
   const skeletonData =
     urls.skeletonFormat === "skel"
       ? new SkeletonBinary(attachmentLoader).readSkeletonData(
-          new Uint8Array(await skeletonResponse.arrayBuffer()),
+          new Uint8Array(await fetchCachedArrayBuffer(urls.skeletonUrl)),
         )
       : new SkeletonJson(attachmentLoader).readSkeletonData(
-          (await skeletonResponse.json()) as object,
+          (await fetchCachedJson(urls.skeletonUrl)) as object,
         );
 
   return new Spine({

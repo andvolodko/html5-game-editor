@@ -10,6 +10,7 @@ import {
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { TransformControls } from "three/addons/controls/TransformControls.js";
 import type { Vec3 } from "@game-editor/scene";
+import { viewportPointerModifiersFrom } from "@game-editor/shared";
 import type { ThreePointerHandlers } from "./three-scene-renderer-types.js";
 import type { ThreeRuntimeGraph } from "./three-runtime-nodes.js";
 
@@ -93,7 +94,10 @@ export class ThreeEditorTools {
       }
       const nodeId = this.pickNodeId(event.clientX, event.clientY);
       if (nodeId) {
-        this.handlers?.onNodePointerDown?.(nodeId);
+        this.handlers?.onNodePointerDown?.(
+          nodeId,
+          viewportPointerModifiersFrom(event),
+        );
         return;
       }
       this.handlers?.onBackgroundPointerDown?.();

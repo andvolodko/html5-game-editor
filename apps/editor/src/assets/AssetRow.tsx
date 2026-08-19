@@ -51,6 +51,7 @@ function AssetRowComponent({
         .filter(Boolean)
         .join(" ")}
       style={{ paddingLeft: treeIndentPadding(depth) }}
+      data-asset-id={asset.id}
       draggable={!renaming}
       onPointerDown={(event) => {
         if (event.button !== MOUSE_BUTTON_PRIMARY) {

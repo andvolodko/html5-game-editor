@@ -5,6 +5,7 @@ import {
   createSpineAssetRecord,
   createStaticAssetResolver,
   createTextureAssetRecord,
+  createAudioAssetRecord,
   createAsepriteAssetRecord,
   createBitmapFontAssetRecord,
 } from "@game-editor/assets";
@@ -17,6 +18,7 @@ import {
   createNodeWithVisual,
   createSpineComponent,
   createSpriteNode,
+  createScriptComponent,
 } from "@game-editor/scene";
 import { collectSceneAssetIds, collectSceneAssetUrls } from "./collect-scene-asset-urls.js";
 
@@ -173,5 +175,30 @@ describe("collectSceneAssetUrls", () => {
       "/assets/fonts/desyrel.xml",
     ]);
     expect(collectSceneAssetIds([scene])).toEqual(["asset_font"]);
+  });
+
+  it("collects Script property catalogue ids", () => {
+    const database = new AssetDatabase();
+    database.add(
+      createAudioAssetRecord({
+        id: "asset_sfx",
+        name: "click",
+        path: "assets/click.mp3",
+        mimeType: "audio/mpeg",
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+    const scene = createEmptyScene("Main");
+    const node = createSpriteNode("Btn", { x: 0, y: 0 });
+    node.components.push(
+      createScriptComponent("shared.AudioClick", {
+        audioAssetId: "asset_sfx",
+      }),
+    );
+    scene.nodes.push(node);
+    expect(collectSceneAssetIds([scene])).toEqual(["asset_sfx"]);
+    expect(collectSceneAssetUrls([scene], resolver)).toEqual([
+      "/assets/click.mp3",
+    ]);
   });
 });

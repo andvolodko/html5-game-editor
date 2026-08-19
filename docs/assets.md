@@ -38,6 +38,8 @@ Asset IDs remain stable after rename, move, or folder restructuring. Scenes refe
 
 The Asset Browser should behave like a simplified file explorer: folders, search, multi-selection, rename, delete, duplicate, move, context menu, drag-and-drop, create folder, preview.
 
+Removing an asset (context menu **Remove**, or Delete / Backspace while the panel is focused) asks for confirmation first. `DeleteAssetCommand` still records the edit, so Undo restores the same `assetId` and files.
+
 External OS files may be dropped into the browser:
 
 ```text

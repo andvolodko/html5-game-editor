@@ -6,7 +6,9 @@ export {
   MOUSE_BUTTON_PRIMARY,
   MOUSE_BUTTON_MIDDLE,
   MOUSE_BUTTON_SECONDARY,
+  viewportPointerModifiersFrom,
 } from "./pointer-buttons.js";
+export type { ViewportPointerModifiers } from "./pointer-buttons.js";
 export {
   DEFAULT_PROJECT_SERVER_PORT,
   DEFAULT_EDITOR_DEV_PORT,

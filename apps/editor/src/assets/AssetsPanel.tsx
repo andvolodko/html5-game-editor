@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ASSETS_ROOT_FOLDER,
   collectDroppedFiles,
@@ -6,12 +6,7 @@ import {
   decodeAssetDragPayload,
   droppedFolderPaths,
   EDITOR_ASSET_MIME,
-  isFolderOrDescendant,
-  parentFolder,
-  rootMostFolderPaths,
   importDroppedFiles,
-  isChordLetter,
-  isScenesFolder,
   isScenesFolderOrDescendant,
 } from "@game-editor/editor-core";
 import {
@@ -23,25 +18,15 @@ import { FolderBranch } from "./FolderBranch";
 import { SceneRow } from "./SceneRow";
 import { useUnsavedChangesGuard } from "../unsaved/useUnsavedChangesGuard";
 import { useAssetBrowserModel } from "./useAssetBrowserModel";
+import { useAssetsPanelHotkeys } from "./useAssetsPanelHotkeys";
+import { useDeleteAssetConfirm } from "./useDeleteAssetConfirm";
 
 /** How often the Assets panel re-lists (server reconciles FS ↔ manifest on each list). */
 const ASSET_CATALOGUE_POLL_MS = 2500;
 
-/** Catalogue copy buffer for Assets panel Ctrl+C / Ctrl+V. */
-type CatalogueClipboard =
-  | { kind: "assets"; ids: readonly string[] }
-  | { kind: "scenes"; ids: readonly string[] };
-
-function isTextEditingTarget(target: EventTarget | null): boolean {
-  return (
-    target instanceof HTMLInputElement ||
-    target instanceof HTMLTextAreaElement ||
-    (target instanceof HTMLElement && target.isContentEditable)
-  );
-}
-
 export function AssetsPanel() {
   const unsaved = useUnsavedChangesGuard();
+  const deleteAsset = useDeleteAssetConfirm();
   const model = useAssetBrowserModel({ runGuarded: unsaved.runGuarded });
   const [dropActive, setDropActive] = useState(false);
   const [dropFolder, setDropFolder] = useState<string | null>(null);
@@ -50,7 +35,19 @@ export function AssetsPanel() {
   const [panelFocused, setPanelFocused] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const treeRef = useRef<HTMLDivElement | null>(null);
-  const copiedCatalogueRef = useRef<CatalogueClipboard | undefined>(undefined);
+
+  const confirmDeleteAssets = useCallback(
+    async (assetIds: readonly string[]) => {
+      const confirmed = await deleteAsset.confirmDeleteAssets(assetIds);
+      panelRef.current?.focus({ preventScroll: true });
+      return confirmed;
+    },
+    [deleteAsset.confirmDeleteAssets],
+  );
+
+  useAssetsPanelHotkeys(model, panelFocused && !deleteAsset.open, treeRef, {
+    confirmDeleteAssets,
+  });
 
   useEffect(() => {
     const refresh = () => {
@@ -64,80 +61,6 @@ export function AssetsPanel() {
       window.clearInterval(timer);
     };
   }, [model.editor]);
-
-  useEffect(() => {
-    if (!panelFocused) {
-      return;
-    }
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (isTextEditingTarget(event.target) || model.renaming) {
-        return;
-      }
-
-      const mod = event.ctrlKey || event.metaKey;
-      if (mod && isChordLetter(event, "KeyC", "c") && !event.shiftKey && !event.altKey) {
-        const assetIds = model.selectedItems
-          .filter((item) => item.kind === "asset")
-          .map((item) => item.id);
-        const sceneIds = model.selectedItems
-          .filter((item) => item.kind === "scene")
-          .map((item) => item.id);
-        if (assetIds.length > 0) {
-          event.preventDefault();
-          copiedCatalogueRef.current = { kind: "assets", ids: assetIds };
-        } else if (sceneIds.length > 0) {
-          event.preventDefault();
-          copiedCatalogueRef.current = { kind: "scenes", ids: sceneIds };
-        }
-        return;
-      }
-      if (mod && isChordLetter(event, "KeyV", "v") && !event.shiftKey && !event.altKey) {
-        const copied = copiedCatalogueRef.current;
-        if (copied?.kind === "assets") {
-          event.preventDefault();
-          for (const id of copied.ids) {
-            void model.duplicateAsset(id, model.importDestination);
-          }
-        } else if (copied?.kind === "scenes") {
-          event.preventDefault();
-          for (const id of copied.ids) {
-            void model.duplicateScene(id);
-          }
-        }
-        return;
-      }
-
-      if (event.key === "F2") {
-        if (model.selection?.kind === "asset") {
-          event.preventDefault();
-          model.setRenaming({ kind: "asset", id: model.selection.id });
-        } else if (model.selection?.kind === "scene") {
-          event.preventDefault();
-          model.setRenaming({ kind: "scene", id: model.selection.id });
-        } else if (
-          model.selection?.kind === "folder" &&
-          model.selection.path !== ASSETS_ROOT_FOLDER &&
-          !isScenesFolder(model.selection.path)
-        ) {
-          event.preventDefault();
-          model.setRenaming({ kind: "folder", path: model.selection.path });
-        }
-        return;
-      }
-
-      if (event.key !== "Delete" && event.key !== "Backspace") {
-        return;
-      }
-
-      if (model.selectedItems.length === 0) {
-        return;
-      }
-      event.preventDefault();
-      void removeSelectedCatalogueItems(model);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [panelFocused, model]);
 
   useEffect(() => {
     if (!contextMenu) {
@@ -521,7 +444,12 @@ export function AssetsPanel() {
           onRenameAsset={(id) => model.setRenaming({ kind: "asset", id })}
           onRenameFolder={(path) => model.setRenaming({ kind: "folder", path })}
           onRemoveAsset={(id) => {
-            void model.removeAsset(id);
+            void (async () => {
+              if (!(await confirmDeleteAssets([id]))) {
+                return;
+              }
+              await model.removeAsset(id);
+            })();
           }}
           onDuplicateAsset={(id) => {
             void model.duplicateAsset(id);
@@ -580,46 +508,7 @@ export function AssetsPanel() {
       ) : null}
 
       {unsaved.dialog}
+      {deleteAsset.dialog}
     </div>
   );
-}
-
-async function removeSelectedCatalogueItems(
-  model: ReturnType<typeof useAssetBrowserModel>,
-): Promise<void> {
-  const folderPaths = rootMostFolderPaths(
-    model.selectedItems
-      .filter((item) => item.kind === "folder")
-      .map((item) => item.path)
-      .filter(
-        (path) =>
-          path !== ASSETS_ROOT_FOLDER && !isScenesFolderOrDescendant(path),
-      ),
-  );
-  const assetsToRemove = model.selectedItems
-    .filter((item) => item.kind === "asset")
-    .map((item) => item.id)
-    .filter((assetId) => {
-      const asset = model.editor.assets.get(assetId);
-      if (!asset) {
-        return false;
-      }
-      const folder = parentFolder(asset.path);
-      return !folderPaths.some(
-        (path) => path === folder || isFolderOrDescendant(path, folder),
-      );
-    });
-  const scenesToRemove = model.selectedItems
-    .filter((item) => item.kind === "scene")
-    .map((item) => item.id);
-
-  for (const path of folderPaths) {
-    await model.removeFolder(path);
-  }
-  for (const assetId of assetsToRemove) {
-    await model.removeAsset(assetId);
-  }
-  for (const sceneId of scenesToRemove) {
-    await model.removeScene(sceneId);
-  }
 }

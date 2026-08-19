@@ -1,7 +1,7 @@
 import type { SceneData, SceneNodeData } from "./types.js";
 import { flattenNodes, getTransform2D, getVisualComponent } from "./queries.js";
 import { getWorldAff2 } from "./transform-math.js";
-import { transformLocalAabb, unionLocalAabb, type LocalAabb } from "./local-aabb.js";
+import { transformLocalAabb, unionLocalAabb, type LocalAabb, aabbIntersects } from "./local-aabb.js";
 import {
   getVisualAnchorOrDefault,
   getVisualDisplaySize,
@@ -28,6 +28,42 @@ export function collectSceneContentBounds2D(
     );
   }
   return unionLocalAabb(boxes);
+}
+
+/** World-space AABB of a 2D node's visual (or origin fallback). */
+export function nodeWorldContentAabb2D(
+  scene: SceneData,
+  node: SceneNodeData,
+): LocalAabb | undefined {
+  if (!getTransform2D(node)) {
+    return undefined;
+  }
+  return transformLocalAabb(localContentAabb(node), getWorldAff2(scene, node.id));
+}
+
+/**
+ * Ids of Transform2D nodes whose world AABB overlaps `rect`.
+ * Optional `include` filters candidates (e.g. skip editor-hidden nodes).
+ */
+export function nodesIntersectingWorldAabb(
+  scene: SceneData,
+  rect: LocalAabb,
+  include?: (node: SceneNodeData) => boolean,
+): string[] {
+  if (rect.width <= 0 || rect.height <= 0) {
+    return [];
+  }
+  const ids: string[] = [];
+  for (const node of flattenNodes(scene)) {
+    if (include !== undefined && !include(node)) {
+      continue;
+    }
+    const box = nodeWorldContentAabb2D(scene, node);
+    if (box && aabbIntersects(box, rect)) {
+      ids.push(node.id);
+    }
+  }
+  return ids;
 }
 
 function localContentAabb(node: SceneNodeData): LocalAabb {

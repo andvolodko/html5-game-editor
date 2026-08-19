@@ -27,11 +27,21 @@ export {
   KEYBOARD_NUDGE_SHIFT_PIXELS,
   arrowNudgeDelta,
   isAssetsPanelKeyTarget,
+  isEditableDomTarget,
+  isHierarchyPanelKeyTarget,
 } from "./editor-hotkeys.js";
+export {
+  HIERARCHY_SCENE_ROW_ID,
+  TREE_KEYBOARD_PAGE_SIZE,
+  adjacentVisibleId,
+  resolveTreeKeyboardIntent,
+} from "./tree-keyboard.js";
+export type { TreeKeyboardIntent, TreeKeyboardInput } from "./tree-keyboard.js";
 export { SelectionManager } from "./selection-manager.js";
 export type { EditorSelection } from "./selection-manager.js";
 export {
   applyListSelection,
+  applyMarqueeSelection,
   idsBetweenInclusive,
   isToggleSelectionKey,
 } from "./list-selection.js";
@@ -119,6 +129,7 @@ export {
   SetHitZoneCommand,
   SetMaskCommand,
   createDeleteSelectionCommand,
+  createSetNodePositionsCommand,
   createResetNodeTransformCommand,
   InstantiatePrefabCommand,
   UnpackPrefabCommand,
@@ -139,6 +150,7 @@ export type {
   HitZonePatch,
   MaskPatch,
   NodePointerPatch,
+  NodePositionEntry,
   CreateSpriteOptions,
   ResetNodeTransformOptions,
   CreateSpineOptions,
@@ -327,7 +339,9 @@ export type {
   AssetBrowserPreviewResolvers,
 } from "./asset-browser-model.js";
 export {
+  assetBrowserEntryItem,
   assetBrowserItemKey,
+  assetBrowserItemParent,
   parseAssetBrowserItemKey,
   assetBrowserItemsEqual,
   flattenVisibleBrowserItems,

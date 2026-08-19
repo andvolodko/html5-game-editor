@@ -38,6 +38,7 @@ function SceneRowComponent({
         .filter(Boolean)
         .join(" ")}
       style={{ paddingLeft: treeIndentPadding(depth) }}
+      data-scene-id={id}
       onPointerDown={(event) => {
         if (event.button !== MOUSE_BUTTON_PRIMARY) {
           return;

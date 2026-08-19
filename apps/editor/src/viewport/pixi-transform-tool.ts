@@ -1,46 +1,61 @@
 import { CompositeCommand } from "@game-editor/commands";
-import type { Editor } from "@game-editor/editor-core";
 import {
+  isToggleSelectionKey,
   SetTransform2DCommand,
   SetVisualComponentCommand,
+  type Editor,
 } from "@game-editor/editor-core";
 import type { PixiSceneRenderer } from "@game-editor/renderer-pixi";
 import { findNodeById, getTransform2D } from "@game-editor/scene";
+import { createPixiMarqueeGesture } from "./pixi-marquee-tool";
 import { createPixiTilemapGesture } from "./pixi-tilemap-tool";
 
 /**
  * Editor-owned tool: maps Pixi pointer events to selection + transform commands.
  * Keeps selection/command policy out of renderer-pixi.
  * Continuous gizmo / move gestures commit one command on pointer-up.
+ * Dragging an already-selected node moves the whole selection.
  */
 export function bindPixiTransformTool(
   editor: Editor,
   renderer: PixiSceneRenderer,
 ): () => void {
   const tilemap = createPixiTilemapGesture(editor);
+  const marquee = createPixiMarqueeGesture(editor, renderer);
   renderer.setPointerHandlers({
-    onWorldPointerDown: (world, button) =>
-      tilemap.onWorldPointerDown(world, button),
+    onWorldPointerDown: (world, button, modifiers, client) => {
+      if (tilemap.onWorldPointerDown(world, button)) {
+        return true;
+      }
+      return marquee.onWorldPointerDown(world, button, modifiers, client);
+    },
     onWorldPointerMove: (world) => {
       tilemap.onWorldPointerMove(world);
+      marquee.onWorldPointerMove(world);
     },
-    onWorldPointerUp: () => {
+    onWorldPointerUp: (world) => {
       tilemap.onWorldPointerUp();
+      marquee.onWorldPointerUp(world);
     },
     onBackgroundPointerDown: () => {
       editor.clearSelection();
     },
-    onNodePointerDown: (nodeId) => {
-      editor.selectNodes([nodeId]);
+    onNodePointerDown: (nodeId, _world, modifiers) => {
+      if (modifiers && isToggleSelectionKey(modifiers)) {
+        editor.toggleNodeSelection(nodeId);
+        return;
+      }
+      if (!editor.selection.getSelectedNodeIds().includes(nodeId)) {
+        editor.selectNodes([nodeId]);
+      }
     },
-    onNodePointerUp: (nodeId, start, end) => {
-      if (editor.isNodeEffectivelyLocked(nodeId)) {
-        return;
-      }
-      if (start.x === end.x && start.y === end.y) {
-        return;
-      }
-      editor.setTransform2D(nodeId, { position: { x: end.x, y: end.y } });
+    onNodePointerUp: (moves) => {
+      editor.setNodePositions(
+        moves.map((move) => ({
+          nodeId: move.nodeId,
+          position: { x: move.end.x, y: move.end.y },
+        })),
+      );
     },
     onGizmoResizeEnd: (nodeId, size) => {
       if (editor.isNodeEffectivelyLocked(nodeId)) {

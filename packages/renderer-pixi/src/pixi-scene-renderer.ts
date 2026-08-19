@@ -14,6 +14,7 @@ import {
   type MaskComponentData,
   type GraphicsShapeData,
   type Vec2,
+  type LocalAabb,
 } from "@game-editor/scene";
 import { samplePixiRenderStats } from "./pixi-render-stats.js";
 import {
@@ -43,6 +44,7 @@ import type { ViewportCameraState, WorldRect } from "./viewport-camera.js";
 import { ScreenGuidesOverlay } from "./screen-guides.js";
 import { DEFAULT_SNAP_GRID_SIZE } from "./snap-to-grid.js";
 import { DEFAULT_EDITOR_BACKGROUND } from "./editor-chrome.js";
+import { PixiMarqueeOverlay } from "./pixi-marquee-overlay.js";
 import { PixiNodePainter } from "./pixi-node-painter.js";
 import { applyPixiNodeContentAlpha } from "./pixi-node-alpha.js";
 import {
@@ -95,6 +97,7 @@ export class PixiSceneRenderer implements SceneRenderer {
   private readonly pixelGrid: PixelGridOverlay | undefined;
   private readonly tilemapGrid: TilemapGridOverlay | undefined;
   private readonly screenGuides: ScreenGuidesOverlay | undefined;
+  private readonly marqueeOverlay: PixiMarqueeOverlay | undefined;
   private readonly editable: boolean;
   private readonly camera = new ViewportCameraController();
   /** When set, node-move drags quantize to this world-space cell size. */
@@ -118,6 +121,8 @@ export class PixiSceneRenderer implements SceneRenderer {
       options.screenGuides === true ? new ScreenGuidesOverlay() : undefined;
     this.tilemapGrid =
       options.editable !== false ? new TilemapGridOverlay() : undefined;
+    this.marqueeOverlay =
+      options.editable !== false ? new PixiMarqueeOverlay() : undefined;
     this.editable = options.editable !== false;
     this.assetResolver =
       options.assetResolver ??
@@ -162,11 +167,17 @@ export class PixiSceneRenderer implements SceneRenderer {
         graph: this.graph,
         pixelGrid: this.pixelGrid,
         screenGuides: this.screenGuides,
+        marqueeRoot: this.marqueeOverlay?.root,
         onBackgroundPointerDown: () => {
           this.pointerHandlers?.onBackgroundPointerDown?.();
         },
-        onWorldPointerDown: (world, button) =>
-          this.pointerHandlers?.onWorldPointerDown?.(world, button) === true,
+        onWorldPointerDown: (world, button, modifiers, client) =>
+          this.pointerHandlers?.onWorldPointerDown?.(
+            world,
+            button,
+            modifiers,
+            client,
+          ) === true,
         onWorldPointerMove: (world) => {
           this.pointerHandlers?.onWorldPointerMove?.(world);
         },
@@ -360,6 +371,7 @@ export class PixiSceneRenderer implements SceneRenderer {
   async destroy(): Promise<void> {
     this.clear();
     this.pointerHandlers = undefined;
+    this.marqueeOverlay?.destroy();
     this.tilemapGrid?.destroy();
     // Drop local cache entries only — URL refcounts in PixiTextureCache keep
     // shared Assets textures alive for any other live renderer (Scene vs Preview).
@@ -517,6 +529,11 @@ export class PixiSceneRenderer implements SceneRenderer {
     this.selectedNodeIds = new Set(nodeIds);
     this.syncGroupingChildHits();
     this.render();
+  }
+
+  /** Editor rubber-band in world space. Pass undefined to hide. */
+  setMarqueeWorldRect(rect: LocalAabb | undefined): void {
+    this.marqueeOverlay?.setWorldRect(rect, this.camera.getState().scale);
   }
 
   /**
@@ -928,6 +945,7 @@ export class PixiSceneRenderer implements SceneRenderer {
         this.graphicsPolygonDrag.isDragging,
       getRuntime: (nodeId) => this.graph.get(nodeId),
       getSnapGridSize: () => this.snapGridSize,
+      getSelectedNodeIds: () => this.selectedNodeIds,
       getPointerHandlers: () => this.pointerHandlers,
       pickNodeId: (clientX, clientY) => this.pickNodeId(clientX, clientY),
       previewNodePosition: (nodeId, position) =>

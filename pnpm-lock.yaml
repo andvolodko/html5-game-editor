@@ -414,6 +414,9 @@ importers:
       '@game-editor/scene':
         specifier: workspace:*
         version: link:../scene
+      '@game-editor/shared':
+        specifier: workspace:*
+        version: link:../shared
       three:
         specifier: ^0.185.1
         version: 0.185.1

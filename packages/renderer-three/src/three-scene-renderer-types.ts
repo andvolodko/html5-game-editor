@@ -1,5 +1,6 @@
 import type { AssetResolver } from "@game-editor/assets";
 import type { Vec3 } from "@game-editor/scene";
+import type { ViewportPointerModifiers } from "@game-editor/shared";
 import type { ThreeGltfCache } from "./three-gltf-cache.js";
 
 export interface ThreeSceneRendererOptions {
@@ -39,7 +40,10 @@ export interface ThreeGizmoDragEnd {
 
 export interface ThreePointerHandlers {
   onBackgroundPointerDown?: () => void;
-  onNodePointerDown?: (nodeId: string) => void;
+  onNodePointerDown?: (
+    nodeId: string,
+    modifiers?: ViewportPointerModifiers,
+  ) => void;
   /** Fired once when a TransformControls drag ends. */
   onGizmoTransformEnd?: (nodeId: string, transform: ThreeGizmoDragEnd) => void;
 }

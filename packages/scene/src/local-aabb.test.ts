@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { aff2FromTransform2D, identityAff2 } from "./transform-math.js";
-import { transformLocalAabb, unionLocalAabb } from "./local-aabb.js";
+import { aabbFromCorners, aabbIntersects, transformLocalAabb, unionLocalAabb } from "./local-aabb.js";
 
 describe("local AABB", () => {
   it("returns identity AABB when the pose is identity", () => {
@@ -40,5 +40,26 @@ describe("local AABB", () => {
   it("returns undefined when every box is empty", () => {
     expect(unionLocalAabb([{ x: 0, y: 0, width: 0, height: 0 }])).toBeUndefined();
     expect(unionLocalAabb([])).toBeUndefined();
+  });
+
+  it("builds a box from either corner order and tests overlap", () => {
+    expect(aabbFromCorners({ x: 10, y: 20 }, { x: 4, y: 8 })).toEqual({
+      x: 4,
+      y: 8,
+      width: 6,
+      height: 12,
+    });
+    expect(
+      aabbIntersects(
+        { x: 0, y: 0, width: 10, height: 10 },
+        { x: 10, y: 10, width: 5, height: 5 },
+      ),
+    ).toBe(true);
+    expect(
+      aabbIntersects(
+        { x: 0, y: 0, width: 10, height: 10 },
+        { x: 11, y: 0, width: 5, height: 5 },
+      ),
+    ).toBe(false);
   });
 });

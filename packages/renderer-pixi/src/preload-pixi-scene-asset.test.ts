@@ -9,6 +9,7 @@ import {
   createAsepriteAssetRecord,
   createBitmapFontAssetRecord,
   createWebFontAssetRecord,
+  createTileSetAssetRecord,
 } from "@game-editor/assets";
 
 const load = vi.fn(async () => undefined);
@@ -20,11 +21,15 @@ vi.mock("pixi.js", () => ({
 }));
 
 import { preloadPixiSceneAsset } from "./preload-pixi-scene-asset.js";
+import { resetCachedAssetFetchForTests } from "./cached-asset-fetch.js";
+import { resetPixiTextureUrlRetainsForTests } from "./pixi-texture-cache.js";
 
 describe("preloadPixiSceneAsset", () => {
   beforeEach(() => {
     load.mockClear();
     vi.unstubAllGlobals();
+    resetCachedAssetFetchForTests();
+    resetPixiTextureUrlRetainsForTests();
   });
 
   it("loads textures through Pixi Assets with the texture parser", async () => {
@@ -45,6 +50,42 @@ describe("preloadPixiSceneAsset", () => {
 
     expect(load).toHaveBeenCalledWith({
       src: "/assets/hero.png",
+      parser: "texture",
+      format: "png",
+    });
+  });
+
+  it("preloads a tileset by loading its image texture", async () => {
+    const database = new AssetDatabase();
+    database.add(
+      createTextureAssetRecord({
+        id: "asset_atlas",
+        name: "atlas",
+        path: "assets/atlas.png",
+        width: 32,
+        height: 32,
+        mimeType: "image/png",
+      }),
+    );
+    database.add(
+      createTileSetAssetRecord({
+        id: "asset_tileset",
+        name: "ground",
+        path: "assets/ground.tileset.json",
+        tilesetId: "tileset_ground",
+        imageAssetId: "asset_atlas",
+        tileWidth: 16,
+        tileHeight: 16,
+        columns: 2,
+        rows: 2,
+      }),
+    );
+    const resolver = createStaticAssetResolver(database);
+
+    await preloadPixiSceneAsset(resolver, "asset_tileset");
+
+    expect(load).toHaveBeenCalledWith({
+      src: "/assets/atlas.png",
       parser: "texture",
       format: "png",
     });

@@ -1,6 +1,10 @@
 import { Application, type Ticker } from "pixi.js";
-import type { FederatedPointerEvent } from "pixi.js";
-import { MOUSE_BUTTON_MIDDLE } from "@game-editor/shared";
+import type { Container, FederatedPointerEvent } from "pixi.js";
+import {
+  MOUSE_BUTTON_MIDDLE,
+  type ViewportPointerModifiers,
+  viewportPointerModifiersFrom,
+} from "@game-editor/shared";
 import type { Vec2 } from "@game-editor/scene";
 import { clientPointToWorld } from "./viewport-math.js";
 import type { ViewportCameraController } from "./viewport-camera-controller.js";
@@ -57,8 +61,14 @@ export interface PixiAppLifecycleHost {
   graph: PixiRuntimeGraph;
   pixelGrid: PixelGridOverlay | undefined;
   screenGuides: ScreenGuidesOverlay | undefined;
+  marqueeRoot?: Container;
   onBackgroundPointerDown(): void;
-  onWorldPointerDown?(world: Vec2, button: number): boolean;
+  onWorldPointerDown?(
+    world: Vec2,
+    button: number,
+    modifiers: ViewportPointerModifiers,
+    client: { x: number; y: number },
+  ): boolean;
   onWorldPointerMove?(world: Vec2): void;
   onWorldPointerUp?(world: Vec2): void;
   onResize(): void;
@@ -152,6 +162,9 @@ export class PixiAppLifecycle {
       this.host.camera.root.addChild(this.host.screenGuides.root);
     }
     this.host.camera.root.addChild(this.host.graph.world);
+    if (this.host.marqueeRoot) {
+      this.host.camera.root.addChild(this.host.marqueeRoot);
+    }
     app.stage.addChild(this.host.camera.root);
     // Preview camera pan/wheel is editor-only; games must not get it.
     if (this.host.editable) {
@@ -169,7 +182,12 @@ export class PixiAppLifecycle {
           return;
         }
         const world = this.clientToWorld(event.clientX, event.clientY);
-        const consumed = this.host.onWorldPointerDown?.(world, event.button);
+        const consumed = this.host.onWorldPointerDown?.(
+          world,
+          event.button,
+          viewportPointerModifiersFrom(event),
+          { x: event.clientX, y: event.clientY },
+        );
         if (consumed === true) {
           event.stopImmediatePropagation();
           const pointerId = event.pointerId;

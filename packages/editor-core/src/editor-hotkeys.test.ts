@@ -3,6 +3,7 @@ import {
   bindEditorHotkeys,
   arrowNudgeDelta,
   isAssetsPanelKeyTarget,
+  isHierarchyPanelKeyTarget,
   KEYBOARD_NUDGE_PIXELS,
   KEYBOARD_NUDGE_SHIFT_PIXELS,
   type EditorHotkeyHost,
@@ -66,6 +67,21 @@ describe("isAssetsPanelKeyTarget", () => {
     };
     expect(isAssetsPanelKeyTarget(outside)).toBe(false);
     expect(isAssetsPanelKeyTarget(null)).toBe(false);
+  });
+});
+
+describe("isHierarchyPanelKeyTarget", () => {
+  it("returns true when closest finds the hierarchy panel marker", () => {
+    const inside = {
+      closest(this: object, selector: string) {
+        if (this !== inside) {
+          throw new TypeError("Illegal invocation");
+        }
+        return selector === '[data-editor-panel="hierarchy"]' ? {} : null;
+      },
+    };
+    expect(isHierarchyPanelKeyTarget(inside)).toBe(true);
+    expect(isAssetsPanelKeyTarget(inside)).toBe(false);
   });
 });
 
@@ -271,6 +287,36 @@ describe("bindEditorHotkeys arrow nudge", () => {
       altKey: true,
       preventDefault: vi.fn(),
       target: { tagName: "DIV" },
+    } as unknown as Event);
+
+    expect(host.nudgeSelectedNodes).not.toHaveBeenCalled();
+    dispose();
+  });
+
+  it("does not nudge while focus is inside the Hierarchy panel", () => {
+    const host = mockHost();
+    const { target, listeners } = mockWindow();
+    const dispose = bindEditorHotkeys(host, target);
+    const onKeyDown = listeners.get("keydown");
+    const hierarchyTarget = {
+      tagName: "DIV",
+      closest(this: object, selector: string) {
+        if (this !== hierarchyTarget) {
+          throw new TypeError("Illegal invocation");
+        }
+        return selector === '[data-editor-panel="hierarchy"]' ? {} : null;
+      },
+    };
+
+    onKeyDown!({
+      key: "ArrowRight",
+      code: "ArrowRight",
+      ctrlKey: false,
+      metaKey: false,
+      shiftKey: false,
+      altKey: false,
+      preventDefault: vi.fn(),
+      target: hierarchyTarget,
     } as unknown as Event);
 
     expect(host.nudgeSelectedNodes).not.toHaveBeenCalled();

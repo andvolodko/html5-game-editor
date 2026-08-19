@@ -18,6 +18,14 @@ function retainUrl(url: string): void {
 }
 
 /**
+ * Pin a URL loaded by `preloadPixiSceneAsset` so a later renderer destroy/evict
+ * does not `Assets.unload` it. Session-lived — not released.
+ */
+export function retainPreloadedPixiUrl(url: string): void {
+  retainUrl(url);
+}
+
+/**
  * Drop one retain. When the last retainer releases, unload from Assets (or
  * destroy the texture if it was never registered there).
  */

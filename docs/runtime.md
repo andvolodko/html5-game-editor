@@ -73,7 +73,11 @@ Games that never use 2D must not depend on Pixi. `project.json` `renderers` and 
 
 `resolveGameProject` accepts `prefabsByPath` (project-relative `.prefab.json` modules) and builds a catalog keyed by catalogue `assetId`. Every bundled scene is resolved before it reaches `GameRuntime` / renderer adapters.
 
-`GameRuntime.loadScene` also resolves prefab instances so standalone games and editor preview stay consistent. `collectSceneAssetIds` walks prefab documents with a visited set so indirect textures/scripts/Spine/glTF references are preloaded and cycles cannot loop.
+`GameRuntime.loadScene` also resolves prefab instances so standalone games and editor preview stay consistent. `collectSceneAssetIds` walks prefab documents with a visited set so indirect textures, Script property assets, Spine/glTF references are preloaded and cycles cannot loop.
+
+**Load All Scene Assets** (`shared.LoadAllSceneAssets`) lists those ids and calls `preloadSceneAsset`. **Loading Scene** (game-local) must wait for that component’s `completeEvent` **and** `minDisplayMs` before `changeScene`. Do not navigate on a timer alone — that aborts preload.
+
+Standalone `changeScene` / Preview reuse the mounted Pixi/Three/hybrid stack when `getSceneRendererKind` is unchanged (`renderer.clear` + `createNode`). Remount only when the kind changes (for example pixi → hybrid). Preloaded Pixi URLs stay pinned in `Assets` so a remount does not `Assets.unload` them.
 
 Do not import editor packages from this resolution path.
 

@@ -184,6 +184,6 @@ Optional `description` is an Inspector tooltip.
 - Scene persistence: `docs/scene-model.md`
 - Shared Change Scene: `packages/game-components/src/shared/change-scene.ts`
 - Cloud (reference 2D motion): `games/editor-features-demo/src/components/cloud.ts`
-- Game Loading Scene (emit + navigate): `games/editor-features-demo/src/components/loading-scene.ts`
+- Game Loading Scene (wait for Load All Scene Assets + minDisplayMs): `games/editor-features-demo/src/components/loading-scene.ts`
 - Types: `packages/game-components/src/types.ts` (`ScriptCreateContext`, `ScriptRuntimeServices`, `ctx.transform3D`, `ctx.animations`)
 - Catalog load: project-server `GET /components/catalog` + editor `installActiveGameRuntime`

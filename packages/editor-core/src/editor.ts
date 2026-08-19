@@ -68,6 +68,7 @@ import {
   SetScriptPropertiesCommand,
   SetScriptEnabledCommand,
   createDeleteSelectionCommand,
+  createSetNodePositionsCommand,
   type CreateSpriteOptions,
   type CreateAnimatedSpriteOptions,
   type CreateNodeOptions,
@@ -81,6 +82,7 @@ import {
   type HitZonePatch,
   type MaskPatch,
   type NodePointerPatch,
+  type NodePositionEntry,
 } from "./commands/index.js";
 import {
   ensureDefaultNodeTypesRegistered,
@@ -814,6 +816,23 @@ export class Editor {
       return;
     }
     this.execute(new SetTransform2DCommand(this.document, nodeId, patch));
+  }
+
+  /**
+   * Commit one or more Transform2D positions as a single undo step.
+   * Used by viewport group-drag. Returns false when nothing changed.
+   */
+  setNodePositions(entries: readonly NodePositionEntry[]): boolean {
+    const command = createSetNodePositionsCommand(
+      this.document,
+      entries,
+      (nodeId) => this.isNodeEffectivelyLocked(nodeId),
+    );
+    if (!command) {
+      return false;
+    }
+    this.execute(command);
+    return true;
   }
 
   setTransform3D(nodeId: string, patch: Transform3DPatch): void {

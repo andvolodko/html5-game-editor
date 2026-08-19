@@ -114,7 +114,7 @@ Commands talk to `DocumentManager` / `SelectionManager`. They do not write Pixi/
 | `DeleteNodeCommand` / `DeleteNodesCommand` | Delete key |
 | `DuplicateNodeCommand` / `PasteNodesCommand` | Ctrl+D / Ctrl+V |
 | `MoveNodeCommand` | Hierarchy drag |
-| `SetTransform2DCommand` / `SetTransform3DCommand` | Gizmo / Inspector commit |
+| `SetTransform2DCommand` / `SetTransform3DCommand` | Gizmo / Inspector commit / viewport drag |
 | `SetVisualComponentCommand` / `SetSpriteSizeCommand` | Inspector visual fields / Graphics polygon vertices |
 | `AddHitZoneCommand` / `SetHitZoneCommand` | Inspector Hit Zone / viewport HitZone size, move, and polygon vertices |
 | `AddMaskCommand` / `SetMaskCommand` | Inspector Mask / viewport Mask size, move, and polygon vertices |
@@ -135,7 +135,7 @@ Pointer moves are not commands. Drag / paint / numeric scrub:
 ```text
 pointer down  → capture initial value (or start a tilemap stroke)
 pointer move  → preview on the renderer (e.g. PixiSceneRenderer.previewNodePosition)
-pointer up    → one command with before/after
+pointer up    → one command with before/after (CompositeCommand when several selected nodes moved)
 ```
 
 Inspector string/number drafts stay in the input until Enter or blur. TileSet geometry/animation metadata saves through the TileSet document API; advancing an animated tile at runtime is not undoable.
@@ -152,7 +152,7 @@ Dirty is not derived from React, and it is not the undo stack length (you can un
 
 ## Selection
 
-`SelectionManager` stores **node ids** (or “the scene document is selected”). It never stores `PIXI.DisplayObject` / `THREE.Object3D`.
+`SelectionManager` stores **node ids** (or “the scene document is selected”). It never stores `PIXI.DisplayObject` / `THREE.Object3D`. Clicking an unselected node in the Scene view selects only that node. Ctrl/Cmd-click toggles a node in the selection. Dragging empty 2D space draws a marquee and selects overlapping Transform2D nodes. Dragging an already-selected node translates the whole selection (root-most Transform2D nodes) as one undo step.
 
 Asset Browser selection (`selectedAssetId`, folder, search) is separate UI state. Dropping an asset onto the scene passes an `assetId` in the drag payload and creates a node via a command.
 

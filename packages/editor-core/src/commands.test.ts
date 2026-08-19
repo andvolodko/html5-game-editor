@@ -683,6 +683,90 @@ describe("DocumentManager dirty tracking", () => {
     });
   });
 
+  it("setNodePositions moves multi-selection as one undo step", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const a = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "A",
+      { x: 0, y: 0 },
+    );
+    const b = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "B",
+      { x: 5, y: 5 },
+    );
+    editor.execute(a);
+    editor.execute(b);
+
+    expect(
+      editor.setNodePositions([
+        { nodeId: a.createdNodeId, position: { x: 10, y: 1 } },
+        { nodeId: b.createdNodeId, position: { x: 15, y: 6 } },
+      ]),
+    ).toBe(true);
+
+    const scene = editor.getScene();
+    expect(getTransform2D(findNodeById(scene, a.createdNodeId)!)?.position).toEqual({
+      x: 10,
+      y: 1,
+    });
+    expect(getTransform2D(findNodeById(scene, b.createdNodeId)!)?.position).toEqual({
+      x: 15,
+      y: 6,
+    });
+
+    editor.undo();
+    expect(getTransform2D(findNodeById(editor.getScene(), a.createdNodeId)!)?.position).toEqual({
+      x: 0,
+      y: 0,
+    });
+    expect(getTransform2D(findNodeById(editor.getScene(), b.createdNodeId)!)?.position).toEqual({
+      x: 5,
+      y: 5,
+    });
+    editor.redo();
+    expect(getTransform2D(findNodeById(editor.getScene(), a.createdNodeId)!)?.position).toEqual({
+      x: 10,
+      y: 1,
+    });
+  });
+
+  it("setNodePositions skips locked nodes and no-ops", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const a = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "A",
+      { x: 1, y: 2 },
+    );
+    const b = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "B",
+      { x: 3, y: 4 },
+    );
+    editor.execute(a);
+    editor.execute(b);
+    editor.setNodeLocked(a.createdNodeId, true);
+
+    expect(
+      editor.setNodePositions([
+        { nodeId: a.createdNodeId, position: { x: 99, y: 99 } },
+        { nodeId: b.createdNodeId, position: { x: 3, y: 4 } },
+      ]),
+    ).toBe(false);
+    expect(getTransform2D(findNodeById(editor.getScene(), a.createdNodeId)!)?.position).toEqual({
+      x: 1,
+      y: 2,
+    });
+    expect(getTransform2D(findNodeById(editor.getScene(), b.createdNodeId)!)?.position).toEqual({
+      x: 3,
+      y: 4,
+    });
+  });
+
   it("arrow keys do nothing when nothing is selected", () => {
     const editor = new Editor({ scene: createEmptyScene("Test") });
     editor.createSprite("S", { x: 0, y: 0 });

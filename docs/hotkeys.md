@@ -4,7 +4,7 @@ Keyboard shortcuts in the HTML5 Game Editor. **Ctrl** on Windows/Linux is **Cmd*
 
 Chords match the physical key (`event.code`) so they still work on non-Latin layouts.
 
-Undo/redo and save are implemented in `packages/editor-core/src/editor-hotkeys.ts` (`bindEditorHotkeys`). Open Scene lives on the toolbar. Assets-panel catalogue keys are handled only while that panel is focused.
+Undo/redo and save are implemented in `packages/editor-core/src/editor-hotkeys.ts` (`bindEditorHotkeys`). Open Scene lives on the toolbar. Hierarchy and Assets tree navigation (arrows, Enter, Space) run only while that panel is focused.
 
 ## File
 
@@ -26,7 +26,7 @@ These apply to the command history (scene edits and undoable asset/folder operat
 
 ## Scene and Hierarchy
 
-These run unless focus is in a text field or the Assets panel.
+These run unless focus is in a text field or the Assets panel. Arrow-key nudge is also skipped while the Hierarchy panel is focused — arrows then move the tree selection instead.
 
 | Action | Shortcut |
 | --- | --- |
@@ -35,22 +35,45 @@ These run unless focus is in a text field or the Assets panel.
 | Paste node(s) | Ctrl+V |
 | Delete selected node(s) | Delete |
 | Rename selected node | F2 |
-| Nudge selected node(s) 1 px | Arrow keys |
-| Nudge selected node(s) 10 px | Shift+Arrow keys |
-| Toggle node in selection | Ctrl+click |
-| Select visible range | Shift+click |
-| Add visible range to selection | Ctrl+Shift+click |
+| Nudge selected node(s) 1 px | Arrow keys (when Hierarchy is not focused) |
+| Nudge selected node(s) 10 px | Shift+Arrow keys (when Hierarchy is not focused) |
+| Toggle node in selection | Ctrl+click (Hierarchy and Scene) |
+| Select visible range | Shift+click (Hierarchy) |
+| Add visible range to selection | Ctrl+Shift+click (Hierarchy) |
 
-Ctrl+C is skipped when the DOM has a text selection so the browser can copy that text. Drag a selected Hierarchy row to move the whole selection.
+Ctrl+C is skipped when the DOM has a text selection so the browser can copy that text. Drag a selected Hierarchy row to move the whole selection. Drag a selected node in the Scene view to move the whole selection (root-most nodes).
+
+## Hierarchy panel (panel focused)
+
+| Action | Shortcut |
+| --- | --- |
+| Previous / next visible row | Up / Down |
+| Select first / last visible row | Home / End |
+| Jump by a page of rows | PageUp / PageDown |
+| Collapse, or select parent | Left |
+| Expand, or select first child | Right |
+| Show first child (expands the row) | Enter |
+| Toggle expand / collapse | Space |
+| Select all visible nodes | Ctrl+A |
+| Extend selection | Shift+Up / Shift+Down |
 
 ## Assets panel (panel focused)
 
 | Action | Shortcut |
 | --- | --- |
+| Previous / next visible row | Up / Down |
+| Select first / last visible row | Home / End |
+| Jump by a page of rows | PageUp / PageDown |
+| Collapse folder, or select parent | Left |
+| Expand folder, or select first child | Right |
+| Open scene, open prefab, or show folder children | Enter |
+| Toggle folder expand / collapse | Space |
+| Select all visible rows | Ctrl+A |
+| Extend selection | Shift+Up / Shift+Down |
 | Copy selected asset or scene (catalogue) | Ctrl+C |
 | Paste / duplicate into the current folder | Ctrl+V |
 | Rename asset, scene, or folder | F2 |
-| Delete selected asset(s), scene(s), or folder(s) | Delete or Backspace |
+| Delete selected asset(s), scene(s), or folder(s) | Delete or Backspace (assets confirm first) |
 | Toggle item in selection | Ctrl+click |
 | Select visible range | Shift+click |
 | Add visible range to selection | Ctrl+Shift+click |
@@ -73,6 +96,10 @@ Ignored while a modifier key is held or while typing in a field.
 | --- | --- |
 | Zoom | Mouse wheel |
 | Pan camera | Middle-mouse drag |
+| Move selected node(s) | Left-drag on a selected object |
+| Toggle node in Scene selection | Ctrl+click (Cmd+click on macOS) |
+| Marquee-select 2D nodes | Left-drag on empty Scene space |
+| Add marquee hits to selection | Ctrl/Shift + left-drag on empty Scene space |
 
 ## Dialogs and inline edit
 

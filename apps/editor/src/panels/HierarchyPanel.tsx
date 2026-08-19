@@ -30,6 +30,7 @@ import { HierarchyNodeRow } from "./HierarchyNodeRow";
 import { HierarchyToolbar } from "./HierarchyToolbar";
 import type { HierarchyContextMenuState } from "./hierarchy-types";
 import { useHierarchyDnD } from "./useHierarchyDnD";
+import { useHierarchyKeyboard } from "./useHierarchyKeyboard";
 import { useHierarchyRename } from "./useHierarchyRename";
 
 export function HierarchyPanel() {
@@ -48,6 +49,8 @@ export function HierarchyPanel() {
   const rowRefs = useRef(new Map<string, HTMLDivElement>());
   const sceneRowRef = useRef<HTMLDivElement | null>(null);
   const treeRef = useRef<HTMLDivElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const [panelFocused, setPanelFocused] = useState(false);
 
   const { setSelectedAssetId } = useAssetPreviewSelection();
   const { draggingIds, dropIndicator, onDragStart } = useHierarchyDnD(
@@ -76,16 +79,35 @@ export function HierarchyPanel() {
         : [],
     [displayExpanded, displaySceneExpanded, scene, searchVisibleIds],
   );
-  const rootNodes =
-    searchVisibleIds === undefined
-      ? scene.nodes
-      : scene.nodes.filter((node) => searchVisibleIds.has(node.id));
+  const rootNodes = useMemo(
+    () =>
+      searchVisibleIds === undefined
+        ? scene.nodes
+        : scene.nodes.filter((node) => searchVisibleIds.has(node.id)),
+    [scene, searchVisibleIds],
+  );
   const { renamingTarget, setRenamingTarget } = useHierarchyRename(
     editor,
     scene,
     setSceneExpanded,
     setExpanded,
   );
+
+  useHierarchyKeyboard({
+    editor,
+    scene,
+    panelFocused,
+    renaming: renamingTarget !== undefined,
+    sceneSelected,
+    selectedNodeIds: selected,
+    visibleNodeIds,
+    rootNodes,
+    searchVisibleIds,
+    displayExpanded,
+    displaySceneExpanded,
+    setExpanded,
+    setSceneExpanded,
+  });
 
   const primaryId = selected[selected.length - 1];
 
@@ -341,7 +363,24 @@ export function HierarchyPanel() {
   const anyLocked = sceneHasLockedNodes(scene, metadata);
 
   return (
-    <div className="panel hierarchy-panel" onClick={closeMenu}>
+    <div
+      ref={panelRef}
+      tabIndex={0}
+      data-editor-panel="hierarchy"
+      className="panel hierarchy-panel"
+      onClick={closeMenu}
+      onFocus={() => setPanelFocused(true)}
+      onBlur={(event) => {
+        const next = event.relatedTarget;
+        if (next instanceof Node && event.currentTarget.contains(next)) {
+          return;
+        }
+        setPanelFocused(false);
+      }}
+      onPointerDownCapture={() => {
+        panelRef.current?.focus({ preventScroll: true });
+      }}
+    >
       <HierarchyToolbar
         query={query}
         anyHidden={anyHidden}
@@ -445,8 +484,13 @@ export function HierarchyPanel() {
               type="button"
               data-expand
               className="hierarchy-expand"
+              tabIndex={-1}
               aria-label={displaySceneExpanded ? "Collapse" : "Expand"}
               disabled={searching}
+              onPointerDown={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+              }}
               onClick={(event) => {
                 event.stopPropagation();
                 setSceneExpanded((prev) => !prev);

@@ -139,8 +139,13 @@ export function HierarchyNodeRow(props: HierarchyNodeRowProps) {
           type="button"
           data-expand
           className="hierarchy-expand"
+          tabIndex={-1}
           disabled={!hasChildren}
           aria-label={isExpanded ? "Collapse" : "Expand"}
+          onPointerDown={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          }}
           onClick={(event) => {
             event.stopPropagation();
             if (hasChildren) {

@@ -21,6 +21,7 @@ vi.mock("pixi.js", () => ({
 import {
   PixiTextureCache,
   resetPixiTextureUrlRetainsForTests,
+  retainPreloadedPixiUrl,
 } from "./pixi-texture-cache.js";
 
 describe("PixiTextureCache", () => {
@@ -71,5 +72,14 @@ describe("PixiTextureCache", () => {
 
     expect(unload).not.toHaveBeenCalled();
     expect(destroy).toHaveBeenCalledWith(true);
+  });
+
+  it("keeps a preloaded URL in Assets after the renderer evicts", async () => {
+    const cache = new PixiTextureCache();
+    const url = "/assets/asset_preload/content?v=1";
+    retainPreloadedPixiUrl(url);
+    await cache.load("asset_preload", url, "png");
+    cache.evictAll();
+    expect(unload).not.toHaveBeenCalled();
   });
 });

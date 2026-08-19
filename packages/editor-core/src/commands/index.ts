@@ -45,6 +45,8 @@ export { CreateContainerCommand } from "./create-container-command.js";
 export { DeleteNodeCommand } from "./delete-node-command.js";
 export { DeleteNodesCommand } from "./delete-nodes-command.js";
 export { createDeleteSelectionCommand } from "./create-delete-selection-command.js";
+export { createSetNodePositionsCommand } from "./create-set-node-positions-command.js";
+export type { NodePositionEntry } from "./create-set-node-positions-command.js";
 export { DuplicateNodeCommand } from "./duplicate-node-command.js";
 export { PasteNodesCommand } from "./paste-nodes-command.js";
 export { PasteComponentCommand } from "./paste-component-command.js";

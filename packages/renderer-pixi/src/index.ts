@@ -5,6 +5,7 @@ export {
   PLACEHOLDER_MISSING_TINT,
   DEFAULT_EDITOR_BACKGROUND,
 } from "./editor-chrome.js";
+export { POINTER_CLICK_MAX_MOVE_PX } from "./pixi-pointer-constants.js";
 export { PixiSceneRenderer } from "./pixi-scene-renderer.js";
 export { preloadPixiSceneAsset } from "./preload-pixi-scene-asset.js";
 export { mountAsepritePreview } from "./aseprite-preview.js";
@@ -16,6 +17,7 @@ export type {
   PixiPointerHandlers,
   PixiGizmoResizeResult,
   PixiGizmoAnchorResult,
+  NodePositionDrag,
   PixiSyncStats,
 } from "./pixi-scene-renderer-types.js";
 export { clientPointToScreen, clientPointToWorld } from "./viewport-math.js";
