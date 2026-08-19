@@ -1,9 +1,12 @@
 import { Container } from "pixi.js";
-import { getVisualComponent, type HitZoneComponentData } from "@game-editor/scene";
+import { getNodePointerChildren, getVisualComponent, type HitZoneComponentData } from "@game-editor/scene";
 import type { RuntimeNode } from "./pixi-runtime-nodes.js";
 import { paintHitZoneOverlay } from "./pixi-hit-zone-overlay.js";
 import { pixiHitAreaFromHitZone } from "./pixi-hit-zone-hit-area.js";
-import { effectiveHitZone } from "./pixi-hit-zone-pick.js";
+import {
+  effectiveHitZone,
+  groupingNodeUsesHitZonePointer,
+} from "./pixi-hit-zone-pick.js";
 
 const PLAYBACK_HIT_TARGET_LABEL = "hitTarget";
 
@@ -24,6 +27,20 @@ export function syncHitZoneDisplay(
     return;
   }
   syncPlaybackHitTarget(runtime, hitZone);
+}
+
+export function applyGroupingHitZoneChildHits(
+  runtime: RuntimeNode,
+  hitZone: HitZoneComponentData | undefined,
+): void {
+  if (!runtime.childrenRoot) {
+    return;
+  }
+  const pointerChildren = runtime.editable
+    ? true
+    : getNodePointerChildren(runtime.node);
+  runtime.childrenRoot.interactiveChildren =
+    pointerChildren && !groupingNodeUsesHitZonePointer(runtime, hitZone);
 }
 
 function syncEditorOverlay(
@@ -65,6 +82,7 @@ function syncPlaybackHitTarget(
   if (visual && getVisualComponent(runtime.node)) {
     visual.eventMode = "none";
   }
+  applyGroupingHitZoneChildHits(runtime, hitZone);
 }
 
 function clearPlaybackHitTarget(runtime: RuntimeNode): void {
@@ -77,4 +95,5 @@ function clearPlaybackHitTarget(runtime: RuntimeNode): void {
   if (runtime.visual) {
     runtime.visual.eventMode = "auto";
   }
+  applyGroupingHitZoneChildHits(runtime, undefined);
 }

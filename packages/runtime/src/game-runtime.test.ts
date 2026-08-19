@@ -7,9 +7,11 @@ import {
   registerSharedComponents,
 } from "@game-editor/game-components";
 import {
+  createAnimatedSpriteComponent,
   createContainerNode,
   createDetachedRuntimeTransform2D,
   createEmptyScene,
+  createHitZoneComponent,
   createModel3DComponent,
   createNodeWithTransform3D,
   createNodeWithVisual,
@@ -348,6 +350,47 @@ describe("GameRuntime.loadScene", () => {
     expect(onTap).toHaveBeenCalledTimes(1);
   });
 
+  it("reports hasHitZone for an enabled HitZone on the host node", () => {
+    const seen: boolean[] = [];
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.HitZoneProbe",
+        displayName: "HitZone Probe",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => {
+          seen.push(ctx.services.hasHitZone?.(ctx.nodeId) === true);
+          return {};
+        },
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: createMockRenderer(),
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+
+    const withZone = createContainerNode("WithZone");
+    withZone.components.push(
+      createHitZoneComponent({
+        shape: { type: "rectangle", width: 40, height: 20 },
+      }),
+      createScriptComponent("test.HitZoneProbe"),
+    );
+    const withoutZone = createContainerNode("NoZone");
+    withoutZone.components.push(createScriptComponent("test.HitZoneProbe"));
+    const scene = createEmptyScene("HitZones");
+    scene.nodes = [withZone, withoutZone];
+    runtime.loadScene(scene);
+
+    expect(seen).toEqual([true, false]);
+  });
+
   it("exposes getTransform2D / setTransform2D and syncs renderers", () => {
     const renderer = createMockRenderer();
     const registry = new ComponentRegistry();
@@ -610,6 +653,78 @@ describe("GameRuntime.loadScene", () => {
           animation: "walk",
           loop: true,
           timeScale: 0.6,
+        }),
+      ]),
+    );
+  });
+
+  it("exposes getAnimatedSpritePlayback / setAnimatedSpritePlayback", () => {
+    const renderer = createMockRenderer();
+    const registry = new ComponentRegistry();
+    let seenClip = "";
+    registry.register(
+      defineComponent({
+        id: "test.Walker2D",
+        displayName: "Walker2D",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            ctx.services.setAnimatedSpritePlayback?.(ctx.nodeId, {
+              animation: "Run",
+              loop: true,
+              playing: true,
+            });
+            seenClip =
+              ctx.services.getAnimatedSpritePlayback?.(ctx.nodeId)
+                ?.animation ?? "";
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({
+      components: registry,
+      services: {
+        bus: new EventBus(),
+        changeScene: () => undefined,
+      },
+    });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+
+    const node = createNodeWithVisual(
+      "Unit",
+      { x: 10, y: 20 },
+      createAnimatedSpriteComponent({
+        assetId: "asset_unit",
+        animation: "Idle",
+        animationSpeed: 0.2,
+        loop: true,
+        playing: true,
+      }),
+    );
+    node.components.push(createScriptComponent("test.Walker2D"));
+    const scene = createEmptyScene("Move2D");
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+
+    runtime.tick(1 / 60);
+    expect(seenClip).toBe("Run");
+    expect(renderer.updateNode).toHaveBeenCalled();
+    expect(runtime.getScene()?.nodes[0]?.components).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: "AnimatedSprite",
+          animation: "Run",
+          loop: true,
+          playing: true,
+          animationSpeed: 0.2,
         }),
       ]),
     );

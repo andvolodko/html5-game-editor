@@ -1,4 +1,5 @@
 import type { PrefabInstanceLink } from "./prefab/types.js";
+import type { NodePointerEventMode } from "./node-pointer.js";
 
 export type {
   PrefabInstanceLink,
@@ -8,6 +9,9 @@ export type {
   PrefabLayerOverride,
   PrefabVisibleOverride,
   PrefabAlphaOverride,
+  PrefabPointerEventModeOverride,
+  PrefabCursorOverride,
+  PrefabPointerChildrenOverride,
   PrefabData,
 } from "./prefab/types.js";
 
@@ -242,6 +246,24 @@ export interface SceneNodeData {
    * Omitted means fully opaque (`1`). Persist when not `1`.
    */
   alpha?: number;
+
+  /**
+   * Playback pointer hit-testing mode (Pixi `eventMode`).
+   * Omitted means `"static"`. Editor selection ignores this field.
+   */
+  pointerEventMode?: NodePointerEventMode;
+
+  /**
+   * CSS cursor on hover in playback / runtime.
+   * Omitted means engine default. Editor grab cursor ignores this field.
+   */
+  cursor?: string;
+
+  /**
+   * Whether child nodes receive pointer events in playback.
+   * Omitted means true. Persist `false` to block children.
+   */
+  pointerChildren?: boolean;
 
   /**
    * Present on nodes that belong to a prefab instance.

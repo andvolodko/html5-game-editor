@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  createContainerNode,
   createGraphicsComponent,
   createHitZoneComponent,
   createHitZoneNode,
@@ -152,6 +153,42 @@ describe("Pixi HitZone", () => {
     expect(target?.parent).toBe(container);
     expect(target?.hitArea).toBeInstanceOf(Circle);
     expect(renderer.getRuntimeVisual(node.id)?.eventMode).toBe("none");
+    expect(target?.listenerCount("pointerdown")).toBeGreaterThan(0);
+
+    await renderer.destroy();
+  });
+
+  it("lets a grouping HitZone own playback pointer hits instead of children", async () => {
+    const host = { appendChild() {} } as unknown as HTMLElement;
+    const renderer = new PixiSceneRenderer({
+      canvasParent: host,
+      headless: true,
+      editable: false,
+    });
+    await renderer.whenReady();
+
+    const parent = createContainerNode("Button");
+    parent.components.push(
+      createHitZoneComponent({
+        shape: { type: "rectangle", width: 80, height: 40 },
+      }),
+    );
+    const child = createSpriteNode("regular", { x: 0, y: 0 }, {
+      width: 64,
+      height: 64,
+    });
+    child.parentId = parent.id;
+    parent.children = [child];
+
+    renderer.createNode(parent);
+    renderer.createNode(child);
+    await flushPaint();
+
+    const childrenRoot = renderer.getRuntimeChildrenRoot(parent.id);
+    expect(childrenRoot?.interactiveChildren).toBe(false);
+    const target = renderer.getRuntimeHitZoneTarget(parent.id);
+    expect(target).toBeDefined();
+    expect(target?.listenerCount("pointerdown")).toBeGreaterThan(0);
 
     await renderer.destroy();
   });

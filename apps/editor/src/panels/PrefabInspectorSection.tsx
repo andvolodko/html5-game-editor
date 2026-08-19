@@ -130,6 +130,15 @@ function overrideLabel(override: PrefabOverride): string {
   if (override.kind === "alpha") {
     return "Alpha";
   }
+  if (override.kind === "pointerEventMode") {
+    return "Pointer event mode";
+  }
+  if (override.kind === "cursor") {
+    return "Cursor";
+  }
+  if (override.kind === "pointerChildren") {
+    return "Pointer children";
+  }
   return override.propertyPath;
 }
 

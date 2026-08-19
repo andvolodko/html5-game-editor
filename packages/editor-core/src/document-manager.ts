@@ -16,6 +16,9 @@ import {
   getNodeLocation,
   setNodeVisibleField,
   setNodeAlphaField,
+  setNodePointerEventModeField,
+  setNodeCursorField,
+  setNodePointerChildrenField,
   type ComponentData,
   type Model3DComponentData,
   type SceneData,
@@ -30,6 +33,7 @@ import {
   type TileChange,
   type PrefabInstanceLink,
   type PrefabOverride,
+  type NodePointerEventMode,
 } from "@game-editor/scene";
 
 export type DocumentDirtyState = "clean" | "dirty" | "saving" | "save-error";
@@ -354,6 +358,34 @@ export class DocumentManager {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
     setNodeAlphaField(node, alpha);
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "visual",
+    });
+  }
+
+  setNodePointer(
+    nodeId: string,
+    patch: {
+      eventMode?: NodePointerEventMode;
+      cursor?: string;
+      children?: boolean;
+    },
+  ): void {
+    const node = findNodeById(this.scene, nodeId);
+    if (!node) {
+      throw new Error(`DocumentManager: unknown node ${nodeId}`);
+    }
+    if (patch.eventMode !== undefined) {
+      setNodePointerEventModeField(node, patch.eventMode);
+    }
+    if (patch.cursor !== undefined) {
+      setNodeCursorField(node, patch.cursor);
+    }
+    if (patch.children !== undefined) {
+      setNodePointerChildrenField(node, patch.children);
+    }
     this.afterContentMutation({
       kind: "update",
       nodeId,

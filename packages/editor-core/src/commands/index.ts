@@ -32,6 +32,8 @@ export type { SceneRendererKind } from "./set-scene-renderer-command.js";
 export { SetNodeLayerCommand } from "./set-node-layer-command.js";
 export { SetNodeVisibleCommand } from "./set-node-visible-command.js";
 export { SetNodeAlphaCommand } from "./set-node-alpha-command.js";
+export { SetNodePointerCommand } from "./set-node-pointer-command.js";
+export type { NodePointerPatch } from "./set-node-pointer-command.js";
 export { SetSpriteSizeCommand } from "./set-sprite-size-command.js";
 export type { SpriteSizePatch } from "./set-sprite-size-command.js";
 export { SetVisualComponentCommand } from "./set-visual-component-command.js";

@@ -15,8 +15,11 @@ import {
   PLACEHOLDER_UNASSIGNED_TINT,
 } from "../editor-chrome.js";
 
-export function destroyVisual(visual: Container | undefined): void {
-  if (!visual) {
+export function destroyVisual(
+  visual: Container | undefined,
+  protect?: Container,
+): void {
+  if (!visual || visual.destroyed || visual === protect) {
     return;
   }
   visual.removeFromParent();
@@ -147,7 +150,7 @@ export function missingTextureResult(
   height: number,
   supportsSpriteGizmo = false,
 ): VisualPaintResult {
-  destroyVisual(ctx.visual);
+  destroyVisual(ctx.visual, ctx.visualsRoot);
   ctx.showPlaceholder(width, height, PLACEHOLDER_MISSING_TINT);
   return {
     visual: undefined,
@@ -165,7 +168,7 @@ export function unassignedTextureResult(
   tint = PLACEHOLDER_UNASSIGNED_TINT,
   supportsSpriteGizmo = false,
 ): VisualPaintResult {
-  destroyVisual(ctx.visual);
+  destroyVisual(ctx.visual, ctx.visualsRoot);
   ctx.showPlaceholder(width, height, tint);
   return {
     visual: undefined,

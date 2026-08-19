@@ -4,6 +4,7 @@ import { cloneJson } from "./property-path.js";
 import type { PrefabInstanceLink } from "./types.js";
 import { copyNodeVisible } from "../node-visibility.js";
 import { copyNodeAlpha } from "../node-alpha.js";
+import { copyNodePointer } from "../node-pointer.js";
 
 export function cloneSerializableNode(source: SceneNodeData): SceneNodeData {
   const cloned: SceneNodeData = {
@@ -20,6 +21,7 @@ export function cloneSerializableNode(source: SceneNodeData): SceneNodeData {
   }
   copyNodeVisible(source, cloned);
   copyNodeAlpha(source, cloned);
+  copyNodePointer(source, cloned);
   if (source.prefab !== undefined) {
     cloned.prefab = cloneJson(source.prefab);
   }

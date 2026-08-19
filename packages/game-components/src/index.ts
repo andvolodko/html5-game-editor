@@ -26,6 +26,8 @@ export type {
   ScriptPlayAnimationOptions,
   ScriptModel3DPlayback,
   ScriptModel3DPlaybackPatch,
+  ScriptAnimatedSpritePlayback,
+  ScriptAnimatedSpritePlaybackPatch,
   ScriptPerformanceStats,
   ScriptRendererDrawStats,
   ComponentDefinition,

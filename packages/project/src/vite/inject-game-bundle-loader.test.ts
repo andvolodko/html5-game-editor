@@ -40,6 +40,22 @@ describe("injectGameBundleLoader", () => {
     expect(next).toContain('var entryUrl = "/bundle/index-abc.js";');
   });
 
+  it("keeps a relative hashed entry URL for zip hosts", () => {
+    const html = `<!doctype html>
+<html>
+  <head>
+    <script type="module" crossorigin src="./bundle/index-abc.js"></script>
+  </head>
+  <body>
+    <script>${loaderSnippet}</script>
+  </body>
+</html>`;
+
+    const next = injectGameBundleLoader(html);
+    expect(next).not.toContain('src="./bundle/index-abc.js"');
+    expect(next).toContain('var entryUrl = "./bundle/index-abc.js";');
+  });
+
   it("leaves @vite/client scripts alone", () => {
     const html = `<!doctype html>
 <html>

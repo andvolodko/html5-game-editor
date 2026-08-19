@@ -48,7 +48,7 @@ interface RenderLayer {
 }
 ```
 
-For the first implementation it is acceptable to use multiple stacked canvases (Pixi foreground/UI, Three world, Pixi background). Do not tightly couple scene logic to the number of canvases. Canvas composition is a renderer implementation detail.
+For the first implementation it is acceptable to use multiple stacked canvases (Pixi foreground/UI, Three world, Pixi background). Do not tightly couple scene logic to the number of canvases. Canvas composition is a renderer implementation detail. Hybrid playback picks through a DOM overlay (canvases use `pointer-events: none`); that pick must honor grouping HitZone ownership and `pointerEventMode`, not only smallest visual AABB.
 
 ---
 
@@ -92,6 +92,6 @@ Initial supported resources: PNG, JPG, WebP, spritesheets, Aseprite / LibreSprit
 | Tilemap | Supported | One node; chunked cells; `@pixi/tilemap` `CompositeTilemap` per chunk. Animated tiles share one clock per logical ID and rebuild only chunks that contain that ID. Not `TilingSprite`. |
 | ParticleContainer | Deferred | Pixi Particle API accepts Particle children only — incompatible with Container hierarchy |
 
-Node creation is driven by `NodeTypeRegistry` (`pixi.*` stable IDs). Menus and `CreateNodeCommand` share that registry. Leaf visuals cannot receive scene children (domain `canMoveNode` / create-parent policy). `HitZone` is not a leaf: it maps to a dedicated overlay / playback `hitTarget` and must never set Pixi `hitArea` on the node container (that would prune child sprites). `Mask` is not a leaf: the Pixi stencil is a dedicated child; in the editor the clip is applied to `contentRoot` so selection gizmos on `chromeRoot` are not clipped.
+Node creation is driven by `NodeTypeRegistry` (`pixi.*` stable IDs). Menus and `CreateNodeCommand` share that registry. Leaf visuals cannot receive scene children (domain `canMoveNode` / create-parent policy). `HitZone` is not a leaf: it maps to a dedicated overlay / playback `hitTarget` and must never set Pixi `hitArea` on the node container (that would prune child sprites). In playback, an enabled HitZone on a grouping node is the pointer target; child visuals stay visible but do not receive hits. `Mask` is not a leaf: the Pixi stencil is a dedicated child; in the editor the clip is applied to `contentRoot` so selection gizmos on `chromeRoot` are not clipped.
 
 Future compatibility: particles / ParticleContainer (experimental), filters, custom shaders, visual mesh vertex editor.

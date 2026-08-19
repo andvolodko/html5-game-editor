@@ -13,17 +13,20 @@ export interface GameViteConfigOptions {
   title?: string;
   /**
    * Public path for the built game. Defaults to `process.env.VITE_BASE`
-   * or `/` so GitHub Pages can host each game under `/games/<id>/`.
+   * or `./` so zip hosts (itch.io) resolve `bundle/` next to `index.html`.
+   * GitHub Pages still sets `VITE_BASE` to `/<repo>/games/<id>/`.
    */
   base?: string;
 }
 
-/** `vite.base` from `VITE_BASE`, or `/` for local / preview builds. */
+const RELATIVE_GAME_VITE_BASE = "./";
+
+/** `vite.base` from `VITE_BASE`, or `./` for local / zip / preview builds. */
 export function resolveGameViteBase(
   envBase: string | undefined = process.env.VITE_BASE,
 ): string {
   if (envBase === undefined || envBase === "") {
-    return "/";
+    return RELATIVE_GAME_VITE_BASE;
   }
   return envBase;
 }

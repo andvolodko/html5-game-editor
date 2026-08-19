@@ -22,7 +22,12 @@ export type {
   ConsoleLogInput,
   ConsoleLogLevel,
 } from "./editor-console.js";
-export { KEYBOARD_NUDGE_PIXELS, arrowNudgeDelta, isAssetsPanelKeyTarget } from "./editor-hotkeys.js";
+export {
+  KEYBOARD_NUDGE_PIXELS,
+  KEYBOARD_NUDGE_SHIFT_PIXELS,
+  arrowNudgeDelta,
+  isAssetsPanelKeyTarget,
+} from "./editor-hotkeys.js";
 export { SelectionManager } from "./selection-manager.js";
 export type { EditorSelection } from "./selection-manager.js";
 export {
@@ -86,6 +91,7 @@ export {
   SetNodeLayerCommand,
   SetNodeVisibleCommand,
   SetNodeAlphaCommand,
+  SetNodePointerCommand,
   SetSpriteSizeCommand,
   SetVisualComponentCommand,
   MoveNodeCommand,
@@ -132,6 +138,7 @@ export type {
   SpriteSizePatch,
   HitZonePatch,
   MaskPatch,
+  NodePointerPatch,
   CreateSpriteOptions,
   ResetNodeTransformOptions,
   CreateSpineOptions,

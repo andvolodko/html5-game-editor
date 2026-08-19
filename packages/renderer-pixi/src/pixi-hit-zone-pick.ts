@@ -1,5 +1,8 @@
 import {
   getHitZone,
+  getNodePointerChildren,
+  getNodePointerEventMode,
+  getVisualComponent,
   hitZoneLocalAabb,
   isHitZoneEnabled,
   localPointHitsHitZone,
@@ -41,6 +44,82 @@ export function chromeHitBounds(
       box !== undefined && box.width > 0 && box.height > 0,
     ),
   );
+}
+
+/**
+ * Playback grouping nodes: an enabled HitZone is the pointer target, so child
+ * sprites must not steal hits (Button, AudioClick, … on the container).
+ */
+export function groupingNodeUsesHitZonePointer(
+  runtime: RuntimeNode,
+  hitZone: HitZoneComponentData | undefined,
+): boolean {
+  return (
+    !runtime.editable &&
+    hitZone !== undefined &&
+    getVisualComponent(runtime.node) === undefined
+  );
+}
+
+/**
+ * Hybrid overlay pick (canvases have `pointer-events: none`) must match Pixi
+ * EventSystem: `none`/`passive` are not targets, grouping HitZone owns hits,
+ * and `pointerChildren: false` skips descendants. Editor pick stays selectable.
+ */
+export function isPlaybackOverlayPointerTarget(
+  runtime: RuntimeNode,
+  getRuntime: (nodeId: string) => RuntimeNode | undefined,
+): boolean {
+  if (runtime.editable) {
+    return true;
+  }
+  const mode = getNodePointerEventMode(runtime.node);
+  if (mode === "none" || mode === "passive") {
+    return false;
+  }
+  let parentId = runtime.node.parentId;
+  while (parentId !== undefined) {
+    const parent = getRuntime(parentId);
+    if (!parent) {
+      break;
+    }
+    if (getNodePointerEventMode(parent.node) === "none") {
+      return false;
+    }
+    if (!getNodePointerChildren(parent.node)) {
+      return false;
+    }
+    if (groupingNodeUsesHitZonePointer(parent, effectiveHitZone(parent))) {
+      return false;
+    }
+    parentId = parent.node.parentId;
+  }
+  return true;
+}
+
+/**
+ * Smallest hitting area wins. Playback overlay skips nodes that Pixi would not
+ * treat as the interaction target (HitZone children, `pointerEventMode: none`).
+ */
+export function pickRuntimeNodeId(
+  runtimes: Iterable<RuntimeNode>,
+  screen: Vec2,
+  getRuntime: (nodeId: string) => RuntimeNode | undefined,
+): string | undefined {
+  let bestId: string | undefined;
+  let bestArea = Number.POSITIVE_INFINITY;
+  for (const runtime of runtimes) {
+    if (!isPlaybackOverlayPointerTarget(runtime, getRuntime)) {
+      continue;
+    }
+    const area = pickAreaIfHit(runtime, screen);
+    if (area === undefined || area >= bestArea) {
+      continue;
+    }
+    bestArea = area;
+    bestId = runtime.node.id;
+  }
+  return bestId;
 }
 
 /**

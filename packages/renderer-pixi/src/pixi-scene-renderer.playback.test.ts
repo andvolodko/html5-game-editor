@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { AnimatedSprite, Texture } from "pixi.js";
 import { createSpriteNode } from "@game-editor/scene";
 import { PixiSceneRenderer } from "./pixi-scene-renderer.js";
 
@@ -33,6 +34,35 @@ describe("PixiSceneRenderer playback mode", () => {
 
     renderer.setSelectedNodeIds([node.id]);
     expect(renderer.getRuntimeGizmoRoot(node.id)).toBeUndefined();
+
+    await renderer.destroy();
+  });
+
+  it("applies serialized pointer event mode and cursor in playback", async () => {
+    const host = { appendChild() {} } as unknown as HTMLElement;
+    const renderer = new PixiSceneRenderer({
+      canvasParent: host,
+      headless: true,
+      editable: false,
+    });
+    await renderer.whenReady();
+
+    const node = createSpriteNode("Sprite", { x: 0, y: 0 }, {
+      width: 64,
+      height: 64,
+    });
+    node.pointerEventMode = "none";
+    node.cursor = "pointer";
+    node.pointerChildren = false;
+    renderer.createNode(node);
+
+    const container = renderer.getRuntimeContainer(node.id)!;
+    expect(container.eventMode).toBe("none");
+    expect(container.cursor).toBe("pointer");
+
+    node.cursor = "crosshair";
+    renderer.updateNode(node);
+    expect(renderer.getRuntimeContainer(node.id)!.cursor).toBe("crosshair");
 
     await renderer.destroy();
   });
@@ -101,6 +131,67 @@ describe("PixiSceneRenderer playback mode", () => {
     expect(container.scale.x).toBe(-1.5);
     expect(container.scale.y).toBe(2);
     expect(transform?.rotation).toBeCloseTo(90);
+
+    await renderer.destroy();
+  });
+
+  it("keeps the live playback pose when updateNode refreshes visuals", async () => {
+    const host = { appendChild() {} } as unknown as HTMLElement;
+    const renderer = new PixiSceneRenderer({
+      canvasParent: host,
+      headless: true,
+      editable: false,
+    });
+    await renderer.whenReady();
+
+    const node = createSpriteNode("Mover", { x: 40, y: 50 });
+    renderer.createNode(node);
+    const transform = renderer.getRuntimeTransform2D(node.id)!;
+    transform.x = 220;
+    transform.y = 80;
+    transform.scaleX = -1;
+
+    renderer.updateNode(node);
+
+    expect(transform.x).toBe(220);
+    expect(transform.y).toBe(80);
+    expect(transform.scaleX).toBe(-1);
+    const container = renderer.getRuntimeContainer(node.id)!;
+    expect(container.position.x).toBe(220);
+    expect(container.position.y).toBe(80);
+    expect(container.scale.x).toBe(-1);
+
+    await renderer.destroy();
+  });
+
+  it("keeps reading ctx.transform after a child AnimatedSprite is destroyed", async () => {
+    const host = { appendChild() {} } as unknown as HTMLElement;
+    const renderer = new PixiSceneRenderer({
+      canvasParent: host,
+      headless: true,
+      editable: false,
+    });
+    await renderer.whenReady();
+
+    const node = createSpriteNode("Mover", { x: 40, y: 50 });
+    renderer.createNode(node);
+    const container = renderer.getRuntimeContainer(node.id)!;
+    const sprite = new AnimatedSprite({
+      textures: [Texture.WHITE],
+      autoPlay: false,
+      autoUpdate: false,
+    });
+    container.addChild(sprite);
+
+    const transform = renderer.getRuntimeTransform2D(node.id)!;
+    transform.x = 180;
+    sprite.destroy({ children: true });
+
+    expect(transform.x).toBe(180);
+    expect(() => {
+      transform.x = 190;
+    }).not.toThrow();
+    expect(transform.x).toBe(190);
 
     await renderer.destroy();
   });

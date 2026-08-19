@@ -502,15 +502,96 @@
       "children": []
     },
     {
-      "id": "node_text_back",
-      "name": "Go to Main",
+      "id": "node_2dadcc91-b258-40f5-b736-8dc818d1e960",
+      "name": "GoMainSceneButton Copy Copy",
+      "layer": "foreground",
+      "prefab": {
+        "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+        "instanceId": "pinst_5c537165-d123-4217-ab2f-ad6b3b1b1b08",
+        "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+        "componentSources": {
+          "comp_98daa0c9-a80a-44e1-adde-a4b889189bc4": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+          "comp_646563ac-8a48-4bde-80f3-5757ed20bb9e": "comp_888624e2-d9e6-4044-b3eb-029091d75468",
+          "comp_711591b1-512d-492b-88de-0df9114cb336": "comp_4d87ba98-71aa-4892-a326-fd8d2b7134ba",
+          "comp_3ce989ab-22a9-4b87-ab86-0cb5bda36da9": "comp_ead0350e-74e0-45f4-be2c-2b0165aa2e2e",
+          "comp_a6a080e1-953f-4646-988e-eaf4194e0aa1": "comp_0bb0f605-62d6-44ba-b901-e95a8b9253fc"
+        },
+        "isRoot": true,
+        "overrides": [
+          {
+            "kind": "layer",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "value": "foreground"
+          },
+          {
+            "kind": "name",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "value": "GoMainSceneButton Copy Copy"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_ead0350e-74e0-45f4-be2c-2b0165aa2e2e",
+            "propertyPath": "properties.sceneName",
+            "value": "main"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+            "propertyPath": "position.x",
+            "value": 960
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+            "propertyPath": "position.y",
+            "value": 1008
+          },
+          {
+            "kind": "layer",
+            "sourceNodeId": "node_7a7af1e4-01f9-42d4-9772-ad76bdba2635",
+            "value": "foreground"
+          },
+          {
+            "kind": "layer",
+            "sourceNodeId": "node_8a5e8c14-108d-4045-869f-a3ea8bbbf334",
+            "value": "foreground"
+          },
+          {
+            "kind": "layer",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "value": "foreground"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "componentId": "comp_14bd0013-0ac4-4402-a320-f30c7c155794",
+            "propertyPath": "text",
+            "value": "Main Scene"
+          },
+          {
+            "kind": "layer",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "value": "foreground"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "componentId": "comp_c6ed5775-a184-4572-b01a-4cd71700e3e0",
+            "propertyPath": "text",
+            "value": "Main Scene"
+          }
+        ]
+      },
       "components": [
         {
           "type": "Transform2D",
-          "id": "comp_text_back_t",
+          "id": "comp_98daa0c9-a80a-44e1-adde-a4b889189bc4",
           "position": {
-            "x": 24,
-            "y": 24
+            "x": 960,
+            "y": 1008
           },
           "rotation": 0,
           "scale": {
@@ -519,64 +600,273 @@
           }
         },
         {
-          "type": "Text",
-          "id": "comp_text_back",
-          "text": "Go to Main scene",
-          "style": {
-            "fontFamily": "Arial",
-            "fontSize": 24,
-            "fontWeight": "normal",
-            "fontStyle": "normal",
-            "fontVariant": "normal",
-            "fill": 16777215,
-            "fillAlpha": 1,
-            "align": "left",
-            "letterSpacing": 0,
-            "lineHeight": 0,
-            "leading": 0,
-            "wordWrap": false,
-            "wordWrapWidth": 440,
-            "breakWords": false,
-            "whiteSpace": "pre",
-            "padding": 0,
-            "trim": false,
-            "textBaseline": "alphabetic",
-            "strokeColor": 0,
-            "strokeAlpha": 1,
-            "strokeWidth": 0,
-            "strokeJoin": "miter",
-            "miterLimit": 10,
-            "dropShadow": false,
-            "dropShadowColor": 0,
-            "dropShadowAlpha": 1,
-            "dropShadowBlur": 0,
-            "dropShadowDistance": 5,
-            "dropShadowAngle": 30
-          },
-          "anchor": {
-            "x": 0,
-            "y": 0
+          "type": "Script",
+          "id": "comp_646563ac-8a48-4bde-80f3-5757ed20bb9e",
+          "scriptId": "shared.Button",
+          "properties": {
+            "regularChildName": "regular",
+            "pressedChildName": "pressed"
           }
         },
         {
           "type": "Script",
-          "id": "comp_text_back_go",
+          "id": "comp_711591b1-512d-492b-88de-0df9114cb336",
+          "scriptId": "shared.AudioClick",
+          "properties": {
+            "audioAssetId": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
+            "mouseEvent": "pointertap"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_3ce989ab-22a9-4b87-ab86-0cb5bda36da9",
           "scriptId": "editor-features-demo.GoSpineButton",
           "properties": {
             "sceneName": "main"
           }
         },
         {
-          "type": "Script",
-          "id": "comp_text_back_audio",
-          "scriptId": "shared.AudioClick",
-          "properties": {
-            "audioAssetId": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
-            "mouseEvent": "pointertap"
+          "type": "HitZone",
+          "id": "comp_a6a080e1-953f-4646-988e-eaf4194e0aa1",
+          "offset": {
+            "x": 0.327808422492609,
+            "y": 5.219397450536029
+          },
+          "shape": {
+            "type": "rectangle",
+            "width": 294.86349319337575,
+            "height": 86.97858021431925
           }
         }
       ],
-      "children": []
+      "children": [
+        {
+          "id": "node_a350b52f-eeb9-4954-bc90-6e35dca3dccc",
+          "name": "regular",
+          "parentId": "node_2dadcc91-b258-40f5-b736-8dc818d1e960",
+          "layer": "foreground",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_5c537165-d123-4217-ab2f-ad6b3b1b1b08",
+            "sourceNodeId": "node_7a7af1e4-01f9-42d4-9772-ad76bdba2635",
+            "componentSources": {
+              "comp_bec6ab04-86d6-43db-a335-a768ab19b4e0": "comp_d5af0834-a8fc-4a2d-ad67-34beff5b7a06",
+              "comp_81fa4dd0-cd0e-4197-96d0-a411d7f85316": "comp_78aa241b-abce-45ff-9043-be8eddae7b5f"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_bec6ab04-86d6-43db-a335-a768ab19b4e0",
+              "position": {
+                "x": 0,
+                "y": 5
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_81fa4dd0-cd0e-4197-96d0-a411d7f85316",
+              "assetId": "asset_bc24bff4-6cfc-4c16-ad20-48ea9332d25d",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_efaff103-eb86-4675-a06d-ba5eae46c94b",
+          "name": "pressed",
+          "parentId": "node_2dadcc91-b258-40f5-b736-8dc818d1e960",
+          "layer": "foreground",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_5c537165-d123-4217-ab2f-ad6b3b1b1b08",
+            "sourceNodeId": "node_8a5e8c14-108d-4045-869f-a3ea8bbbf334",
+            "componentSources": {
+              "comp_2a54907a-1141-4bc8-bc38-602d64dcd357": "comp_7bd7ebbd-ef36-48fa-b79c-aecf1db86695",
+              "comp_d8a16fc4-d4ff-4ef6-8bc5-946f01e89994": "comp_6586d428-a0e0-4941-a45f-8eb7188fc149"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_2a54907a-1141-4bc8-bc38-602d64dcd357",
+              "position": {
+                "x": 0,
+                "y": -1
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_d8a16fc4-d4ff-4ef6-8bc5-946f01e89994",
+              "assetId": "asset_685a786e-4b9f-4717-aa9e-9aa0d282fced",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_4c9a2a9c-b1a9-47e9-9f17-4a5070b8f4e6",
+          "name": "text-regular",
+          "parentId": "node_2dadcc91-b258-40f5-b736-8dc818d1e960",
+          "layer": "foreground",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_5c537165-d123-4217-ab2f-ad6b3b1b1b08",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "componentSources": {
+              "comp_fadc5efd-1cab-40cb-8ff4-5a6814cb5b87": "comp_631ea417-8cf6-4bbb-b6bc-d4c35e059d7a",
+              "comp_66ff33e4-5e76-41d1-adf9-011dd81ccb9e": "comp_14bd0013-0ac4-4402-a320-f30c7c155794"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_fadc5efd-1cab-40cb-8ff4-5a6814cb5b87",
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_66ff33e4-5e76-41d1-adf9-011dd81ccb9e",
+              "text": "Main Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  13750737,
+                  16777215,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_906138b0-d904-4213-8941-61ebe88cc551",
+          "name": "text-pressed",
+          "parentId": "node_2dadcc91-b258-40f5-b736-8dc818d1e960",
+          "layer": "foreground",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_5c537165-d123-4217-ab2f-ad6b3b1b1b08",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "componentSources": {
+              "comp_b6cca73c-c076-4a9f-8b70-eebb82492cae": "comp_ba586bbf-cecb-4019-9554-6677fe0834cc",
+              "comp_a6525596-1295-4a0b-a566-67c38913c900": "comp_c6ed5775-a184-4572-b01a-4cd71700e3e0"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_b6cca73c-c076-4a9f-8b70-eebb82492cae",
+              "position": {
+                "x": 0,
+                "y": 4
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_a6525596-1295-4a0b-a566-67c38913c900",
+              "text": "Main Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  7895160,
+                  14277081,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
     }
   ]
 }

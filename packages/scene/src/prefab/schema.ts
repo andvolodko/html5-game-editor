@@ -8,6 +8,9 @@ export {
   prefabLayerOverrideSchema,
   prefabVisibleOverrideSchema,
   prefabAlphaOverrideSchema,
+  prefabPointerEventModeOverrideSchema,
+  prefabCursorOverrideSchema,
+  prefabPointerChildrenOverrideSchema,
   prefabOverrideSchema,
   prefabInstanceLinkSchema,
 } from "./link-schema.js";

@@ -7039,6 +7039,343 @@
         }
       ],
       "children": []
+    },
+    {
+      "id": "node_d1469459-3faf-4539-9363-240561d422df",
+      "name": "GoMainSceneButton",
+      "prefab": {
+        "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+        "instanceId": "pinst_ee290d26-048c-40db-b818-6f16868aaaf4",
+        "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+        "componentSources": {
+          "comp_a59afda2-fcf4-40e6-b2f4-1b3cd64ad59d": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+          "comp_2b445ccc-3d70-4e49-9cf5-f5806235924d": "comp_888624e2-d9e6-4044-b3eb-029091d75468",
+          "comp_9ba8bb77-665c-45ee-978b-620361209ea8": "comp_4d87ba98-71aa-4892-a326-fd8d2b7134ba",
+          "comp_02cab945-2025-4bfb-b9d0-7c48c729b815": "comp_ead0350e-74e0-45f4-be2c-2b0165aa2e2e",
+          "comp_72b1f693-04db-486e-8178-6a9d62605cb4": "comp_0bb0f605-62d6-44ba-b901-e95a8b9253fc"
+        },
+        "isRoot": true,
+        "overrides": [
+          {
+            "kind": "name",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "value": "GoMainSceneButton"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_ead0350e-74e0-45f4-be2c-2b0165aa2e2e",
+            "propertyPath": "properties.sceneName",
+            "value": "main"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+            "propertyPath": "position.x",
+            "value": 960
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+            "propertyPath": "position.y",
+            "value": 1008
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "componentId": "comp_14bd0013-0ac4-4402-a320-f30c7c155794",
+            "propertyPath": "text",
+            "value": "Main Scene"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "componentId": "comp_c6ed5775-a184-4572-b01a-4cd71700e3e0",
+            "propertyPath": "text",
+            "value": "Main Scene"
+          }
+        ]
+      },
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_a59afda2-fcf4-40e6-b2f4-1b3cd64ad59d",
+          "position": {
+            "x": 960,
+            "y": 1008
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_2b445ccc-3d70-4e49-9cf5-f5806235924d",
+          "scriptId": "shared.Button",
+          "properties": {
+            "regularChildName": "regular",
+            "pressedChildName": "pressed"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_9ba8bb77-665c-45ee-978b-620361209ea8",
+          "scriptId": "shared.AudioClick",
+          "properties": {
+            "audioAssetId": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
+            "mouseEvent": "pointertap"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_02cab945-2025-4bfb-b9d0-7c48c729b815",
+          "scriptId": "editor-features-demo.GoSpineButton",
+          "properties": {
+            "sceneName": "main"
+          }
+        },
+        {
+          "type": "HitZone",
+          "id": "comp_72b1f693-04db-486e-8178-6a9d62605cb4",
+          "offset": {
+            "x": 0.327808422492609,
+            "y": 5.219397450536029
+          },
+          "shape": {
+            "type": "rectangle",
+            "width": 294.86349319337575,
+            "height": 86.97858021431925
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_e8576c07-0e72-40e1-9b06-86b887c3fd4d",
+          "name": "regular",
+          "parentId": "node_d1469459-3faf-4539-9363-240561d422df",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_ee290d26-048c-40db-b818-6f16868aaaf4",
+            "sourceNodeId": "node_7a7af1e4-01f9-42d4-9772-ad76bdba2635",
+            "componentSources": {
+              "comp_69098dba-08a5-47d5-bdf3-7b175bccf694": "comp_d5af0834-a8fc-4a2d-ad67-34beff5b7a06",
+              "comp_482d5de7-14f8-42c0-b927-f5ad69f2133f": "comp_78aa241b-abce-45ff-9043-be8eddae7b5f"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_69098dba-08a5-47d5-bdf3-7b175bccf694",
+              "position": {
+                "x": 0,
+                "y": 5
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_482d5de7-14f8-42c0-b927-f5ad69f2133f",
+              "assetId": "asset_bc24bff4-6cfc-4c16-ad20-48ea9332d25d",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_510d33e8-5912-4bd0-ab67-5672abba87fa",
+          "name": "pressed",
+          "parentId": "node_d1469459-3faf-4539-9363-240561d422df",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_ee290d26-048c-40db-b818-6f16868aaaf4",
+            "sourceNodeId": "node_8a5e8c14-108d-4045-869f-a3ea8bbbf334",
+            "componentSources": {
+              "comp_ccc4fc00-9656-4243-9b9f-7fa72e4561d5": "comp_7bd7ebbd-ef36-48fa-b79c-aecf1db86695",
+              "comp_75f6fd46-c34a-4344-a7f5-14dd5ac475b1": "comp_6586d428-a0e0-4941-a45f-8eb7188fc149"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_ccc4fc00-9656-4243-9b9f-7fa72e4561d5",
+              "position": {
+                "x": 0,
+                "y": -1
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_75f6fd46-c34a-4344-a7f5-14dd5ac475b1",
+              "assetId": "asset_685a786e-4b9f-4717-aa9e-9aa0d282fced",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_04e8b1b5-71b4-47e6-b4aa-91f65d56a736",
+          "name": "text-regular",
+          "parentId": "node_d1469459-3faf-4539-9363-240561d422df",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_ee290d26-048c-40db-b818-6f16868aaaf4",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "componentSources": {
+              "comp_29a2c4c1-f1c9-46d4-adac-7d8862a6ac3b": "comp_631ea417-8cf6-4bbb-b6bc-d4c35e059d7a",
+              "comp_7bcac62b-ec07-4839-b335-7355d3e2337a": "comp_14bd0013-0ac4-4402-a320-f30c7c155794"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_29a2c4c1-f1c9-46d4-adac-7d8862a6ac3b",
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_7bcac62b-ec07-4839-b335-7355d3e2337a",
+              "text": "Main Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  13750737,
+                  16777215,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_b654634f-47d8-4f58-8605-7f8af6deb60c",
+          "name": "text-pressed",
+          "parentId": "node_d1469459-3faf-4539-9363-240561d422df",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_ee290d26-048c-40db-b818-6f16868aaaf4",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "componentSources": {
+              "comp_abe80509-00ef-4953-a4b4-e062b3e70b43": "comp_ba586bbf-cecb-4019-9554-6677fe0834cc",
+              "comp_78999773-b173-4b62-973d-eb4e6bee0f80": "comp_c6ed5775-a184-4572-b01a-4cd71700e3e0"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_abe80509-00ef-4953-a4b4-e062b3e70b43",
+              "position": {
+                "x": 0,
+                "y": 4
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_78999773-b173-4b62-973d-eb4e6bee0f80",
+              "text": "Main Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  7895160,
+                  14277081,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
     }
   ]
 }

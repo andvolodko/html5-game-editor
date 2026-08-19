@@ -1,0 +1,251 @@
+{
+  "version": 1,
+  "id": "prefab_ecb4ed5d-8016-49d4-b30a-6ae1128f7456",
+  "name": "GoSpineSceneButton",
+  "root": {
+    "id": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+    "name": "GoSpineSceneButton",
+    "components": [
+      {
+        "type": "Transform2D",
+        "id": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+        "position": {
+          "x": 959,
+          "y": 316
+        },
+        "rotation": 0,
+        "scale": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      {
+        "type": "Script",
+        "id": "comp_888624e2-d9e6-4044-b3eb-029091d75468",
+        "scriptId": "shared.Button",
+        "properties": {
+          "regularChildName": "regular",
+          "pressedChildName": "pressed"
+        }
+      },
+      {
+        "type": "Script",
+        "id": "comp_4d87ba98-71aa-4892-a326-fd8d2b7134ba",
+        "scriptId": "shared.AudioClick",
+        "properties": {
+          "audioAssetId": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
+          "mouseEvent": "pointertap"
+        }
+      },
+      {
+        "type": "Script",
+        "id": "comp_ead0350e-74e0-45f4-be2c-2b0165aa2e2e",
+        "scriptId": "editor-features-demo.GoSpineButton",
+        "properties": {
+          "sceneName": "spine"
+        }
+      },
+      {
+        "type": "HitZone",
+        "id": "comp_0bb0f605-62d6-44ba-b901-e95a8b9253fc",
+        "offset": {
+          "x": 0.327808422492609,
+          "y": 5.219397450536029
+        },
+        "shape": {
+          "type": "rectangle",
+          "width": 294.86349319337575,
+          "height": 86.97858021431925
+        }
+      }
+    ],
+    "children": [
+      {
+        "id": "node_7a7af1e4-01f9-42d4-9772-ad76bdba2635",
+        "name": "regular",
+        "parentId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_d5af0834-a8fc-4a2d-ad67-34beff5b7a06",
+            "position": {
+              "x": 0,
+              "y": 5
+            },
+            "rotation": 0,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "NineSliceSprite",
+            "id": "comp_78aa241b-abce-45ff-9043-be8eddae7b5f",
+            "assetId": "asset_bc24bff4-6cfc-4c16-ad20-48ea9332d25d",
+            "width": 328.89496316408133,
+            "height": 117.84887995492628,
+            "leftWidth": 64,
+            "rightWidth": 64,
+            "topHeight": 64,
+            "bottomHeight": 64
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "node_8a5e8c14-108d-4045-869f-a3ea8bbbf334",
+        "name": "pressed",
+        "parentId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_7bd7ebbd-ef36-48fa-b79c-aecf1db86695",
+            "position": {
+              "x": 0,
+              "y": -1
+            },
+            "rotation": 0,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "NineSliceSprite",
+            "id": "comp_6586d428-a0e0-4941-a45f-8eb7188fc149",
+            "assetId": "asset_685a786e-4b9f-4717-aa9e-9aa0d282fced",
+            "width": 328.89496316408133,
+            "height": 117.84887995492628,
+            "leftWidth": 64,
+            "rightWidth": 64,
+            "topHeight": 64,
+            "bottomHeight": 64
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+        "name": "text-regular",
+        "parentId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_631ea417-8cf6-4bbb-b6bc-d4c35e059d7a",
+            "position": {
+              "x": 0,
+              "y": 0
+            },
+            "rotation": 0,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "Text",
+            "id": "comp_14bd0013-0ac4-4402-a320-f30c7c155794",
+            "text": "Spine Scene",
+            "style": {
+              "fontFamily": "Arial",
+              "fontSize": 32,
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "fontVariant": "normal",
+              "fill": [
+                13750737,
+                16777215,
+                14277081
+              ],
+              "fillAlpha": 1,
+              "align": "left",
+              "letterSpacing": 0,
+              "lineHeight": 0,
+              "leading": 0,
+              "wordWrap": false,
+              "wordWrapWidth": 440,
+              "breakWords": false,
+              "whiteSpace": "pre",
+              "padding": 0,
+              "trim": false,
+              "textBaseline": "alphabetic",
+              "strokeColor": 0,
+              "strokeAlpha": 1,
+              "strokeWidth": 0,
+              "strokeJoin": "miter",
+              "miterLimit": 10,
+              "dropShadow": true,
+              "dropShadowColor": 3880245,
+              "dropShadowAlpha": 0.8,
+              "dropShadowBlur": 1,
+              "dropShadowDistance": 5,
+              "dropShadowAngle": 30
+            }
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "node_de382a68-7af7-4650-8256-b058cd669f37",
+        "name": "text-pressed",
+        "parentId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+        "components": [
+          {
+            "type": "Transform2D",
+            "id": "comp_ba586bbf-cecb-4019-9554-6677fe0834cc",
+            "position": {
+              "x": 0,
+              "y": 4
+            },
+            "rotation": 0,
+            "scale": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "type": "Text",
+            "id": "comp_c6ed5775-a184-4572-b01a-4cd71700e3e0",
+            "text": "Spine Scene",
+            "style": {
+              "fontFamily": "Arial",
+              "fontSize": 32,
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "fontVariant": "normal",
+              "fill": [
+                7895160,
+                14277081,
+                14277081
+              ],
+              "fillAlpha": 1,
+              "align": "left",
+              "letterSpacing": 0,
+              "lineHeight": 0,
+              "leading": 0,
+              "wordWrap": false,
+              "wordWrapWidth": 440,
+              "breakWords": false,
+              "whiteSpace": "pre",
+              "padding": 0,
+              "trim": false,
+              "textBaseline": "alphabetic",
+              "strokeColor": 0,
+              "strokeAlpha": 1,
+              "strokeWidth": 0,
+              "strokeJoin": "miter",
+              "miterLimit": 10,
+              "dropShadow": true,
+              "dropShadowColor": 3880245,
+              "dropShadowAlpha": 0.8,
+              "dropShadowBlur": 1,
+              "dropShadowDistance": 5,
+              "dropShadowAngle": 30
+            }
+          }
+        ],
+        "children": []
+      }
+    ]
+  }
+}

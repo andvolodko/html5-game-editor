@@ -7,24 +7,55 @@ import type {
 
 const DEFAULT_REGULAR_CHILD = "regular";
 const DEFAULT_PRESSED_CHILD = "pressed";
+const DEFAULT_TEXT_REGULAR_CHILD = "text-regular";
+const DEFAULT_TEXT_PRESSED_CHILD = "text-pressed";
 const POINTER_CURSOR = "pointer";
 
 type Props = {
   regularChildName: string;
   pressedChildName: string;
+  textRegularChildName: string;
+  textPressedChildName: string;
 };
+
+function namedChild(raw: unknown, fallback: string): string {
+  return typeof raw === "string" && raw.length > 0 ? raw : fallback;
+}
 
 function readProps(raw: Readonly<Record<string, unknown>>): Props {
   return {
-    regularChildName:
-      typeof raw.regularChildName === "string" && raw.regularChildName.length > 0
-        ? raw.regularChildName
-        : DEFAULT_REGULAR_CHILD,
-    pressedChildName:
-      typeof raw.pressedChildName === "string" && raw.pressedChildName.length > 0
-        ? raw.pressedChildName
-        : DEFAULT_PRESSED_CHILD,
+    regularChildName: namedChild(raw.regularChildName, DEFAULT_REGULAR_CHILD),
+    pressedChildName: namedChild(raw.pressedChildName, DEFAULT_PRESSED_CHILD),
+    textRegularChildName: namedChild(
+      raw.textRegularChildName,
+      DEFAULT_TEXT_REGULAR_CHILD,
+    ),
+    textPressedChildName: namedChild(
+      raw.textPressedChildName,
+      DEFAULT_TEXT_PRESSED_CHILD,
+    ),
   };
+}
+
+function findChildId(
+  children: ReadonlyArray<{ id: string; name: string }>,
+  name: string,
+): string | undefined {
+  return children.find((child) => child.name === name)?.id;
+}
+
+function setPairVisible(
+  setNodeVisible: (nodeId: string, visible: boolean) => void,
+  regularId: string | undefined,
+  pressedId: string | undefined,
+  pressed: boolean,
+): void {
+  if (regularId) {
+    setNodeVisible(regularId, !pressed);
+  }
+  if (pressedId) {
+    setNodeVisible(pressedId, pressed);
+  }
 }
 
 function pointerTargetIds(
@@ -39,13 +70,20 @@ function pointerTargetIds(
 }
 
 /**
- * Swaps child visuals named regular/pressed and shows a pointer cursor.
+ * Swaps child visuals named regular/pressed (and optional text-regular /
+ * text-pressed labels) and shows a pointer cursor.
+ * An enabled HitZone on the host container is an optional pointer target:
+ * child visuals stay visible but are not the click/hover region.
  */
 export class ButtonBehaviour implements ScriptInstance {
   private regularChildName = DEFAULT_REGULAR_CHILD;
   private pressedChildName = DEFAULT_PRESSED_CHILD;
+  private textRegularChildName = DEFAULT_TEXT_REGULAR_CHILD;
+  private textPressedChildName = DEFAULT_TEXT_PRESSED_CHILD;
   private regularId: string | undefined;
   private pressedId: string | undefined;
+  private textRegularId: string | undefined;
+  private textPressedId: string | undefined;
   private unsubscribers: Array<() => void> = [];
 
   constructor(private readonly ctx: ScriptCreateContext) {
@@ -71,6 +109,8 @@ export class ButtonBehaviour implements ScriptInstance {
     const props = readProps(raw);
     this.regularChildName = props.regularChildName;
     this.pressedChildName = props.pressedChildName;
+    this.textRegularChildName = props.textRegularChildName;
+    this.textPressedChildName = props.textPressedChildName;
   }
 
   private unbind(): void {
@@ -85,16 +125,19 @@ export class ButtonBehaviour implements ScriptInstance {
     const { listChildNodes, setNodeCursor, onNodePointerEvent } =
       this.ctx.services;
     const children = listChildNodes?.(this.ctx.nodeId) ?? [];
-    this.regularId = children.find(
-      (child) => child.name === this.regularChildName,
-    )?.id;
-    this.pressedId = children.find(
-      (child) => child.name === this.pressedChildName,
-    )?.id;
+    this.regularId = findChildId(children, this.regularChildName);
+    this.pressedId = findChildId(children, this.pressedChildName);
+    this.textRegularId = findChildId(children, this.textRegularChildName);
+    this.textPressedId = findChildId(children, this.textPressedChildName);
 
     this.applyPressed(false);
 
-    for (const nodeId of pointerTargetIds(this.ctx.nodeId, listChildNodes)) {
+    const hostHasHitZone =
+      this.ctx.services.hasHitZone?.(this.ctx.nodeId) === true;
+    const cursorIds = hostHasHitZone
+      ? [this.ctx.nodeId]
+      : pointerTargetIds(this.ctx.nodeId, listChildNodes);
+    for (const nodeId of cursorIds) {
       setNodeCursor?.(nodeId, POINTER_CURSOR);
     }
 
@@ -116,12 +159,13 @@ export class ButtonBehaviour implements ScriptInstance {
     if (!setNodeVisible) {
       return;
     }
-    if (this.regularId) {
-      setNodeVisible(this.regularId, !pressed);
-    }
-    if (this.pressedId) {
-      setNodeVisible(this.pressedId, pressed);
-    }
+    setPairVisible(setNodeVisible, this.regularId, this.pressedId, pressed);
+    setPairVisible(
+      setNodeVisible,
+      this.textRegularId,
+      this.textPressedId,
+      pressed,
+    );
   }
 }
 
@@ -133,6 +177,14 @@ const PROPERTIES: ComponentDefinition["properties"] = {
   pressedChildName: {
     kind: "string",
     default: DEFAULT_PRESSED_CHILD,
+  },
+  textRegularChildName: {
+    kind: "string",
+    default: DEFAULT_TEXT_REGULAR_CHILD,
+  },
+  textPressedChildName: {
+    kind: "string",
+    default: DEFAULT_TEXT_PRESSED_CHILD,
   },
 };
 

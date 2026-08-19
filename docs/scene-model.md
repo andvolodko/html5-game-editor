@@ -78,6 +78,9 @@ interface SceneNodeData {
   layer?: "background" | "foreground";  // hybrid Pixi stack; ignored for 3D
   visible?: boolean;                    // omit = true; persist false when hidden
   alpha?: number;                       // omit = 1; persist when not fully opaque
+  pointerEventMode?: NodePointerEventMode; // omit = "static"; playback only
+  cursor?: string;                      // omit = engine default; CSS cursor in playback
+  pointerChildren?: boolean;            // omit = true; persist false to block children
   prefab?: PrefabInstanceLink;          // only on prefab-instance nodes
   components: ComponentData[];
   children: SceneNodeData[];
@@ -163,10 +166,11 @@ Keep files Git-friendly: deterministic field order from the writer, no Pixi/Thre
 
 ---
 
-## Visibility, alpha, and layers
+## Visibility, alpha, pointer, and layers
 
 - **`visible`** — runtime/export. Omit when `true`. Inspector **Visible** writes this field (undoable). Hierarchy eye does not.
 - **`alpha`** — runtime/export opacity (0–1). Omit when `1`. Inspector **Alpha** writes this field (undoable). Pixi applies it to the node container (children inherit).
+- **`pointerEventMode`**, **`cursor`**, **`pointerChildren`** — playback / game runtime pointer behaviour for 2D nodes (Pixi `eventMode`, CSS cursor, whether children are hit-tested). Omit for defaults (`static`, engine cursor, children on). Inspector **Pointer** writes these (undoable). Editor selection still uses grab / static so locked or `none` nodes remain selectable.
 - **`layer`** — `"background"` \| `"foreground"` on 2D nodes in a hybrid scene (Pixi under vs over Three). Default `"background"`. Ignored for `Transform3D` nodes.
 - **`renderer`** on `SceneData` — `"pixi"` \| `"three"` \| `"hybrid"`. Must match the game’s package dependencies (`project.json` `renderers`).
 
@@ -196,7 +200,7 @@ interface PrefabInstanceLink {
   sourceNodeId: string;
   componentSources: Record<string, string>; // scene comp id → source comp id
   isRoot?: boolean;
-  overrides?: PrefabOverride[];             // property / name / layer / visible / alpha
+  overrides?: PrefabOverride[];             // property / name / layer / visible / alpha / pointer*
 }
 ```
 

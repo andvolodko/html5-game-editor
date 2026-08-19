@@ -1,4 +1,6 @@
 import type {
+  ScriptAnimatedSpritePlayback,
+  ScriptAnimatedSpritePlaybackPatch,
   ScriptModel3DPlayback,
   ScriptModel3DPlaybackPatch,
   ScriptTransform2D,
@@ -8,6 +10,7 @@ import type {
 } from "@game-editor/game-components";
 import {
   findNodeById,
+  getAnimatedSprite,
   getBitmapText,
   getHTMLText,
   getModel3D,
@@ -194,6 +197,58 @@ export function patchSpriteAssetId(
     delete sprite.assetId;
   } else {
     sprite.assetId = assetId;
+  }
+  return node;
+}
+
+export function readAnimatedSpritePlayback(
+  scene: SceneData | undefined,
+  nodeId: string,
+): ScriptAnimatedSpritePlayback | undefined {
+  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const sprite = node ? getAnimatedSprite(node) : undefined;
+  if (!sprite) {
+    return undefined;
+  }
+  const playback: ScriptAnimatedSpritePlayback = {
+    animationSpeed: sprite.animationSpeed,
+    loop: sprite.loop,
+    playing: sprite.playing,
+  };
+  if (sprite.assetId !== undefined) {
+    playback.assetId = sprite.assetId;
+  }
+  if (sprite.animation !== undefined) {
+    playback.animation = sprite.animation;
+  }
+  return playback;
+}
+
+export function patchAnimatedSpritePlayback(
+  scene: SceneData | undefined,
+  nodeId: string,
+  patch: ScriptAnimatedSpritePlaybackPatch,
+): SceneNodeData | undefined {
+  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const sprite = node ? getAnimatedSprite(node) : undefined;
+  if (!node || !sprite) {
+    return undefined;
+  }
+  if (patch.animation !== undefined) {
+    if (patch.animation.length === 0) {
+      delete sprite.animation;
+    } else {
+      sprite.animation = patch.animation;
+    }
+  }
+  if (patch.animationSpeed !== undefined) {
+    sprite.animationSpeed = patch.animationSpeed;
+  }
+  if (patch.loop !== undefined) {
+    sprite.loop = patch.loop;
+  }
+  if (patch.playing !== undefined) {
+    sprite.playing = patch.playing;
   }
   return node;
 }

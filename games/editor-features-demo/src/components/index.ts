@@ -9,10 +9,6 @@ import {
   loadingSceneComponent,
 } from "./loading-scene.js";
 import {
-  installMainButtonRuntime,
-  mainButtonComponent,
-} from "./main-button.js";
-import {
   installGoSpineButtonRuntime,
   goSpineButtonComponent,
 } from "./go-spine-button.js";
@@ -25,16 +21,20 @@ import {
   installCloneObjectRuntime,
 } from "./clone-object.js";
 import { cloudComponent, installCloudRuntime } from "./cloud.js";
+import {
+  installUnitLogicRuntime,
+  unitLogicComponent,
+} from "./unit-logic.js";
 
 /** Registers shared + editor-features-demo script components into the catalog. */
 export function registerGameComponents(registry: ComponentRegistry): void {
   registerSharedComponents(registry);
   registry.register(loadingSceneComponent);
-  registry.register(mainButtonComponent);
   registry.register(goSpineButtonComponent);
   registry.register(raptorComponent);
   registry.register(cloneObjectComponent);
   registry.register(cloudComponent);
+  registry.register(unitLogicComponent);
 }
 
 /** Bus events for Inspector dynamicEnum source `busEvents`. */
@@ -53,11 +53,11 @@ export function getComponentCatalog() {
  */
 export function installEditorFeaturesDemoRuntime(registry: ComponentRegistry): void {
   installLoadingSceneRuntime(registry);
-  installMainButtonRuntime(registry);
   installGoSpineButtonRuntime(registry);
   installRaptorRuntime(registry);
   installCloneObjectRuntime(registry);
   installCloudRuntime(registry);
+  installUnitLogicRuntime(registry);
 }
 
 /** Standard hook discovered by the editor via import.meta.glob. */
@@ -67,11 +67,6 @@ export {
   loadingSceneComponent,
   installLoadingSceneRuntime,
 } from "./loading-scene.js";
-export {
-  mainButtonComponent,
-  installMainButtonRuntime,
-  MainButtonBehaviour,
-} from "./main-button.js";
 export {
   raptorComponent,
   installRaptorRuntime,
@@ -87,3 +82,8 @@ export {
   installCloudRuntime,
   CloudBehaviour,
 } from "./cloud.js";
+export {
+  unitLogicComponent,
+  installUnitLogicRuntime,
+  UnitLogicBehaviour,
+} from "./unit-logic.js";

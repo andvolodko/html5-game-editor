@@ -176,6 +176,41 @@ describe("prefab overrides", () => {
     expect(resolved.node.alpha).toBeUndefined();
   });
 
+  it("copies pointer fields and records pointer overrides", () => {
+    const prefab = buildPlayerPrefab();
+    prefab.root.pointerEventMode = "none";
+    prefab.root.cursor = "pointer";
+    prefab.root.pointerChildren = false;
+    const { node } = instantiatePrefab(prefab, { prefabAssetId: PREFAB_ASSET_ID });
+    expect(node.pointerEventMode).toBe("none");
+    expect(node.cursor).toBe("pointer");
+    expect(node.pointerChildren).toBe(false);
+    delete node.pointerEventMode;
+    delete node.cursor;
+    delete node.pointerChildren;
+    const overrides = computePrefabOverrides(prefab.root, node);
+    expect(overrides).toContainEqual({
+      kind: "pointerEventMode",
+      sourceNodeId: prefab.root.id,
+      value: "static",
+    });
+    expect(overrides).toContainEqual({
+      kind: "cursor",
+      sourceNodeId: prefab.root.id,
+      value: "",
+    });
+    expect(overrides).toContainEqual({
+      kind: "pointerChildren",
+      sourceNodeId: prefab.root.id,
+      value: true,
+    });
+    node.prefab!.overrides = overrides;
+    const resolved = resolvePrefabInstance(prefab, node, catalogOf(prefab));
+    expect(resolved.node.pointerEventMode).toBeUndefined();
+    expect(resolved.node.cursor).toBeUndefined();
+    expect(resolved.node.pointerChildren).toBeUndefined();
+  });
+
   it("non-overridden prefab updates propagate", () => {
     const prefab = buildPlayerPrefab();
     const { node } = instantiatePrefab(prefab, { prefabAssetId: PREFAB_ASSET_ID });

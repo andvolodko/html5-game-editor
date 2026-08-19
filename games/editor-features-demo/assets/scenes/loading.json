@@ -41,8 +41,8 @@
               "type": "Transform2D",
               "id": "comp_7eae4af3-82e4-4ae5-9f63-e957fcbd12f8",
               "position": {
-                "x": 640,
-                "y": 380
+                "x": 961,
+                "y": 580
               },
               "rotation": 0,
               "scale": {
@@ -57,14 +57,37 @@
               "style": {
                 "fontFamily": "Arial",
                 "fontSize": 64,
-                "fontWeight": "normal",
+                "fontWeight": "bold",
                 "fontStyle": "normal",
-                "fill": 1604694,
+                "fontVariant": "normal",
+                "fill": [
+                  1604694,
+                  3522699,
+                  1199928
+                ],
+                "fillAlpha": 1,
                 "align": "center",
                 "letterSpacing": 0,
                 "lineHeight": 0,
+                "leading": 0,
                 "wordWrap": true,
-                "wordWrapWidth": 440
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 1578518,
+                "strokeAlpha": 1,
+                "strokeWidth": 2,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 0,
+                "dropShadowAlpha": 1,
+                "dropShadowBlur": 0,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
               }
             },
             {

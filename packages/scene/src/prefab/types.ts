@@ -39,12 +39,33 @@ export interface PrefabAlphaOverride {
   value: number;
 }
 
+export interface PrefabPointerEventModeOverride {
+  kind: "pointerEventMode";
+  sourceNodeId: string;
+  value: "none" | "passive" | "auto" | "static" | "dynamic";
+}
+
+export interface PrefabCursorOverride {
+  kind: "cursor";
+  sourceNodeId: string;
+  value: string;
+}
+
+export interface PrefabPointerChildrenOverride {
+  kind: "pointerChildren";
+  sourceNodeId: string;
+  value: boolean;
+}
+
 export type PrefabOverride =
   | PrefabPropertyOverride
   | PrefabNameOverride
   | PrefabLayerOverride
   | PrefabVisibleOverride
-  | PrefabAlphaOverride;
+  | PrefabAlphaOverride
+  | PrefabPointerEventModeOverride
+  | PrefabCursorOverride
+  | PrefabPointerChildrenOverride;
 
 /**
  * Persistent link from a scene node to a prefab source node.

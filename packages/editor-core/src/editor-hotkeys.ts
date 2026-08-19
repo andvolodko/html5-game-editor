@@ -15,19 +15,22 @@ export function isChordLetter(
 
 /** Arrow-key nudge distance in world/local Transform2D pixels. */
 export const KEYBOARD_NUDGE_PIXELS = 1;
+/** Shift+arrow nudge distance in world/local Transform2D pixels. */
+export const KEYBOARD_NUDGE_SHIFT_PIXELS = 10;
 
 export function arrowNudgeDelta(
   key: string,
+  step: number = KEYBOARD_NUDGE_PIXELS,
 ): { dx: number; dy: number } | undefined {
   switch (key) {
     case "ArrowLeft":
-      return { dx: -KEYBOARD_NUDGE_PIXELS, dy: 0 };
+      return { dx: -step, dy: 0 };
     case "ArrowRight":
-      return { dx: KEYBOARD_NUDGE_PIXELS, dy: 0 };
+      return { dx: step, dy: 0 };
     case "ArrowUp":
-      return { dx: 0, dy: -KEYBOARD_NUDGE_PIXELS };
+      return { dx: 0, dy: -step };
     case "ArrowDown":
-      return { dx: 0, dy: KEYBOARD_NUDGE_PIXELS };
+      return { dx: 0, dy: step };
     default:
       return undefined;
   }
@@ -169,10 +172,13 @@ export function bindEditorHotkeys(
       return;
     }
 
-    // Arrow keys nudge selection by 1px. Skip when modifiers are held
+    // Arrow keys nudge selection (1px, or 10px with Shift). Skip Ctrl/Cmd/Alt
     // so browser/OS chords keep working.
-    if (!mod && !event.altKey && !event.shiftKey) {
-      const delta = arrowNudgeDelta(event.key);
+    if (!mod && !event.altKey) {
+      const step = event.shiftKey
+        ? KEYBOARD_NUDGE_SHIFT_PIXELS
+        : KEYBOARD_NUDGE_PIXELS;
+      const delta = arrowNudgeDelta(event.key, step);
       if (delta) {
         if (host.nudgeSelectedNodes(delta.dx, delta.dy)) {
           event.preventDefault();

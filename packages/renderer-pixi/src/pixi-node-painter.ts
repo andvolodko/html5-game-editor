@@ -20,6 +20,7 @@ import { computeGroupingContentBounds } from "./pixi-content-bounds.js";
 import { applyVisualDisplayLabel } from "./pixi-display-labels.js";
 import { chromeHitBounds, effectiveHitZone } from "./pixi-hit-zone-pick.js";
 import { syncHitZoneDisplay } from "./pixi-hit-zone-sync.js";
+import { applyPlaybackPointerEventMode } from "./pixi-node-pointer.js";
 import { effectiveMask } from "./pixi-mask-pick.js";
 import { sceneGraphicsPolygon } from "./pixi-graphics-polygon-drag.js";
 import { syncMaskDisplay } from "./pixi-mask-sync.js";
@@ -48,6 +49,7 @@ export interface NodePainterHost {
   getSelectedNodeIds(): ReadonlySet<string>;
   getCameraScale(): number;
   getAssetResolver(): AssetResolver | undefined;
+  onPlaybackHitTargetReady?(runtime: RuntimeNode): void;
 }
 
 /**
@@ -59,11 +61,16 @@ export class PixiNodePainter {
 
   constructor(private readonly host: NodePainterHost) {}
 
-  paint(runtime: RuntimeNode): void {
-    this.host.graph.applyTransform(
-      runtime.container,
-      getTransform2D(runtime.node),
-    );
+  paint(
+    runtime: RuntimeNode,
+    options?: { applyTransform?: boolean },
+  ): void {
+    if (options?.applyTransform !== false) {
+      this.host.graph.applyTransform(
+        runtime.container,
+        getTransform2D(runtime.node),
+      );
+    }
     void this.paintVisuals(runtime);
     this.paintSelection(runtime);
   }
@@ -101,7 +108,7 @@ export class PixiNodePainter {
     runtime.container.hitArea = undefined;
 
     if (!visualData) {
-      clearVisual(runtime.visual);
+      clearVisual(runtime.visual, runtime.visualsRoot);
       runtime.visual = undefined;
       runtime.visualType = undefined;
       runtime.supportsSpriteGizmo = false;
@@ -533,6 +540,8 @@ export class PixiNodePainter {
       return;
     }
     syncHitZoneDisplay(runtime, { selected: false, strokeScale: 1 });
+    this.host.onPlaybackHitTargetReady?.(runtime);
+    applyPlaybackPointerEventMode(runtime);
   }
 
   private async syncMask(runtime: RuntimeNode): Promise<void> {

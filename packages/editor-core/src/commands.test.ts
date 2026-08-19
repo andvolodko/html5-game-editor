@@ -22,6 +22,7 @@ import {
   EditorViewportController,
   DocumentManager,
   KEYBOARD_NUDGE_PIXELS,
+  KEYBOARD_NUDGE_SHIFT_PIXELS,
   SetTransform2DCommand,
   SetTransform3DCommand,
   SetModel3DCommand,
@@ -116,6 +117,42 @@ describe("editor sprite commands", () => {
     expect(findNodeById(editor.getScene(), nodeId)?.alpha).toBe(0.4);
   });
 
+  it("sets node pointer fields through a command with undo", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const create = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "Sprite",
+      { x: 0, y: 0 },
+    );
+    editor.execute(create);
+    const nodeId = create.createdNodeId;
+    expect(findNodeById(editor.getScene(), nodeId)?.pointerEventMode).toBeUndefined();
+    expect(findNodeById(editor.getScene(), nodeId)?.cursor).toBeUndefined();
+
+    editor.setNodePointer(nodeId, {
+      eventMode: "none",
+      cursor: "pointer",
+      children: false,
+    });
+    const after = findNodeById(editor.getScene(), nodeId);
+    expect(after?.pointerEventMode).toBe("none");
+    expect(after?.cursor).toBe("pointer");
+    expect(after?.pointerChildren).toBe(false);
+
+    editor.undo();
+    const undone = findNodeById(editor.getScene(), nodeId);
+    expect(undone?.pointerEventMode).toBeUndefined();
+    expect(undone?.cursor).toBeUndefined();
+    expect(undone?.pointerChildren).toBeUndefined();
+
+    editor.redo();
+    const redone = findNodeById(editor.getScene(), nodeId);
+    expect(redone?.pointerEventMode).toBe("none");
+    expect(redone?.cursor).toBe("pointer");
+    expect(redone?.pointerChildren).toBe(false);
+  });
+
   it("does not change node alpha when the node is editor-locked", () => {
     const editor = new Editor({ scene: createEmptyScene("Test") });
     const create = new CreateSpriteCommand(
@@ -130,6 +167,22 @@ describe("editor sprite commands", () => {
     editor.setNodeLocked(nodeId, true);
     editor.setNodeAlpha(nodeId, 1);
     expect(findNodeById(editor.getScene(), nodeId)?.alpha).toBe(0.2);
+  });
+
+  it("does not change node pointer fields when the node is editor-locked", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const create = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "Sprite",
+      { x: 0, y: 0 },
+    );
+    editor.execute(create);
+    const nodeId = create.createdNodeId;
+    editor.setNodePointer(nodeId, { eventMode: "none" });
+    editor.setNodeLocked(nodeId, true);
+    editor.setNodePointer(nodeId, { eventMode: "static" });
+    expect(findNodeById(editor.getScene(), nodeId)?.pointerEventMode).toBe("none");
   });
 
   it("does not change runtime visible when the node is editor-locked", () => {
@@ -528,6 +581,56 @@ describe("DocumentManager dirty tracking", () => {
     expect(moved?.position).toEqual({
       x: 10 + KEYBOARD_NUDGE_PIXELS,
       y: 20,
+    });
+    expect(preventDefault).toHaveBeenCalled();
+
+    editor.undo();
+    expect(getTransform2D(editor.getScene().nodes[0]!)?.position).toEqual({
+      x: 10,
+      y: 20,
+    });
+    dispose();
+  });
+
+  it("Shift+arrow keys nudge the selected node by 10px with undo", () => {
+    const editor = new Editor({ scene: createEmptyScene("Test") });
+    const create = new CreateSpriteCommand(
+      editor.document,
+      editor.selection,
+      "Sprite",
+      { x: 10, y: 20 },
+    );
+    editor.execute(create);
+
+    const listeners = new Map<string, EventListener>();
+    const target = {
+      addEventListener(type: string, listener: EventListener) {
+        listeners.set(type, listener);
+      },
+      removeEventListener(type: string) {
+        listeners.delete(type);
+      },
+    } as unknown as Window;
+
+    const dispose = editor.bindEditorHotkeys(target);
+    const onKeyDown = listeners.get("keydown");
+    expect(onKeyDown).toBeTypeOf("function");
+
+    const preventDefault = vi.fn();
+    onKeyDown!({
+      key: "ArrowDown",
+      code: "ArrowDown",
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+      shiftKey: true,
+      preventDefault,
+    } as unknown as Event);
+
+    const moved = getTransform2D(editor.getScene().nodes[0]!);
+    expect(moved?.position).toEqual({
+      x: 10,
+      y: 20 + KEYBOARD_NUDGE_SHIFT_PIXELS,
     });
     expect(preventDefault).toHaveBeenCalled();
 

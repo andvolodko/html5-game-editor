@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { SCENE_SCHEMA_VERSION, type SceneData, type SceneNodeData } from "./types.js";
+import { NODE_CURSOR_MAX_LENGTH, NODE_POINTER_EVENT_MODES } from "./node-pointer.js";
 import { withSceneParseDefaults } from "./scene-parse-defaults.js";
 import { prefabInstanceLinkSchema } from "./prefab/link-schema.js";
 import {
@@ -407,6 +408,9 @@ export const sceneNodeSchema: z.ZodType<SceneNodeData> = z.lazy(() =>
     layer: z.enum(["background", "foreground"]).optional(),
     visible: z.boolean().optional(),
     alpha: z.number().min(0).max(1).optional(),
+    pointerEventMode: z.enum(NODE_POINTER_EVENT_MODES).optional(),
+    cursor: z.string().min(1).max(NODE_CURSOR_MAX_LENGTH).optional(),
+    pointerChildren: z.boolean().optional(),
     prefab: prefabInstanceLinkSchema.optional(),
     components: z.array(componentSchema),
     children: z.array(sceneNodeSchema),

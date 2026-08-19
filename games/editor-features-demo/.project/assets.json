@@ -5757,6 +5757,16 @@
       }
     },
     {
+      "id": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+      "type": "prefab",
+      "name": "GoSceneButton",
+      "path": "assets/prefabs/GoSceneButton.json",
+      "metadata": {
+        "kind": "prefab",
+        "prefabId": "prefab_ecb4ed5d-8016-49d4-b30a-6ae1128f7456"
+      }
+    },
+    {
       "id": "asset_e00463a2-fb60-4cd7-804c-0ebca1901cab",
       "type": "texture",
       "name": "House3",
@@ -6732,16 +6742,6 @@
         "width": 1152,
         "height": 192,
         "mimeType": "image/png"
-      }
-    },
-    {
-      "id": "asset_prefab_ui_button",
-      "type": "prefab",
-      "name": "UI Button",
-      "path": "assets/prefabs/ui-button.prefab.json",
-      "metadata": {
-        "kind": "prefab",
-        "prefabId": "prefab_ui_button"
       }
     },
     {

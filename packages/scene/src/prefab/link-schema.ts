@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { NODE_POINTER_EVENT_MODES } from "../node-pointer.js";
 
 export const prefabPropertyOverrideSchema = z.object({
   kind: z.literal("property"),
@@ -32,12 +33,33 @@ export const prefabAlphaOverrideSchema = z.object({
   value: z.number().min(0).max(1),
 });
 
+export const prefabPointerEventModeOverrideSchema = z.object({
+  kind: z.literal("pointerEventMode"),
+  sourceNodeId: z.string().min(1),
+  value: z.enum(NODE_POINTER_EVENT_MODES),
+});
+
+export const prefabCursorOverrideSchema = z.object({
+  kind: z.literal("cursor"),
+  sourceNodeId: z.string().min(1),
+  value: z.string(),
+});
+
+export const prefabPointerChildrenOverrideSchema = z.object({
+  kind: z.literal("pointerChildren"),
+  sourceNodeId: z.string().min(1),
+  value: z.boolean(),
+});
+
 export const prefabOverrideSchema = z.discriminatedUnion("kind", [
   prefabPropertyOverrideSchema,
   prefabNameOverrideSchema,
   prefabLayerOverrideSchema,
   prefabVisibleOverrideSchema,
   prefabAlphaOverrideSchema,
+  prefabPointerEventModeOverrideSchema,
+  prefabCursorOverrideSchema,
+  prefabPointerChildrenOverrideSchema,
 ]);
 
 export const prefabInstanceLinkSchema = z.object({

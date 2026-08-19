@@ -1,5 +1,5 @@
 import { AnimatedSprite } from "pixi.js";
-import type { Texture } from "pixi.js";
+import type { Container, Texture } from "pixi.js";
 import {
   DEFAULT_SPRITE_SIZE,
   type AnimatedSpriteComponentData,
@@ -77,18 +77,31 @@ export const animatedSpritePainter: PixiVisualPainter = {
   },
 };
 
+function liveAnimatedSprite(visual: Container | undefined): AnimatedSprite | undefined {
+  return visual instanceof AnimatedSprite && !visual.destroyed
+    ? visual
+    : undefined;
+}
+
 function paintAnimated(
   ctx: Parameters<PixiVisualPainter["paint"]>[0],
   data: AnimatedSpriteComponentData,
   textures: Texture[],
 ): VisualPaintResult {
   ctx.hidePlaceholder();
-  destroyVisual(ctx.visual);
-  const view = new AnimatedSprite({
-    textures,
-    autoPlay: false,
-    autoUpdate: false,
-  });
+  const existing = liveAnimatedSprite(ctx.visual);
+  const view =
+    existing ??
+    new AnimatedSprite({
+      textures,
+      autoPlay: false,
+      autoUpdate: false,
+    });
+  if (!existing) {
+    destroyVisual(ctx.visual, ctx.visualsRoot);
+  } else {
+    view.textures = textures;
+  }
   view.animationSpeed = data.animationSpeed;
   view.loop = data.loop;
   view.anchor.set(data.anchor?.x ?? 0.5, data.anchor?.y ?? 0.5);
@@ -100,7 +113,7 @@ function paintAnimated(
   view.width = w;
   view.height = h;
   if (data.playing) {
-    view.play();
+    view.gotoAndPlay(0);
   } else {
     view.gotoAndStop(0);
   }

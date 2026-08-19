@@ -12,7 +12,9 @@ import {
   flattenNodes,
   flattenSubtree,
   findNodeById,
+  getHitZone,
   getScriptComponents,
+  isHitZoneEnabled,
   moveNodeInScene,
   resolveScenePrefabs,
   resolveSceneRuntimeTransform2D,
@@ -25,11 +27,13 @@ import {
 } from "@game-editor/scene";
 import { ScriptHost } from "./script-host.js";
 import {
+  patchAnimatedSpritePlayback,
   patchModel3DPlayback,
   patchNodeText,
   patchSpriteAssetId,
   patchTransform2D,
   patchTransform3D,
+  readAnimatedSpritePlayback,
   readModel3DPlayback,
   readTransform2D,
   readTransform3D,
@@ -117,6 +121,10 @@ export class GameRuntime {
       options.services?.getModel3DAnimationDuration;
     const externalSetText = options.services?.setText;
     const externalSetSpriteAssetId = options.services?.setSpriteAssetId;
+    const externalGetAnimatedSpritePlayback =
+      options.services?.getAnimatedSpritePlayback;
+    const externalSetAnimatedSpritePlayback =
+      options.services?.setAnimatedSpritePlayback;
     const externalReparentNode = options.services?.reparentNode;
     const externalGetPerformanceStats = options.services?.getPerformanceStats;
     const externalResolveAssetUrl = options.services?.resolveAssetUrl;
@@ -129,6 +137,7 @@ export class GameRuntime {
     const externalDestroyNode = options.services?.destroyNode;
     const externalCloneNodeByName = options.services?.cloneNodeByName;
     const externalListChildNodes = options.services?.listChildNodes;
+    const externalHasHitZone = options.services?.hasHitZone;
     const externalSetNodeVisible = options.services?.setNodeVisible;
     const externalSetNodeAlpha = options.services?.setNodeAlpha;
     const externalSetNodeCursor = options.services?.setNodeCursor;
@@ -226,6 +235,19 @@ export class GameRuntime {
         }
         this.writeSpriteAssetId(nodeId, assetId);
       },
+      getAnimatedSpritePlayback: (nodeId) => {
+        if (externalGetAnimatedSpritePlayback) {
+          return externalGetAnimatedSpritePlayback(nodeId);
+        }
+        return readAnimatedSpritePlayback(this.scene, nodeId);
+      },
+      setAnimatedSpritePlayback: (nodeId, patch) => {
+        if (externalSetAnimatedSpritePlayback) {
+          externalSetAnimatedSpritePlayback(nodeId, patch);
+          return;
+        }
+        this.writeAnimatedSpritePlayback(nodeId, patch);
+      },
       reparentNode: (nodeId, parentId, index) => {
         if (externalReparentNode) {
           externalReparentNode(nodeId, parentId, index);
@@ -263,6 +285,12 @@ export class GameRuntime {
           return externalListChildNodes(nodeId);
         }
         return this.listChildNodes(nodeId);
+      },
+      hasHitZone: (nodeId) => {
+        if (externalHasHitZone) {
+          return externalHasHitZone(nodeId);
+        }
+        return this.hasHitZone(nodeId);
       },
       setNodeVisible: (nodeId, visible) => {
         if (externalSetNodeVisible) {
@@ -618,6 +646,21 @@ export class GameRuntime {
     });
   }
 
+  private writeAnimatedSpritePlayback(
+    nodeId: string,
+    patch: Parameters<
+      NonNullable<ScriptRuntimeServices["setAnimatedSpritePlayback"]>
+    >[1],
+  ): void {
+    const node = patchAnimatedSpritePlayback(this.scene, nodeId, patch);
+    if (!node) {
+      return;
+    }
+    this.forOwningRenderers(node, (renderer) => {
+      renderer.updateNode(node);
+    });
+  }
+
   private reparentLiveNode(
     nodeId: string,
     parentId: string | undefined,
@@ -718,6 +761,15 @@ export class GameRuntime {
       return [];
     }
     return node.children.map((child) => ({ id: child.id, name: child.name }));
+  }
+
+  private hasHitZone(nodeId: string): boolean {
+    const node = this.scene ? findNodeById(this.scene, nodeId) : undefined;
+    if (!node) {
+      return false;
+    }
+    const hitZone = getHitZone(node);
+    return hitZone !== undefined && isHitZoneEnabled(hitZone);
   }
 
   private setNodeVisible(nodeId: string, visible: boolean): void {

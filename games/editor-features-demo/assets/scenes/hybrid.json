@@ -286,6 +286,259 @@
       "children": []
     },
     {
+      "id": "node_dd1ba193-28ec-4c93-bc7a-cdbc46849dfe",
+      "name": "GoMainSceneButton Copy",
+      "layer": "foreground",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_f60fd86d-dcdb-4d14-861d-32a5a3ba7ebb",
+          "position": {
+            "x": 960,
+            "y": 1008
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_eacab886-d445-45cc-bebd-8fba1e9b15ca",
+          "scriptId": "shared.Button",
+          "properties": {
+            "regularChildName": "regular",
+            "pressedChildName": "pressed"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_fd456c7d-c915-4333-9990-fcac5aa35a45",
+          "scriptId": "shared.AudioClick",
+          "properties": {
+            "audioAssetId": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
+            "mouseEvent": "pointertap"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_0af5d240-7378-43f6-9964-353768893231",
+          "scriptId": "editor-features-demo.GoSpineButton",
+          "properties": {
+            "sceneName": "main"
+          }
+        },
+        {
+          "type": "HitZone",
+          "id": "comp_03ddb52f-a45e-46ad-bca9-43d09d4e22d7",
+          "offset": {
+            "x": 0.327808422492609,
+            "y": 5.219397450536029
+          },
+          "shape": {
+            "type": "rectangle",
+            "width": 294.86349319337575,
+            "height": 86.97858021431925
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_dca75321-0ae2-42a6-9b8e-c886c98bc3cf",
+          "name": "regular",
+          "parentId": "node_dd1ba193-28ec-4c93-bc7a-cdbc46849dfe",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_fb481441-7261-4398-9c50-ff8e22a2bec4",
+              "position": {
+                "x": 0,
+                "y": 5
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_8ea5a4ba-c1b9-49f8-b92a-a4f5d0e081b1",
+              "assetId": "asset_bc24bff4-6cfc-4c16-ad20-48ea9332d25d",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_8cfd5370-c52e-4a7b-b02b-f09f884530f0",
+          "name": "pressed",
+          "parentId": "node_dd1ba193-28ec-4c93-bc7a-cdbc46849dfe",
+          "layer": "foreground",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_1f7d24bc-370c-414c-99e7-26ab5e8aaa9b",
+              "position": {
+                "x": 0,
+                "y": -1
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_233c4354-232d-45aa-8656-95287e983712",
+              "assetId": "asset_685a786e-4b9f-4717-aa9e-9aa0d282fced",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_6c6e7464-db62-4984-8ee3-a15756d512b2",
+          "name": "text-regular",
+          "parentId": "node_dd1ba193-28ec-4c93-bc7a-cdbc46849dfe",
+          "layer": "foreground",
+          "pointerEventMode": "none",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_4d5f1232-fd74-4c64-b65d-12c422f79cac",
+              "position": {
+                "x": 0,
+                "y": 4
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_649de47f-a084-4ba1-920d-af8892c2d36c",
+              "text": "Main Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  13750737,
+                  16777215,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_bb6d090b-96f8-4bb1-888d-bf680db3b9f0",
+          "name": "text-pressed",
+          "parentId": "node_dd1ba193-28ec-4c93-bc7a-cdbc46849dfe",
+          "layer": "foreground",
+          "pointerEventMode": "none",
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_0baa0928-2835-4291-867a-575ddfa94ee9",
+              "position": {
+                "x": 0,
+                "y": 4
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_e3cfeb10-32d3-4aa7-b5c8-47ef9077fca2",
+              "text": "Main Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  7895160,
+                  14277081,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
       "id": "node_f5ae0df2-569f-4267-9140-37b996e8bb6f",
       "name": "ManaRune",
       "components": [
@@ -315,79 +568,6 @@
           "loop": true,
           "timeScale": 1,
           "playing": true
-        }
-      ],
-      "children": []
-    },
-    {
-      "id": "node_b73c3b57-01be-4dee-bfe4-519aed757566",
-      "name": "Text Copy",
-      "components": [
-        {
-          "type": "Transform2D",
-          "id": "comp_852d6025-1398-4dff-a2bc-b0bb834594e3",
-          "position": {
-            "x": 653,
-            "y": 46
-          },
-          "rotation": 0,
-          "scale": {
-            "x": 1,
-            "y": 1
-          }
-        },
-        {
-          "type": "Text",
-          "id": "comp_4474e89b-0451-43d4-8c7f-847b914c69f9",
-          "text": "Go to main scene",
-          "style": {
-            "fontFamily": "Arial",
-            "fontSize": 32,
-            "fontWeight": "normal",
-            "fontStyle": "normal",
-            "fontVariant": "normal",
-            "fill": 16777215,
-            "fillAlpha": 1,
-            "align": "left",
-            "letterSpacing": 0,
-            "lineHeight": 0,
-            "leading": 0,
-            "wordWrap": false,
-            "wordWrapWidth": 440,
-            "breakWords": false,
-            "whiteSpace": "pre",
-            "padding": 0,
-            "trim": false,
-            "textBaseline": "alphabetic",
-            "strokeColor": 0,
-            "strokeAlpha": 1,
-            "strokeWidth": 0,
-            "strokeJoin": "miter",
-            "miterLimit": 10,
-            "dropShadow": false,
-            "dropShadowColor": 0,
-            "dropShadowAlpha": 1,
-            "dropShadowBlur": 0,
-            "dropShadowDistance": 5,
-            "dropShadowAngle": 30
-          }
-        },
-        {
-          "type": "Script",
-          "id": "comp_b3e7b0d1-f149-4aad-ac4a-925441570e48",
-          "scriptId": "editor-features-demo.GoSpineButton",
-          "properties": {
-            "sceneName": "main"
-          }
-        },
-        {
-          "type": "Script",
-          "id": "comp_22e26808-9c86-47b8-9d84-3c54c4ac578a",
-          "scriptId": "shared.AudioClick",
-          "properties": {
-            "audioAssetId": "asset_011b4367-80e0-4f48-b16e-8e92467567e3",
-            "mouseEvent": "pointertap"
-          }
         }
       ],
       "children": []

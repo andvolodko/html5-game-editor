@@ -45,7 +45,11 @@ import { DEFAULT_SNAP_GRID_SIZE } from "./snap-to-grid.js";
 import { DEFAULT_EDITOR_BACKGROUND } from "./editor-chrome.js";
 import { PixiNodePainter } from "./pixi-node-painter.js";
 import { applyPixiNodeContentAlpha } from "./pixi-node-alpha.js";
-import { pickAreaIfHit } from "./pixi-hit-zone-pick.js";
+import {
+  applyPlaybackPointerCursor,
+  applyPlaybackPointerEventMode,
+} from "./pixi-node-pointer.js";
+import { pickRuntimeNodeId } from "./pixi-hit-zone-pick.js";
 import { PixiNodePreviewController } from "./pixi-node-preview.js";
 import { redrawEditorOverlays as syncEditorOverlays } from "./pixi-editor-overlay-sync.js";
 import { PixiAppLifecycle } from "./pixi-app-lifecycle.js";
@@ -127,6 +131,15 @@ export class PixiSceneRenderer implements SceneRenderer {
       getSelectedNodeIds: () => this.selectedNodeIds,
       getCameraScale: () => this.camera.getState().scale,
       getAssetResolver: () => this.assetResolver,
+      onPlaybackHitTargetReady: (runtime) => {
+        if (this.editable) {
+          return;
+        }
+        this.nodeClick.attachHitTarget(
+          runtime,
+          createNodeClickHost(this.interactionSource()),
+        );
+      },
     });
     this.preview = new PixiNodePreviewController({
       getRuntime: (nodeId) => this.graph.get(nodeId),
@@ -392,6 +405,8 @@ export class PixiSceneRenderer implements SceneRenderer {
     this.painter.paint(runtime);
     this.applyDisplayVisible(runtime);
     this.applyDisplayAlpha(runtime);
+    applyPlaybackPointerCursor(runtime);
+    applyPlaybackPointerEventMode(runtime);
     this.syncStats.created += 1;
   }
 
@@ -403,6 +418,8 @@ export class PixiSceneRenderer implements SceneRenderer {
     runtime.node = node;
     this.applyDisplayVisible(runtime);
     this.applyDisplayAlpha(runtime);
+    applyPlaybackPointerCursor(runtime);
+    applyPlaybackPointerEventMode(runtime);
     this.graph.syncDisplayLabels(node.id);
     this.syncStats.updated += 1;
     if (
@@ -427,7 +444,10 @@ export class PixiSceneRenderer implements SceneRenderer {
     if (!this.graphicsPolygonDrag.isActiveFor(node.id)) {
       runtime.graphicsShapePreview = undefined;
     }
-    this.painter.paint(runtime);
+    // Playback pose is owned by `ctx.transform` (live Pixi handle), not scene
+    // Transform2D. Re-applying the authored pose here snaps units back to spawn
+    // on every visual refresh (AnimatedSprite clip, text, sprite asset).
+    this.painter.paint(runtime, { applyTransform: this.editable });
   }
 
   syncTransform(node: SceneNodeData): void {
@@ -630,6 +650,8 @@ export class PixiSceneRenderer implements SceneRenderer {
   /**
    * Hit-test a client point against visible node visuals (smallest area wins).
    * Used by hybrid preview input when canvases do not receive DOM events.
+   * Playback skips HitZone children and `pointerEventMode: none` so overlay
+   * taps land on the same node Pixi's EventSystem would use.
    */
   pickNodeId(clientX: number, clientY: number): string | undefined {
     const app = this.lifecycle.app;
@@ -648,20 +670,14 @@ export class PixiSceneRenderer implements SceneRenderer {
       screenWidth: app.screen.width,
       screenHeight: app.screen.height,
     });
-    let bestId: string | undefined;
-    let bestArea = Number.POSITIVE_INFINITY;
-    for (const [nodeId, runtime] of this.graph.entries()) {
+    const visible: RuntimeNode[] = [];
+    for (const runtime of this.graph.values()) {
       if (!isPixiWorldVisible(runtime.container)) {
         continue;
       }
-      const area = pickAreaIfHit(runtime, screen);
-      if (area === undefined || area >= bestArea) {
-        continue;
-      }
-      bestArea = area;
-      bestId = nodeId;
+      visible.push(runtime);
     }
-    return bestId;
+    return pickRuntimeNodeId(visible, screen, (nodeId) => this.graph.get(nodeId));
   }
 
   getSize(): { width: number; height: number } {

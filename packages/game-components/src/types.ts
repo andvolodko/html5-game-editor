@@ -169,6 +169,23 @@ export interface ScriptModel3DPlaybackPatch {
   playing?: boolean;
 }
 
+/** Live AnimatedSprite playback fields for scripts (Aseprite tags or frame lists). */
+export interface ScriptAnimatedSpritePlayback {
+  assetId?: string;
+  animation?: string;
+  animationSpeed: number;
+  loop: boolean;
+  playing: boolean;
+}
+
+/** Partial patch applied by `setAnimatedSpritePlayback`. */
+export interface ScriptAnimatedSpritePlaybackPatch {
+  animation?: string;
+  animationSpeed?: number;
+  loop?: boolean;
+  playing?: boolean;
+}
+
 /** Per-renderer GPU / graph counters (Pixi or Three). */
 export interface ScriptRendererDrawStats {
   drawCalls: number;
@@ -316,6 +333,18 @@ export interface ScriptRuntimeServices {
    * Empty string clears the texture. Runtime-only; does not write scene files.
    */
   setSpriteAssetId?: (nodeId: string, assetId: string) => void;
+  /** Read AnimatedSprite playback on a node (undefined if missing). */
+  getAnimatedSpritePlayback?: (
+    nodeId: string,
+  ) => ScriptAnimatedSpritePlayback | undefined;
+  /**
+   * Patch AnimatedSprite clip / loop / playing and sync registered renderers.
+   * Runtime-only; does not write scene files.
+   */
+  setAnimatedSpritePlayback?: (
+    nodeId: string,
+    patch: ScriptAnimatedSpritePlaybackPatch,
+  ) => void;
   /**
    * Move a live node under a new parent (or scene root) at `index`.
    * Runtime-only; does not write scene files. No-op when the move is invalid.
@@ -358,6 +387,11 @@ export interface ScriptRuntimeServices {
   destroyNode?: (nodeId: string) => void;
   /** Immediate children of a node (empty when missing). */
   listChildNodes?: (nodeId: string) => readonly ScriptChildNodeRef[];
+  /**
+   * True when the node has an enabled HitZone.
+   * Buttons use this as an optional pointer target on the host container.
+   */
+  hasHitZone?: (nodeId: string) => boolean;
   /**
    * Show or hide a node's runtime object. Does not persist to scene files.
    */

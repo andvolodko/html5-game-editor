@@ -219,12 +219,14 @@ export function EnumField<T extends string>({
   options,
   onCommit,
   overridden,
+  optionLabels,
 }: {
   label: string;
   value: T;
   options: readonly T[];
   onCommit: (value: T) => void;
   overridden?: boolean;
+  optionLabels?: Partial<Record<T, string>>;
 }) {
   return (
     <label className={overridden ? "inspector-field-overridden" : undefined}>
@@ -235,7 +237,7 @@ export function EnumField<T extends string>({
       >
         {options.map((option) => (
           <option key={option} value={option}>
-            {option}
+            {optionLabels?.[option] ?? option}
           </option>
         ))}
       </select>

@@ -261,6 +261,7 @@ Adding a Script to a node in the editor is `AddScriptComponentCommand` (`package
 - `ctx.transform` — persistent live 2D pose of **this** node (`x`/`y`/`rotation`/`scaleX`/`scaleY`). Assignments update the rendered object immediately and do not write editor history or scene files.
 - `ctx.transform3D` — current Transform3D of **this** node (`position` / `rotation` / `scale`). Getters are live; setters do not write editor history or scene files.
 - `ctx.animations` — Model3D clips on **this** node (`list` / `play` / `stop` / `freeze` / `duration`)
+- `getAnimatedSpritePlayback` / `setAnimatedSpritePlayback` — Aseprite / AnimatedSprite clip, loop, playing
 - `playAudio` / `stopAudio` / `preloadSceneAsset` / `resolveAssetUrl`
 - `cloneNodeByName` / `spawnModel3D` / `destroyNode` — runtime-only graph edits
 

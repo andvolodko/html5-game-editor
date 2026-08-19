@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   bindEditorHotkeys,
+  arrowNudgeDelta,
   isAssetsPanelKeyTarget,
+  KEYBOARD_NUDGE_PIXELS,
+  KEYBOARD_NUDGE_SHIFT_PIXELS,
   type EditorHotkeyHost,
 } from "./editor-hotkeys.js";
 
@@ -22,6 +25,7 @@ function mockHost(): EditorHotkeyHost & {
   undo: ReturnType<typeof vi.fn>;
   redo: ReturnType<typeof vi.fn>;
   duplicateNode: ReturnType<typeof vi.fn>;
+  nudgeSelectedNodes: ReturnType<typeof vi.fn>;
 } {
   return {
     getDirtyState: () => "clean",
@@ -34,7 +38,7 @@ function mockHost(): EditorHotkeyHost & {
     pasteNodes: () => [],
     deleteSelectedNodes: () => undefined,
     requestRename: () => undefined,
-    nudgeSelectedNodes: () => false,
+    nudgeSelectedNodes: vi.fn(() => true),
   };
 }
 
@@ -168,6 +172,108 @@ describe("bindEditorHotkeys undo/redo", () => {
       target: { tagName: "INPUT" },
     } as unknown as Event);
     expect(host.undo).not.toHaveBeenCalled();
+    dispose();
+  });
+});
+
+describe("arrowNudgeDelta", () => {
+  it("returns 1px steps by default", () => {
+    expect(arrowNudgeDelta("ArrowLeft")).toEqual({
+      dx: -KEYBOARD_NUDGE_PIXELS,
+      dy: 0,
+    });
+    expect(arrowNudgeDelta("ArrowRight")).toEqual({
+      dx: KEYBOARD_NUDGE_PIXELS,
+      dy: 0,
+    });
+    expect(arrowNudgeDelta("ArrowUp")).toEqual({
+      dx: 0,
+      dy: -KEYBOARD_NUDGE_PIXELS,
+    });
+    expect(arrowNudgeDelta("ArrowDown")).toEqual({
+      dx: 0,
+      dy: KEYBOARD_NUDGE_PIXELS,
+    });
+    expect(arrowNudgeDelta("a")).toBeUndefined();
+  });
+
+  it("scales by the given step", () => {
+    expect(arrowNudgeDelta("ArrowLeft", KEYBOARD_NUDGE_SHIFT_PIXELS)).toEqual({
+      dx: -KEYBOARD_NUDGE_SHIFT_PIXELS,
+      dy: 0,
+    });
+  });
+});
+
+describe("bindEditorHotkeys arrow nudge", () => {
+  it("nudges 1px without Shift and 10px with Shift", () => {
+    const host = mockHost();
+    const { target, listeners } = mockWindow();
+    const dispose = bindEditorHotkeys(host, target);
+    const onKeyDown = listeners.get("keydown");
+    const preventDefault = vi.fn();
+
+    onKeyDown!({
+      key: "ArrowRight",
+      code: "ArrowRight",
+      ctrlKey: false,
+      metaKey: false,
+      shiftKey: false,
+      altKey: false,
+      preventDefault,
+      target: { tagName: "DIV" },
+    } as unknown as Event);
+    expect(host.nudgeSelectedNodes).toHaveBeenCalledWith(
+      KEYBOARD_NUDGE_PIXELS,
+      0,
+    );
+
+    onKeyDown!({
+      key: "ArrowUp",
+      code: "ArrowUp",
+      ctrlKey: false,
+      metaKey: false,
+      shiftKey: true,
+      altKey: false,
+      preventDefault,
+      target: { tagName: "DIV" },
+    } as unknown as Event);
+    expect(host.nudgeSelectedNodes).toHaveBeenCalledWith(
+      0,
+      -KEYBOARD_NUDGE_SHIFT_PIXELS,
+    );
+    expect(preventDefault).toHaveBeenCalledTimes(2);
+    dispose();
+  });
+
+  it("does not nudge when Ctrl or Alt is held", () => {
+    const host = mockHost();
+    const { target, listeners } = mockWindow();
+    const dispose = bindEditorHotkeys(host, target);
+    const onKeyDown = listeners.get("keydown");
+
+    onKeyDown!({
+      key: "ArrowLeft",
+      code: "ArrowLeft",
+      ctrlKey: true,
+      metaKey: false,
+      shiftKey: false,
+      altKey: false,
+      preventDefault: vi.fn(),
+      target: { tagName: "DIV" },
+    } as unknown as Event);
+    onKeyDown!({
+      key: "ArrowLeft",
+      code: "ArrowLeft",
+      ctrlKey: false,
+      metaKey: false,
+      shiftKey: false,
+      altKey: true,
+      preventDefault: vi.fn(),
+      target: { tagName: "DIV" },
+    } as unknown as Event);
+
+    expect(host.nudgeSelectedNodes).not.toHaveBeenCalled();
     dispose();
   });
 });

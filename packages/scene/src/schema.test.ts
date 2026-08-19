@@ -80,6 +80,58 @@ describe("scene schema", () => {
     expect(parsed.nodes[1]?.alpha).toBe(0.5);
   });
 
+  it("accepts omitted pointer fields as the default and persists other values", () => {
+    const sprite = createSpriteNode("Sprite", { x: 0, y: 0 });
+    const parsed = parseSceneData({
+      id: "scene_1",
+      name: "Demo",
+      version: SCENE_SCHEMA_VERSION,
+      nodes: [
+        {
+          id: "node_1",
+          name: "Default",
+          components: sprite.components,
+          children: [],
+        },
+        {
+          id: "node_2",
+          name: "Custom",
+          pointerEventMode: "none",
+          cursor: "pointer",
+          pointerChildren: false,
+          components: sprite.components,
+          children: [],
+        },
+      ],
+    });
+    expect(parsed.nodes[0]?.pointerEventMode).toBeUndefined();
+    expect(parsed.nodes[0]?.cursor).toBeUndefined();
+    expect(parsed.nodes[0]?.pointerChildren).toBeUndefined();
+    expect(parsed.nodes[1]?.pointerEventMode).toBe("none");
+    expect(parsed.nodes[1]?.cursor).toBe("pointer");
+    expect(parsed.nodes[1]?.pointerChildren).toBe(false);
+  });
+
+  it("rejects invalid pointer event mode", () => {
+    const sprite = createSpriteNode("Sprite", { x: 0, y: 0 });
+    expect(() =>
+      parseSceneData({
+        id: "scene_1",
+        name: "Demo",
+        version: SCENE_SCHEMA_VERSION,
+        nodes: [
+          {
+            id: "node_1",
+            name: "Bad",
+            pointerEventMode: "interactive",
+            components: sprite.components,
+            children: [],
+          },
+        ],
+      }),
+    ).toThrow();
+  });
+
   it("validates a Transform2D scene document", () => {
     const input: SceneData = {
       id: "scene_1",

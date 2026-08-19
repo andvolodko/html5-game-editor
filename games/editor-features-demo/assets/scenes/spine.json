@@ -73,79 +73,6 @@
       "children": []
     },
     {
-      "id": "node_9f79111f-a0af-48f6-bddf-102257dcabda",
-      "name": "Text",
-      "components": [
-        {
-          "type": "Transform2D",
-          "id": "comp_f36b75e7-7f99-4c9a-84af-1e584c9390ae",
-          "position": {
-            "x": 1130,
-            "y": 40
-          },
-          "rotation": 0,
-          "scale": {
-            "x": 1,
-            "y": 1
-          }
-        },
-        {
-          "type": "Text",
-          "id": "comp_d511efdf-fb43-4b1f-9960-dfce656d3226",
-          "text": "Go to main scene",
-          "style": {
-            "fontFamily": "Arial",
-            "fontSize": 32,
-            "fontWeight": "normal",
-            "fontStyle": "normal",
-            "fontVariant": "normal",
-            "fill": 16777215,
-            "fillAlpha": 1,
-            "align": "left",
-            "letterSpacing": 0,
-            "lineHeight": 0,
-            "leading": 0,
-            "wordWrap": false,
-            "wordWrapWidth": 440,
-            "breakWords": false,
-            "whiteSpace": "pre",
-            "padding": 0,
-            "trim": false,
-            "textBaseline": "alphabetic",
-            "strokeColor": 0,
-            "strokeAlpha": 1,
-            "strokeWidth": 0,
-            "strokeJoin": "miter",
-            "miterLimit": 10,
-            "dropShadow": false,
-            "dropShadowColor": 0,
-            "dropShadowAlpha": 1,
-            "dropShadowBlur": 0,
-            "dropShadowDistance": 5,
-            "dropShadowAngle": 30
-          }
-        },
-        {
-          "type": "Script",
-          "id": "comp_01afe403-b03b-4787-83d5-e65e5ac62171",
-          "scriptId": "editor-features-demo.GoSpineButton",
-          "properties": {
-            "sceneName": "main"
-          }
-        },
-        {
-          "type": "Script",
-          "id": "comp_5153ef1d-3933-4a7e-87de-0299f67e2c8d",
-          "scriptId": "shared.AudioClick",
-          "properties": {
-            "audioAssetId": "asset_011b4367-80e0-4f48-b16e-8e92467567e3",
-            "mouseEvent": "pointertap"
-          }
-        }
-      ],
-      "children": []
-    },
-    {
       "id": "node_afd4a59f-4829-4fa7-822c-4cedea9039ff",
       "name": "Text 2",
       "components": [
@@ -250,8 +177,8 @@
           "type": "Transform2D",
           "id": "comp_36972a6a-e8d4-43a0-a167-bed0966c5e8c",
           "position": {
-            "x": 187,
-            "y": 568
+            "x": 200,
+            "y": 656
           },
           "rotation": 0,
           "scale": {
@@ -429,6 +356,373 @@
         }
       ],
       "children": []
+    },
+    {
+      "id": "node_33ef3a83-6135-46b8-aab5-5f2396705f99",
+      "name": "GoMainSceneButton Copy Copy",
+      "layer": "foreground",
+      "prefab": {
+        "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+        "instanceId": "pinst_09db8187-eb15-4745-bed2-af465bd55fd7",
+        "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+        "componentSources": {
+          "comp_7135227c-9a7d-4a4d-9953-b3e30f5235f4": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+          "comp_5c8a217a-4c9d-40f9-98f8-7a64c66a4b00": "comp_888624e2-d9e6-4044-b3eb-029091d75468",
+          "comp_443ef933-0213-4a13-bfdc-3e56846d46de": "comp_4d87ba98-71aa-4892-a326-fd8d2b7134ba",
+          "comp_75606fda-aeba-4838-bf23-d3651079e760": "comp_ead0350e-74e0-45f4-be2c-2b0165aa2e2e",
+          "comp_057912a3-5a9f-4437-8b73-f946c7e7bc26": "comp_0bb0f605-62d6-44ba-b901-e95a8b9253fc"
+        },
+        "isRoot": true,
+        "overrides": [
+          {
+            "kind": "layer",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "value": "foreground"
+          },
+          {
+            "kind": "name",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "value": "GoMainSceneButton Copy Copy"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_ead0350e-74e0-45f4-be2c-2b0165aa2e2e",
+            "propertyPath": "properties.sceneName",
+            "value": "main"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+            "propertyPath": "position.x",
+            "value": 952
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+            "propertyPath": "position.y",
+            "value": 80
+          },
+          {
+            "kind": "layer",
+            "sourceNodeId": "node_7a7af1e4-01f9-42d4-9772-ad76bdba2635",
+            "value": "foreground"
+          },
+          {
+            "kind": "layer",
+            "sourceNodeId": "node_8a5e8c14-108d-4045-869f-a3ea8bbbf334",
+            "value": "foreground"
+          },
+          {
+            "kind": "layer",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "value": "foreground"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "componentId": "comp_14bd0013-0ac4-4402-a320-f30c7c155794",
+            "propertyPath": "text",
+            "value": "Main Scene"
+          },
+          {
+            "kind": "layer",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "value": "foreground"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "componentId": "comp_c6ed5775-a184-4572-b01a-4cd71700e3e0",
+            "propertyPath": "text",
+            "value": "Main Scene"
+          }
+        ]
+      },
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_7135227c-9a7d-4a4d-9953-b3e30f5235f4",
+          "position": {
+            "x": 952,
+            "y": 80
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_5c8a217a-4c9d-40f9-98f8-7a64c66a4b00",
+          "scriptId": "shared.Button",
+          "properties": {
+            "regularChildName": "regular",
+            "pressedChildName": "pressed"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_443ef933-0213-4a13-bfdc-3e56846d46de",
+          "scriptId": "shared.AudioClick",
+          "properties": {
+            "audioAssetId": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
+            "mouseEvent": "pointertap"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_75606fda-aeba-4838-bf23-d3651079e760",
+          "scriptId": "editor-features-demo.GoSpineButton",
+          "properties": {
+            "sceneName": "main"
+          }
+        },
+        {
+          "type": "HitZone",
+          "id": "comp_057912a3-5a9f-4437-8b73-f946c7e7bc26",
+          "offset": {
+            "x": 0.327808422492609,
+            "y": 5.219397450536029
+          },
+          "shape": {
+            "type": "rectangle",
+            "width": 294.86349319337575,
+            "height": 86.97858021431925
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_3844f157-9623-4c01-a130-43cd3750a13e",
+          "name": "regular",
+          "parentId": "node_33ef3a83-6135-46b8-aab5-5f2396705f99",
+          "layer": "foreground",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_09db8187-eb15-4745-bed2-af465bd55fd7",
+            "sourceNodeId": "node_7a7af1e4-01f9-42d4-9772-ad76bdba2635",
+            "componentSources": {
+              "comp_3f8c8acb-f0ab-488f-87e9-58f2e216d865": "comp_d5af0834-a8fc-4a2d-ad67-34beff5b7a06",
+              "comp_4db6d70c-48dc-4653-9b97-cad66a62af01": "comp_78aa241b-abce-45ff-9043-be8eddae7b5f"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_3f8c8acb-f0ab-488f-87e9-58f2e216d865",
+              "position": {
+                "x": 0,
+                "y": 5
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_4db6d70c-48dc-4653-9b97-cad66a62af01",
+              "assetId": "asset_bc24bff4-6cfc-4c16-ad20-48ea9332d25d",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_167b5f7e-8899-44c5-915e-a8869a58bcae",
+          "name": "pressed",
+          "parentId": "node_33ef3a83-6135-46b8-aab5-5f2396705f99",
+          "layer": "foreground",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_09db8187-eb15-4745-bed2-af465bd55fd7",
+            "sourceNodeId": "node_8a5e8c14-108d-4045-869f-a3ea8bbbf334",
+            "componentSources": {
+              "comp_dfd3a468-5126-43d2-bf6b-ae1f6e604fc7": "comp_7bd7ebbd-ef36-48fa-b79c-aecf1db86695",
+              "comp_bd3432b6-b443-4234-9762-a74a33e8862c": "comp_6586d428-a0e0-4941-a45f-8eb7188fc149"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_dfd3a468-5126-43d2-bf6b-ae1f6e604fc7",
+              "position": {
+                "x": 0,
+                "y": -1
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_bd3432b6-b443-4234-9762-a74a33e8862c",
+              "assetId": "asset_685a786e-4b9f-4717-aa9e-9aa0d282fced",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_e88feca7-ea18-471c-8e0c-4ca8663e57e8",
+          "name": "text-regular",
+          "parentId": "node_33ef3a83-6135-46b8-aab5-5f2396705f99",
+          "layer": "foreground",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_09db8187-eb15-4745-bed2-af465bd55fd7",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "componentSources": {
+              "comp_4625d2a6-ec44-46b0-9ac3-ff44b7066037": "comp_631ea417-8cf6-4bbb-b6bc-d4c35e059d7a",
+              "comp_efc3a145-1559-4771-8497-eaf280ccea7a": "comp_14bd0013-0ac4-4402-a320-f30c7c155794"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_4625d2a6-ec44-46b0-9ac3-ff44b7066037",
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_efc3a145-1559-4771-8497-eaf280ccea7a",
+              "text": "Main Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  13750737,
+                  16777215,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_9dc7151a-e393-4cca-875f-128219f377eb",
+          "name": "text-pressed",
+          "parentId": "node_33ef3a83-6135-46b8-aab5-5f2396705f99",
+          "layer": "foreground",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_09db8187-eb15-4745-bed2-af465bd55fd7",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "componentSources": {
+              "comp_60ef1c44-db39-4ac5-8aee-7e07029de503": "comp_ba586bbf-cecb-4019-9554-6677fe0834cc",
+              "comp_a799206d-3d69-43b0-96b6-e8614f5275a1": "comp_c6ed5775-a184-4572-b01a-4cd71700e3e0"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_60ef1c44-db39-4ac5-8aee-7e07029de503",
+              "position": {
+                "x": 0,
+                "y": 4
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_a799206d-3d69-43b0-96b6-e8614f5275a1",
+              "text": "Main Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  7895160,
+                  14277081,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
     }
   ]
 }

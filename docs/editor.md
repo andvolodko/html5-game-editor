@@ -118,7 +118,7 @@ Commands talk to `DocumentManager` / `SelectionManager`. They do not write Pixi/
 | `SetVisualComponentCommand` / `SetSpriteSizeCommand` | Inspector visual fields / Graphics polygon vertices |
 | `AddHitZoneCommand` / `SetHitZoneCommand` | Inspector Hit Zone / viewport HitZone size, move, and polygon vertices |
 | `AddMaskCommand` / `SetMaskCommand` | Inspector Mask / viewport Mask size, move, and polygon vertices |
-| `SetNodeVisibleCommand` / `SetNodeAlphaCommand` / `SetNodeLayerCommand` | Inspector |
+| `SetNodeVisibleCommand` / `SetNodeAlphaCommand` / `SetNodeLayerCommand` / `SetNodePointerCommand` | Inspector |
 | `AddScriptComponentCommand` / `RemoveComponentCommand` / `SetScriptPropertiesCommand` / `SetScriptEnabledCommand` | Inspector scripts / HitZone / Mask remove |
 | `InstantiatePrefabCommand` / `UnpackPrefabCommand` / `RevertPrefabOverridesCommand` | Prefab workflows |
 | `PaintTilemapCommand` | Tilemap stroke (one command per pointer gesture) |
@@ -190,6 +190,7 @@ ComponentData.type / Script definition.properties
 | Selection | Panel |
 | --- | --- |
 | Scene | Name, renderer (`pixi` / `three` / `hybrid`) |
+| Node | Visible, alpha, 2D **Pointer** (`pointerEventMode`, `cursor`, `pointerChildren` — playback only) |
 | Node visuals | `VisualComponentInspector` + per-type fields under `apps/editor/src/panels/visual-fields/`. Graphics polygons are editable in the Inspector and viewport (same vertex/edge handles as Mask). |
 | Hit Zone | `HitZoneInspector` — Add/Remove on Transform2D nodes; not a Script. Polygon vertices are editable in the Inspector and viewport. |
 | Mask | `MaskInspector` — Add/Remove on Transform2D nodes; shape or sprite/alpha clip. Not a Script. Viewport handles commit `SetMaskCommand`. |

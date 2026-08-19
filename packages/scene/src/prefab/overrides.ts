@@ -6,6 +6,9 @@ import type {
   PrefabPropertyOverride,
   PrefabVisibleOverride,
   PrefabAlphaOverride,
+  PrefabPointerEventModeOverride,
+  PrefabCursorOverride,
+  PrefabPointerChildrenOverride,
 } from "./types.js";
 import {
   cloneJson,
@@ -18,6 +21,14 @@ import {
 import { findInstanceNodeBySourceId, getPrefabInstanceOverrides } from "./queries.js";
 import { getNodeVisible, setNodeVisibleField } from "../node-visibility.js";
 import { getNodeAlpha, setNodeAlphaField } from "../node-alpha.js";
+import {
+  getNodeCursor,
+  getNodePointerChildren,
+  getNodePointerEventMode,
+  setNodeCursorField,
+  setNodePointerChildrenField,
+  setNodePointerEventModeField,
+} from "../node-pointer.js";
 
 export function sortPrefabOverrides(overrides: readonly PrefabOverride[]): PrefabOverride[] {
   return [...overrides].sort((left, right) => {
@@ -173,6 +184,30 @@ export function computePrefabOverrides(
       };
       overrides.push(alphaOverride);
     }
+    if (getNodePointerEventMode(instance) !== getNodePointerEventMode(source)) {
+      const pointerEventModeOverride: PrefabPointerEventModeOverride = {
+        kind: "pointerEventMode",
+        sourceNodeId: source.id,
+        value: getNodePointerEventMode(instance),
+      };
+      overrides.push(pointerEventModeOverride);
+    }
+    if (getNodeCursor(instance) !== getNodeCursor(source)) {
+      const cursorOverride: PrefabCursorOverride = {
+        kind: "cursor",
+        sourceNodeId: source.id,
+        value: getNodeCursor(instance),
+      };
+      overrides.push(cursorOverride);
+    }
+    if (getNodePointerChildren(instance) !== getNodePointerChildren(source)) {
+      const pointerChildrenOverride: PrefabPointerChildrenOverride = {
+        kind: "pointerChildren",
+        sourceNodeId: source.id,
+        value: getNodePointerChildren(instance),
+      };
+      overrides.push(pointerChildrenOverride);
+    }
     for (const sourceComponent of source.components) {
       const sceneComponentId = Object.entries(instance.prefab?.componentSources ?? {}).find(
         ([, sourceId]) => sourceId === sourceComponent.id,
@@ -232,6 +267,18 @@ export function applyOverridesToInstance(
       setNodeAlphaField(instance, override.value);
       continue;
     }
+    if (override.kind === "pointerEventMode") {
+      setNodePointerEventModeField(instance, override.value);
+      continue;
+    }
+    if (override.kind === "cursor") {
+      setNodeCursorField(instance, override.value);
+      continue;
+    }
+    if (override.kind === "pointerChildren") {
+      setNodePointerChildrenField(instance, override.value);
+      continue;
+    }
     const sceneComponentId = Object.entries(instance.prefab?.componentSources ?? {}).find(
       ([, sourceId]) => sourceId === override.componentId,
     )?.[0];
@@ -274,7 +321,10 @@ export function applyNameOrLayerToPrefabNode(
     | PrefabNameOverride
     | PrefabLayerOverride
     | PrefabVisibleOverride
-    | PrefabAlphaOverride,
+    | PrefabAlphaOverride
+    | PrefabPointerEventModeOverride
+    | PrefabCursorOverride
+    | PrefabPointerChildrenOverride,
 ): void {
   if (override.kind === "name") {
     sourceNode.name = override.value;
@@ -286,6 +336,18 @@ export function applyNameOrLayerToPrefabNode(
   }
   if (override.kind === "alpha") {
     setNodeAlphaField(sourceNode, override.value);
+    return;
+  }
+  if (override.kind === "pointerEventMode") {
+    setNodePointerEventModeField(sourceNode, override.value);
+    return;
+  }
+  if (override.kind === "cursor") {
+    setNodeCursorField(sourceNode, override.value);
+    return;
+  }
+  if (override.kind === "pointerChildren") {
+    setNodePointerChildrenField(sourceNode, override.value);
     return;
   }
   setNodeVisibleField(sourceNode, override.value);

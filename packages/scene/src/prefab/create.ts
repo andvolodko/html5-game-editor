@@ -5,6 +5,7 @@ import { cloneJson } from "./property-path.js";
 import { PREFAB_SCHEMA_VERSION, type PrefabData } from "./types.js";
 import { copyNodeVisible } from "../node-visibility.js";
 import { copyNodeAlpha } from "../node-alpha.js";
+import { copyNodePointer } from "../node-pointer.js";
 
 export interface CreatePrefabFromSubtreeResult {
   prefab: PrefabData;
@@ -72,6 +73,7 @@ function cloneAsPrefabSource(
   }
   copyNodeVisible(node, cloned);
   copyNodeAlpha(node, cloned);
+  copyNodePointer(node, cloned);
   const keepNestedLink = node.prefab !== undefined && !(stripRootInstance && node.prefab.isRoot);
   if (keepNestedLink && node.prefab) {
     cloned.prefab = remapLinkToNewComponentIds(node.prefab, node.components, cloned.components);
@@ -149,6 +151,7 @@ function convertToInstance(
   }
   copyNodeVisible(node, instance);
   copyNodeAlpha(node, instance);
+  copyNodePointer(node, instance);
   if (context.parentId !== undefined) {
     instance.parentId = context.parentId;
   }

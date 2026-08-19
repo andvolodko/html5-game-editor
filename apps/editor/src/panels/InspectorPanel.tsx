@@ -35,6 +35,7 @@ import {
 import { ScriptComponentsInspector } from "./ScriptComponentsInspector";
 import { HitZoneInspector } from "./HitZoneInspector";
 import { MaskInspector } from "./MaskInspector";
+import { NodePointerInspector } from "./NodePointerInspector";
 import { PrefabInspectorSection } from "./PrefabInspectorSection";
 import { isInspectorPropertyOverridden } from "./prefab-override-flag";
 import { BooleanField, InspectorFieldRow, NumberField } from "./fields/inspector-fields";
@@ -468,6 +469,8 @@ export function InspectorPanel() {
           </InspectorFieldRow>
         </div>
       </section>
+
+      <NodePointerInspector editor={editor} node={node} />
 
       {transform ? (
         <section className="inspector-section">

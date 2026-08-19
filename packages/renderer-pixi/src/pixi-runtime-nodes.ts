@@ -1,5 +1,9 @@
-import { Container, Graphics } from "pixi.js";
+import { Container, Graphics, type EventMode } from "pixi.js";
 import type { FederatedPointerEvent } from "pixi.js";
+import {
+  getNodeCursor,
+  getNodePointerEventMode,
+} from "@game-editor/scene";
 import type {
   GraphicsShapeData,
   HitZoneComponentData,
@@ -16,6 +20,8 @@ import {
   HitZoneSelectionGizmo,
   type HitZoneGizmoHandle,
 } from "./pixi-hit-zone-gizmo.js";
+import { applyGroupingHitZoneChildHits } from "./pixi-hit-zone-sync.js";
+import { effectiveHitZone } from "./pixi-hit-zone-pick.js";
 import type { VisualBounds } from "./visuals/types.js";
 import { PLACEHOLDER_CORNER_RADIUS, MASK_HANDLE_FILL, MASK_STROKE_COLOR, EDITOR_ACCENT_ACTIVE_FILL, EDITOR_ACCENT_COLOR } from "./editor-chrome.js";
 
@@ -186,10 +192,13 @@ export class PixiRuntimeGraph {
     const container = new Container();
     // Container stays interactive for bubble/drag, but must NOT own a hitArea —
     // Pixi prunes the whole subtree outside hitArea, which blocked child sprites.
-    // Playback also uses static: visualsRoot aliases container for script clicks.
-    container.eventMode = "static";
+    // Playback uses serialized pointerEventMode (default static).
     if (editable) {
+      container.eventMode = "static";
       container.cursor = "grab";
+    } else {
+      container.eventMode = getNodePointerEventMode(node) as EventMode;
+      container.cursor = getNodeCursor(node);
     }
     container.interactiveChildren = true;
 
@@ -394,6 +403,7 @@ export class PixiRuntimeGraph {
     const childrenRoot = this.createChildrenRootContainer();
     runtime.contentRoot.addChild(childrenRoot);
     runtime.childrenRoot = childrenRoot;
+    applyGroupingHitZoneChildHits(runtime, effectiveHitZone(runtime));
     applyRuntimeDisplayLabels(runtime);
     return childrenRoot;
   }

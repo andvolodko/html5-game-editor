@@ -57,7 +57,7 @@ export async function paintVisualComponent(
 ): Promise<VisualPaintResult> {
   const painter = getVisualPainter(ctx.data.type);
   if (!painter) {
-    destroyVisual(ctx.visual);
+    destroyVisual(ctx.visual, ctx.visualsRoot);
     ctx.hidePlaceholder();
     console.warn("[renderer] no painter for visual type", {
       category: "renderer",
@@ -69,6 +69,9 @@ export async function paintVisualComponent(
   return painter.paint(ctx);
 }
 
-export function clearVisual(visual: Container | undefined): void {
-  destroyVisual(visual);
+export function clearVisual(
+  visual: Container | undefined,
+  protect?: Container,
+): void {
+  destroyVisual(visual, protect);
 }

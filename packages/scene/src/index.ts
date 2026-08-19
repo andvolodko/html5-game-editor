@@ -409,6 +409,25 @@ export {
   setNodeAlphaField,
   copyNodeAlpha,
 } from "./node-alpha.js";
+export {
+  NODE_POINTER_EVENT_MODES,
+  DEFAULT_NODE_POINTER_EVENT_MODE,
+  DEFAULT_NODE_POINTER_CHILDREN,
+  NODE_CURSOR_PRESETS,
+  NODE_CURSOR_MAX_LENGTH,
+  isNodePointerEventMode,
+  getNodePointerEventMode,
+  getNodeCursor,
+  getNodePointerChildren,
+  setNodePointerEventModeField,
+  setNodeCursorField,
+  setNodePointerChildrenField,
+  copyNodePointer,
+} from "./node-pointer.js";
+export type {
+  NodePointerEventMode,
+  NodeCursorPreset,
+} from "./node-pointer.js";
 
 export { MultiSceneRenderer } from "./multi-scene-renderer.js";
 export type { MultiSceneRendererSlot } from "./multi-scene-renderer.js";
@@ -697,6 +716,9 @@ export type {
   PrefabLayerOverride,
   PrefabVisibleOverride,
   PrefabAlphaOverride,
+  PrefabPointerEventModeOverride,
+  PrefabCursorOverride,
+  PrefabPointerChildrenOverride,
   PrefabOverride,
   PrefabInstanceLink,
   PrefabData,
@@ -716,6 +738,9 @@ export {
   prefabLayerOverrideSchema,
   prefabVisibleOverrideSchema,
   prefabAlphaOverrideSchema,
+  prefabPointerEventModeOverrideSchema,
+  prefabCursorOverrideSchema,
+  prefabPointerChildrenOverrideSchema,
   prefabOverrideSchema,
   prefabInstanceLinkSchema,
   prefabDataSchema,

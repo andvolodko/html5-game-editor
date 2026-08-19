@@ -38,6 +38,8 @@ pnpm --filter @games/editor-features-demo build
 
 Output: `games/editor-features-demo/dist/`.
 
+Standalone `vite build` uses a relative `base` (`./`) so `bundle/` and `assets/` resolve next to `index.html`. That is required for zip hosts such as itch.io. `pnpm build:pages` still sets `VITE_BASE` to `/<repo>/games/<id>/` for GitHub Pages.
+
 Building one game must not bundle another game. The monorepo does **not** produce one global game bundle.
 
 Root-level scripts that exist today include `pnpm dev`, `pnpm build`, `pnpm test`, `pnpm lint`, `pnpm typecheck`. Additional convenience scripts (`dev:editor`, `build:games`) are planned; see [`roadmap.md`](./roadmap.md). Every workspace package should expose only meaningful scripts.
@@ -96,7 +98,7 @@ constructor → start() once (node + ctx.transform ready)
 
 Own-node 2D motion should use `ctx.transform` (a persistent live handle). Do not call `getTransform2D` / `setTransform2D` every frame for the host node.
 
-Own-node 3D motion should use `ctx.transform3D` (`position` / `rotation` / `scale` getters plus `setPosition` / `setRotation` / `setScale` / `set`). Model clips on the host node should use `ctx.animations`. `ctx.services` remains the low-level escape hatch (other nodes, audio, scene graph, …).
+Own-node 3D motion should use `ctx.transform3D` (`position` / `rotation` / `scale` getters plus `setPosition` / `setRotation` / `setScale` / `set`). Model clips on the host node should use `ctx.animations`. AnimatedSprite (Aseprite) clips use `ctx.services.setAnimatedSpritePlayback`. `ctx.services` remains the low-level escape hatch (other nodes, audio, scene graph, …).
 
 Metadata catalogs stay function-free. After a catalog load, games call `registry.attachRuntime(componentId, create)` from `installGameRuntime`.
 

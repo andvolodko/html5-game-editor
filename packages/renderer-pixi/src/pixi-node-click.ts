@@ -1,4 +1,4 @@
-import type { Application } from "pixi.js";
+import type { Application, Container } from "pixi.js";
 import type { FederatedPointerEvent } from "pixi.js";
 import { MOUSE_BUTTON_MIDDLE } from "@game-editor/shared";
 import type { RuntimeNode } from "./pixi-runtime-nodes.js";
@@ -23,9 +23,30 @@ export interface NodeClickHost {
  * `pointertap` uses press+release without drag (same as legacy onNodeClick).
  */
 export class PixiNodeClickController {
+  private readonly boundTargets = new WeakSet<Container>();
+
   attach(runtime: RuntimeNode, host: NodeClickHost): void {
-    const nodeId = runtime.node.id;
-    const root = runtime.visualsRoot;
+    this.bindTarget(runtime.visualsRoot, runtime.node.id, host);
+  }
+
+  /** Playback HitZone `hitTarget` is a dedicated child; bind it without double-firing. */
+  attachHitTarget(runtime: RuntimeNode, host: NodeClickHost): void {
+    const target = runtime.hitZoneTarget;
+    if (!target) {
+      return;
+    }
+    this.bindTarget(target, runtime.node.id, host);
+  }
+
+  private bindTarget(
+    target: Container,
+    nodeId: string,
+    host: NodeClickHost,
+  ): void {
+    if (this.boundTargets.has(target)) {
+      return;
+    }
+    this.boundTargets.add(target);
 
     const emit = (event: PlaybackPointerEventName): void => {
       host.onNodePointerEvent?.(nodeId, event);
@@ -34,7 +55,7 @@ export class PixiNodeClickController {
       }
     };
 
-    root.on("pointerdown", (event: FederatedPointerEvent) => {
+    target.on("pointerdown", (event: FederatedPointerEvent) => {
       if (event.button === MOUSE_BUTTON_MIDDLE) {
         return;
       }
@@ -76,10 +97,10 @@ export class PixiNodeClickController {
       app.stage.on("pointerupoutside", onUp);
     });
 
-    root.on("pointerover", () => {
+    target.on("pointerover", () => {
       emit("pointerover");
     });
-    root.on("pointerout", () => {
+    target.on("pointerout", () => {
       emit("pointerout");
     });
   }

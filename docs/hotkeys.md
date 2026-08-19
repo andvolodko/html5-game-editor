@@ -36,6 +36,7 @@ These run unless focus is in a text field or the Assets panel.
 | Delete selected node(s) | Delete |
 | Rename selected node | F2 |
 | Nudge selected node(s) 1 px | Arrow keys |
+| Nudge selected node(s) 10 px | Shift+Arrow keys |
 | Toggle node in selection | Ctrl+click |
 | Select visible range | Shift+click |
 | Add visible range to selection | Ctrl+Shift+click |

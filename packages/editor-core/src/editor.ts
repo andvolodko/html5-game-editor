@@ -49,6 +49,7 @@ import {
   SetNodeLayerCommand,
   SetNodeVisibleCommand,
   SetNodeAlphaCommand,
+  SetNodePointerCommand,
   SetTransform2DCommand,
   SetTransform3DCommand,
   createResetNodeTransformCommand,
@@ -79,6 +80,7 @@ import {
   type SpriteSizePatch,
   type HitZonePatch,
   type MaskPatch,
+  type NodePointerPatch,
 } from "./commands/index.js";
 import {
   ensureDefaultNodeTypesRegistered,
@@ -903,6 +905,13 @@ export class Editor {
       return;
     }
     this.execute(new SetNodeAlphaCommand(this.document, nodeId, alpha));
+  }
+
+  setNodePointer(nodeId: string, patch: NodePointerPatch): void {
+    if (this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
+    this.execute(new SetNodePointerCommand(this.document, nodeId, patch));
   }
 
   /**
