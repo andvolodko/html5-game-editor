@@ -179,6 +179,7 @@ export class GamePreviewSession {
           audioPlayer.play(assetId, playOptions),
         stopAudio: (assetId) => audioPlayer.stop(assetId),
         setAudioEnabled: (enabled) => audioPlayer.setEnabled(enabled),
+        setAudioVolume: (assetId, volume) => audioPlayer.setVolume(assetId, volume),
         ...createGltfClipScriptLookups(
           () => runtimeRef.current?.getScene(),
           {

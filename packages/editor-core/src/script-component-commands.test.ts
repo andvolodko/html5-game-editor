@@ -100,6 +100,23 @@ describe("script component commands", () => {
     ).toBe(250);
   });
 
+  it("patchComponent uses the same undo path as setScriptProperties", () => {
+    const editor = editorWithCatalog();
+    const nodeId = editor.createSprite("Hero");
+    const componentId = editor.addScriptComponent(nodeId, SHARED_METER);
+
+    editor.patchComponent(nodeId, componentId, { refreshIntervalMs: 80 });
+    expect(
+      findScript(editor.getScene().nodes[0]!, SHARED_METER)?.properties
+        .refreshIntervalMs,
+    ).toBe(80);
+    editor.undo();
+    expect(
+      findScript(editor.getScene().nodes[0]!, SHARED_METER)?.properties
+        .refreshIntervalMs,
+    ).toBe(250);
+  });
+
   it("toggles script enabled with undo", () => {
     const editor = editorWithCatalog();
     const nodeId = editor.createSprite("Hero");

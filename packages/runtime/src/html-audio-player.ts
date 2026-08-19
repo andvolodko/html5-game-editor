@@ -20,6 +20,7 @@ export interface HtmlAudioPlayerHandle {
   setEnabled(enabled: boolean): void;
   /** Preview/runtime pause. Holds looping clips without dropping them. */
   setPaused(paused: boolean): void;
+  setVolume(assetId: string, volume: number): void;
 }
 
 /**
@@ -109,6 +110,13 @@ export function createHtmlAudioPlayer(
         return;
       }
       resumeLooping();
+    },
+    setVolume(assetId, volume) {
+      const audio = looping.get(assetId);
+      if (!audio) {
+        return;
+      }
+      audio.volume = clampVolume(volume);
     },
   };
 }

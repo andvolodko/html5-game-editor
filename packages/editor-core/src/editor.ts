@@ -1360,6 +1360,18 @@ export class Editor {
     );
   }
 
+  /**
+   * Generic Script property patch. Same undo path as `setScriptProperties`.
+   * `editor.components` remains the script catalog, not this mutation API.
+   */
+  patchComponent(
+    nodeId: string,
+    componentId: string,
+    propertiesPatch: Record<string, unknown>,
+  ): void {
+    this.setScriptProperties(nodeId, componentId, propertiesPatch);
+  }
+
   /** Toggle Script.enabled (one undo step). Omitted means enabled. */
   setScriptEnabled(nodeId: string, componentId: string, enabled: boolean): void {
     if (this.isNodeEffectivelyLocked(nodeId)) {

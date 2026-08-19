@@ -1,5 +1,5 @@
 import type { Container } from "pixi.js";
-import type { RuntimeTransform2D } from "@game-editor/scene";
+import { bindRuntimeVec2, type RuntimeTransform2D } from "@game-editor/scene";
 
 const DEGREES_TO_RADIANS = Math.PI / 180;
 const RADIANS_TO_DEGREES = 180 / Math.PI;
@@ -17,8 +17,30 @@ export class PixiRuntimeTransform2D implements RuntimeTransform2D {
   private cachedRotation = 0;
   private cachedScaleX = 1;
   private cachedScaleY = 1;
+  readonly position: RuntimeTransform2D["position"];
+  readonly scale: RuntimeTransform2D["scale"];
 
   constructor(private readonly displayObject: Container) {
+    this.position = bindRuntimeVec2(
+      () => this.x,
+      (value) => {
+        this.x = value;
+      },
+      () => this.y,
+      (value) => {
+        this.y = value;
+      },
+    );
+    this.scale = bindRuntimeVec2(
+      () => this.scaleX,
+      (value) => {
+        this.scaleX = value;
+      },
+      () => this.scaleY,
+      (value) => {
+        this.scaleY = value;
+      },
+    );
     this.cacheFromObject();
   }
 

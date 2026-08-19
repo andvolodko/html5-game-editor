@@ -1,5 +1,9 @@
 import type { EventBus } from "@game-editor/core";
-import type { RuntimeTransform2D } from "@game-editor/scene";
+import type {
+  ComponentData,
+  RuntimeTransform2D,
+  SceneNodeData,
+} from "@game-editor/scene";
 
 export type { RuntimeTransform2D };
 
@@ -274,6 +278,8 @@ export interface ScriptRuntimeServices {
   playAudio?: (assetId: string, options?: PlayAudioOptions) => void;
   /** Stop looping audio started via `playAudio`. Omit `assetId` to stop all. */
   stopAudio?: (assetId?: string) => void;
+  /** Set linear gain (0–1) on a looping clip started via `playAudio`. */
+  setAudioVolume?: (assetId: string, volume: number) => void;
   /**
    * Enable or mute gameplay audio.
    * `true` also retries looping clips that the browser blocked before a user gesture.
@@ -406,14 +412,22 @@ export interface ScriptRuntimeServices {
   setNodeCursor?: (nodeId: string, cursor: string) => void;
 }
 
+/** Live 3D vector that writes through to the host node's Transform3D. */
+export interface ScriptVec3 {
+  x: number;
+  y: number;
+  z: number;
+}
+
 /**
  * High-level Transform3D of the host node.
  * Getters read the current runtime pose; they are not snapshots from `create`.
+ * Axis assignment (`position.z = 10`) writes through without replacing the facade.
  */
 export interface ScriptTransformApi {
-  readonly position: Readonly<ScriptTransform3D["position"]>;
-  readonly rotation: Readonly<ScriptTransform3D["rotation"]>;
-  readonly scale: Readonly<ScriptTransform3D["scale"]>;
+  readonly position: ScriptVec3;
+  readonly rotation: ScriptVec3;
+  readonly scale: ScriptVec3;
   setPosition(position: ScriptTransform3D["position"]): void;
   setRotation(rotation: ScriptTransform3D["rotation"]): void;
   setScale(scale: ScriptTransform3D["scale"]): void;
@@ -431,16 +445,53 @@ export interface ScriptPlayAnimationOptions {
  */
 export interface ScriptAnimationsApi {
   list(): readonly string[];
+  /** Alias of `list()`. */
+  names(): readonly string[];
   play(clip: string, options?: ScriptPlayAnimationOptions): void;
   /** Halt playback; leaves loop and clip as they are. */
   stop(): void;
   /** Halt playback and disable looping (hold the current pose). */
   freeze(): void;
+  isPlaying(clip?: string): boolean;
   /**
    * Wall-clock clip length in seconds (`authored / timeScale`).
    * Uses a short fallback when the host has not loaded the clip yet.
    */
   duration(clip?: string): number;
+}
+
+/** Lightweight runtime node facade. Does not expose Pixi or Three objects. */
+export interface ScriptNodeHandle {
+  readonly id: string;
+  name: string;
+  visible: boolean;
+  readonly parent: ScriptNodeHandle | undefined;
+  readonly children: readonly ScriptNodeHandle[];
+  destroy(): void;
+  getComponent<T extends ComponentData["type"]>(
+    type: T,
+  ): Extract<ComponentData, { type: T }> | undefined;
+}
+
+/** Gameplay audio wrapper over host `playAudio` / `stopAudio`. */
+export interface ScriptAudioApi {
+  play(assetId: string, options?: PlayAudioOptions): void;
+  stop(assetId?: string): void;
+  setVolume(assetId: string, volume: number): void;
+}
+
+/** Small runtime scene facade. ID lookup is O(1) when the host indexes the graph. */
+export interface ScriptSceneApi {
+  getNode(nodeId: string): ScriptNodeHandle | undefined;
+  findByName(name: string): ScriptNodeHandle | undefined;
+  spawn(options: ScriptSpawnModel3DOptions): string | undefined;
+}
+
+/** Host lookup used to build `ctx.node` / `ctx.scene` without exposing the index. */
+export interface ScriptSceneLookup {
+  getNode(nodeId: string): SceneNodeData | undefined;
+  getParentId(nodeId: string): string | undefined;
+  findByName(name: string): SceneNodeData | undefined;
 }
 
 export interface ScriptCreateContext {
@@ -449,13 +500,15 @@ export interface ScriptCreateContext {
   scriptId: string;
   properties: Readonly<Record<string, unknown>>;
   /**
-   * Low-level runtime bridge. Prefer `transform` / `transform3D` /
-   * `animations` when they cover the need.
+   * Low-level runtime bridge. Prefer `node` / `transform` / `transform3D` /
+   * `animations` / `audio` / `scene` when they cover the need.
    */
   services: ScriptRuntimeServices;
+  /** Alias of `services.bus`. */
+  events: EventBus;
   /**
    * Persistent live 2D transform of this component's node.
-   * Prefer `transform.x = …` in `update` over per-frame `setTransform2D`.
+   * Prefer `transform.position.x = …` or `transform.x = …` in `update`.
    * Rotation is degrees. Assignments update the rendered node immediately
    * and do not write editor history or scene files.
    */
@@ -470,6 +523,12 @@ export interface ScriptCreateContext {
    * Prefer this over `services.setModel3DPlayback`.
    */
   animations: ScriptAnimationsApi;
+  /** Host node facade (no renderer objects). */
+  node: ScriptNodeHandle;
+  /** Catalogue audio playback. */
+  audio: ScriptAudioApi;
+  /** Live scene lookup / spawn. */
+  scene: ScriptSceneApi;
 }
 
 export interface ComponentDefinition {

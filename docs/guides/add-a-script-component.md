@@ -34,7 +34,7 @@ The behaviour class is created by `defineComponent({ create })` when `GameRuntim
 | This game only | `games/<name>/src/components/<kebab>.ts` | `<game>.PascalName` — e.g. `editor-features-demo.LoadingScene` |
 | Reuse across games | `packages/game-components/src/shared/<kebab>.ts` | `shared.PascalName` — e.g. `shared.ChangeScene` |
 
-Shared components stay runtime-safe: no React, Pixi, Three, or `editor-core`. They talk to the world through `ScriptCreateContext` (`transform`, `transform3D`, `animations`, and `services` for anything else) defined in `packages/game-components/src/types.ts`.
+Shared components stay runtime-safe: no React, Pixi, Three, or `editor-core`. They talk to the world through `ScriptCreateContext` (`node`, `transform`, `transform3D`, `animations`, `audio`, `scene`, and `services` for anything else) defined in `packages/game-components/src/types.ts`.
 
 Existing examples:
 
@@ -89,7 +89,7 @@ export class SpinControllerBehaviour implements ScriptInstance {
     this.unsubscribers.push(
       bus.on("game.tick", () => {
         if (!this.enabled) return;
-        // use ctx.nodeId, ctx.transform, ctx.services …
+        // use ctx.node, ctx.transform, ctx.audio, ctx.scene …
       }),
     );
   }

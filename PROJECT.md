@@ -112,7 +112,7 @@ games/<name>/            Independently buildable game + editable content
                          (assets/, project.json, .project/) — not a top-level projects/ tree
 ```
 
-Current games include `editor-features-demo` (hybrid), `example-game-2` (Pixi), `muonline-game` (hybrid), and `solitaire` (Pixi). Collaboration locking is planned; there is no `packages/collaboration` yet — see [`docs/collaboration.md`](./docs/collaboration.md).
+Current games include `editor-features-demo` (hybrid), `muonline-game` (hybrid), and `solitaire` (Pixi). Collaboration locking is planned; there is no `packages/collaboration` yet — see [`docs/collaboration.md`](./docs/collaboration.md).
 
 `project-server` defaults to `games/editor-features-demo`. Override with `PROJECT_ROOT`.
 

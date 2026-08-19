@@ -4,7 +4,7 @@ description: >-
   Scaffold a new independently buildable game under games/<name> (package.json,
   project.json, Vite, scenes, runtime boot). Use when adding a new game, game
   package, games/* project, Pixi-only / Three-only / hybrid game, or copying
-  editor-features-demo / example-game-2 / muonline-game.
+  editor-features-demo / solitaire / muonline-game.
 ---
 
 # Create Game
@@ -28,7 +28,7 @@ Pick **one** renderer profile:
 
 | Profile | Copy structure from | `project.json` `renderers` | Scene `renderer` | Dependencies |
 | --- | --- | --- | --- | --- |
-| Pixi-only | `games/example-game-2` | `["pixi"]` | omit or `"pixi"` | `renderer-pixi` — **no** `renderer-three` |
+| Pixi-only | `games/solitaire` | `["pixi"]` | omit or `"pixi"` | `renderer-pixi` — **no** `renderer-three` |
 | Three-only | `games/muonline-game` then drop Pixi / hybrid mount | `["three"]` | `"three"` | `renderer-three` — **no** `renderer-pixi` |
 | Hybrid | `games/editor-features-demo` or `games/muonline-game` (`src/mount-renderers.ts`) | `["pixi", "three"]` | `"hybrid"` when both 2D and 3D nodes exist | both renderers |
 
@@ -81,7 +81,7 @@ games/<id>/
 
 Use stable ids with prefixes (`scene_`, `node_`, `comp_`) plus `crypto.randomUUID()`. Never persist `PIXI.*` / `THREE.*` objects or filesystem texture paths — assets go in `.project/assets.json` with `assetId` references.
 
-**Pixi-only starter:** one `Transform2D` node is enough (optional Text). See `games/example-game-2/assets/scenes/main.json`.
+**Pixi-only starter:** one `Transform2D` node is enough (optional Text). Copy package/boot from `games/solitaire`; do not copy the Klondike board scene.
 
 **Three-only starter:** `renderer: "three"` plus PerspectiveCamera, AmbientLight, DirectionalLight (each with `Transform3D`). Do not add `Model3D` until a glTF asset exists. Copy the 3D nodes from `games/muonline-game/assets/scenes/main.json` and omit the Pixi HUD.
 

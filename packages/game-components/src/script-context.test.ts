@@ -7,6 +7,7 @@ describe("createScriptContext", () => {
   it("binds transform3D and animations to the given nodeId", () => {
     const setTransform3D = vi.fn();
     const setModel3DPlayback = vi.fn();
+    const playAudio = vi.fn();
     const listModel3DAnimations = vi.fn(() => ["Idle"]);
     const live = createDetachedRuntimeTransform2D({ x: 4, y: 8 });
     const ctx = createScriptContext({
@@ -20,6 +21,7 @@ describe("createScriptContext", () => {
         setTransform3D,
         setModel3DPlayback,
         listModel3DAnimations,
+        playAudio,
       },
       transform: live,
     });
@@ -40,5 +42,10 @@ describe("createScriptContext", () => {
       loop: true,
       playing: true,
     });
+
+    expect(ctx.node.id).toBe("node_host");
+    expect(ctx.events).toBe(ctx.services.bus);
+    ctx.audio.play("asset_hit");
+    expect(playAudio).toHaveBeenCalledWith("asset_hit");
   });
 });

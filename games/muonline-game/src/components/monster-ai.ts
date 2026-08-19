@@ -137,8 +137,8 @@ export class MonsterAiBehaviour implements ScriptInstance, Combatant {
     this.spawn.x = position.x;
     this.spawn.y = position.y;
     this.spawn.z = position.z;
-    this.spawn.rotation = { ...rotation };
-    this.spawn.scale = { ...scale };
+    this.spawn.rotation = { x: rotation.x, y: rotation.y, z: rotation.z };
+    this.spawn.scale = { x: scale.x, y: scale.y, z: scale.z };
     registerCombatant(this);
     this.enterIdle();
   }

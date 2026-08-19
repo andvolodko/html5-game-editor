@@ -73,12 +73,12 @@ export class AudioClickBehaviour implements ScriptInstance {
 
   private bind(): void {
     this.unbind();
-    const { onNodePointerEvent, onNodeClick, playAudio } = this.ctx.services;
+    const { onNodePointerEvent, onNodeClick } = this.ctx.services;
     const handler = (): void => {
-      if (!this.audioAssetId || !playAudio) {
+      if (!this.audioAssetId) {
         return;
       }
-      playAudio(this.audioAssetId);
+      this.ctx.audio.play(this.audioAssetId);
     };
 
     if (onNodePointerEvent) {

@@ -1,4 +1,4 @@
-import { Container, Graphics, Sprite, Texture } from "pixi.js";
+import { Graphics, Sprite, type Container, type Texture } from "pixi.js";
 import {
   getMaskOffset,
   isMaskInverse,

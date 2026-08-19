@@ -1,6 +1,5 @@
 import {
   createEmptyScene,
-  findNodeById,
   flattenSubtree,
   getSprite,
   getTransform2D,
@@ -34,6 +33,7 @@ import {
   type PrefabInstanceLink,
   type PrefabOverride,
   type NodePointerEventMode,
+  SceneIndex,
 } from "@game-editor/scene";
 
 export type DocumentDirtyState = "clean" | "dirty" | "saving" | "save-error";
@@ -77,6 +77,7 @@ export type DocumentListener = (mutation: SceneMutation | { kind: "state" }) => 
  */
 export class DocumentManager {
   private scene: SceneData;
+  private readonly sceneIndex = new SceneIndex();
   private revision = 0;
   private savedSnapshot: string;
   private dirtyState: DocumentDirtyState = "clean";
@@ -85,11 +86,16 @@ export class DocumentManager {
 
   constructor(scene: SceneData = createEmptyScene("Main Scene")) {
     this.scene = scene;
+    this.sceneIndex.rebuild(scene);
     this.savedSnapshot = stableSceneSnapshot(scene);
   }
 
   getScene(): SceneData {
     return this.scene;
+  }
+
+  getNode(nodeId: string): SceneNodeData | undefined {
+    return this.sceneIndex.getNode(nodeId);
   }
 
   getRevision(): number {
@@ -122,6 +128,7 @@ export class DocumentManager {
 
   restoreSnapshot(snapshot: DocumentContentSnapshot): void {
     this.scene = snapshot.scene;
+    this.sceneIndex.rebuild(snapshot.scene);
     this.savedSnapshot = snapshot.savedSnapshot;
     this.dirtyState = snapshot.dirtyState;
     this.saveError = snapshot.saveError;
@@ -132,6 +139,7 @@ export class DocumentManager {
   /** Replace the whole document (e.g. load). Marks clean. */
   replaceScene(scene: SceneData): void {
     this.scene = scene;
+    this.sceneIndex.rebuild(scene);
     this.revision += 1;
     this.savedSnapshot = stableSceneSnapshot(scene);
     this.dirtyState = "clean";
@@ -153,6 +161,7 @@ export class DocumentManager {
     index: number,
   ): void {
     insertNodeInScene(this.scene, node, parentId, index);
+    this.sceneIndex.addNode(node);
     this.afterContentMutation({ kind: "create", nodeId: node.id });
   }
 
@@ -166,13 +175,15 @@ export class DocumentManager {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
     detachNodeFromScene(this.scene, nodeId);
+    this.sceneIndex.removeNode(nodeId);
     this.emit({ kind: "destroy", nodeId });
     insertNodeInScene(this.scene, next, location.parentId, location.index);
+    this.sceneIndex.addNode(next);
     this.afterContentMutation({ kind: "create", nodeId: next.id });
   }
 
   setPrefabLink(nodeId: string, prefab: PrefabInstanceLink | undefined): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     if (!node) {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
@@ -189,7 +200,7 @@ export class DocumentManager {
   }
 
   setPrefabOverrides(nodeId: string, overrides: PrefabOverride[]): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     if (!node?.prefab) {
       throw new Error(`DocumentManager: node ${nodeId} is not a prefab instance`);
     }
@@ -206,16 +217,17 @@ export class DocumentManager {
   }
 
   removeNode(nodeId: string): boolean {
-    if (!findNodeById(this.scene, nodeId)) {
+    if (!this.sceneIndex.hasNode(nodeId)) {
       return false;
     }
     detachNodeFromScene(this.scene, nodeId);
+    this.sceneIndex.removeNode(nodeId);
     this.afterContentMutation({ kind: "destroy", nodeId });
     return true;
   }
 
   renameNode(nodeId: string, name: string): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     if (!node) {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
@@ -234,7 +246,7 @@ export class DocumentManager {
   }
 
   applyTransform2D(nodeId: string, values: Transform2DComponentData): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     const transform = node ? getTransform2D(node) : undefined;
     if (!transform) {
       throw new Error(`DocumentManager: node ${nodeId} missing Transform2D`);
@@ -262,7 +274,7 @@ export class DocumentManager {
   }
 
   applyTransform3D(nodeId: string, values: Transform3DComponentData): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     const transform = node ? getTransform3D(node) : undefined;
     if (!transform) {
       throw new Error(`DocumentManager: node ${nodeId} missing Transform3D`);
@@ -285,7 +297,7 @@ export class DocumentManager {
 
   /** Replace a Three leaf component (Model3D / camera / light) in-place. */
   applyThreeComponent(nodeId: string, values: ThreeComponentData): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     if (!node) {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
@@ -323,7 +335,7 @@ export class DocumentManager {
     nodeId: string,
     layer: "background" | "foreground" | undefined,
   ): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     if (!node) {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
@@ -340,7 +352,7 @@ export class DocumentManager {
   }
 
   setNodeVisible(nodeId: string, visible: boolean): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     if (!node) {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
@@ -353,7 +365,7 @@ export class DocumentManager {
   }
 
   setNodeAlpha(nodeId: string, alpha: number): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     if (!node) {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
@@ -373,7 +385,7 @@ export class DocumentManager {
       children?: boolean;
     },
   ): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     if (!node) {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
@@ -397,7 +409,7 @@ export class DocumentManager {
     nodeId: string,
     size: { width: number; height: number },
   ): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     const sprite = node ? getSprite(node) : undefined;
     if (!sprite) {
       throw new Error(`DocumentManager: node ${nodeId} missing Sprite`);
@@ -419,7 +431,7 @@ export class DocumentManager {
     component: ComponentData,
     index?: number,
   ): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     if (!node) {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
@@ -447,7 +459,7 @@ export class DocumentManager {
    * Three leaves are not removable through this API.
    */
   removeComponent(nodeId: string, componentId: string): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     if (!node) {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
@@ -473,7 +485,7 @@ export class DocumentManager {
 
   /** Replace a Script component in-place (same id / scriptId). */
   applyScriptComponent(nodeId: string, values: ScriptComponentData): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     if (!node) {
       throw new Error(`DocumentManager: unknown node ${nodeId}`);
     }
@@ -499,7 +511,7 @@ export class DocumentManager {
 
   /** Replace a HitZone component in-place (same id). */
   applyHitZoneComponent(nodeId: string, values: HitZoneComponentData): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     const hitZone = node ? getHitZone(node) : undefined;
     if (!node || !hitZone) {
       throw new Error(`DocumentManager: node ${nodeId} missing HitZone`);
@@ -525,7 +537,7 @@ export class DocumentManager {
 
   /** Replace a Mask component in-place (same id). */
   applyMaskComponent(nodeId: string, values: MaskComponentData): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     const mask = node ? getMask(node) : undefined;
     if (!node || !mask) {
       throw new Error(`DocumentManager: node ${nodeId} missing Mask`);
@@ -551,7 +563,7 @@ export class DocumentManager {
 
   /** Replace the node's leaf visual component in-place (same component id/type). */
   applyVisualComponent(nodeId: string, values: VisualComponentData): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     const visual = node ? getVisualComponent(node) : undefined;
     if (!node || !visual) {
       throw new Error(
@@ -589,7 +601,7 @@ export class DocumentManager {
     changes: readonly TileChange[],
     field: "before" | "after",
   ): void {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     const tilemap = node ? getTilemap(node) : undefined;
     if (!node || !tilemap) {
       throw new Error(`DocumentManager: node ${nodeId} is not a Tilemap`);
@@ -613,8 +625,9 @@ export class DocumentManager {
     transformAfter?: Transform2DComponentData,
   ): void {
     const result = moveNodeInScene(this.scene, nodeId, toParentId, toIndex);
+    this.sceneIndex.reparentNode(nodeId, result.toParentId);
     if (transformAfter) {
-      const node = findNodeById(this.scene, nodeId);
+      const node = this.sceneIndex.getNode(nodeId);
       const transform = node ? getTransform2D(node) : undefined;
       if (!transform) {
         throw new Error(`DocumentManager: node ${nodeId} missing Transform2D`);
@@ -645,6 +658,7 @@ export class DocumentManager {
   markSaved(savedScene?: SceneData): void {
     if (savedScene !== undefined) {
       this.scene = savedScene;
+      this.sceneIndex.rebuild(savedScene);
     }
     this.savedSnapshot = stableSceneSnapshot(this.scene);
     this.dirtyState = "clean";
@@ -675,7 +689,7 @@ export class DocumentManager {
   }
 
   listSubtreeIds(nodeId: string): string[] {
-    const node = findNodeById(this.scene, nodeId);
+    const node = this.sceneIndex.getNode(nodeId);
     return node ? flattenSubtree(node).map((n) => n.id) : [];
   }
 

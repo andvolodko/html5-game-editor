@@ -129,7 +129,7 @@ export function installSpinControllerRuntime(registry: ComponentRegistry): void 
 2. Construct from `ScriptCreateContext`; keep `ctx` private.
 3. Parse properties in the constructor via `applyProperties`; update them in `onPropertiesChanged`.
 4. Subscribe and capture rest pose in `start()` (node + `ctx.transform` are ready). Unsubscribe in `destroy()`.
-5. Own-node 2D motion uses `ctx.transform`. Own-node 3D motion uses `ctx.transform3D`. Host Model3D clips use `ctx.animations`. Use `getTransform2D` / `setTransform2D` for other nodes.
+5. Own-node 2D motion uses `ctx.transform` (`x` / `position`). Own-node 3D motion uses `ctx.transform3D`. Host Model3D clips use `ctx.animations`. Host audio uses `ctx.audio`. Use `getTransform2D` / `setTransform2D` for other nodes.
 6. Use `ctx.services.changeScene(sceneId)` for scene changes — never hardcode FS paths.
 7. Per-node deterministic variation: `seededUnitFloat(seed, salt)` in `[0, 1)`.
 8. `start` / `update` / `onPropertiesChanged` / `destroy` are optional; `destroy()` is required if anything was subscribed or timed.

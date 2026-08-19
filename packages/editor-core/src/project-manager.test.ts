@@ -19,9 +19,9 @@ const sample: ProjectData = {
 };
 
 const sampleTwo: ProjectData = {
-  name: "example-game-2",
+  name: "solitaire",
   version: PROJECT_SCHEMA_VERSION,
-  displayName: "Example Game 2",
+  displayName: "Solitaire",
   renderers: ["pixi"],
   startScene: "main",
   resolution: { ...DEFAULT_PROJECT_RESOLUTION },
@@ -137,7 +137,7 @@ describe("ProjectManager", () => {
 
   it("opens a project and updates active id", async () => {
     const openProject = vi.fn(async () => ({
-      projectId: "example-game-2",
+      projectId: "solitaire",
       project: sampleTwo,
     }));
     const manager = new ProjectManager({
@@ -147,7 +147,7 @@ describe("ProjectManager", () => {
         projects: [
           { id: "editor-features-demo", name: sample.name, displayName: sample.displayName, renderers: sample.renderers },
           {
-            id: "example-game-2",
+            id: "solitaire",
             name: sampleTwo.name,
             displayName: sampleTwo.displayName,
             renderers: sampleTwo.renderers,
@@ -158,11 +158,11 @@ describe("ProjectManager", () => {
       openProject,
     });
 
-    const opened = await manager.openProject("example-game-2");
-    expect(openProject).toHaveBeenCalledWith("example-game-2");
-    expect(opened.project.displayName).toBe("Example Game 2");
-    expect(manager.getActiveProjectId()).toBe("example-game-2");
-    expect(manager.getProject()?.name).toBe("example-game-2");
+    const opened = await manager.openProject("solitaire");
+    expect(openProject).toHaveBeenCalledWith("solitaire");
+    expect(opened.project.displayName).toBe("Solitaire");
+    expect(manager.getActiveProjectId()).toBe("solitaire");
+    expect(manager.getProject()?.name).toBe("solitaire");
   });
 });
 
@@ -203,7 +203,7 @@ describe("createFetchProjectApiClient", () => {
         return new Response(
           JSON.stringify({
             ok: true,
-            projectId: "example-game-2",
+            projectId: "solitaire",
             project: sampleTwo,
           }),
           { status: 200, headers: { "content-type": "application/json" } },
@@ -224,8 +224,8 @@ describe("createFetchProjectApiClient", () => {
       ],
       activeProjectId: "editor-features-demo",
     });
-    await expect(client.openProject("example-game-2")).resolves.toEqual({
-      projectId: "example-game-2",
+    await expect(client.openProject("solitaire")).resolves.toEqual({
+      projectId: "solitaire",
       project: sampleTwo,
     });
   });

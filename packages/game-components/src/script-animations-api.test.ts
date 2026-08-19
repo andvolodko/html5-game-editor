@@ -24,6 +24,7 @@ describe("createScriptAnimationsApi", () => {
     );
 
     expect(api.list()).toEqual(["Idle", "Walk"]);
+    expect(api.names()).toEqual(["Idle", "Walk"]);
     expect(listModel3DAnimations).toHaveBeenCalledWith("node_a");
   });
 
@@ -109,6 +110,23 @@ describe("createScriptAnimationsApi", () => {
       playing: false,
       timeScale: 1,
     });
+  });
+
+  it("isPlaying() uses the current clip and playing flag", () => {
+    const api = createScriptAnimationsApi(
+      "node_a",
+      services({
+        getModel3DPlayback: () => ({
+          animation: "Walk",
+          loop: true,
+          timeScale: 1,
+          playing: true,
+        }),
+      }),
+    );
+    expect(api.isPlaying()).toBe(true);
+    expect(api.isPlaying("Walk")).toBe(true);
+    expect(api.isPlaying("Idle")).toBe(false);
   });
 
   it("duration() returns wall-clock seconds using timeScale", () => {

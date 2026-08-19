@@ -76,7 +76,7 @@ Boot wiring for a game: `games/<name>/src/main.ts` + `mount-renderers.ts`. Edito
 
 - `GameRuntime` registers renderers explicitly (`RuntimeRendererRegistration`).
 - Hybrid filtering uses `nodeBelongsToPixiBackground` / `Foreground` / `nodeBelongsToThree` in scene helpers.
-- Do not add a `renderer-three` import to a Pixi-only game (`games/example-game-2`, `games/solitaire`).
+- Do not add a `renderer-three` import to a Pixi-only game (`games/solitaire`).
 
 ### 5. Tests
 

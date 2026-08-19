@@ -138,6 +138,7 @@ session.runtime = new GameRuntime({
     playAudio: (assetId, options) => htmlAudio.play(assetId, options),
     stopAudio: (assetId) => htmlAudio.stop(assetId),
     setAudioEnabled: (enabled) => htmlAudio.setEnabled(enabled),
+    setAudioVolume: (assetId, volume) => htmlAudio.setVolume(assetId, volume),
     ...createGltfClipScriptLookups(
       () => session.runtime?.getScene(),
       {

@@ -15,6 +15,7 @@
     "test": "pnpm -r --if-present run test",
     "typecheck": "pnpm -r --if-present run typecheck",
     "lint": "pnpm -r --if-present run lint",
+    "lint:deps": "depcruise apps packages games --config .dependency-cruiser.mjs --output-type err",
     "install-libresprite": "pnpm --filter @game-editor/project-server install-libresprite"
   },
   "devDependencies": {
@@ -24,6 +25,7 @@
     "globals": "^16.3.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0",
+    "dependency-cruiser": "^17.3.2",
     "vitest": "^3.2.4"
   },
   "pnpm": {

@@ -8,7 +8,7 @@ PixiJS handles 2D. Three.js handles 3D. React is the editor shell. Games build i
 
 **[Live demo](https://andvolodko.github.io/html5-game-editor/)** — static GitHub Pages build of the editor (all `games/*` projects, no project-server). Scene edits stay in this browser (`localStorage`). Asset import needs a local `pnpm dev`.
 
-Playable standalone builds of every game are on the same site: **[demo games](https://andvolodko.github.io/html5-game-editor/games/)** ([Editor Features Demo](https://andvolodko.github.io/html5-game-editor/games/editor-features-demo/), [Example Game 2](https://andvolodko.github.io/html5-game-editor/games/example-game-2/), [MU Online](https://andvolodko.github.io/html5-game-editor/games/muonline-game/), [Solitaire](https://andvolodko.github.io/html5-game-editor/games/solitaire/)).
+Playable standalone builds of every game are on the same site: **[demo games](https://andvolodko.github.io/html5-game-editor/games/)** ([Editor Features Demo](https://andvolodko.github.io/html5-game-editor/games/editor-features-demo/), [MU Online](https://andvolodko.github.io/html5-game-editor/games/muonline-game/), [Solitaire](https://andvolodko.github.io/html5-game-editor/games/solitaire/)).
 
 > Status: active development. The foundation through hybrid rendering, assets, undo/redo, prefabs, and playable demo games is in place. Collaboration and advanced tooling are still ahead.
 
@@ -127,7 +127,6 @@ html5-game-editor/
 │   └── renderer-three/    # Three scene adapter
 ├── games/
 │   ├── editor-features-demo/      # Hybrid Pixi + Three demo (port 5174)
-│   ├── example-game-2/    # Pixi-only demo (port 5175)
 │   ├── muonline-game/     # Hybrid Three + Pixi HUD (port 5176)
 │   └── solitaire/         # Pixi-only solitaire (port 5177)
 ├── docs/                  # Developer docs (index: docs/README.md)
@@ -164,12 +163,12 @@ The server opens `games/editor-features-demo` by default. Override with:
 
 ```bash
 # Windows (PowerShell)
-$env:PROJECT_ROOT = "C:\path\to\games\example-game-2"
+$env:PROJECT_ROOT = "C:\path\to\games\solitaire"
 $env:GAMES_ROOT   = "C:\path\to\games"
 pnpm --filter @game-editor/project-server dev
 
 # macOS / Linux
-PROJECT_ROOT=./games/example-game-2 GAMES_ROOT=./games pnpm --filter @game-editor/project-server dev
+PROJECT_ROOT=./games/solitaire GAMES_ROOT=./games pnpm --filter @game-editor/project-server dev
 ```
 
 You can also switch games from **File → Open Project** in the editor toolbar.
@@ -268,7 +267,6 @@ pnpm --filter @game-editor/project-server dev
 
 pnpm --filter @games/editor-features-demo dev
 pnpm --filter @games/editor-features-demo build
-pnpm --filter @games/example-game-2 dev
 pnpm --filter @games/muonline-game dev
 pnpm --filter @games/solitaire dev
 ```
@@ -350,7 +348,7 @@ games/editor-features-demo/
 }
 ```
 
-To add a new game, follow `.cursor/skills/create-game/SKILL.md` (or copy `games/example-game-2` / `games/solitaire` for Pixi-only, `games/editor-features-demo` / `games/muonline-game` for hybrid). Give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D. Keep Pixi out if the game never uses 2D.
+To add a new game, follow `.cursor/skills/create-game/SKILL.md` (or copy `games/solitaire` for Pixi-only, `games/editor-features-demo` / `games/muonline-game` for hybrid). Give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D. Keep Pixi out if the game never uses 2D.
 
 ---
 

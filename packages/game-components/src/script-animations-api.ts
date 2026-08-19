@@ -25,6 +25,10 @@ class HostScriptAnimationsApi implements ScriptAnimationsApi {
     return this.services.listModel3DAnimations?.(this.nodeId) ?? [];
   }
 
+  names(): readonly string[] {
+    return this.list();
+  }
+
   play(clip: string, options?: ScriptPlayAnimationOptions): void {
     this.services.setModel3DPlayback?.(this.nodeId, {
       animation: clip,
@@ -47,6 +51,17 @@ class HostScriptAnimationsApi implements ScriptAnimationsApi {
       playing: false,
       ...timeScalePatch(this.services, this.nodeId),
     });
+  }
+
+  isPlaying(clip?: string): boolean {
+    const playback = this.services.getModel3DPlayback?.(this.nodeId);
+    if (!playback?.playing) {
+      return false;
+    }
+    if (clip === undefined) {
+      return true;
+    }
+    return playback.animation === clip;
   }
 
   duration(clip?: string): number {

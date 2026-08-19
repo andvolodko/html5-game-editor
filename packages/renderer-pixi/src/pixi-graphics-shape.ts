@@ -1,4 +1,4 @@
-import { Graphics } from "pixi.js";
+import type { Graphics } from "pixi.js";
 import type { GraphicsShapeData, Vec2 } from "@game-editor/scene";
 
 /** Trace a domain Graphics shape in node-local space (no fill/stroke). */

@@ -54,7 +54,7 @@ export class BackgroundAudioBehaviour implements ScriptInstance {
     const previousAssetId = this.audioAssetId;
     this.applyProperties(properties);
     if (previousAssetId && previousAssetId !== this.audioAssetId) {
-      this.ctx.services.stopAudio?.(previousAssetId);
+      this.ctx.audio.stop(previousAssetId);
     }
     this.play();
   }
@@ -63,7 +63,7 @@ export class BackgroundAudioBehaviour implements ScriptInstance {
     if (!this.audioAssetId) {
       return;
     }
-    this.ctx.services.stopAudio?.(this.audioAssetId);
+    this.ctx.audio.stop(this.audioAssetId);
   }
 
   private applyProperties(raw: Readonly<Record<string, unknown>>): void {
@@ -73,10 +73,10 @@ export class BackgroundAudioBehaviour implements ScriptInstance {
   }
 
   private play(): void {
-    if (!this.audioAssetId || !this.ctx.services.playAudio) {
+    if (!this.audioAssetId) {
       return;
     }
-    this.ctx.services.playAudio(this.audioAssetId, {
+    this.ctx.audio.play(this.audioAssetId, {
       loop: true,
       volume: this.volume,
     });

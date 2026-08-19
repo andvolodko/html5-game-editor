@@ -36,6 +36,18 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Architecture
+        run: pnpm lint:deps
+
+      - name: Test
+        run: pnpm test
+
       - name: Build editor demo and standalone games
         run: pnpm build:pages
         env:

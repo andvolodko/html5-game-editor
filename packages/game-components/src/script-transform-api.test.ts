@@ -36,9 +36,14 @@ describe("createScriptTransformApi", () => {
       services({ getTransform3D: () => pose }),
     );
 
-    expect(api.position).toEqual({ x: 1, y: 2, z: 3 });
+    expect(api.position.x).toBe(1);
+    expect(api.position.y).toBe(2);
+    expect(api.position.z).toBe(3);
+    expect({ ...api.position }).toEqual({ x: 1, y: 2, z: 3 });
     pose = POSE_B;
-    expect(api.position).toEqual({ x: 9, y: 8, z: 7 });
+    expect(api.position.x).toBe(9);
+    expect(api.position.y).toBe(8);
+    expect(api.position.z).toBe(7);
   });
 
   it("rotation getter delegates to the current runtime transform", () => {
@@ -48,9 +53,14 @@ describe("createScriptTransformApi", () => {
       services({ getTransform3D: () => pose }),
     );
 
-    expect(api.rotation).toEqual({ x: 0.1, y: 0.2, z: 0.3 });
+    expect(api.rotation.x).toBe(0.1);
+    expect(api.rotation.y).toBe(0.2);
+    expect(api.rotation.z).toBe(0.3);
+    expect({ ...api.rotation }).toEqual({ x: 0.1, y: 0.2, z: 0.3 });
     pose = POSE_B;
-    expect(api.rotation).toEqual({ x: 1, y: 2, z: 3 });
+    expect(api.rotation.x).toBe(1);
+    expect(api.rotation.y).toBe(2);
+    expect(api.rotation.z).toBe(3);
   });
 
   it("scale getter delegates to the current runtime transform", () => {
@@ -60,9 +70,36 @@ describe("createScriptTransformApi", () => {
       services({ getTransform3D: () => pose }),
     );
 
-    expect(api.scale).toEqual({ x: 2, y: 3, z: 4 });
+    expect(api.scale.x).toBe(2);
+    expect(api.scale.y).toBe(3);
+    expect(api.scale.z).toBe(4);
+    expect({ ...api.scale }).toEqual({ x: 2, y: 3, z: 4 });
     pose = POSE_B;
-    expect(api.scale).toEqual({ x: 0.5, y: 0.5, z: 0.5 });
+    expect(api.scale.x).toBe(0.5);
+    expect(api.scale.y).toBe(0.5);
+    expect(api.scale.z).toBe(0.5);
+  });
+
+  it("axis assignment writes through without replacing the facade", () => {
+    const setTransform3D = vi.fn();
+    const pose: ScriptTransform3D = {
+      position: { x: 1, y: 2, z: 3 },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
+    };
+    const api = createScriptTransformApi(
+      "node_a",
+      services({
+        getTransform3D: () => pose,
+        setTransform3D,
+      }),
+    );
+    const position = api.position;
+    api.position.z = 10;
+    expect(position).toBe(api.position);
+    expect(setTransform3D).toHaveBeenCalledWith("node_a", {
+      position: { x: 1, y: 2, z: 10 },
+    });
   });
 
   it("setPosition delegates with the current nodeId", () => {
@@ -129,9 +166,15 @@ describe("createScriptTransformApi", () => {
   it("missing optional runtime service does not crash", () => {
     const api = createScriptTransformApi("node_a", services());
 
-    expect(api.position).toEqual({ x: 0, y: 0, z: 0 });
-    expect(api.rotation).toEqual({ x: 0, y: 0, z: 0 });
-    expect(api.scale).toEqual({ x: 1, y: 1, z: 1 });
+    expect(api.position.x).toBe(0);
+    expect(api.position.y).toBe(0);
+    expect(api.position.z).toBe(0);
+    expect(api.rotation.x).toBe(0);
+    expect(api.rotation.y).toBe(0);
+    expect(api.rotation.z).toBe(0);
+    expect(api.scale.x).toBe(1);
+    expect(api.scale.y).toBe(1);
+    expect(api.scale.z).toBe(1);
     expect(() => {
       api.setPosition({ x: 1, y: 2, z: 3 });
       api.setRotation({ x: 0, y: 0, z: 0 });

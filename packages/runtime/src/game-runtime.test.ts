@@ -658,6 +658,69 @@ describe("GameRuntime.loadScene", () => {
     );
   });
 
+  it("keeps Transform3D numeric when scripts snapshot ctx.transform3D via object spread", () => {
+    const renderer = createMockRenderer();
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.SpawnPose3D",
+        displayName: "SpawnPose3D",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => {
+          const spawn = {
+            rotation: { x: 0, y: 0, z: 0 },
+            scale: { x: 1, y: 1, z: 1 },
+          };
+          return {
+            start() {
+              spawn.rotation = { ...ctx.transform3D.rotation };
+              spawn.scale = { ...ctx.transform3D.scale };
+            },
+            update() {
+              ctx.transform3D.set({
+                rotation: { ...spawn.rotation, z: 0.4 },
+                scale: spawn.scale,
+              });
+            },
+          };
+        },
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "three",
+      renderer,
+      layer: { id: "main", renderer: "three", order: 0 },
+    });
+    const node = createNodeWithTransform3D("Monster", { x: 1, y: 2, z: 3 });
+    const transform = node.components.find(
+      (component) => component.type === "Transform3D",
+    );
+    if (transform && transform.type === "Transform3D") {
+      transform.rotation = { x: 0.1, y: 0.2, z: 0.3 };
+      transform.scale = { x: 2, y: 2, z: 2 };
+    }
+    node.components.push(createScriptComponent("test.SpawnPose3D"));
+    const scene = createEmptyScene("Spread3D", { renderer: "three" });
+    scene.nodes = [node];
+    runtime.loadScene(scene);
+    runtime.tick(1 / 60);
+
+    expect(runtime.getScene()?.nodes[0]?.components).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: "Transform3D",
+          rotation: { x: 0.1, y: 0.2, z: 0.4 },
+          scale: { x: 2, y: 2, z: 2 },
+        }),
+      ]),
+    );
+  });
+
   it("exposes getAnimatedSpritePlayback / setAnimatedSpritePlayback", () => {
     const renderer = createMockRenderer();
     const registry = new ComponentRegistry();
@@ -1542,5 +1605,33 @@ describe("GameRuntime.setPaused", () => {
     runtime.setPaused(true);
     runtime.notifyScriptProperties(node.id, "comp_paused", { speed: 4 });
     expect(seenSpeed).toBe(4);
+  });
+});
+
+describe("GameRuntime renderer order", () => {
+  it("renders in cached layer.order without sorting every frame", () => {
+    const calls: string[] = [];
+    const late = createMockRenderer();
+    late.render = vi.fn(() => {
+      calls.push("late");
+    });
+    const early = createMockRenderer();
+    early.render = vi.fn(() => {
+      calls.push("early");
+    });
+    const runtime = new GameRuntime();
+    runtime.registerRenderer({
+      kind: "three",
+      renderer: late,
+      layer: { id: "three", renderer: "three", order: 100 },
+    });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer: early,
+      layer: { id: "pixi", renderer: "pixi", order: 0 },
+    });
+    runtime.render();
+    runtime.render();
+    expect(calls).toEqual(["early", "late", "early", "late"]);
   });
 });

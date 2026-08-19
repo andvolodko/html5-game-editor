@@ -52,7 +52,7 @@ function fixtureSnapshot(projectId = "editor-features-demo"): DemoSnapshot {
     project: {
       name: projectId,
       version: 1,
-      displayName: projectId === "editor-features-demo" ? "Editor Features Demo" : "Example Game 2",
+      displayName: projectId === "editor-features-demo" ? "Editor Features Demo" : "Solitaire",
       renderers: ["pixi"],
       startScene: START_SCENE_ID,
       resolution: { width: 1280, height: 720 },
@@ -72,8 +72,8 @@ function fixtureSnapshot(projectId = "editor-features-demo"): DemoSnapshot {
 describe("demo glob paths", () => {
   it("reads project and scene ids from Vite glob keys", () => {
     expect(
-      projectIdFromGlobPath("../../../../games/example-game-2/project.json"),
-    ).toBe("example-game-2");
+      projectIdFromGlobPath("../../../../games/solitaire/project.json"),
+    ).toBe("solitaire");
     expect(
       sceneIdFromGlobPath(
         "../../../../games/editor-features-demo/assets/scenes/loading.json",
@@ -159,11 +159,11 @@ describe("DemoProjectStore", () => {
   it("keeps scene edits isolated per project", () => {
     const storage = memoryStorage();
     const store = new DemoProjectStore(
-      [fixtureSnapshot("editor-features-demo"), fixtureSnapshot("example-game-2")],
+      [fixtureSnapshot("editor-features-demo"), fixtureSnapshot("solitaire")],
       storage,
     );
     store.saveScene(START_SCENE_ID, createEmptyScene("Game 1 boot"));
-    store.openProject("example-game-2");
+    store.openProject("solitaire");
     expect(store.loadScene(START_SCENE_ID).name).toBe("Boot");
     store.saveScene(START_SCENE_ID, createEmptyScene("Game 2 boot"));
     store.openProject("editor-features-demo");
@@ -211,24 +211,24 @@ describe("createDemoEditorClients", () => {
 
   it("lists every bundled demo project and switches assets", async () => {
     const first = fixtureSnapshot("editor-features-demo");
-    const second = fixtureSnapshot("example-game-2");
+    const second = fixtureSnapshot("solitaire");
     const clients = createDemoEditorClients([first, second], {
       assetBaseUrl: "/demo/",
       catalogs: {
         "editor-features-demo": { components: [], busEvents: [] },
-        "example-game-2": { components: [], busEvents: [] },
+        solitaire: { components: [], busEvents: [] },
       },
     });
     const listed = await clients.projectApi.listProjects();
     expect(listed.activeProjectId).toBe("editor-features-demo");
     expect(listed.projects.map((project) => project.id)).toEqual([
       "editor-features-demo",
-      "example-game-2",
+      "solitaire",
     ]);
-    await clients.projectApi.openProject("example-game-2");
+    await clients.projectApi.openProject("solitaire");
     const secondTexture = second.assets.assets[0]!;
     expect(clients.assetApi.getAssetContentUrl(secondTexture.id)).toBe(
-      "/demo/example-game-2/assets/ui/hero.png",
+      "/demo/solitaire/assets/ui/hero.png",
     );
     await expect(clients.projectApi.openProject("missing")).rejects.toMatchObject({
       code: "PROJECT_NOT_FOUND",

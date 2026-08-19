@@ -19,8 +19,20 @@ import {
   getTransform2D,
   getTransform3D,
   type SceneData,
+  type SceneIndex,
   type SceneNodeData,
 } from "@game-editor/scene";
+
+function resolveNode(
+  scene: SceneData | undefined,
+  nodeId: string,
+  index?: SceneIndex,
+): SceneNodeData | undefined {
+  if (index) {
+    return index.getNode(nodeId);
+  }
+  return scene ? findNodeById(scene, nodeId) : undefined;
+}
 
 function cloneVec3(value: {
   x: number;
@@ -30,11 +42,24 @@ function cloneVec3(value: {
   return { x: value.x, y: value.y, z: value.z };
 }
 
+function isFiniteVec3(value: {
+  x?: unknown;
+  y?: unknown;
+  z?: unknown;
+}): value is { x: number; y: number; z: number } {
+  return (
+    Number.isFinite(value.x) &&
+    Number.isFinite(value.y) &&
+    Number.isFinite(value.z)
+  );
+}
+
 export function readTransform2D(
   scene: SceneData | undefined,
   nodeId: string,
+  index?: SceneIndex,
 ): ScriptTransform2D | undefined {
-  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const node = resolveNode(scene, nodeId, index);
   const transform = node ? getTransform2D(node) : undefined;
   if (!transform) {
     return undefined;
@@ -51,8 +76,9 @@ export function patchTransform2D(
   scene: SceneData | undefined,
   nodeId: string,
   patch: ScriptTransform2DPatch,
+  index?: SceneIndex,
 ): SceneNodeData | undefined {
-  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const node = resolveNode(scene, nodeId, index);
   const transform = node ? getTransform2D(node) : undefined;
   if (!node || !transform) {
     return undefined;
@@ -79,8 +105,9 @@ export function patchTransform2D(
 export function readTransform3D(
   scene: SceneData | undefined,
   nodeId: string,
+  index?: SceneIndex,
 ): ScriptTransform3D | undefined {
-  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const node = resolveNode(scene, nodeId, index);
   const transform = node ? getTransform3D(node) : undefined;
   if (!transform) {
     return undefined;
@@ -96,19 +123,20 @@ export function patchTransform3D(
   scene: SceneData | undefined,
   nodeId: string,
   patch: ScriptTransform3DPatch,
+  index?: SceneIndex,
 ): SceneNodeData | undefined {
-  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const node = resolveNode(scene, nodeId, index);
   const transform = node ? getTransform3D(node) : undefined;
   if (!node || !transform) {
     return undefined;
   }
-  if (patch.position) {
+  if (patch.position && isFiniteVec3(patch.position)) {
     transform.position = cloneVec3(patch.position);
   }
-  if (patch.rotation) {
+  if (patch.rotation && isFiniteVec3(patch.rotation)) {
     transform.rotation = cloneVec3(patch.rotation);
   }
-  if (patch.scale) {
+  if (patch.scale && isFiniteVec3(patch.scale)) {
     transform.scale = cloneVec3(patch.scale);
   }
   return node;
@@ -117,8 +145,9 @@ export function patchTransform3D(
 export function readModel3DPlayback(
   scene: SceneData | undefined,
   nodeId: string,
+  index?: SceneIndex,
 ): ScriptModel3DPlayback | undefined {
-  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const node = resolveNode(scene, nodeId, index);
   const model = node ? getModel3D(node) : undefined;
   if (!model) {
     return undefined;
@@ -141,8 +170,9 @@ export function patchModel3DPlayback(
   scene: SceneData | undefined,
   nodeId: string,
   patch: ScriptModel3DPlaybackPatch,
+  index?: SceneIndex,
 ): SceneNodeData | undefined {
-  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const node = resolveNode(scene, nodeId, index);
   const model = node ? getModel3D(node) : undefined;
   if (!node || !model) {
     return undefined;
@@ -170,8 +200,9 @@ export function patchNodeText(
   scene: SceneData | undefined,
   nodeId: string,
   text: string,
+  index?: SceneIndex,
 ): SceneNodeData | undefined {
-  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const node = resolveNode(scene, nodeId, index);
   if (!node) {
     return undefined;
   }
@@ -187,8 +218,9 @@ export function patchSpriteAssetId(
   scene: SceneData | undefined,
   nodeId: string,
   assetId: string,
+  index?: SceneIndex,
 ): SceneNodeData | undefined {
-  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const node = resolveNode(scene, nodeId, index);
   const sprite = node ? getSprite(node) : undefined;
   if (!node || !sprite) {
     return undefined;
@@ -204,8 +236,9 @@ export function patchSpriteAssetId(
 export function readAnimatedSpritePlayback(
   scene: SceneData | undefined,
   nodeId: string,
+  index?: SceneIndex,
 ): ScriptAnimatedSpritePlayback | undefined {
-  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const node = resolveNode(scene, nodeId, index);
   const sprite = node ? getAnimatedSprite(node) : undefined;
   if (!sprite) {
     return undefined;
@@ -228,8 +261,9 @@ export function patchAnimatedSpritePlayback(
   scene: SceneData | undefined,
   nodeId: string,
   patch: ScriptAnimatedSpritePlaybackPatch,
+  index?: SceneIndex,
 ): SceneNodeData | undefined {
-  const node = scene ? findNodeById(scene, nodeId) : undefined;
+  const node = resolveNode(scene, nodeId, index);
   const sprite = node ? getAnimatedSprite(node) : undefined;
   if (!node || !sprite) {
     return undefined;

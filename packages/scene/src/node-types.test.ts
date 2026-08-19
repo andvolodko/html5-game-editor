@@ -3,7 +3,6 @@ import {
   canMoveNode,
   createContainerNode,
   createEmptyScene,
-  createHitZoneComponent,
   createHitZoneNode,
   createMaskComponent,
   createMaskNode,

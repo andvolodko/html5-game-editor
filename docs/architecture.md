@@ -44,6 +44,12 @@ Before importing across packages:
 
 Runtime packages must not depend on editor packages. Games must be deployable without editor dependencies.
 
+These rules are enforced by `pnpm lint:deps` (`dependency-cruiser`) and by CI.
+
+Scene lookup uses `SceneIndex` (`packages/scene`) for O(1) id/parent queries. `DocumentManager` and `GameRuntime` keep the index in sync. `findNodeById` remains for one-off tree walks.
+
+`GameRuntime` is the public runtime façade. Renderer order, pointer subscriptions, script services, and frame stats live in `packages/runtime/src/runtime-*.ts`. Gameplay scripts should prefer `ctx.node` / `ctx.transform` / `ctx.transform3D` / `ctx.animations` / `ctx.audio` / `ctx.scene` over low-level `ScriptRuntimeServices`.
+
 ---
 
 ## TypeScript

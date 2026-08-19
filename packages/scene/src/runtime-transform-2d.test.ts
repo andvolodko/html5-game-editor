@@ -17,6 +17,11 @@ describe("RuntimeTransform2D", () => {
     expect(transform.scaleY).toBe(1);
     transform.x = 12;
     expect(transform.x).toBe(12);
+    expect(transform.position.x).toBe(12);
+    transform.position.y = 9;
+    expect(transform.y).toBe(9);
+    transform.scale.x = 2;
+    expect(transform.scaleX).toBe(2);
   });
 
   it("writes through to the scene Transform2D component", () => {
