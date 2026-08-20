@@ -12,10 +12,11 @@
     "build": "pnpm -r --filter \"./packages/**\" run build && pnpm -r --filter \"./apps/**\" --filter \"./games/**\" run build",
     "build:demo": "pnpm --filter @game-editor/editor build:demo",
     "build:pages": "pnpm build:demo && node scripts/assemble-github-pages.mjs",
-    "test": "pnpm -r --if-present run test",
+    "test": "pnpm -r --workspace-concurrency=2 --if-present run test",
     "typecheck": "pnpm -r --if-present run typecheck",
     "lint": "pnpm -r --if-present run lint",
     "lint:deps": "depcruise apps packages games --config .dependency-cruiser.mjs --output-type err",
+    "check": "pnpm typecheck && pnpm lint && pnpm lint:deps && pnpm test",
     "install-libresprite": "pnpm --filter @game-editor/project-server install-libresprite"
   },
   "devDependencies": {

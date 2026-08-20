@@ -136,6 +136,7 @@ export {
   isSupportedAsepriteFile,
   generatedAsepriteOutputPaths,
   toPublicAssetPath,
+  toDiskAssetPath,
   derivedAsepritePaths,
   withAsepriteSourcePath,
   isAsepriteAnimated,

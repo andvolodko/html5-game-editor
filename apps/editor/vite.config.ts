@@ -6,7 +6,9 @@ import { demoAssetsPlugin } from "./src/demo/demo-assets-plugin";
 
 /**
  * Keep in sync with `@game-editor/shared` ports.ts.
- * Vite config cannot import workspace `.ts` package entry points under Node ESM.
+ * Port numbers stay inlined here; workspace `.ts` imports need
+ * `--configLoader runner` (see package.json scripts), which the demo
+ * plugin uses for `@game-editor/assets`.
  */
 const DEFAULT_EDITOR_DEV_PORT = 5173;
 const DEFAULT_PROJECT_SERVER_PORT = 8787;

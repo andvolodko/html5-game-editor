@@ -224,7 +224,7 @@ Full pipeline, serialization, and runtime notes: [`docs/aseprite.md`](./docs/ase
 
 ## Static demo (GitHub Pages)
 
-The hosted site is a **static Vite build**. It does not run `project-server`. The editor bundles every package under `games/` (scenes, `project.json`, asset catalogue) and serves files from `/demo/<project-id>/assets` plus `/demo/<project-id>/.generated`. Switch games with **File → Open Project**.
+The hosted site is a **static Vite build**. It does not run `project-server`. The editor bundles every package under `games/` (scenes, `project.json`, asset catalogue) and serves files from `/demo/<project-id>/assets` plus `/demo/<project-id>/_generated`. Switch games with **File → Open Project**.
 
 Each `games/<id>` package is also built as a standalone player and copied to `/games/<id>/`. New games are picked up automatically — no workflow edit.
 
@@ -271,7 +271,7 @@ pnpm --filter @games/muonline-game dev
 pnpm --filter @games/solitaire dev
 ```
 
-Game Vite configs import TypeScript from `@game-editor/project/vite`, so game scripts use `--configLoader runner`.
+Game Vite configs import TypeScript from `@game-editor/project/vite`, and the editor config imports `@game-editor/assets` via the demo plugin, so those scripts use `--configLoader runner`.
 
 ---
 

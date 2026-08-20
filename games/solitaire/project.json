@@ -10,5 +10,17 @@
     "width": 720,
     "height": 1280
   },
-  "background": "#0d4a2e"
+  "background": "#0d4a2e",
+  "android": {
+    "appName": "Solitaire",
+    "applicationId": "com.gameeditor.solitaire",
+    "versionName": "1.0.0",
+    "versionCode": 1,
+    "orientation": "auto",
+    "fullscreen": true,
+    "immersiveMode": true,
+    "keepScreenAwake": false,
+    "keystorePath": ".editor/upload.p12",
+    "keyAlias": "upload"
+  }
 }

@@ -24,6 +24,22 @@ describe("createEditor (live)", () => {
 });
 
 describe("live Vite watch", () => {
+  it("runs Vite with configLoader runner so the demo plugin can import workspace TypeScript", () => {
+    const pkg = JSON.parse(
+      readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+    ) as { scripts: Record<string, string> };
+    for (const name of [
+      "dev",
+      "dev:demo",
+      "build",
+      "build:demo",
+      "preview",
+      "preview:demo",
+    ]) {
+      expect(pkg.scripts[name]).toContain("--configLoader runner");
+    }
+  });
+
   it("ignores game JSON written by Ctrl+S", () => {
     const viteConfig = readFileSync(
       new URL("../vite.config.ts", import.meta.url),

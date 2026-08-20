@@ -10,6 +10,7 @@ import {
   relocateOwnedAssetPaths,
   resolveAsepritePartRelativePath,
   toPublicAssetPath,
+  toDiskAssetPath,
 } from "./index.js";
 
 describe("aseprite extensions", () => {
@@ -31,6 +32,12 @@ describe("aseprite extensions", () => {
       "_generated/assets/hero.json",
     );
     expect(toPublicAssetPath("assets/ui/hero.png")).toBe("assets/ui/hero.png");
+    expect(toDiskAssetPath("_generated/assets/hero.json")).toBe(
+      ".generated/assets/hero.json",
+    );
+    expect(toDiskAssetPath(".generated/assets/hero.json")).toBe(
+      ".generated/assets/hero.json",
+    );
   });
 
   it("treats generated files as derived, not owned source paths", () => {

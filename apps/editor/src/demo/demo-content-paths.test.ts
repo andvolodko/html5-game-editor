@@ -11,12 +11,19 @@ describe("isAllowedDemoContentRelative", () => {
     expect(
       isAllowedDemoContentRelative(".generated/assets/characters/hero.json"),
     ).toBe(true);
+    expect(
+      isAllowedDemoContentRelative("_generated/assets/characters/hero.json"),
+    ).toBe(true);
   });
 
   it("rejects trash, traversal, and other project trees", () => {
     expect(isAllowedDemoContentRelative("assets")).toBe(false);
     expect(isAllowedDemoContentRelative(".generated")).toBe(false);
+    expect(isAllowedDemoContentRelative("_generated")).toBe(false);
     expect(isAllowedDemoContentRelative(".generated/asset-trash/x.png")).toBe(
+      false,
+    );
+    expect(isAllowedDemoContentRelative("_generated/asset-trash/x.png")).toBe(
       false,
     );
     expect(isAllowedDemoContentRelative(".generated/folder-trash/x")).toBe(
@@ -47,6 +54,14 @@ describe("parseDemoContentUrl", () => {
     });
     expect(
       parseDemoContentUrl(
+        "/demo/editor-features-demo/_generated/assets/characters/hero.json",
+      ),
+    ).toEqual({
+      projectId: "editor-features-demo",
+      relative: ".generated/assets/characters/hero.json",
+    });
+    expect(
+      parseDemoContentUrl(
         "/demo/editor-features-demo/.generated/assets/characters/hero.json",
       ),
     ).toEqual({
@@ -63,6 +78,11 @@ describe("parseDemoContentUrl", () => {
     expect(
       parseDemoContentUrl(
         "/demo/editor-features-demo/.generated/asset-trash/gone.png",
+      ),
+    ).toBeUndefined();
+    expect(
+      parseDemoContentUrl(
+        "/demo/editor-features-demo/_generated/asset-trash/gone.png",
       ),
     ).toBeUndefined();
     expect(parseDemoContentUrl("/games/editor-features-demo/assets/x.png")).toBe(

@@ -4,6 +4,10 @@ import path from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Plugin, ResolvedConfig } from "vite";
 import {
+  GENERATED_ASSETS_ROOT,
+  PUBLIC_GENERATED_ASSETS_ROOT,
+} from "@game-editor/assets";
+import {
   isGeneratedTrashRelative,
   parseDemoContentUrl,
 } from "./demo-content-paths";
@@ -11,7 +15,6 @@ import {
 const FORBIDDEN_STATUS = 403;
 const NOT_FOUND_STATUS = 404;
 const ASSETS_ENTRY = "assets";
-const GENERATED_ENTRY = ".generated";
 
 const MIME_BY_EXTENSION: Readonly<Record<string, string>> = {
   ".png": "image/png",
@@ -135,8 +138,9 @@ function copyIndexTo404(outDir: string): void {
 }
 
 /**
- * Serves / copies each game's `assets/` and `.generated/` trees under
- * `/demo/<id>/` so the static editor can switch projects without project-server.
+ * Serves / copies each game's `assets/` and derived sheets under `/demo/<id>/`.
+ * On-disk `.generated/` is published as `_generated/` so GitHub Pages and
+ * Android WebView can fetch Aseprite sheets.
  */
 export function demoAssetsPlugin(gamesRoot: string): Plugin {
   let outDir = "dist";
@@ -160,9 +164,12 @@ export function demoAssetsPlugin(gamesRoot: string): Plugin {
         const assetsDest = path.join(destRoot, ASSETS_ENTRY);
         fs.mkdirSync(assetsDest, { recursive: true });
         fs.cpSync(assetsSource, assetsDest, { recursive: true });
-        const generatedSource = path.join(game.projectRoot, GENERATED_ENTRY);
+        const generatedSource = path.join(game.projectRoot, GENERATED_ASSETS_ROOT);
         if (fs.existsSync(generatedSource)) {
-          copyGeneratedTree(generatedSource, path.join(destRoot, GENERATED_ENTRY));
+          copyGeneratedTree(
+            generatedSource,
+            path.join(destRoot, PUBLIC_GENERATED_ASSETS_ROOT),
+          );
         }
       }
       copyIndexTo404(outDir);

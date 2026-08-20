@@ -65,6 +65,19 @@ export function toPublicAssetPath(projectPath: string): string {
   return normalized;
 }
 
+/** Inverse of `toPublicAssetPath` for static hosts that map `_generated/` back to disk. */
+export function toDiskAssetPath(publicOrDiskPath: string): string {
+  const normalized = normalizePath(publicOrDiskPath);
+  if (normalized === PUBLIC_GENERATED_ASSETS_ROOT) {
+    return GENERATED_ASSETS_ROOT;
+  }
+  const prefix = `${PUBLIC_GENERATED_ASSETS_ROOT}/`;
+  if (normalized.startsWith(prefix)) {
+    return `${GENERATED_ASSETS_ROOT}/${normalized.slice(prefix.length)}`;
+  }
+  return normalized;
+}
+
 export function derivedAsepritePaths(record: AssetRecord): string[] {
   if (record.metadata.kind !== "aseprite") {
     return [];

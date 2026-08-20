@@ -189,7 +189,7 @@ describe("createDemoEditorClients", () => {
     });
   });
 
-  it("resolves Aseprite sheet URLs under .generated", () => {
+  it("resolves Aseprite sheet URLs under _generated", () => {
     const aseprite = createAsepriteAssetRecord({
       id: "asset_hero",
       name: "hero",
@@ -202,10 +202,10 @@ describe("createDemoEditorClients", () => {
       catalogs: { "editor-features-demo": { components: [], busEvents: [] } },
     });
     expect(clients.assetApi.getAssetPartUrl(aseprite.id, "hero.json")).toBe(
-      "/html5-game-editor/demo/editor-features-demo/.generated/assets/characters/hero.json",
+      "/html5-game-editor/demo/editor-features-demo/_generated/assets/characters/hero.json",
     );
     expect(clients.assetApi.getAssetPartUrl(aseprite.id, "hero.png")).toBe(
-      "/html5-game-editor/demo/editor-features-demo/.generated/assets/characters/hero.png",
+      "/html5-game-editor/demo/editor-features-demo/_generated/assets/characters/hero.png",
     );
   });
 

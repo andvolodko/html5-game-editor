@@ -1,14 +1,18 @@
+import {
+  GENERATED_ASSETS_ROOT,
+  toDiskAssetPath,
+} from "@game-editor/assets";
+
 /** Keep in sync with `@game-editor/project` PROJECT_ID_PATTERN. */
 const PROJECT_ID_PATTERN = /^[A-Za-z0-9._-]+$/;
 
 const DEMO_URL_PREFIX = "/demo/";
 const ASSETS_ROOT = "assets";
-const GENERATED_ROOT = ".generated";
 const GENERATED_TRASH_FOLDERS = ["asset-trash", "folder-trash"] as const;
 
 export interface DemoContentUrl {
   projectId: string;
-  /** Project-relative path under `assets/` or `.generated/`. */
+  /** Project-relative disk path under `assets/` or `.generated/`. */
   relative: string;
 }
 
@@ -34,6 +38,7 @@ export function isGeneratedTrashRelative(relativeToGenerated: string): boolean {
 
 /**
  * Demo hosts may serve only source assets and derived Aseprite output.
+ * Public URLs use `_generated/`; on-disk paths stay `.generated/`.
  * Rejects trash, traversal, and anything outside those two trees.
  */
 export function isAllowedDemoContentRelative(relative: string): boolean {
@@ -44,15 +49,16 @@ export function isAllowedDemoContentRelative(relative: string): boolean {
   if (normalized.startsWith(`${ASSETS_ROOT}/`)) {
     return true;
   }
-  const generatedPrefix = `${GENERATED_ROOT}/`;
-  if (!normalized.startsWith(generatedPrefix)) {
+  const diskRelative = toDiskAssetPath(normalized);
+  const generatedPrefix = `${GENERATED_ASSETS_ROOT}/`;
+  if (!diskRelative.startsWith(generatedPrefix)) {
     return false;
   }
-  const afterGenerated = normalized.slice(generatedPrefix.length);
+  const afterGenerated = diskRelative.slice(generatedPrefix.length);
   return afterGenerated.length > 0 && !isGeneratedTrashPath(afterGenerated);
 }
 
-/** Parses `/demo/<projectId>/assets/...` or `/demo/<projectId>/.generated/...`. */
+/** Parses `/demo/<projectId>/assets/...` or `/demo/<projectId>/_generated/...`. */
 export function parseDemoContentUrl(pathname: string): DemoContentUrl | undefined {
   if (!pathname.startsWith(DEMO_URL_PREFIX)) {
     return undefined;
@@ -70,5 +76,5 @@ export function parseDemoContentUrl(pathname: string): DemoContentUrl | undefine
   if (!isAllowedDemoContentRelative(relative)) {
     return undefined;
   }
-  return { projectId, relative: normalizeRelative(relative) };
+  return { projectId, relative: toDiskAssetPath(normalizeRelative(relative)) };
 }
