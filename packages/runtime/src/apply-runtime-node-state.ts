@@ -1,6 +1,6 @@
 import {
-  BASE_NODE_STATE_ID,
   resolveNodeState,
+  type BASE_NODE_STATE_ID,
   type NodeStateId,
   type SceneData,
   type SceneNodeData,

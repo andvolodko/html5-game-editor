@@ -1,7 +1,7 @@
 import {
-  BASE_NODE_STATE_ID,
   isNodeStatePropertyOverridden,
   resolveNodeState,
+  type BASE_NODE_STATE_ID,
   type NodeStateId,
   type NodeStatePropertyPath,
   type SceneNodeData,
