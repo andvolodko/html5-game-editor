@@ -88,6 +88,22 @@ export type {
 
   SceneData,
 
+  NodeStateId,
+
+  NodeStateViewport,
+
+  SceneStateDefinition,
+
+  NodeStateTransform2DOverrides,
+
+  NodeStateOverrides,
+
+  NodeStateOverridesMap,
+
+  NodeStatePropertyPath,
+
+  ResolvedNodeState,
+
 } from "./types.js";
 
 export {
@@ -200,11 +216,37 @@ export {
 
   sceneDataSchema,
 
+  sceneStateDefinitionSchema,
+
+  sceneStateViewportSchema,
+
+  nodeStateOverridesSchema,
+
+  nodeStateOverridesMapSchema,
+
+  nodeStateTransform2DOverridesSchema,
+
   parseSceneData,
 
   isCurrentSceneSchemaVersion,
 
 } from "./schema.js";
+
+export {
+  BASE_NODE_STATE_ID,
+  NODE_STATE_PROPERTY_PATHS,
+  getNodeStateOverrides,
+  isNodeStatePropertyOverridden,
+  resolveNodeState,
+  pruneNodeStateOverrides,
+  diffTransform2DOverride,
+  mergeNodeStateOverrides,
+  setNodeStatePropertyOverride,
+  resetNodeStateProperty,
+  applyNodeStateOverridesMapEntry,
+  copyNodeStateOverrides,
+  nodeHasStateOverride,
+} from "./node-states/index.js";
 
 export type { SceneRenderer, SceneRenderStats, BoneWorldTransform } from "./scene-renderer.js";
 export type { RuntimeTransform2D, RuntimeVec2 } from "./runtime-transform-2d.js";

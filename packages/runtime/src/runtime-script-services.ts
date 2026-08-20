@@ -68,6 +68,8 @@ export interface RuntimeScriptServiceHost {
   destroySpawnedNode(nodeId: string): void;
   setNodeVisible(nodeId: string, visible: boolean): void;
   setNodeAlpha(nodeId: string, alpha: number): void;
+  setNodeState(nodeId: string, stateIdOrName: string | null): void;
+  getNodeState(nodeId: string): string | null;
   setNodeCursor(nodeId: string, cursor: string): void;
 }
 
@@ -257,6 +259,19 @@ export function createRuntimeScriptServices(
         return;
       }
       host.setNodeAlpha(nodeId, alpha);
+    },
+    setNodeState: (nodeId, stateIdOrName) => {
+      if (external.setNodeState) {
+        external.setNodeState(nodeId, stateIdOrName);
+        return;
+      }
+      host.setNodeState(nodeId, stateIdOrName);
+    },
+    getNodeState: (nodeId) => {
+      if (external.getNodeState) {
+        return external.getNodeState(nodeId);
+      }
+      return host.getNodeState(nodeId);
     },
     setNodeCursor: (nodeId, cursor) => {
       if (external.setNodeCursor) {

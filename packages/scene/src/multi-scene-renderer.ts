@@ -145,6 +145,12 @@ export class MultiSceneRenderer implements SceneRenderer {
     }
   }
 
+  setNodeResolvedVisible(nodeId: string, visible: boolean): void {
+    for (const slot of this.slots) {
+      slot.renderer.setNodeResolvedVisible?.(nodeId, visible);
+    }
+  }
+
   setNodeAlpha(nodeId: string, alpha: number): void {
     for (const slot of this.slots) {
       slot.renderer.setNodeAlpha?.(nodeId, alpha);

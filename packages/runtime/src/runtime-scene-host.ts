@@ -12,6 +12,7 @@ import {
   moveNodeInScene,
   resolveScenePrefabs,
   SceneIndex,
+  BASE_NODE_STATE_ID,
   type PrefabCatalog,
   type SceneData,
   type SceneNodeData,
@@ -28,6 +29,10 @@ import {
 } from "./script-scene-io.js";
 import { destroyNodeInScene, spawnModel3DInScene } from "./script-scene-spawn.js";
 import type { RuntimeRendererHost } from "./runtime-renderer-host.js";
+import {
+  applyRuntimeNodeStateDisplay,
+  resolveSceneStateId,
+} from "./apply-runtime-node-state.js";
 
 /**
  * Live scene graph, index, and renderer sync for script mutations.
@@ -38,6 +43,8 @@ export class RuntimeSceneHost {
   private scene: SceneData | undefined;
   private prefabs: PrefabCatalog;
   private readonly spawnedNodeIds = new Set<string>();
+  /** Per-node active named state (not persisted). Missing = Base. */
+  private readonly activeNodeStates = new Map<string, string>();
 
   constructor(private readonly rendererHost: RuntimeRendererHost) {
     this.prefabs = new Map();
@@ -57,6 +64,7 @@ export class RuntimeSceneHost {
    */
   loadScene(scene: SceneData): SceneData {
     this.spawnedNodeIds.clear();
+    this.activeNodeStates.clear();
     const { scene: resolved, warnings } = resolveScenePrefabs(
       scene,
       this.prefabs,
@@ -263,6 +271,46 @@ export class RuntimeSceneHost {
     for (const registration of this.rendererHost.getOrdered()) {
       registration.renderer.setNodeAlpha?.(nodeId, alpha);
     }
+  }
+
+  getNodeState(nodeId: string): string | null {
+    return this.activeNodeStates.get(nodeId) ?? null;
+  }
+
+  /**
+   * Activate a named state (id or unique name) or Base (`null`).
+   * Does not mutate authored Transform2D / alpha / visible on the scene graph.
+   */
+  setNodeState(nodeId: string, stateIdOrName: string | null): void {
+    if (!this.scene) {
+      return;
+    }
+    const node = this.sceneIndex.getNode(nodeId);
+    if (!node) {
+      return;
+    }
+
+    let nextId: string | typeof BASE_NODE_STATE_ID = BASE_NODE_STATE_ID;
+    if (stateIdOrName !== null) {
+      const resolved = resolveSceneStateId(this.scene, stateIdOrName);
+      if (resolved === undefined) {
+        console.warn(
+          `[node-states] Unknown state "${stateIdOrName}" on node ${nodeId}`,
+        );
+        return;
+      }
+      nextId = resolved;
+    }
+
+    if (nextId === BASE_NODE_STATE_ID) {
+      this.activeNodeStates.delete(nodeId);
+    } else {
+      this.activeNodeStates.set(nodeId, nextId);
+    }
+
+    this.forOwningRenderers(node, (renderer) => {
+      applyRuntimeNodeStateDisplay(renderer, node, nextId);
+    });
   }
 
   setNodeCursor(nodeId: string, cursor: string): void {

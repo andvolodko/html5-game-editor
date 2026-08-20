@@ -22,6 +22,7 @@ Editor  (packages/editor-core)
   ├── AssetManager        catalogue from project-server
   ├── PrefabManager       catalog + scene | prefab document mode
   ├── EditorViewportController  sync SceneRenderer after mutations
+  ├── NodeStateEditSession      active named state (Base = null; not scene JSON)
   └── EditorNodeMetadataStore   Hierarchy eye / lock (localStorage)
         │
         ▼
@@ -67,6 +68,7 @@ Public API is the `@game-editor/editor-core` barrel. Panels import that package;
 | `nodeMetadata` | Editor-only hidden/locked flags |
 | `console` | Structured log for the Console panel |
 | `tilemapEdit` | Paint/erase stroke session |
+| `nodeStates` | Active named state for editing (Base = null; not scene JSON) |
 
 `editor.subscribe` bumps `getStoreVersion()`. `useEditorState(selector)` re-renders panels from that version. Prefer a selector that reads the fields you need rather than copying the whole scene into React state.
 
@@ -119,6 +121,7 @@ Commands talk to `DocumentManager` / `SelectionManager`. They do not write Pixi/
 | `AddHitZoneCommand` / `SetHitZoneCommand` | Inspector Hit Zone / viewport HitZone size, move, and polygon vertices |
 | `AddMaskCommand` / `SetMaskCommand` | Inspector Mask / viewport Mask size, move, and polygon vertices |
 | `SetNodeVisibleCommand` / `SetNodeAlphaCommand` / `SetNodeLayerCommand` / `SetNodePointerCommand` | Inspector |
+| `AddSceneStateCommand` / `RenameSceneStateCommand` / `DeleteSceneStateCommand` / `DuplicateSceneStateCommand` / `SetNodeStateOverrideCommand` | States panel / Inspector / gizmos when a named state is active |
 | `AddScriptComponentCommand` / `RemoveComponentCommand` / `SetScriptPropertiesCommand` / `SetScriptEnabledCommand` | Inspector scripts / HitZone / Mask remove |
 | `InstantiatePrefabCommand` / `UnpackPrefabCommand` / `RevertPrefabOverridesCommand` | Prefab workflows |
 | `PaintTilemapCommand` | Tilemap stroke (one command per pointer gesture) |
@@ -220,9 +223,13 @@ Docking is `DockLayout` / dockview (`apps/editor/src/layout/`). Layout is UI chr
 │ Hierarchy  │ Scene viewport           │ Inspector   │
 │            │                          │ Asset Preview│
 ├────────────┼──────────────────────────┤             │
-│ Assets     │ Preview / Console        │             │
+│ Assets     │ Preview / Console / States│            │
 └────────────┴──────────────────────────┴─────────────┘
 ```
+
+### Node States panel
+
+Dockable **States** panel (`EDITOR_PANEL_IDS.states`), tabbed with Console by default. Selects the editor-only active state (`NodeStateEditSession` — not written into scene JSON). While a named state is active, Inspector and Transform2D gizmos write sparse `stateOverrides` instead of Base. Inspector shows effective values and a reset control on overridden MVP fields.
 
 Pixi and Three are used in the scene viewport (and game Preview). Standard chrome stays DOM/React. Preview Play / Pause / Stop drives an isolated `GameRuntime`; Pause freezes scripts, input, audio, and playback animation without writing into the open document. Inspector Script property edits still reach the live preview via `onPropertiesChanged`.
 

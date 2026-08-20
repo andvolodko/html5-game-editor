@@ -407,6 +407,13 @@ export interface ScriptRuntimeServices {
    */
   setNodeAlpha?: (nodeId: string, alpha: number) => void;
   /**
+   * Activate a named node state (catalog id or unique name), or `null` for Base.
+   * Applies Base + override onto the renderer without mutating authored Base fields.
+   */
+  setNodeState?: (nodeId: string, stateIdOrName: string | null) => void;
+  /** Current runtime-active state id for a node (`null` = Base). */
+  getNodeState?: (nodeId: string) => string | null;
+  /**
    * CSS cursor on a node's runtime object (e.g. `pointer`). Pixi playback.
    */
   setNodeCursor?: (nodeId: string, cursor: string) => void;
@@ -467,10 +474,25 @@ export interface ScriptNodeHandle {
   visible: boolean;
   readonly parent: ScriptNodeHandle | undefined;
   readonly children: readonly ScriptNodeHandle[];
+  /** Named property-state overrides (Base + one active state). */
+  readonly states: ScriptNodeStatesApi;
   destroy(): void;
   getComponent<T extends ComponentData["type"]>(
     type: T,
   ): Extract<ComponentData, { type: T }> | undefined;
+}
+
+/**
+ * Activate a named node state at runtime (property overrides only).
+ * Does not mutate authored Base scene JSON.
+ */
+export interface ScriptNodeStatesApi {
+  /** Active catalog state id, or `null` for Base. */
+  readonly active: string | null;
+  /** Activate by catalog id or unique display name. Unknown → no-op. */
+  set(stateIdOrName: string): void;
+  /** Restore Base (authored) values. */
+  setBase(): void;
 }
 
 /** Gameplay audio wrapper over host `playAudio` / `stopAudio`. */

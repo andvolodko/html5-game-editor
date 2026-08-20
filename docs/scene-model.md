@@ -68,6 +68,8 @@ interface SceneData {
   name: string;
   version: number;                 // SCENE_SCHEMA_VERSION (1)
   renderer?: "pixi" | "three" | "hybrid";  // omit → "pixi"
+  /** Named state catalog (Portrait, Damaged, …). Omit when empty. */
+  states?: SceneStateDefinition[];
   nodes: SceneNodeData[];
 }
 
@@ -82,6 +84,8 @@ interface SceneNodeData {
   cursor?: string;                      // omit = engine default; CSS cursor in playback
   pointerChildren?: boolean;            // omit = true; persist false to block children
   prefab?: PrefabInstanceLink;          // only on prefab-instance nodes
+  /** Sparse overrides keyed by catalog state id. Omit when empty. */
+  stateOverrides?: Record<string, NodeStateOverrides>;
   components: ComponentData[];
   children: SceneNodeData[];
 }
@@ -173,6 +177,40 @@ Keep files Git-friendly: deterministic field order from the writer, no Pixi/Thre
 - **`pointerEventMode`**, **`cursor`**, **`pointerChildren`** — playback / game runtime pointer behaviour for 2D nodes (Pixi `eventMode`, CSS cursor, whether children are hit-tested). Omit for defaults (`static`, engine cursor, children on). Inspector **Pointer** writes these (undoable). Editor selection still uses grab / static so locked or `none` nodes remain selectable.
 - **`layer`** — `"background"` \| `"foreground"` on 2D nodes in a hybrid scene (Pixi under vs over Three). Default `"background"`. Ignored for `Transform3D` nodes.
 - **`renderer`** on `SceneData` — `"pixi"` \| `"three"` \| `"hybrid"`. Must match the game’s package dependencies (`project.json` `renderers`).
+
+---
+
+## Node States
+
+Named **property overrides** on nodes (not a state machine). Base values stay on the normal node fields (`Transform2D`, `alpha`, `visible`). Optional catalog on the scene:
+
+```ts
+interface SceneStateDefinition {
+  id: string;   // state_… (stable)
+  name: string; // display only
+  viewport?: { width: number; height: number }; // optional editor guide hint
+}
+```
+
+Per-node sparse overrides (`packages/scene/src/node-states/`):
+
+```ts
+interface NodeStateOverrides {
+  visible?: boolean;
+  alpha?: number;
+  transform2D?: {
+    position?: { x?: number; y?: number };
+    rotation?: number;
+    scale?: { x?: number; y?: number };
+  };
+}
+```
+
+Resolution is always **Base → one active state** via `resolveNodeState`. Unchanged channels are omitted from JSON. Duplicate/clone copies `stateOverrides` (state ids still refer to the scene catalog).
+
+**Prefab interaction:** state data is copied with the node on duplicate/instantiate/unpack. Prefab Apply / Revert does **not** include `stateOverrides` in this milestone (separate from `PrefabOverride`).
+
+MVP properties only — no arbitrary Script/component paths yet. Precedence assumption for later work: Base → State → Animation / live `ctx.transform`.
 
 ---
 

@@ -18,6 +18,8 @@ import {
   setNodePointerEventModeField,
   setNodeCursorField,
   setNodePointerChildrenField,
+  applyNodeStateOverridesMapEntry,
+  pruneNodeStateOverrides,
   type ComponentData,
   type Model3DComponentData,
   type SceneData,
@@ -33,6 +35,9 @@ import {
   type PrefabInstanceLink,
   type PrefabOverride,
   type NodePointerEventMode,
+  type SceneStateDefinition,
+  type NodeStateOverrides,
+  type NodeStateId,
   SceneIndex,
 } from "@game-editor/scene";
 import {
@@ -338,6 +343,59 @@ export class DocumentManager {
       kind: "update",
       nodeId,
       reason: "visual",
+    });
+  }
+
+  /**
+   * Replace the scene-level named state catalog. Omit empty arrays (Git-friendly).
+   */
+  setSceneStates(states: readonly SceneStateDefinition[] | undefined): void {
+    if (states === undefined || states.length === 0) {
+      delete this.scene.states;
+    } else {
+      this.scene.states = states.map((entry) => ({ ...entry }));
+    }
+    this.afterContentMutation({ kind: "scene-meta" });
+  }
+
+  /**
+   * Replace sparse overrides for one catalog state on a node.
+   * Pass `undefined` to clear that state's entry.
+   */
+  setNodeStateOverrides(
+    nodeId: string,
+    stateId: NodeStateId,
+    overrides: NodeStateOverrides | undefined,
+  ): void {
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
+    applyNodeStateOverridesMapEntry(node, stateId, overrides);
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "transform",
+    });
+  }
+
+  /**
+   * Replace the entire `stateOverrides` map on a node (used by delete/duplicate state).
+   */
+  replaceNodeStateOverridesMap(
+    nodeId: string,
+    overrides: SceneNodeData["stateOverrides"] | undefined,
+  ): void {
+    const node = requireDocumentNode(this.sceneIndex.getNode(nodeId), nodeId);
+    if (overrides === undefined || Object.keys(overrides).length === 0) {
+      delete node.stateOverrides;
+    } else {
+      node.stateOverrides = JSON.parse(JSON.stringify(overrides)) as NonNullable<
+        SceneNodeData["stateOverrides"]
+      >;
+      pruneNodeStateOverrides(node);
+    }
+    this.afterContentMutation({
+      kind: "update",
+      nodeId,
+      reason: "transform",
     });
   }
 

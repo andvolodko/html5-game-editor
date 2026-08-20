@@ -1,5 +1,9 @@
 import type { PrefabInstanceLink } from "./prefab/types.js";
 import type { NodePointerEventMode } from "./node-pointer.js";
+import type {
+  NodeStateOverridesMap,
+  SceneStateDefinition,
+} from "./node-states/types.js";
 
 export type {
   PrefabInstanceLink,
@@ -14,6 +18,17 @@ export type {
   PrefabPointerChildrenOverride,
   PrefabData,
 } from "./prefab/types.js";
+
+export type {
+  NodeStateId,
+  NodeStateViewport,
+  SceneStateDefinition,
+  NodeStateTransform2DOverrides,
+  NodeStateOverrides,
+  NodeStateOverridesMap,
+  NodeStatePropertyPath,
+  ResolvedNodeState,
+} from "./node-states/types.js";
 
 export interface Vec2 {
 
@@ -271,11 +286,18 @@ export interface SceneNodeData {
    */
   prefab?: PrefabInstanceLink;
 
+  /**
+   * Named state property overrides keyed by scene catalog state id.
+   * Omitted when empty. Base values remain on Transform2D / alpha / visible.
+   */
+  stateOverrides?: NodeStateOverridesMap;
+
   components: ComponentData[];
 
   children: SceneNodeData[];
 
 }
+
 
 
 
@@ -301,6 +323,12 @@ export interface SceneData {
    * `"hybrid"` stacks Pixi background → Three → Pixi foreground.
    */
   renderer?: "pixi" | "three" | "hybrid";
+
+  /**
+   * Named state catalog for this scene (Portrait, Damaged, …).
+   * Omitted when empty. Per-node overrides live on `SceneNodeData.stateOverrides`.
+   */
+  states?: SceneStateDefinition[];
 
   nodes: SceneNodeData[];
 

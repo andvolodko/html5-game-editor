@@ -5,6 +5,7 @@ import {
 } from "@game-editor/scene";
 import type {
   ScriptNodeHandle,
+  ScriptNodeStatesApi,
   ScriptRuntimeServices,
   ScriptSceneLookup,
 } from "./types.js";
@@ -43,12 +44,26 @@ export class ScriptNodeHandleCache {
 }
 
 class HostScriptNodeHandle implements ScriptNodeHandle {
+  readonly states: ScriptNodeStatesApi;
+
   constructor(
     readonly id: string,
     private readonly services: ScriptRuntimeServices,
     private readonly lookup: ScriptSceneLookup | undefined,
     private readonly cache: ScriptNodeHandleCache,
-  ) {}
+  ) {
+    this.states = {
+      get active() {
+        return services.getNodeState?.(id) ?? null;
+      },
+      set: (stateIdOrName: string) => {
+        services.setNodeState?.(id, stateIdOrName);
+      },
+      setBase: () => {
+        services.setNodeState?.(id, null);
+      },
+    };
+  }
 
   get name(): string {
     return (

@@ -10,9 +10,7 @@ import {
   getAmbientLight,
   getDirectionalLight,
   getModel3D,
-  getNodeAlpha,
   getNodeLayer,
-  getNodeVisible,
   getPerspectiveCamera,
   getSceneRendererKind,
   getSprite,
@@ -22,6 +20,7 @@ import {
   getVisualComponent,
   positionDeltaForAnchorChange,
   visualComponentSupportsAnchor,
+  BASE_NODE_STATE_ID,
 } from "@game-editor/scene";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
@@ -38,6 +37,14 @@ import { MaskInspector } from "./MaskInspector";
 import { NodePointerInspector } from "./NodePointerInspector";
 import { PrefabInspectorSection } from "./PrefabInspectorSection";
 import { isInspectorPropertyOverridden } from "./prefab-override-flag";
+import {
+  getInspectorEffectiveAlpha,
+  getInspectorEffectiveTransform2D,
+  getInspectorEffectiveVisible,
+  isInspectorStatePropertyOverridden,
+  transformDraftKeyToStatePath,
+  type Transform2DDraftKey,
+} from "./inspector-node-state";
 import { BooleanField, InspectorFieldRow, NumberField } from "./fields/inspector-fields";
 import {
   formatInspectorNumber,
@@ -78,11 +85,17 @@ export function InspectorPanel() {
   const scene = useEditorState((ed) => ed.getScene());
   const sceneSelected = useEditorState((ed) => ed.selection.isSceneSelected());
   const selectedId = useEditorState((ed) => ed.selection.getPrimaryNodeId());
+  const activeStateId = useEditorState((ed) =>
+    ed.nodeStates.getActiveStateId(),
+  );
   const node =
     !sceneSelected && selectedId
       ? findNodeById(scene, selectedId)
       : undefined;
   const transform = node ? getTransform2D(node) : undefined;
+  const effectiveTransform2D = node
+    ? getInspectorEffectiveTransform2D(node, activeStateId)
+    : undefined;
   const transform3D = node ? getTransform3D(node) : undefined;
   const model3D = node ? getModel3D(node) : undefined;
   const perspectiveCamera = node ? getPerspectiveCamera(node) : undefined;
@@ -111,18 +124,18 @@ export function InspectorPanel() {
   }, [scene.id, scene.name, sceneSelected]);
 
   useEffect(() => {
-    if (!transform) {
+    if (!transform || !effectiveTransform2D) {
       setDraft(null);
       return;
     }
     const skew = transform.skew ?? { x: 0, y: 0 };
     const anchor = visualAnchor ?? { x: 0.5, y: 0.5 };
     setDraft({
-      x: formatInspectorNumber(transform.position.x),
-      y: formatInspectorNumber(transform.position.y),
-      rotation: formatInspectorNumber(transform.rotation),
-      scaleX: formatInspectorNumber(transform.scale.x),
-      scaleY: formatInspectorNumber(transform.scale.y),
+      x: formatInspectorNumber(effectiveTransform2D.position.x),
+      y: formatInspectorNumber(effectiveTransform2D.position.y),
+      rotation: formatInspectorNumber(effectiveTransform2D.rotation),
+      scaleX: formatInspectorNumber(effectiveTransform2D.scale.x),
+      scaleY: formatInspectorNumber(effectiveTransform2D.scale.y),
       skewX: formatInspectorNumber(skew.x),
       skewY: formatInspectorNumber(skew.y),
       anchorX: formatInspectorNumber(anchor.x),
@@ -130,11 +143,12 @@ export function InspectorPanel() {
     });
   }, [
     selectedId,
-    transform?.position.x,
-    transform?.position.y,
-    transform?.rotation,
-    transform?.scale.x,
-    transform?.scale.y,
+    activeStateId,
+    effectiveTransform2D?.position.x,
+    effectiveTransform2D?.position.y,
+    effectiveTransform2D?.rotation,
+    effectiveTransform2D?.scale.x,
+    effectiveTransform2D?.scale.y,
     transform?.skew?.x,
     transform?.skew?.y,
     visualAnchor?.x,
@@ -255,14 +269,23 @@ export function InspectorPanel() {
   }
 
   const commitTransform = () => {
-    if (!transform || !draft) {
+    if (!transform || !draft || !effectiveTransform2D) {
       return;
     }
-    const x = resolveInspectorNumber(draft.x, transform.position.x);
-    const y = resolveInspectorNumber(draft.y, transform.position.y);
-    const rotation = resolveInspectorNumber(draft.rotation, transform.rotation);
-    const scaleX = resolveInspectorNumber(draft.scaleX, transform.scale.x);
-    const scaleY = resolveInspectorNumber(draft.scaleY, transform.scale.y);
+    const x = resolveInspectorNumber(draft.x, effectiveTransform2D.position.x);
+    const y = resolveInspectorNumber(draft.y, effectiveTransform2D.position.y);
+    const rotation = resolveInspectorNumber(
+      draft.rotation,
+      effectiveTransform2D.rotation,
+    );
+    const scaleX = resolveInspectorNumber(
+      draft.scaleX,
+      effectiveTransform2D.scale.x,
+    );
+    const scaleY = resolveInspectorNumber(
+      draft.scaleY,
+      effectiveTransform2D.scale.y,
+    );
     const currentSkew = transform.skew ?? { x: 0, y: 0 };
     const skewX = resolveInspectorNumber(draft.skewX, currentSkew.x);
     const skewY = resolveInspectorNumber(draft.skewY, currentSkew.y);
@@ -284,11 +307,11 @@ export function InspectorPanel() {
     const skew = { x: skewX, y: skewY };
 
     const unchanged =
-      x === transform.position.x &&
-      y === transform.position.y &&
-      rotation === transform.rotation &&
-      scaleX === transform.scale.x &&
-      scaleY === transform.scale.y &&
+      x === effectiveTransform2D.position.x &&
+      y === effectiveTransform2D.position.y &&
+      rotation === effectiveTransform2D.rotation &&
+      scaleX === effectiveTransform2D.scale.x &&
+      scaleY === effectiveTransform2D.scale.y &&
       skewX === currentSkew.x &&
       skewY === currentSkew.y;
 
@@ -297,7 +320,7 @@ export function InspectorPanel() {
     }
 
     const patch: Transform2DPatch = { position, rotation, scale, skew };
-    editor.setTransform2D(node.id, patch);
+    editor.setTransform2D(node!.id, patch);
   };
 
   const commitAnchor = () => {
@@ -343,10 +366,13 @@ export function InspectorPanel() {
   };
 
   const setFlip = (axis: "x" | "y", flipped: boolean) => {
-    if (!transform) {
+    if (!transform || !effectiveTransform2D) {
       return;
     }
-    const current = axis === "x" ? transform.scale.x : transform.scale.y;
+    const current =
+      axis === "x"
+        ? effectiveTransform2D.scale.x
+        : effectiveTransform2D.scale.y;
     const magnitude = Math.abs(current) || 1;
     const nextSigned = flipped ? -magnitude : magnitude;
     if (nextSigned === current) {
@@ -354,9 +380,9 @@ export function InspectorPanel() {
     }
     const scale =
       axis === "x"
-        ? { x: nextSigned, y: transform.scale.y }
-        : { x: transform.scale.x, y: nextSigned };
-    editor.setTransform2D(node.id, { scale });
+        ? { x: nextSigned, y: effectiveTransform2D.scale.y }
+        : { x: effectiveTransform2D.scale.x, y: nextSigned };
+    editor.setTransform2D(node!.id, { scale });
   };
 
   const commitSize = () => {
@@ -458,12 +484,32 @@ export function InspectorPanel() {
           <InspectorFieldRow>
             <BooleanField
               label="Visible"
-              value={getNodeVisible(node)}
+              value={getInspectorEffectiveVisible(node, activeStateId)}
+              overridden={isInspectorStatePropertyOverridden(
+                node,
+                activeStateId,
+                "visible",
+              )}
+              onResetOverride={
+                activeStateId !== BASE_NODE_STATE_ID
+                  ? () => editor.resetNodeStateProperty(node.id, "visible")
+                  : undefined
+              }
               onCommit={(visible) => editor.setNodeVisible(node.id, visible)}
             />
             <NumberField
               label="Alpha"
-              value={getNodeAlpha(node)}
+              value={getInspectorEffectiveAlpha(node, activeStateId)}
+              overridden={isInspectorStatePropertyOverridden(
+                node,
+                activeStateId,
+                "alpha",
+              )}
+              onResetOverride={
+                activeStateId !== BASE_NODE_STATE_ID
+                  ? () => editor.resetNodeStateProperty(node.id, "alpha")
+                  : undefined
+              }
               onCommit={(alpha) => editor.setNodeAlpha(node.id, alpha)}
             />
           </InspectorFieldRow>
@@ -495,7 +541,7 @@ export function InspectorPanel() {
         </section>
       ) : null}
 
-      {transform && draft ? (
+      {transform && effectiveTransform2D && draft ? (
         <section className="inspector-section">
           <h3>Transform2D</h3>
           <div className="inspector-grid">
@@ -517,35 +563,71 @@ export function InspectorPanel() {
               ] as const
             ).map((row) => (
               <InspectorFieldRow key={row.map(([, key]) => key).join("-")}>
-                {row.map(([label, key]) => (
-                  <label
-                    key={key}
-                    className={
-                      isInspectorPropertyOverridden(
-                        scene,
-                        node,
-                        transform.id,
-                        transform2DOverridePath(key),
-                      )
-                        ? "inspector-field-overridden"
-                        : undefined
-                    }
-                  >
-                    {label}
-                    <input
-                      value={draft[key]}
-                      onChange={(event) =>
-                        setDraft({ ...draft, [key]: event.target.value })
+                {row.map(([label, key]) => {
+                  const isStatePath =
+                    key === "x" ||
+                    key === "y" ||
+                    key === "rotation" ||
+                    key === "scaleX" ||
+                    key === "scaleY";
+                  const stateOverridden =
+                    isStatePath &&
+                    isInspectorStatePropertyOverridden(
+                      node,
+                      activeStateId,
+                      transformDraftKeyToStatePath(key as Transform2DDraftKey),
+                    );
+                  const prefabOverridden =
+                    activeStateId === BASE_NODE_STATE_ID &&
+                    isInspectorPropertyOverridden(
+                      scene,
+                      node,
+                      transform.id,
+                      transform2DOverridePath(key),
+                    );
+                  const overridden = stateOverridden || prefabOverridden;
+                  return (
+                    <label
+                      key={key}
+                      className={
+                        overridden ? "inspector-field-overridden" : undefined
                       }
-                      onBlur={commitTransform}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter") {
-                          commitTransform();
+                    >
+                      <span className="inspector-field-label-row">
+                        {label}
+                        {stateOverridden ? (
+                          <button
+                            type="button"
+                            className="inspector-reset-override"
+                            title="Reset to Base"
+                            onClick={() =>
+                              editor.resetNodeStateProperty(
+                                node.id,
+                                transformDraftKeyToStatePath(
+                                  key as Transform2DDraftKey,
+                                ),
+                              )
+                            }
+                          >
+                            ↺
+                          </button>
+                        ) : null}
+                      </span>
+                      <input
+                        value={draft[key]}
+                        onChange={(event) =>
+                          setDraft({ ...draft, [key]: event.target.value })
                         }
-                      }}
-                    />
-                  </label>
-                ))}
+                        onBlur={commitTransform}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            commitTransform();
+                          }
+                        }}
+                      />
+                    </label>
+                  );
+                })}
               </InspectorFieldRow>
             ))}
             {supportsAnchor ? (
@@ -587,7 +669,7 @@ export function InspectorPanel() {
                 Flip Horizontal
                 <input
                   type="checkbox"
-                  checked={transform.scale.x < 0}
+                  checked={effectiveTransform2D.scale.x < 0}
                   onChange={(event) => setFlip("x", event.target.checked)}
                 />
               </label>
@@ -595,7 +677,7 @@ export function InspectorPanel() {
                 Flip Vertical
                 <input
                   type="checkbox"
-                  checked={transform.scale.y < 0}
+                  checked={effectiveTransform2D.scale.y < 0}
                   onChange={(event) => setFlip("y", event.target.checked)}
                 />
               </label>

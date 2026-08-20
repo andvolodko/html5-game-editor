@@ -63,6 +63,16 @@ export function applyDefaultEditorLayout(api: DockviewApi): void {
   });
 
   api.addPanel({
+    id: EDITOR_PANEL_IDS.states,
+    component: EDITOR_PANEL_IDS.states,
+    title: "States",
+    position: {
+      referencePanel: EDITOR_PANEL_IDS.console,
+      direction: "within",
+    },
+  });
+
+  api.addPanel({
     id: EDITOR_PANEL_IDS.preview,
     component: EDITOR_PANEL_IDS.preview,
     title: "Preview",

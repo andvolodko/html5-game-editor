@@ -24,6 +24,19 @@ describe("node-ops", () => {
     expect(getSprite(clone.children[0]!)?.assetId).toBe("asset_b");
   });
 
+  it("clones stateOverrides with the same state ids", () => {
+    const root = createSpriteNode("Root", { x: 0, y: 0 });
+    root.stateOverrides = {
+      state_portrait: {
+        transform2D: { position: { y: 600 } },
+        alpha: 0.5,
+      },
+    };
+    const clone = cloneNodeSubtree(root);
+    expect(clone.stateOverrides).toEqual(root.stateOverrides);
+    expect(clone.stateOverrides).not.toBe(root.stateOverrides);
+  });
+
   it("normalizes root-most selection", () => {
     const scene = createEmptyScene("S");
     const parent = createSpriteNode("P");

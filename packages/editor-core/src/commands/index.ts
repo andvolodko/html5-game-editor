@@ -74,3 +74,9 @@ export { RevertPrefabOverridesCommand } from "./revert-prefab-overrides-command.
 export { ConvertSubtreeToPrefabInstanceCommand } from "./convert-subtree-to-prefab-instance-command.js";
 export { RefreshPrefabInstancesCommand } from "./refresh-prefab-instances-command.js";
 export { PaintTilemapCommand } from "./paint-tilemap-command.js";
+export { SetNodeStateOverrideCommand } from "./set-node-state-override-command.js";
+export { AddSceneStateCommand } from "./add-scene-state-command.js";
+export type { AddSceneStateOptions } from "./add-scene-state-command.js";
+export { RenameSceneStateCommand } from "./rename-scene-state-command.js";
+export { DeleteSceneStateCommand } from "./delete-scene-state-command.js";
+export { DuplicateSceneStateCommand } from "./duplicate-scene-state-command.js";

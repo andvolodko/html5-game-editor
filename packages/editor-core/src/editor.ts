@@ -11,18 +11,25 @@ import {
   type BusEventDefinition,
 } from "@game-editor/game-components";
 import {
+  BASE_NODE_STATE_ID,
   createEmptyScene,
   getAncestorIds,
   parseSceneData,
   resolveScenePrefabs,
+  type NodeStateId,
+  type NodeStatePropertyPath,
   type SceneData,
   type SceneRenderer,
   type SceneRendererKind,
+  type SceneStateDefinition,
   type TileChange,
   type Vec2,
   type Vec3,
 } from "@game-editor/scene";
 import {
+  AddSceneStateCommand,
+  DeleteSceneStateCommand,
+  DuplicateSceneStateCommand,
   PasteNodesCommand,
   PasteComponentCommand,
   RenameSceneFileCommand,
@@ -32,6 +39,9 @@ import {
   DuplicateAssetCommand,
   RenameAssetFolderCommand,
   DeleteAssetFolderCommand,
+  RenameSceneStateCommand,
+  SetNodeStateOverrideCommand,
+  type AddSceneStateOptions,
   type CreateNodeOptions,
   type Transform2DPatch,
   type Transform3DPatch,
@@ -100,6 +110,11 @@ import { PrefabManager, type EditorDocumentMode } from "./prefab-manager.js";
 import type { PrefabApiClient } from "./prefab-api-client.js";
 import type { TileSetApiClient } from "./tileset-api-client.js";
 import { TilemapEditSession } from "./tilemap-edit-session.js";
+import { NodeStateEditSession } from "./node-state-edit-session.js";
+import {
+  buildStateOverrideAfterResetProperty,
+  isEditingNamedNodeState,
+} from "./commands/node-state-override-build.js";
 import {
   createTileSetFromTexture,
   saveTileSetDocument,
@@ -211,6 +226,8 @@ export class Editor {
   readonly console: EditorConsole;
   readonly prefabs: PrefabManager;
   readonly tilemapEdit: TilemapEditSession;
+  /** Editor-only active named state (Base = null). Not scene JSON. */
+  readonly nodeStates: NodeStateEditSession;
   readonly nodeMetadata: EditorNodeMetadataStore;
   private tileSetApi: TileSetApiClient | undefined;
   /** Bus event ids for dynamicEnum source `busEvents` (set when loading game catalog). */
@@ -251,6 +268,10 @@ export class Editor {
     this.prefabs = new PrefabManager();
     this.prefabs.setApi(options.prefabApi);
     this.tilemapEdit = new TilemapEditSession();
+    this.nodeStates = new NodeStateEditSession();
+    this.viewport.setNodeStateDisplaySource({
+      getActiveStateId: () => this.nodeStates.getActiveStateId(),
+    });
     this.tileSetApi = options.tileSetApi;
     this.prefabs.setMode({
       kind: "scene",
@@ -272,6 +293,7 @@ export class Editor {
       }),
       this.console.subscribe(() => this.emit()),
       this.tilemapEdit.subscribe(() => this.emit()),
+      this.nodeStates.subscribe(() => this.emit()),
       this.nodeMetadata.subscribe(() => {
         this.syncEditorOverlay();
         this.emit();
@@ -415,6 +437,7 @@ export class Editor {
   setScene(scene: SceneData, options?: { preserveUndo?: boolean }): void {
     this.syncNodeMetadataScope();
     this.selection.clear();
+    this.nodeStates.setActiveStateId(BASE_NODE_STATE_ID);
     if (!options?.preserveUndo) {
       this.commands.clear();
     }
@@ -671,6 +694,106 @@ export class Editor {
 
   setNodePointer(nodeId: string, patch: NodePointerPatch): void {
     editorSetNodePointer(this, nodeId, patch);
+  }
+
+  /** Select Base or a catalog state for editing (editor session only). */
+  setActiveNodeState(stateId: NodeStateId | typeof BASE_NODE_STATE_ID): void {
+    const previous = this.nodeStates.getActiveStateId();
+    if (stateId !== BASE_NODE_STATE_ID) {
+      const exists = (this.getScene().states ?? []).some(
+        (entry) => entry.id === stateId,
+      );
+      if (!exists) {
+        return;
+      }
+    }
+    this.nodeStates.setActiveStateId(stateId);
+    this.viewport.applyActiveNodeStateDisplay(previous);
+  }
+
+  addSceneState(options: AddSceneStateOptions): string {
+    const command = new AddSceneStateCommand(this.document, options);
+    this.execute(command);
+    return command.createdStateId;
+  }
+
+  renameSceneState(stateId: NodeStateId, name: string): void {
+    this.execute(new RenameSceneStateCommand(this.document, stateId, name));
+  }
+
+  deleteSceneState(stateId: NodeStateId): void {
+    const wasActive = this.nodeStates.getActiveStateId() === stateId;
+    this.execute(new DeleteSceneStateCommand(this.document, stateId));
+    const catalogIds = new Set(
+      (this.getScene().states ?? []).map((entry) => entry.id),
+    );
+    this.nodeStates.ensureActiveStateExists(catalogIds);
+    if (wasActive) {
+      this.viewport.applyActiveNodeStateDisplay(stateId);
+    }
+  }
+
+  duplicateSceneState(stateId: NodeStateId): string | undefined {
+    const command = new DuplicateSceneStateCommand(this.document, stateId);
+    this.execute(command);
+    return command.createdStateId || undefined;
+  }
+
+  /**
+   * Convenience: add Portrait / Landscape catalog entries when missing.
+   * Names are presets only — not special to the resolver.
+   */
+  ensurePortraitLandscapeStates(): void {
+    const existing = this.getScene().states ?? [];
+    const names = new Set(existing.map((entry) => entry.name.toLowerCase()));
+    const commands: Command[] = [];
+    if (!names.has("portrait")) {
+      commands.push(
+        new AddSceneStateCommand(this.document, {
+          name: "Portrait",
+          viewport: { width: 1080, height: 1920 },
+        }),
+      );
+    }
+    if (!names.has("landscape")) {
+      commands.push(
+        new AddSceneStateCommand(this.document, {
+          name: "Landscape",
+          viewport: { width: 1920, height: 1080 },
+        }),
+      );
+    }
+    if (commands.length === 0) {
+      return;
+    }
+    if (commands.length === 1) {
+      this.execute(commands[0]!);
+      return;
+    }
+    this.execute(new CompositeCommand("AddPortraitLandscapeStates", commands));
+  }
+
+  getSceneStates(): readonly SceneStateDefinition[] {
+    return this.getScene().states ?? [];
+  }
+
+  /** Reset one overridden property on the active named state back to Base. */
+  resetNodeStateProperty(
+    nodeId: string,
+    path: NodeStatePropertyPath,
+  ): void {
+    const stateId = this.nodeStates.getActiveStateId();
+    if (!isEditingNamedNodeState(stateId)) {
+      return;
+    }
+    const node = this.document.getNode(nodeId);
+    if (!node || this.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
+    const after = buildStateOverrideAfterResetProperty(node, stateId, path);
+    this.execute(
+      new SetNodeStateOverrideCommand(this.document, nodeId, stateId, after),
+    );
   }
 
   /**

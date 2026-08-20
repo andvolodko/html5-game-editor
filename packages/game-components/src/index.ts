@@ -26,6 +26,7 @@ export type {
   ScriptAnimationsApi,
   ScriptPlayAnimationOptions,
   ScriptNodeHandle,
+  ScriptNodeStatesApi,
   ScriptAudioApi,
   ScriptSceneApi,
   ScriptSceneLookup,

@@ -414,6 +414,94 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   padding: 0.75rem;
 }
 
+.panel-states {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.states-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.55rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-toolbar);
+  flex: 0 0 auto;
+}
+
+.states-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0;
+  overflow: auto;
+  flex: 1 1 auto;
+}
+
+.states-list > li {
+  margin: 0;
+}
+
+.states-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  padding: 0.3rem 0.55rem;
+  cursor: pointer;
+}
+
+.states-item:hover {
+  background: var(--bg-elevated);
+}
+
+.states-item-active {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.states-item-marker {
+  flex: 0 0 auto;
+  color: var(--accent);
+  font-size: 0.7rem;
+}
+
+.states-item-name {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.states-item-viewport {
+  flex: 0 0 auto;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.states-rename-input {
+  width: calc(100% - 1.1rem);
+  margin: 0.15rem 0.55rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--text);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.2rem 0.35rem;
+}
+
+.panel-states .panel-empty {
+  padding: 0.55rem 0.75rem;
+}
+
 .console-toolbar {
   display: flex;
   align-items: center;
@@ -966,6 +1054,28 @@ button.toolbar-menu-trigger:hover:not(:disabled) {
   height: 4px;
   border-radius: 50%;
   background: var(--accent);
+}
+
+.inspector-field-label-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.inspector-reset-override {
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0 0.15rem;
+  margin: 0;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.inspector-reset-override:hover {
+  color: var(--text);
 }
 
 .inspector-prefab-actions {

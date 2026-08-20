@@ -1,5 +1,10 @@
 import { CompositeCommand, type Command } from "@game-editor/commands";
-import { getTransform2D, getVisualComponent } from "@game-editor/scene";
+import {
+  getTransform2D,
+  getVisualComponent,
+  findNodeById,
+  resolveNodeState,
+} from "@game-editor/scene";
 import { rasterAssetDisplaySize } from "@game-editor/assets";
 import {
   SetTransform2DCommand,
@@ -17,6 +22,7 @@ import {
   SetSpriteSizeCommand,
   SetVisualComponentCommand,
   createSetNodePositionsCommand,
+  SetNodeStateOverrideCommand,
   type Transform2DPatch,
   type Transform3DPatch,
   type Model3DPatch,
@@ -27,6 +33,13 @@ import {
   type NodePointerPatch,
   type NodePositionEntry,
 } from "./commands/index.js";
+import {
+  buildStateOverrideAfterAlpha,
+  buildStateOverrideAfterPosition,
+  buildStateOverrideAfterTransformPatch,
+  buildStateOverrideAfterVisible,
+  isEditingNamedNodeState,
+} from "./commands/node-state-override-build.js";
 import type { Editor } from "./editor.js";
 import type { SceneRendererKind } from "@game-editor/scene";
 
@@ -46,6 +59,20 @@ export function editorSetTransform2D(
   nodeId: string,
   patch: Transform2DPatch,
 ): void {
+  const stateId = editor.nodeStates.getActiveStateId();
+  if (isEditingNamedNodeState(stateId)) {
+    const node = findNodeById(editor.getScene(), nodeId);
+    if (!node || editor.isNodeEffectivelyLocked(nodeId)) {
+      return;
+    }
+    const after = buildStateOverrideAfterTransformPatch(node, stateId, patch);
+    executeUnlessLocked(
+      editor,
+      nodeId,
+      new SetNodeStateOverrideCommand(editor.document, nodeId, stateId, after),
+    );
+    return;
+  }
   executeUnlessLocked(
     editor,
     nodeId,
@@ -57,6 +84,48 @@ export function editorSetNodePositions(
   editor: Editor,
   entries: readonly NodePositionEntry[],
 ): boolean {
+  const stateId = editor.nodeStates.getActiveStateId();
+  if (isEditingNamedNodeState(stateId)) {
+    const commands: Command[] = [];
+    for (const entry of entries) {
+      if (editor.isNodeEffectivelyLocked(entry.nodeId)) {
+        continue;
+      }
+      const node = findNodeById(editor.getScene(), entry.nodeId);
+      if (!node || !getTransform2D(node)) {
+        continue;
+      }
+      const after = buildStateOverrideAfterPosition(
+        node,
+        stateId,
+        entry.position,
+      );
+      const existing = node.stateOverrides?.[stateId];
+      const beforeJson = JSON.stringify(existing ?? null);
+      const afterJson = JSON.stringify(after ?? null);
+      if (beforeJson === afterJson) {
+        continue;
+      }
+      commands.push(
+        new SetNodeStateOverrideCommand(
+          editor.document,
+          entry.nodeId,
+          stateId,
+          after,
+        ),
+      );
+    }
+    if (commands.length === 0) {
+      return false;
+    }
+    if (commands.length === 1) {
+      editor.execute(commands[0]!);
+    } else {
+      editor.execute(new CompositeCommand("TranslateSelection", commands));
+    }
+    return true;
+  }
+
   const command = createSetNodePositionsCommand(
     editor.document,
     entries,
@@ -181,6 +250,20 @@ export function editorSetNodeVisible(
   nodeId: string,
   visible: boolean,
 ): void {
+  const stateId = editor.nodeStates.getActiveStateId();
+  if (isEditingNamedNodeState(stateId)) {
+    const node = findNodeById(editor.getScene(), nodeId);
+    if (!node) {
+      return;
+    }
+    const after = buildStateOverrideAfterVisible(node, stateId, visible);
+    executeUnlessLocked(
+      editor,
+      nodeId,
+      new SetNodeStateOverrideCommand(editor.document, nodeId, stateId, after),
+    );
+    return;
+  }
   executeUnlessLocked(
     editor,
     nodeId,
@@ -193,6 +276,20 @@ export function editorSetNodeAlpha(
   nodeId: string,
   alpha: number,
 ): void {
+  const stateId = editor.nodeStates.getActiveStateId();
+  if (isEditingNamedNodeState(stateId)) {
+    const node = findNodeById(editor.getScene(), nodeId);
+    if (!node) {
+      return;
+    }
+    const after = buildStateOverrideAfterAlpha(node, stateId, alpha);
+    executeUnlessLocked(
+      editor,
+      nodeId,
+      new SetNodeStateOverrideCommand(editor.document, nodeId, stateId, after),
+    );
+    return;
+  }
   executeUnlessLocked(
     editor,
     nodeId,
@@ -222,11 +319,31 @@ export function editorNudgeSelectedNodes(
     return false;
   }
 
+  const stateId = editor.nodeStates.getActiveStateId();
   const commands: Command[] = [];
   for (const nodeId of nodeIds) {
     const node = editor.document.getNode(nodeId);
     const transform = node ? getTransform2D(node) : undefined;
     if (!transform || editor.isNodeEffectivelyLocked(nodeId)) {
+      continue;
+    }
+    if (isEditingNamedNodeState(stateId) && node) {
+      const effective = resolveNodeState(node, stateId);
+      if (!effective.transform2D) {
+        continue;
+      }
+      const after = buildStateOverrideAfterPosition(node, stateId, {
+        x: effective.transform2D.position.x + deltaX,
+        y: effective.transform2D.position.y + deltaY,
+      });
+      commands.push(
+        new SetNodeStateOverrideCommand(
+          editor.document,
+          nodeId,
+          stateId,
+          after,
+        ),
+      );
       continue;
     }
     commands.push(

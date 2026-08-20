@@ -272,6 +272,18 @@ export class ThreeSceneRenderer implements SceneRenderer {
     }
   }
 
+  setNodeResolvedVisible(nodeId: string, visible: boolean): void {
+    const entry = this.graph.get(nodeId);
+    if (!entry) {
+      return;
+    }
+    entry.runtimeVisible = visible;
+    this.applyDisplayVisible(entry);
+    if (this.selectedNodeIds.has(nodeId)) {
+      this.setSelectedNodeIds([...this.selectedNodeIds]);
+    }
+  }
+
   setNodeEditorHidden(nodeId: string, hidden: boolean): void {
     const entry = this.graph.get(nodeId);
     if (!entry) {

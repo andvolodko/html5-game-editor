@@ -374,6 +374,14 @@ export class GameRuntime implements RuntimeScriptServiceHost {
     this.sceneHost.setNodeAlpha(nodeId, alpha);
   }
 
+  setNodeState(nodeId: string, stateIdOrName: string | null): void {
+    this.sceneHost.setNodeState(nodeId, stateIdOrName);
+  }
+
+  getNodeState(nodeId: string): string | null {
+    return this.sceneHost.getNodeState(nodeId);
+  }
+
   setNodeCursor(nodeId: string, cursor: string): void {
     this.sceneHost.setNodeCursor(nodeId, cursor);
   }

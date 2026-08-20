@@ -600,6 +600,14 @@ export class PixiSceneRenderer implements SceneRenderer {
     runtime.container.visible = visible;
   }
 
+  setNodeResolvedVisible(nodeId: string, visible: boolean): void {
+    const runtime = this.graph.get(nodeId);
+    if (!runtime) {
+      return;
+    }
+    runtime.container.visible = visible && !runtime.editorHidden;
+  }
+
   setNodeEditorHidden(nodeId: string, hidden: boolean): void {
     const runtime = this.graph.get(nodeId);
     if (!runtime) {

@@ -8,6 +8,7 @@ import type { PrefabData, PrefabOverride } from "./types.js";
 import { copyNodeVisible } from "../node-visibility.js";
 import { copyNodeAlpha } from "../node-alpha.js";
 import { copyNodePointer } from "../node-pointer.js";
+import { copyNodeStateOverrides } from "../node-states/index.js";
 
 export interface InstantiatePrefabOptions {
   prefabAssetId: string;
@@ -84,6 +85,7 @@ export function instantiateFromSource(
   copyNodeVisible(source, node);
   copyNodeAlpha(source, node);
   copyNodePointer(source, node);
+  copyNodeStateOverrides(source, node);
   if (context.parentId !== undefined) {
     node.parentId = context.parentId;
   }
@@ -123,6 +125,7 @@ function remapNestedInstance(source: SceneNodeData, parentId: string): SceneNode
     copyNodeVisible(node, cloned);
     copyNodeAlpha(node, cloned);
     copyNodePointer(node, cloned);
+    copyNodeStateOverrides(node, cloned);
     if (nextParentId !== undefined) {
       cloned.parentId = nextParentId;
     }

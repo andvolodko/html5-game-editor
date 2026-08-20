@@ -102,6 +102,11 @@ export interface SceneRenderer {
    */
   setNodeVisible?(nodeId: string, visible: boolean): void;
   /**
+   * Editor/runtime state display: set effective visibility combined with
+   * editor-only hide (`visible && !editorHidden`). Does not write scene JSON.
+   */
+  setNodeResolvedVisible?(nodeId: string, visible: boolean): void;
+  /**
    * Transient script opacity. Does not write `SceneNodeData.alpha`.
    * Serialized alpha is applied on create/update.
    */

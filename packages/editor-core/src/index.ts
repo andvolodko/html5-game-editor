@@ -137,6 +137,11 @@ export {
   ConvertSubtreeToPrefabInstanceCommand,
   RefreshPrefabInstancesCommand,
   PaintTilemapCommand,
+  AddSceneStateCommand,
+  RenameSceneStateCommand,
+  DeleteSceneStateCommand,
+  DuplicateSceneStateCommand,
+  SetNodeStateOverrideCommand,
 } from "./commands/index.js";
 export type {
   Transform2DPatch,
@@ -158,6 +163,7 @@ export type {
   CreateModel3DOptions,
   CreateNodeOptions,
   MoveNodeCommandArgs,
+  AddSceneStateOptions,
 } from "./commands/index.js";
 export {
   NodeTypeRegistry,
@@ -229,6 +235,7 @@ export type { PrefabApiClient, PrefabCreateResult } from "./prefab-api-client.js
 export { createFetchTileSetApiClient } from "./tileset-api-client.js";
 export type { TileSetApiClient, TileSetCreateResult } from "./tileset-api-client.js";
 export { TilemapEditSession } from "./tilemap-edit-session.js";
+export { NodeStateEditSession } from "./node-state-edit-session.js";
 export type { TilemapEditTool } from "./tilemap-edit-session.js";
 export {
   createTileSetFromTexture,

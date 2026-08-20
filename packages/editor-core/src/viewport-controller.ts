@@ -3,14 +3,22 @@ import {
   flattenNodes,
   flattenSubtree,
   getSceneRendererKind,
+  nodeHasStateOverride,
+  type NodeStateId,
   type SceneData,
   type SceneRenderer,
   type SceneRendererKind,
+  BASE_NODE_STATE_ID,
 } from "@game-editor/scene";
 import type { DocumentManager, SceneMutation } from "./document-manager.js";
+import { applyResolvedNodeStateDisplay } from "./apply-resolved-node-state-display.js";
 
 export interface ViewportOverlaySync {
   sync(renderer: SceneRenderer, scene: SceneData): void;
+}
+
+export interface NodeStateDisplaySource {
+  getActiveStateId(): NodeStateId | typeof BASE_NODE_STATE_ID;
 }
 
 /**
@@ -27,6 +35,7 @@ export class EditorViewportController {
     (kind: SceneRendererKind) => void
   >();
   private readonly overlay: ViewportOverlaySync | undefined;
+  private nodeStateSource: NodeStateDisplaySource | undefined;
 
   constructor(
     private readonly document: DocumentManager,
@@ -34,6 +43,10 @@ export class EditorViewportController {
   ) {
     this.overlay = overlay;
     this.lastRendererKind = getSceneRendererKind(document.getScene());
+  }
+
+  setNodeStateDisplaySource(source: NodeStateDisplaySource | undefined): void {
+    this.nodeStateSource = source;
   }
 
   attach(renderer: SceneRenderer): void {
@@ -76,6 +89,50 @@ export class EditorViewportController {
     return this.fullRebuildCount;
   }
 
+  /**
+   * Re-apply Base+active-state display for nodes affected by a session switch.
+   * Does not rebuild the scene graph.
+   */
+  applyActiveNodeStateDisplay(
+    previousStateId: NodeStateId | typeof BASE_NODE_STATE_ID,
+  ): void {
+    if (!this.renderer || !this.nodeStateSource) {
+      return;
+    }
+    const nextId = this.nodeStateSource.getActiveStateId();
+    const scene = this.document.getScene();
+    for (const node of flattenNodes(scene)) {
+      const needsUpdate =
+        previousStateId === BASE_NODE_STATE_ID ||
+        nextId === BASE_NODE_STATE_ID
+          ? Boolean(
+              node.stateOverrides && Object.keys(node.stateOverrides).length > 0,
+            )
+          : nodeHasStateOverride(node, previousStateId) ||
+            nodeHasStateOverride(node, nextId);
+      if (!needsUpdate) {
+        continue;
+      }
+      applyResolvedNodeStateDisplay(this.renderer, node, nextId);
+    }
+    this.renderer.render();
+  }
+
+  private applyNodeStateOverlay(nodeId: string): void {
+    if (!this.renderer || !this.nodeStateSource) {
+      return;
+    }
+    const node = findNodeById(this.document.getScene(), nodeId);
+    if (!node) {
+      return;
+    }
+    applyResolvedNodeStateDisplay(
+      this.renderer,
+      node,
+      this.nodeStateSource.getActiveStateId(),
+    );
+  }
+
   private rebuild(): void {
     if (!this.renderer) {
       return;
@@ -84,6 +141,7 @@ export class EditorViewportController {
     this.renderer.clear();
     for (const node of flattenNodes(this.document.getScene())) {
       this.renderer.createNode(node);
+      this.applyNodeStateOverlay(node.id);
     }
     this.syncOverlay();
     this.renderer.render();
@@ -99,6 +157,7 @@ export class EditorViewportController {
     }
     for (const entry of flattenSubtree(node)) {
       this.renderer.createNode(entry);
+      this.applyNodeStateOverlay(entry.id);
     }
   }
 
@@ -123,6 +182,7 @@ export class EditorViewportController {
         const node = findNodeById(this.document.getScene(), mutation.nodeId);
         if (node) {
           this.renderer.updateNode(node);
+          this.applyNodeStateOverlay(node.id);
         }
         break;
       }
@@ -139,6 +199,7 @@ export class EditorViewportController {
         const node = findNodeById(this.document.getScene(), mutation.nodeId);
         if (node) {
           this.renderer.updateNode(node);
+          this.applyNodeStateOverlay(node.id);
         }
         this.syncOverlay();
         break;

@@ -15,6 +15,7 @@ import { ProjectSettingsPanel } from "../panels/ProjectSettingsPanel";
 import { ConsolePanel } from "../panels/ConsolePanel";
 import { PreviewPanel } from "../panels/PreviewPanel";
 import { AssetPreviewPanel } from "../panels/AssetPreviewPanel";
+import { StatesPanel } from "../panels/StatesPanel";
 import { AssetPreviewSelectionProvider } from "../assets/asset-preview-selection";
 import {
   createLocalStorageEditorSettings,
@@ -37,6 +38,7 @@ const components = {
   assetPreview: () => <AssetPreviewPanel />,
   console: () => <ConsolePanel />,
   preview: (props: IDockviewPanelProps) => <PreviewPanel {...props} />,
+  states: () => <StatesPanel />,
 };
 
 const LAYOUT_SAVE_DEBOUNCE_MS = 300;

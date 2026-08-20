@@ -400,6 +400,50 @@ export const componentSchema = z.discriminatedUnion("type", [
   }
 });
 
+export const sceneStateViewportSchema = z.object({
+  width: z.number().positive(),
+  height: z.number().positive(),
+});
+
+export const sceneStateDefinitionSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  viewport: sceneStateViewportSchema.optional(),
+});
+
+export const nodeStateTransform2DOverridesSchema = z
+  .object({
+    position: z
+      .object({
+        x: z.number().optional(),
+        y: z.number().optional(),
+      })
+      .strict()
+      .optional(),
+    rotation: z.number().optional(),
+    scale: z
+      .object({
+        x: z.number().optional(),
+        y: z.number().optional(),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict();
+
+export const nodeStateOverridesSchema = z
+  .object({
+    visible: z.boolean().optional(),
+    alpha: z.number().min(0).max(1).optional(),
+    transform2D: nodeStateTransform2DOverridesSchema.optional(),
+  })
+  .strict();
+
+export const nodeStateOverridesMapSchema = z.record(
+  z.string().min(1),
+  nodeStateOverridesSchema,
+);
+
 export const sceneNodeSchema: z.ZodType<SceneNodeData> = z.lazy(() =>
   z.object({
     id: z.string().min(1),
@@ -412,6 +456,7 @@ export const sceneNodeSchema: z.ZodType<SceneNodeData> = z.lazy(() =>
     cursor: z.string().min(1).max(NODE_CURSOR_MAX_LENGTH).optional(),
     pointerChildren: z.boolean().optional(),
     prefab: prefabInstanceLinkSchema.optional(),
+    stateOverrides: nodeStateOverridesMapSchema.optional(),
     components: z.array(componentSchema),
     children: z.array(sceneNodeSchema),
   }),
@@ -422,6 +467,7 @@ export const sceneDataSchema: z.ZodType<SceneData> = z.object({
   name: z.string().min(1),
   version: z.number().int().positive(),
   renderer: z.enum(["pixi", "three", "hybrid"]).optional(),
+  states: z.array(sceneStateDefinitionSchema).optional(),
   nodes: z.array(sceneNodeSchema),
 });
 

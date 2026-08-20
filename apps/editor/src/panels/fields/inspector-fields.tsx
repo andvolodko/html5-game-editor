@@ -27,12 +27,14 @@ export function NumberField({
   onCommit,
   integer,
   overridden,
+  onResetOverride,
 }: {
   label: string;
   value: number;
   onCommit: (value: number) => void;
   integer?: boolean;
   overridden?: boolean;
+  onResetOverride?: () => void;
 }) {
   const [draft, setDraft] = useState(displayInspectorNumber(value, integer));
   useEffect(
@@ -63,7 +65,22 @@ export function NumberField({
   };
   return (
     <label className={overridden ? "inspector-field-overridden" : undefined}>
-      {label}
+      <span className="inspector-field-label-row">
+        {label}
+        {overridden && onResetOverride ? (
+          <button
+            type="button"
+            className="inspector-reset-override"
+            title="Reset to Base"
+            onClick={(event) => {
+              event.preventDefault();
+              onResetOverride();
+            }}
+          >
+            ↺
+          </button>
+        ) : null}
+      </span>
       <input
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
@@ -189,11 +206,13 @@ export function BooleanField({
   value,
   onCommit,
   overridden,
+  onResetOverride,
 }: {
   label: string;
   value: boolean;
   onCommit: (value: boolean) => void;
   overridden?: boolean;
+  onResetOverride?: () => void;
 }) {
   return (
     <label
@@ -203,7 +222,22 @@ export function BooleanField({
           : "inspector-checkbox"
       }
     >
-      {label}
+      <span className="inspector-field-label-row">
+        {label}
+        {overridden && onResetOverride ? (
+          <button
+            type="button"
+            className="inspector-reset-override"
+            title="Reset to Base"
+            onClick={(event) => {
+              event.preventDefault();
+              onResetOverride();
+            }}
+          >
+            ↺
+          </button>
+        ) : null}
+      </span>
       <input
         type="checkbox"
         checked={value}
