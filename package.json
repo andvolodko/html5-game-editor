@@ -8,8 +8,10 @@
   },
   "scripts": {
     "dev": "pnpm --parallel --filter @game-editor/editor --filter @game-editor/project-server dev",
+    "dev:editor": "pnpm --filter @game-editor/editor dev",
     "dev:demo": "pnpm --filter @game-editor/editor dev:demo",
     "build": "pnpm -r --filter \"./packages/**\" run build && pnpm -r --filter \"./apps/**\" --filter \"./games/**\" run build",
+    "build:games": "pnpm -r --filter \"./games/**\" run build",
     "build:demo": "pnpm --filter @game-editor/editor build:demo",
     "build:pages": "pnpm build:demo && node scripts/assemble-github-pages.mjs",
     "test": "pnpm -r --workspace-concurrency=2 --if-present run test",

@@ -182,7 +182,7 @@ Keep files Git-friendly: deterministic field order from the writer, no Pixi/Thre
 
 ## Node States
 
-Named **property overrides** on nodes (not a state machine). Base values stay on the normal node fields (`Transform2D`, `alpha`, `visible`). Optional catalog on the scene:
+Named **property overrides** on nodes (not a state machine). Base values stay on the normal node fields (`Transform2D`, `alpha`, `visible`). How-to: [Use node states](./guides/use-node-states.md). Optional catalog on the scene:
 
 ```ts
 interface SceneStateDefinition {

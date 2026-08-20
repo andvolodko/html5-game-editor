@@ -9,7 +9,7 @@ The editor should resemble a lightweight Unity/Cocos-style workflow for HTML5. P
 
 Priorities: clean architecture, editor/runtime separation, deterministic scene serialization, testability, multiple independently buildable games, designer-friendly workflows, and maintainability by humans and AI agents.
 
-Human and operator docs: [`README.md`](./README.md). Developer how-tos and topic pages: [`docs/README.md`](./docs/README.md). This file is the architecture map (invariants, packages, which topic to open).
+Human and operator docs: [`README.md`](./README.md). How to contribute: [`CONTRIBUTING.md`](./CONTRIBUTING.md). Developer how-tos and topic pages: [`docs/README.md`](./docs/README.md). This file is the architecture map (invariants, packages, which topic to open).
 
 ---
 
@@ -19,15 +19,17 @@ Start at [`docs/README.md`](./docs/README.md) for “I want to…” links. Use 
 
 | Task | Read |
 | --- | --- |
-| Scene / domain model, components, serialization, prefabs | [`docs/scene-model.md`](./docs/scene-model.md) |
+| Scene / domain model, components, serialization, prefabs, named states | [`docs/scene-model.md`](./docs/scene-model.md) |
 | Add a Script behaviour (Inspector + runtime) | [`docs/guides/add-a-script-component.md`](./docs/guides/add-a-script-component.md) |
+| Author and activate named node states | [`docs/guides/use-node-states.md`](./docs/guides/use-node-states.md) |
 | Asset database, import, browser, atlas, generated files | [`docs/assets.md`](./docs/assets.md) |
 | Aseprite / LibreSprite compile pipeline | [`docs/aseprite.md`](./docs/aseprite.md) |
-| Editor core, commands, undo, inspector, selection, layout | [`docs/editor.md`](./docs/editor.md) |
+| Editor core, commands, undo, inspector, selection, layout, node states | [`docs/editor.md`](./docs/editor.md) |
 | Editor keyboard shortcuts | [`docs/hotkeys.md`](./docs/hotkeys.md) |
 | Game runtime, independent builds, optional renderers | [`docs/runtime.md`](./docs/runtime.md) |
 | Pixi / Three adapters and hybrid layers | [`docs/renderers.md`](./docs/renderers.md) |
 | project-server, path confinement, uploads | [`docs/project-server.md`](./docs/project-server.md) |
+| Android / Capacitor packaging (APK, AAB) | [`docs/android-export.md`](./docs/android-export.md) |
 | Collaboration, resource locking, Git | [`docs/collaboration.md`](./docs/collaboration.md) |
 | Package boundaries, quality, errors, performance | [`docs/architecture.md`](./docs/architecture.md) |
 | MVP phases and planned work | [`docs/roadmap.md`](./docs/roadmap.md) |
@@ -108,7 +110,7 @@ packages/runtime         Game loop, scene host (no editor deps)
 packages/renderer-pixi   Pixi scene adapter
 packages/renderer-three  Three scene adapter
 packages/game-build      BuildTarget registry, WebBuildTarget, ProcessRunner (Node)
-packages/game-build-android  Capacitor Android packaging → Debug APK (Node)
+packages/game-build-android  Capacitor Android packaging (debug/release APK, release AAB)
 
 games/<name>/            Independently buildable game + editable content
                          (assets/, project.json, .project/) — not a top-level projects/ tree
@@ -129,7 +131,7 @@ Current games include `editor-features-demo` (hybrid), `muonline-game` (hybrid),
 * Do not swallow errors. Surface meaningful messages for editor/filesystem/asset failures.
 * Before adding a dependency: confirm it is needed, not duplicated, and acceptable in the runtime bundle if it is a game dependency.
 
-Common commands: `pnpm dev`, `pnpm test`, `pnpm typecheck`, `pnpm lint`. Per-game: `pnpm --filter @games/<id> build`. Android Debug APK: `pnpm --filter @game-editor/game-build-android build:debug -- games/<id>`. Release AAB: `pnpm --filter @game-editor/game-build-android build:android -- games/<id> --format aab` (see [`docs/android-export.md`](./docs/android-export.md)).
+Common commands: `pnpm dev`, `pnpm dev:editor`, `pnpm build:games`, `pnpm test`, `pnpm typecheck`, `pnpm lint`, `pnpm lint:deps`, `pnpm check`. Per-game: `pnpm --filter @games/<id> build`. From the editor: **File → Build Game…** (Web `dist/` or Android APK/AAB; Android needs a live project-server, not the Pages demo). CLI Debug APK: `pnpm --filter @game-editor/game-build-android build:debug -- games/<id>`. Release AAB: `pnpm --filter @game-editor/game-build-android build:android -- games/<id> --format aab` (see [`docs/android-export.md`](./docs/android-export.md)).
 
 ---
 

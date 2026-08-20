@@ -10,7 +10,7 @@ PixiJS handles 2D. Three.js handles 3D. React is the editor shell. Games build i
 
 Playable standalone builds of every game are on the same site: **[demo games](https://andvolodko.github.io/html5-game-editor/games/)** ([Editor Features Demo](https://andvolodko.github.io/html5-game-editor/games/editor-features-demo/), [MU Online](https://andvolodko.github.io/html5-game-editor/games/muonline-game/), [Solitaire](https://andvolodko.github.io/html5-game-editor/games/solitaire/)).
 
-> Status: active development. The foundation through hybrid rendering, assets, undo/redo, prefabs, and playable demo games is in place. Collaboration and advanced tooling are still ahead.
+> Status: active development. Hybrid rendering, assets, undo/redo, prefabs, tilemaps, named node states, playable demo games, and Web/Android export are in place. Collaboration and advanced tooling are still ahead.
 
 ---
 
@@ -53,13 +53,14 @@ The goal is a lightweight Unity / Cocos-style workflow aimed specifically at HTM
 
 | Area | What you get today |
 | --- | --- |
-| **Editor** | Dockable panels (Hierarchy, Scene, Inspector, Assets, Asset Preview, Preview, Console, Project Settings), persisted layout, undo/redo, unsaved-changes guard |
-| **2D (PixiJS 8)** | Container, Sprite, NineSlice, TilingSprite, Graphics, Text, HTMLText, BitmapText, meshes, AnimatedSprite, Spine |
+| **Editor** | Dockable panels (Hierarchy, Scene, Inspector, Assets, Asset Preview, Preview, Console, States, Project Settings), persisted layout, undo/redo, unsaved-changes guard, **File → Build Game…** |
+| **2D (PixiJS 8)** | Container, Sprite, NineSlice, TilingSprite, Graphics, Text, HTMLText, BitmapText, meshes, AnimatedSprite, Spine, Tilemap, Hit Zone, Mask |
 | **3D (Three.js)** | Model3D (glTF / GLB), PerspectiveCamera, DirectionalLight, AmbientLight, Transform3D |
 | **Hybrid scenes** | Stacked Pixi / Three layers so UI, world, and background can share one scene |
-| **Assets** | Import textures, audio, Spine, glTF/GLB, and Aseprite (`.aseprite` / `.ase`); Asset Preview plays Aseprite, Spine, glTF, and audio; scenes reference stable `assetId`s |
-| **Runtime** | `GameRuntime` + script components, scene flow, asset preload, HTML audio, independent Vite builds per game |
-| **Project server** | Local Node HTTP API for save/load, import, folders, and project switching — browser never gets raw filesystem access |
+| **Assets** | Import textures, audio, Spine, glTF/GLB, Aseprite (`.aseprite` / `.ase`), bitmap fonts, webfonts, prefabs, and tilesets; Asset Preview plays Aseprite, Spine, glTF, and audio; scenes reference stable `assetId`s |
+| **Runtime** | `GameRuntime` + script components, scene flow, asset preload, HTML audio, named node states, independent Vite builds per game |
+| **Export** | Web production `dist/` and Android Debug/Release APK or Release AAB (live editor + project-server; not in the GitHub Pages snapshot) |
+| **Project server** | Local Node HTTP API for save/load, import, folders, project switching, and native builds — browser never gets raw filesystem access |
 
 ---
 
@@ -75,7 +76,7 @@ The goal is a lightweight Unity / Cocos-style workflow aimed specifically at HTM
 | Domain / validation | Zod schemas for scene, assets, and project JSON |
 | Runtime | `@game-editor/runtime` — no React, no editor packages |
 | Local backend | Node.js 20+ HTTP server (`tsx` in development) |
-| Tests / quality | Vitest, ESLint (typescript-eslint), `pnpm typecheck` |
+| Tests / quality | Vitest, ESLint (typescript-eslint), `pnpm typecheck`, `pnpm lint:deps` (dependency-cruiser), `pnpm check` |
 
 ---
 
@@ -124,7 +125,9 @@ html5-game-editor/
 │   ├── game-components/   # defineComponent + shared behaviours
 │   ├── runtime/           # Game loop, scene host, asset collection
 │   ├── renderer-pixi/     # Pixi scene adapter
-│   └── renderer-three/    # Three scene adapter
+│   ├── renderer-three/    # Three scene adapter
+│   ├── game-build/        # BuildTarget registry + Web Vite target
+│   └── game-build-android/ # Capacitor Android APK / AAB packaging
 ├── games/
 │   ├── editor-features-demo/      # Hybrid Pixi + Three demo (port 5174)
 │   ├── muonline-game/     # Hybrid Three + Pixi HUD (port 5176)
@@ -232,7 +235,7 @@ Each `games/<id>` package is also built as a standalone player and copied to `/g
 | --- | --- |
 | Hierarchy, viewport, gizmos, inspector | Asset import / folder create |
 | Undo/redo, save scene (this browser) | Real filesystem persistence |
-| Asset browser, Preview, script components | |
+| Asset browser, Preview, States, script components | **File → Build Game…** (Web and Android) |
 | Open any bundled `games/*` project | |
 | Play `/games/<id>/` without the editor | |
 
@@ -251,12 +254,16 @@ Push to `master` runs **CI**; a successful CI run deploys Pages (quality gates s
 | Command | Purpose |
 | --- | --- |
 | `pnpm dev` | Editor + project server |
+| `pnpm dev:editor` | Editor only (expects project-server on port 8787) |
 | `pnpm dev:demo` | Editor only (static snapshot of every `games/*` project) |
 | `pnpm build:demo` | Static editor snapshot (`apps/editor/dist`) |
 | `pnpm build:pages` | Editor + standalone `games/*` builds for GitHub Pages |
+| `pnpm build:games` | Production Vite build of every `games/*` package |
 | `pnpm test` | Vitest across workspaces |
 | `pnpm typecheck` | `tsc --noEmit` across workspaces |
 | `pnpm lint` | ESLint (`--max-warnings=0` in packages that define it) |
+| `pnpm lint:deps` | dependency-cruiser package-boundary rules |
+| `pnpm check` | typecheck + lint + lint:deps + test |
 | `pnpm build` | Build packages, then apps and games |
 
 Per-package / per-game:
@@ -269,9 +276,11 @@ pnpm --filter @games/editor-features-demo dev
 pnpm --filter @games/editor-features-demo build
 pnpm --filter @games/muonline-game dev
 pnpm --filter @games/solitaire dev
+
+pnpm --filter @game-editor/game-build-android build:debug -- games/editor-features-demo
 ```
 
-Game Vite configs import TypeScript from `@game-editor/project/vite`, and the editor config imports `@game-editor/assets` via the demo plugin, so those scripts use `--configLoader runner`.
+Game Vite configs import TypeScript from `@game-editor/project/vite`, and the editor config imports `@game-editor/assets` via the demo plugin, so those scripts use `--configLoader runner`. Android packaging: [`docs/android-export.md`](./docs/android-export.md).
 
 ---
 
@@ -287,7 +296,7 @@ Default docking layout:
 │            │ (Pixi + Three, gizmos)   ├─────────────┤
 │            │                          │ Asset Preview│
 ├────────────┼──────────────────────────┤             │
-│ Assets     │ Preview / Console        │             │
+│ Assets     │ Preview / Console / States│            │
 └────────────┴──────────────────────────┴─────────────┘
 ```
 
@@ -295,10 +304,11 @@ Typical loop:
 
 1. Open a game project.
 2. Create or select nodes in Hierarchy / Scene.
-3. Assign textures, Aseprite, Spine, audio, or glTF from the Asset Browser (import via drag-and-drop).
-4. Tune transforms and visual fields in the Inspector; add Script components from **Add Component**.
+3. Assign textures, Aseprite, Spine, audio, fonts, tilesets, prefabs, or glTF from the Asset Browser (import via drag-and-drop).
+4. Tune transforms and visual fields in the Inspector; add Script components from **Add Component**. Named property overrides use the **States** panel.
 5. Save the scene (dirty state is tracked against the last saved snapshot).
-6. Use **Preview** to run the game runtime inside the editor, or `pnpm --filter @games/<name> dev` for a standalone window.
+6. Use **Preview** to run the game runtime inside the editor (Play / Pause / Stop), or `pnpm --filter @games/<name> dev` for a standalone window.
+7. Use **File → Build Game…** for a Web `dist/` or an Android APK/AAB (Android needs `pnpm dev`, not the Pages demo). Details: [`docs/android-export.md`](./docs/android-export.md).
 
 Meaningful edits go through commands so undo/redo stays consistent. Drag gestures commit **one** command on pointer-up, not one per mouse move.
 
@@ -350,6 +360,8 @@ games/editor-features-demo/
 
 To add a new game, follow `.cursor/skills/create-game/SKILL.md` (or copy `games/solitaire` for Pixi-only, `games/editor-features-demo` / `games/muonline-game` for hybrid). Give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D. Keep Pixi out if the game never uses 2D.
 
+From a live editor (`pnpm dev`), **File → Build Game…** writes a Web production `dist/` or an Android Debug/Release APK / Release AAB. Android toolchain and CLI: [`docs/android-export.md`](./docs/android-export.md).
+
 ---
 
 ## Script components
@@ -370,7 +382,7 @@ Define behaviours with `defineComponent` and an OOP class that implements `Scrip
 | Game-specific | `games/<name>/src/components/` | `<game>.PascalName` |
 | Shared | `packages/game-components/src/shared/` | `shared.PascalName` |
 
-Built-in shared components today: **Change Scene**, **Load All Scene Assets**, **Performance Meter**, **Audio Click**.
+Built-in shared components today: **Change Scene**, **Load All Scene Assets**, **Performance Meter**, **Audio Click**, **Background Audio**, **Button**.
 
 Shared components must stay runtime-safe: no React, Pixi, Three, or `editor-core`.
 
@@ -383,7 +395,7 @@ The architecture described in [`PROJECT.md`](./PROJECT.md) and [`docs/`](./docs/
 ### Editor & content pipeline
 
 - **Prefab variants & structural overrides** — property overrides, unpack, and nested resolution are in; variants and delete/reparent of inherited children are not
-- **Spritesheet / atlas generation** — Aseprite/LibreSprite compile is in; still needed: pack loose PNGs and a BitmapText font importer
+- **Spritesheet / atlas generation** — Aseprite/LibreSprite compile and BitmapText (BMFont) import are in; still needed: pack loose PNGs
 - **Timeline & animation** — clip editing for Spine, AnimatedSprite, and glTF animations
 - **Particles, filters** — Pixi ParticleContainer is deferred; filters are still design-only
 - **Richer 3D** — HDR environments, shadows, materials, post-processing (extension points exist; implementations do not)
@@ -392,17 +404,14 @@ The architecture described in [`PROJECT.md`](./PROJECT.md) and [`docs/`](./docs/
 
 - **Physics** — optional 2D/3D adapter that stays out of serialized scene data
 - **Input map** — named actions instead of ad-hoc pointer handlers in each behaviour
-- **Audio mixer** — buses, volume, and spatial playback beyond one-shot HTML audio
-- **Tilemaps / layout** — UI layout component and 2D tilemap support
+- **Audio mixer** — buses, volume, and spatial playback beyond HTML audio / Background Audio
+- **UI layout** — layout component for 2D UI (tilemaps are already supported)
 - **Optional renderer hygiene** — ensure Pixi-only games never statically import Three
 
 ### Collaboration & operations
 
 - **Multi-user locking** — resource locks + heartbeat so two editors cannot clobber the same scene
 - **Project-server auth** — CORS is `*` for local dev only; do not widen trust without an explicit product decision
-- **CI** — GitHub Actions (or equivalent) for `typecheck`, `test`, `lint`, and game builds
-- **Root scripts** — `dev:editor`, `build:games`, and a documented `create-game` scaffold
-- **Contributing guide** — a short CONTRIBUTING.md pointing at `PROJECT.md` and `docs/`
 
 ### Quality
 
@@ -427,20 +436,23 @@ Developer index (how-tos and topic pages): **[`docs/README.md`](./docs/README.md
 | Doc | Use it for |
 | --- | --- |
 | [`PROJECT.md`](./PROJECT.md) | Orientation, critical invariants, and which detailed doc to open |
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md) | How to run checks, invariants, and where to read before a PR |
 | [`docs/guides/add-a-script-component.md`](./docs/guides/add-a-script-component.md) | Add a Script behaviour (Inspector + runtime) |
+| [`docs/guides/use-node-states.md`](./docs/guides/use-node-states.md) | Named property overrides (States panel + `ctx.node.states`) |
 | [`docs/architecture.md`](./docs/architecture.md) | Package boundaries, quality, errors, performance |
-| [`docs/scene-model.md`](./docs/scene-model.md) | Scene graph, components, serialization, prefabs |
+| [`docs/scene-model.md`](./docs/scene-model.md) | Scene graph, components, serialization, prefabs, named states |
 | [`docs/assets.md`](./docs/assets.md) | Asset database, import, atlas, generated files |
-| [`docs/editor.md`](./docs/editor.md) | Editor core, commands, undo, inspector, selection |
+| [`docs/editor.md`](./docs/editor.md) | Editor core, commands, undo, inspector, selection, layout, node states |
 | [`docs/runtime.md`](./docs/runtime.md) | Game runtime, independent builds, optional renderers |
 | [`docs/renderers.md`](./docs/renderers.md) | Pixi / Three adapters and hybrid layers |
 | [`docs/project-server.md`](./docs/project-server.md) | Filesystem API and path confinement |
+| [`docs/android-export.md`](./docs/android-export.md) | Web BuildTarget + Capacitor Android APK / AAB |
 | [`docs/collaboration.md`](./docs/collaboration.md) | Resource locking and Git collaboration |
 | [`docs/roadmap.md`](./docs/roadmap.md) | MVP phases and planned work |
 | [`docs/hotkeys.md`](./docs/hotkeys.md) | Editor keyboard shortcuts |
 | [`docs/aseprite.md`](./docs/aseprite.md) | Aseprite / LibreSprite pipeline |
 | `.cursor/rules/` | Path-scoped constraints (editor UI, commands, server security, TypeScript) |
-| `.cursor/skills/` | Workflows: create-game, create-game-component, implement-editor-feature, architecture-change |
+| `.cursor/skills/` | Workflows: create-game, create-game-component, add-node-type, add-asset-type, add-editor-command, add-editor-panel, implement-editor-feature, implement-runtime-feature, architecture-change |
 
 ---
 

@@ -44,7 +44,7 @@ Android packaging **reuses** this production `dist/` via Capacitor — see [`and
 
 Building one game must not bundle another game. The monorepo does **not** produce one global game bundle.
 
-Root-level scripts that exist today include `pnpm dev`, `pnpm build`, `pnpm test`, `pnpm lint`, `pnpm typecheck`. Additional convenience scripts (`dev:editor`, `build:games`) are planned; see [`roadmap.md`](./roadmap.md). Every workspace package should expose only meaningful scripts.
+Root-level scripts that exist today include `pnpm dev`, `pnpm dev:editor`, `pnpm build`, `pnpm build:games`, `pnpm test`, `pnpm lint`, `pnpm typecheck`. Every workspace package should expose only meaningful scripts.
 
 ---
 
@@ -106,7 +106,7 @@ Standalone games register `bindDocumentVisibilityPause` so background tabs / And
 
 Own-node 2D motion should use `ctx.transform` (a persistent live handle: `x` / `y` or `position` / `scale`). Do not call `getTransform2D` / `setTransform2D` every frame for the host node.
 
-Own-node 3D motion should use `ctx.transform3D` (`position` / `rotation` / `scale` live axes plus `setPosition` / `setRotation` / `setScale` / `set`). When a Three renderer owns the node, assignments write the live `Object3D` and skip scene patches. Model clips on the host node should use `ctx.animations` (`play`, `stop`, `isPlaying`, `duration`, `names`). Catalogue audio should use `ctx.audio`. Bus subscriptions should use `ctx.events`. Host-node visibility and lookup should use `ctx.node` / `ctx.scene`. Named property states use `ctx.node.states` (`set("damaged")`, `setBase()`, `active`) — Base + one override applied to the renderer without rewriting authored scene fields. AnimatedSprite (Aseprite) clips use `ctx.services.setAnimatedSpritePlayback`. `ctx.services` remains the low-level escape hatch (other nodes, spawn, `changeScene`, pointer subscribe, …).
+Own-node 3D motion should use `ctx.transform3D` (`position` / `rotation` / `scale` live axes plus `setPosition` / `setRotation` / `setScale` / `set`). When a Three renderer owns the node, assignments write the live `Object3D` and skip scene patches. Model clips on the host node should use `ctx.animations` (`play`, `stop`, `isPlaying`, `duration`, `names`). Catalogue audio should use `ctx.audio`. Bus subscriptions should use `ctx.events`. Host-node visibility and lookup should use `ctx.node` / `ctx.scene`. Named property states use `ctx.node.states` (`set("damaged")`, `setBase()`, `active`) — Base + one override applied to the renderer without rewriting authored scene fields. How-to: [Use node states](./guides/use-node-states.md). AnimatedSprite (Aseprite) clips use `ctx.services.setAnimatedSpritePlayback`. `ctx.services` remains the low-level escape hatch (other nodes, spawn, `changeScene`, pointer subscribe, …).
 
 Metadata catalogs stay function-free. After a catalog load, games call `registry.attachRuntime(componentId, create)` from `installGameRuntime`.
 
