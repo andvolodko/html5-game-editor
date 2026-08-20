@@ -31,6 +31,7 @@ const sampleProject: ProjectData = {
   renderers: ["pixi"],
   startScene: "main",
   resolution: { width: 720, height: 1280 },
+  scaleMode: "cover",
   background: "#0d4a2e",
   android: createDefaultAndroidBuildSettings("Solitaire", "solitaire"),
 };

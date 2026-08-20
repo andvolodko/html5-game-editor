@@ -426,6 +426,9 @@ importers:
       '@game-editor/core':
         specifier: workspace:*
         version: link:../core
+      '@game-editor/project':
+        specifier: workspace:*
+        version: link:../project
       '@game-editor/scene':
         specifier: workspace:*
         version: link:../scene
@@ -454,6 +457,9 @@ importers:
       '@game-editor/core':
         specifier: workspace:*
         version: link:../core
+      '@game-editor/project':
+        specifier: workspace:*
+        version: link:../project
       '@game-editor/scene':
         specifier: workspace:*
         version: link:../scene

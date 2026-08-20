@@ -56,6 +56,7 @@ function fixtureSnapshot(projectId = "editor-features-demo"): DemoSnapshot {
       renderers: ["pixi"],
       startScene: START_SCENE_ID,
       resolution: { width: 1280, height: 720 },
+      scaleMode: "cover",
       background: "#101010",
     },
     assets: {

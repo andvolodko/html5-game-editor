@@ -4,7 +4,7 @@ import {
 } from "@game-editor/game-components";
 import {
   GAME_MOUNT_ELEMENT_ID,
-  projectBackgroundToPixiColor,
+  projectBackgroundRendererClear,
 } from "@game-editor/project";
 import { preloadPixiSceneAsset } from "@game-editor/renderer-pixi";
 import { ThreeGltfCache } from "@game-editor/renderer-three";
@@ -89,7 +89,7 @@ async function changeScene(sceneId: string): Promise<void> {
       scene: next,
       assetResolver: loaded.assetResolver,
       design,
-      backgroundColor: projectBackgroundToPixiColor(loaded.project.background),
+      ...projectBackgroundRendererClear(loaded.project.background),
       runtime,
       gltfCache: session.gltfCache,
     });
@@ -168,7 +168,11 @@ async function boot(): Promise<void> {
   const design = session.loaded.project.resolution;
   const background = session.loaded.project.background;
   viewport.style.background = background;
-  const screen = new GameScreenHost(viewport, design);
+  const screen = new GameScreenHost(
+    viewport,
+    design,
+    session.loaded.project.scaleMode,
+  );
   session.screen = screen;
 
   const runtime = session.runtime;
@@ -181,7 +185,7 @@ async function boot(): Promise<void> {
     scene: session.loaded.scene,
     assetResolver: session.loaded.assetResolver,
     design,
-    backgroundColor: projectBackgroundToPixiColor(background),
+    ...projectBackgroundRendererClear(background),
     runtime,
     gltfCache: session.gltfCache,
   });

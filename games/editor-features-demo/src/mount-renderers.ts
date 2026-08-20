@@ -31,11 +31,20 @@ export async function mountEditorFeaturesDemoRenderers(args: {
   assetResolver: LoadedGameProject["assetResolver"];
   design: ProjectResolution;
   backgroundColor: number;
+  backgroundAlpha: number;
   runtime: GameRuntime;
   gltfCache?: ThreeGltfCache;
 }): Promise<MountedGameRenderers> {
-  const { frame, scene, assetResolver, design, backgroundColor, runtime, gltfCache } =
-    args;
+  const {
+    frame,
+    scene,
+    assetResolver,
+    design,
+    backgroundColor,
+    backgroundAlpha,
+    runtime,
+    gltfCache,
+  } = args;
   const kind = getSceneRendererKind(scene);
   frame.replaceChildren();
 
@@ -45,6 +54,7 @@ export async function mountEditorFeaturesDemoRenderers(args: {
       assetResolver,
       editable: false,
       background: backgroundColor,
+      backgroundAlpha,
       ...(gltfCache ? { gltfCache } : {}),
     });
     await three.whenReady();
@@ -107,6 +117,7 @@ export async function mountEditorFeaturesDemoRenderers(args: {
       editable: false,
       designResolution: design,
       background: backgroundColor,
+      backgroundAlpha,
     });
     const three = new ThreeSceneRenderer({
       canvasParent: midHost,
@@ -114,6 +125,7 @@ export async function mountEditorFeaturesDemoRenderers(args: {
       editable: false,
       backgroundAlpha: 0,
       autoRender: false,
+      designResolution: design,
       ...(gltfCache ? { gltfCache } : {}),
     });
     const pixiFg = new PixiSceneRenderer({
@@ -183,6 +195,7 @@ export async function mountEditorFeaturesDemoRenderers(args: {
     editable: false,
     designResolution: design,
     background: backgroundColor,
+    backgroundAlpha,
   });
   await pixi.whenReady();
   runtime.registerRenderer({

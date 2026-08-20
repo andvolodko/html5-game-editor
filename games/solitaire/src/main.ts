@@ -4,7 +4,7 @@ import {
 } from "@game-editor/game-components";
 import {
   GAME_MOUNT_ELEMENT_ID,
-  projectBackgroundToPixiColor,
+  projectBackgroundRendererClear,
   type ProjectResolution,
 } from "@game-editor/project";
 import {
@@ -78,9 +78,17 @@ async function mountPixiRenderer(args: {
   assetResolver: LoadedGameProject["assetResolver"];
   design: ProjectResolution;
   backgroundColor: number;
+  backgroundAlpha: number;
   runtime: GameRuntime;
 }): Promise<{ destroy(): Promise<void> }> {
-  const { frame, assetResolver, design, backgroundColor, runtime } = args;
+  const {
+    frame,
+    assetResolver,
+    design,
+    backgroundColor,
+    backgroundAlpha,
+    runtime,
+  } = args;
   frame.replaceChildren();
   runtime.clearRenderers();
   const pixi = new PixiSceneRenderer({
@@ -89,6 +97,7 @@ async function mountPixiRenderer(args: {
     editable: false,
     designResolution: design,
     background: backgroundColor,
+    backgroundAlpha,
   });
   await pixi.whenReady();
   runtime.registerRenderer({
@@ -119,7 +128,7 @@ async function changeScene(sceneId: string): Promise<void> {
       frame: screen.frame,
       assetResolver: loaded.assetResolver,
       design,
-      backgroundColor: projectBackgroundToPixiColor(loaded.project.background),
+      ...projectBackgroundRendererClear(loaded.project.background),
       runtime,
     });
     session.rendererKind = nextKind;
@@ -178,7 +187,11 @@ async function boot(): Promise<void> {
   const design = session.loaded.project.resolution;
   const background = session.loaded.project.background;
   viewport.style.background = background;
-  const screen = new GameScreenHost(viewport, design);
+  const screen = new GameScreenHost(
+    viewport,
+    design,
+    session.loaded.project.scaleMode,
+  );
   session.screen = screen;
 
   const runtime = session.runtime;
@@ -190,7 +203,7 @@ async function boot(): Promise<void> {
     frame: screen.frame,
     assetResolver: session.loaded.assetResolver,
     design,
-    backgroundColor: projectBackgroundToPixiColor(background),
+    ...projectBackgroundRendererClear(background),
     runtime,
   });
   session.rendererKind = getSceneRendererKind(session.loaded.scene);

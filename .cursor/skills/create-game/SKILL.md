@@ -71,6 +71,7 @@ games/<id>/
   "renderers": ["three"],
   "startScene": "main",
   "resolution": { "width": 1280, "height": 720 },
+  "scaleMode": "expand",
   "background": "#0c1018"
 }
 ```

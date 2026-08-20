@@ -183,10 +183,15 @@ export class GameRuntime implements RuntimeScriptServiceHost {
     this.rendererHost.clear();
   }
 
+  /**
+   * Activate a scene snapshot. The input graph is copied so spawn, clone, and
+   * transform patches cannot mutate the caller's catalog (bundled scenes,
+   * editor document). Reloading the same authored scene starts clean.
+   */
   loadScene(scene: SceneData): void {
     this.disposed = false;
     this.nodeEvents.clear();
-    const resolved = this.sceneHost.loadScene(scene);
+    const resolved = this.sceneHost.loadScene(structuredClone(scene));
     this.scriptHost.attachScene(resolved);
   }
 

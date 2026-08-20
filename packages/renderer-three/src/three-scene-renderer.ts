@@ -64,6 +64,14 @@ import {
 } from "./three-runtime-nodes.js";
 import { ThreeRuntimeTransform3D } from "./three-runtime-transform-3d.js";
 import { readBoneWorldTransform } from "./three-bone-world.js";
+import {
+  clientPointToLetterboxNdc,
+  computeDesignLetterbox,
+  designCameraAspect,
+  letterboxToThreeViewport,
+  type DesignLetterbox,
+  type DesignResolution,
+} from "./three-design-viewport.js";
 import type {
   ThreePointerHandlers,
   ThreeSceneRendererOptions,
@@ -112,6 +120,9 @@ export class ThreeSceneRenderer implements SceneRenderer {
   private resizeRafId = 0;
   private pendingResize: { width: number; height: number } | undefined;
   private playbackPaused = false;
+  private readonly designResolution: DesignResolution | undefined;
+  /** Top-left letterbox when `designResolution` is set. */
+  private designView: DesignLetterbox | undefined;
 
   constructor(options: ThreeSceneRendererOptions = {}) {
     this.headless = options.headless === true;
@@ -119,6 +130,12 @@ export class ThreeSceneRenderer implements SceneRenderer {
     this.autoRender = options.autoRender ?? this.editable;
     this.canvasParent = options.canvasParent;
     this.backgroundAlpha = options.backgroundAlpha ?? 1;
+    this.designResolution = options.designResolution
+      ? {
+          width: Math.max(1, Math.floor(options.designResolution.width)),
+          height: Math.max(1, Math.floor(options.designResolution.height)),
+        }
+      : undefined;
     this.ownsGltfCache = options.gltfCache === undefined;
     this.gltfCache = options.gltfCache ?? new ThreeGltfCache();
     this.gltfCache.setResolver(options.assetResolver);
@@ -231,8 +248,9 @@ export class ThreeSceneRenderer implements SceneRenderer {
       return { x: 0, y: 0 };
     }
     const rect = canvas.getBoundingClientRect();
-    this.ndc.x = ((clientX - rect.left) / Math.max(rect.width, 1)) * 2 - 1;
-    this.ndc.y = -(((clientY - rect.top) / Math.max(rect.height, 1)) * 2 - 1);
+    if (!this.writePickNdc(clientX, clientY, rect)) {
+      return { x: 0, y: 0 };
+    }
     this.raycaster.setFromCamera(this.ndc, camera);
     const origin = this.raycaster.ray.origin;
     const direction = this.raycaster.ray.direction;
@@ -322,8 +340,9 @@ export class ThreeSceneRenderer implements SceneRenderer {
       return undefined;
     }
     const rect = canvas.getBoundingClientRect();
-    this.ndc.x = ((clientX - rect.left) / Math.max(rect.width, 1)) * 2 - 1;
-    this.ndc.y = -(((clientY - rect.top) / Math.max(rect.height, 1)) * 2 - 1);
+    if (!this.writePickNdc(clientX, clientY, rect)) {
+      return undefined;
+    }
     this.raycaster.setFromCamera(this.ndc, camera);
     const roots: Object3D[] = [];
     for (const [, entry] of this.graph.entries()) {
@@ -497,18 +516,15 @@ export class ThreeSceneRenderer implements SceneRenderer {
     if (width < 1 || height < 1) {
       return;
     }
-    const nextWidth = Math.floor(width);
-    const nextHeight = Math.floor(height);
-    if (nextWidth === this.width && nextHeight === this.height) {
+    const parent = this.canvasParent;
+    if (this.designResolution && parent) {
+      if (parent.clientWidth < 1 || parent.clientHeight < 1) {
+        return;
+      }
+      this.applyCanvasSize(parent.clientWidth, parent.clientHeight);
       return;
     }
-    this.width = nextWidth;
-    this.height = nextHeight;
-    this.syncAllCameraAspects();
-    this.renderer?.setSize(this.width, this.height, false);
-    // setSize clears the drawing buffer; paint immediately to avoid a blank flash
-    // until the next rAF (especially with transparent hybrid mid-layer).
-    this.presentFrame();
+    this.applyCanvasSize(width, height);
   }
 
   render(): void {
@@ -566,12 +582,20 @@ export class ThreeSceneRenderer implements SceneRenderer {
     return object instanceof PerspectiveCamera ? object.aspect : undefined;
   }
 
+  /** Test/diagnostics: design letterbox in top-left canvas pixels. */
+  getRuntimeDesignView(): DesignLetterbox | undefined {
+    return this.designView === undefined
+      ? undefined
+      : { ...this.designView };
+  }
+
   private presentFrame(): void {
     if (!this.renderer || !this.editorCamera) {
       return;
     }
     const camera = this.resolveViewCamera();
     this.syncCameraAspect(camera);
+    this.applyPlaybackViewport();
     this.renderer.render(this.rootScene, camera);
   }
 
@@ -600,12 +624,105 @@ export class ThreeSceneRenderer implements SceneRenderer {
   }
 
   private syncCameraAspect(camera: PerspectiveCamera): void {
-    const aspect = Math.max(this.width, 1) / Math.max(this.height, 1);
+    const aspect = this.resolveCameraAspect();
     if (Math.abs(camera.aspect - aspect) < 1e-6) {
       return;
     }
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
+  }
+
+  private resolveCameraAspect(): number {
+    if (this.designResolution) {
+      return designCameraAspect(this.designResolution);
+    }
+    return Math.max(this.width, 1) / Math.max(this.height, 1);
+  }
+
+  private refreshDesignView(): void {
+    if (!this.designResolution || this.width < 1 || this.height < 1) {
+      this.designView = undefined;
+      return;
+    }
+    this.designView = computeDesignLetterbox(this.designResolution, {
+      width: this.width,
+      height: this.height,
+    });
+  }
+
+  private applyCanvasSize(width: number, height: number): void {
+    const nextWidth = Math.floor(width);
+    const nextHeight = Math.floor(height);
+    if (nextWidth === this.width && nextHeight === this.height) {
+      this.refreshDesignView();
+      this.syncAllCameraAspects();
+      return;
+    }
+    this.width = nextWidth;
+    this.height = nextHeight;
+    this.refreshDesignView();
+    this.syncAllCameraAspects();
+    this.renderer?.setSize(this.width, this.height, false);
+    // setSize clears the drawing buffer; paint immediately to avoid a blank flash
+    // until the next rAF (especially with transparent hybrid mid-layer).
+    this.presentFrame();
+  }
+
+  private applyPlaybackViewport(): void {
+    const renderer = this.renderer;
+    if (!renderer) {
+      return;
+    }
+    const box = this.designView;
+    if (!box) {
+      renderer.setScissorTest(false);
+      renderer.setViewport(0, 0, this.width, this.height);
+      return;
+    }
+    const viewport = letterboxToThreeViewport(box, this.height);
+    renderer.setScissorTest(false);
+    renderer.setViewport(0, 0, this.width, this.height);
+    renderer.clear();
+    renderer.setViewport(
+      viewport.x,
+      viewport.y,
+      viewport.width,
+      viewport.height,
+    );
+    renderer.setScissor(
+      viewport.x,
+      viewport.y,
+      viewport.width,
+      viewport.height,
+    );
+    renderer.setScissorTest(true);
+  }
+
+  private writePickNdc(
+    clientX: number,
+    clientY: number,
+    rect: DOMRect,
+  ): boolean {
+    const box = this.designView;
+    if (!box) {
+      this.ndc.x = ((clientX - rect.left) / Math.max(rect.width, 1)) * 2 - 1;
+      this.ndc.y =
+        -(((clientY - rect.top) / Math.max(rect.height, 1)) * 2 - 1);
+      return true;
+    }
+    const ndc = clientPointToLetterboxNdc(
+      clientX,
+      clientY,
+      rect,
+      box,
+      { width: this.width, height: this.height },
+    );
+    if (!ndc) {
+      return false;
+    }
+    this.ndc.x = ndc.x;
+    this.ndc.y = ndc.y;
+    return true;
   }
 
   private syncAllCameraAspects(): void {
@@ -639,7 +756,10 @@ export class ThreeSceneRenderer implements SceneRenderer {
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     if (transparent) {
-      renderer.setClearColor(0x000000, 0);
+      renderer.setClearColor(
+        background ?? DEFAULT_THREE_BACKGROUND,
+        this.backgroundAlpha,
+      );
     }
     const width = Math.max(1, parent.clientWidth);
     const height = Math.max(1, parent.clientHeight);
@@ -651,10 +771,11 @@ export class ThreeSceneRenderer implements SceneRenderer {
     this.renderer = renderer;
     this.width = width;
     this.height = height;
+    this.refreshDesignView();
 
     const camera = new PerspectiveCamera(
       EDITOR_CAMERA_FOV,
-      width / height,
+      this.resolveCameraAspect(),
       EDITOR_CAMERA_NEAR,
       EDITOR_CAMERA_FAR,
     );
@@ -772,7 +893,7 @@ export class ThreeSceneRenderer implements SceneRenderer {
       object.fov = cam.fov;
       object.near = cam.near;
       object.far = cam.far;
-      object.aspect = Math.max(this.width, 1) / Math.max(this.height, 1);
+      object.aspect = this.resolveCameraAspect();
       object.updateProjectionMatrix();
     }
     const dir = getDirectionalLight(node);

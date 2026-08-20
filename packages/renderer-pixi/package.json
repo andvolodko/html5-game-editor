@@ -23,6 +23,7 @@
     "@esotericsoftware/spine-pixi-v8": "^4.3.13",
     "@game-editor/assets": "workspace:*",
     "@game-editor/core": "workspace:*",
+    "@game-editor/project": "workspace:*",
     "@game-editor/scene": "workspace:*",
     "@game-editor/shared": "workspace:*",
     "@pixi/tilemap": "5.0.2",

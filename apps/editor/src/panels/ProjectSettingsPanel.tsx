@@ -10,13 +10,14 @@ import {
   ANDROID_SPLASH_RECOMMENDED_SIZE,
   createDefaultAndroidBuildSettings,
   DEFAULT_PROJECT_BACKGROUND,
-  normalizeProjectBackgroundHex,
+  DEFAULT_PROJECT_SCALE_MODE,
   type AndroidBuildSettings,
   type AndroidOrientation,
 } from "@game-editor/project";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
 import { InspectorFieldRow, AssetSelectField } from "./fields/inspector-fields";
+import { ProjectBackgroundField } from "./ProjectBackgroundField";
 import { buildStartSceneSelectOptions } from "./fields/start-scene-select-options";
 import { isDemoMode } from "../demo/demo-mode";
 
@@ -279,30 +280,49 @@ export function ProjectSettingsPanel() {
             </label>
           </InspectorFieldRow>
           <label>
-            Background
-            <input
-              type="color"
-              value={backgroundDraft}
+            Scale Mode
+            <select
+              value={project.scaleMode ?? DEFAULT_PROJECT_SCALE_MODE}
               disabled={busy}
               onChange={(event) => {
-                const next = normalizeProjectBackgroundHex(event.target.value);
-                if (!next || !project) {
+                const next = event.target.value;
+                if (next !== "contain" && next !== "cover" && next !== "expand") {
                   return;
                 }
-                setBackgroundDraft(next);
-                if (next === project.background) {
+                if (next === project.scaleMode) {
                   return;
                 }
                 setSaveError(null);
-                void editor.project.setBackground(next).catch((error: unknown) => {
-                  setBackgroundDraft(project.background);
+                void editor.project.setScaleMode(next).catch((error: unknown) => {
                   setSaveError(
                     error instanceof Error ? error.message : "Save failed",
                   );
                 });
               }}
-            />
+            >
+              <option value="expand">Expand (Pixi fills extra space)</option>
+              <option value="cover">Cover (crop to fill)</option>
+              <option value="contain">Contain (letterbox)</option>
+            </select>
           </label>
+          <ProjectBackgroundField
+            value={backgroundDraft}
+            disabled={busy}
+            onCommit={(next) => {
+              if (!project || next === project.background) {
+                setBackgroundDraft(next);
+                return;
+              }
+              setBackgroundDraft(next);
+              setSaveError(null);
+              void editor.project.setBackground(next).catch((error: unknown) => {
+                setBackgroundDraft(project.background);
+                setSaveError(
+                  error instanceof Error ? error.message : "Save failed",
+                );
+              });
+            }}
+          />
 
           <p className="panel-hint">Android</p>
           {androidDraft ? (

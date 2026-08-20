@@ -7,10 +7,13 @@ import {
 import {
   DEFAULT_PROJECT_BACKGROUND,
   DEFAULT_PROJECT_RESOLUTION,
+  DEFAULT_PROJECT_SCALE_MODE,
   DEFAULT_START_SCENE,
   PROJECT_SCHEMA_VERSION,
+  resolveProjectScaleMode,
   type ProjectData,
   type ProjectResolution,
+  type ProjectScaleMode,
 } from "./types.js";
 import {
   normalizeProjectBackgroundHex,
@@ -29,6 +32,12 @@ export const projectResolutionSchema: z.ZodType<ProjectResolution> = z.object({
   width: z.number().int().positive(),
   height: z.number().int().positive(),
 });
+
+export const projectScaleModeSchema: z.ZodType<ProjectScaleMode> = z.enum([
+  "contain",
+  "cover",
+  "expand",
+]);
 
 export const projectBackgroundSchema = z
   .string()
@@ -75,6 +84,7 @@ const projectDataObjectSchema = z.object({
     .min(1)
     .regex(PROJECT_SCENE_ID_PATTERN, "Invalid startScene id"),
   resolution: projectResolutionSchema,
+  scaleMode: projectScaleModeSchema,
   background: projectBackgroundSchema,
   android: androidBuildSettingsSchema.optional(),
 });
@@ -147,8 +157,9 @@ function fillAndroidDefaults(
 }
 
 /**
- * Parses project.json. Missing `startScene` / `resolution` / `background`
- * on v1 files get defaults. Missing `android` gets defaults from displayName/name.
+ * Parses project.json. Missing `startScene` / `resolution` / `scaleMode` /
+ * `background` on v1 files get defaults. Missing `android` gets defaults
+ * from displayName/name.
  */
 export function parseProjectData(input: unknown): ProjectData {
   if (typeof input !== "object" || input === null || Array.isArray(input)) {
@@ -170,6 +181,14 @@ export function parseProjectData(input: unknown): ProjectData {
     withDefault.resolution === null
   ) {
     withDefault.resolution = { ...DEFAULT_PROJECT_RESOLUTION };
+  }
+  if (
+    !("scaleMode" in withDefault) ||
+    withDefault.scaleMode === undefined ||
+    withDefault.scaleMode === null ||
+    withDefault.scaleMode === ""
+  ) {
+    withDefault.scaleMode = DEFAULT_PROJECT_SCALE_MODE;
   }
   if (
     !("background" in withDefault) ||
@@ -232,6 +251,7 @@ export function serializeProjectData(data: ProjectData): string {
       width: data.resolution.width,
       height: data.resolution.height,
     },
+    scaleMode: resolveProjectScaleMode(data.scaleMode),
     background,
     android: {
       appName: android.appName,

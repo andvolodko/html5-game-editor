@@ -87,6 +87,7 @@ export async function createHybridRendererStack(options: {
   mode: "editor" | "preview";
   designResolution?: { width: number; height: number };
   pixiBackgroundColor?: number;
+  pixiBackgroundAlpha?: number;
   gltfCache?: ThreeGltfCache;
 }): Promise<HybridRendererStack> {
   const hosts = createHybridCanvasHosts(options.host);
@@ -106,6 +107,9 @@ export async function createHybridRendererStack(options: {
       : options.background !== undefined
         ? { background: options.background }
         : {}),
+    ...(options.pixiBackgroundAlpha !== undefined
+      ? { backgroundAlpha: options.pixiBackgroundAlpha }
+      : {}),
   });
   const three = new ThreeSceneRenderer({
     canvasParent: hosts.midHost,
@@ -115,6 +119,9 @@ export async function createHybridRendererStack(options: {
     // Host drives Three frames (shared with preview GameRuntime / editor loop).
     autoRender: false,
     ...(options.gltfCache ? { gltfCache: options.gltfCache } : {}),
+    ...(options.mode === "preview" && options.designResolution
+      ? { designResolution: options.designResolution }
+      : {}),
   });
   const pixiForeground = new PixiSceneRenderer({
     canvasParent: hosts.fgHost,

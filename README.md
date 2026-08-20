@@ -354,9 +354,14 @@ games/editor-features-demo/
   "renderers": ["pixi", "three"],
   "startScene": "loading",
   "resolution": { "width": 1280, "height": 720 },
+  "scaleMode": "expand",
   "background": "#1c2a4a"
 }
 ```
+
+`scaleMode` is `expand` (fit the design, Pixi fills leftover window), `cover` (crop to fill), or `contain` (letterbox). The design resolution stays centered. Omitted files default to `expand`. See [`docs/runtime.md`](./docs/runtime.md#design-resolution).
+
+`background` is CSS `#RRGGBB`, or `#RRGGBBAA` when the clear should be translucent (set **Alpha** to `0` in Project Settings for a fully transparent host).
 
 To add a new game, follow `.cursor/skills/create-game/SKILL.md` (or copy `games/solitaire` for Pixi-only, `games/editor-features-demo` / `games/muonline-game` for hybrid). Give it a unique Vite port, and register components from `src/components`. Keep Three out of `dependencies` if the game never uses 3D. Keep Pixi out if the game never uses 2D.
 

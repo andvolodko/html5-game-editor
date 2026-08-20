@@ -5,8 +5,10 @@ import {
   type ViewportPointerModifiers,
   viewportPointerModifiersFrom,
 } from "@game-editor/shared";
+import { integerExpandBuffer } from "@game-editor/project";
 import type { Vec2 } from "@game-editor/scene";
 import { clientPointToWorld } from "./viewport-math.js";
+import { DEFAULT_VIEWPORT_SCALE } from "./viewport-camera.js";
 import type { ViewportCameraController } from "./viewport-camera-controller.js";
 import type { PixiRuntimeGraph } from "./pixi-runtime-nodes.js";
 import type { PixelGridOverlay } from "./pixel-grid.js";
@@ -84,6 +86,7 @@ export class PixiAppLifecycle {
   height = 0;
   ready = false;
   private parentResizeObserver: ResizeObserver | undefined;
+  private designFitRafId = 0;
   private readonly initPromise: Promise<void>;
   private tickerPaused = false;
 
@@ -149,12 +152,7 @@ export class PixiAppLifecycle {
     publishPixiApp(app);
     app.stage.label = "stage";
     this.host.canvasParent.appendChild(app.canvas);
-    if (design) {
-      // Stretch the fixed design buffer across the letterboxed parent.
-      app.canvas.style.width = "100%";
-      app.canvas.style.height = "100%";
-      app.canvas.style.display = "block";
-    }
+    this.fillDesignCanvasCss();
     if (this.host.pixelGrid) {
       this.host.camera.root.addChild(this.host.pixelGrid.root);
     }
@@ -222,16 +220,22 @@ export class PixiAppLifecycle {
       { capture: true },
     );
     app.renderer.on("resize", () => {
+      this.fillDesignCanvasCss();
       this.host.onResize();
     });
-    if (!design) {
-      // Keep buffer CSS-pixel size in sync with the host (no CSS bitmap stretch).
-      this.parentResizeObserver = new ResizeObserver(() => {
-        app.queueResize();
-      });
-      this.parentResizeObserver.observe(this.host.canvasParent);
+    this.parentResizeObserver = new ResizeObserver(() => {
+      if (this.host.designResolution) {
+        this.scheduleDesignBufferSync();
+        return;
+      }
+      app.queueResize();
+    });
+    this.parentResizeObserver.observe(this.host.canvasParent);
+    if (design) {
+      this.syncDesignBufferToParent();
+    } else {
+      this.syncViewportSize();
     }
-    this.syncViewportSize();
     app.ticker.add((ticker) => {
       this.host.onTick?.(ticker);
     });
@@ -270,30 +274,93 @@ export class PixiAppLifecycle {
   }
 
   /**
-   * Apply editor/runtime resize. Returns whether overlays should redraw.
-   * When `designResolution` is set, buffer size stays fixed.
+   * Apply editor/runtime resize. When `designResolution` is set, the buffer
+   * expands to fill the parent (design stays centered; extra space is Pixi).
    */
   resize(width: number, height: number): void {
     const design = this.host.designResolution;
     if (design) {
-      this.width = design.width;
-      this.height = design.height;
-      const app = this.app;
-      if (
-        app &&
-        (app.screen.width !== design.width ||
-          app.screen.height !== design.height)
-      ) {
-        app.renderer.resize(design.width, design.height);
-      }
+      this.syncDesignBufferToParent();
       return;
     }
     this.width = width;
     this.height = height;
   }
 
+  /**
+   * Pixi `renderer.resize` writes inline canvas CSS in backbuffer pixels.
+   * Playback needs the bitmap stretched across the parent so the 1920×1080
+   * design stays fully visible and centered inside expand/contain/cover.
+   */
+  private fillDesignCanvasCss(): void {
+    const canvas = this.app?.canvas;
+    if (!canvas || !this.host.designResolution) {
+      return;
+    }
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.display = "block";
+    canvas.style.objectFit = "fill";
+  }
+
+  /** Coalesce parent resizes to one buffer sync per frame (avoids clear-flash spam). */
+  private scheduleDesignBufferSync(): void {
+    if (this.designFitRafId !== 0) {
+      return;
+    }
+    this.designFitRafId = requestAnimationFrame(() => {
+      this.designFitRafId = 0;
+      this.syncDesignBufferToParent();
+    });
+  }
+
+  private syncDesignBufferToParent(): void {
+    const design = this.host.designResolution;
+    const app = this.app;
+    if (!design || !app) {
+      return;
+    }
+    const parent = this.host.canvasParent;
+    if (parent.clientWidth < 1 || parent.clientHeight < 1) {
+      return;
+    }
+    const next = integerExpandBuffer(design, {
+      width: parent.clientWidth,
+      height: parent.clientHeight,
+    });
+    const sizeChanged =
+      app.screen.width !== next.width || app.screen.height !== next.height;
+    if (sizeChanged) {
+      app.renderer.resize(next.width, next.height);
+    }
+    this.fillDesignCanvasCss();
+    this.width = next.width;
+    this.height = next.height;
+    app.stage.hitArea = app.screen;
+    const camera = this.host.camera.getState();
+    const panChanged =
+      camera.pan.x !== next.panX ||
+      camera.pan.y !== next.panY ||
+      camera.scale !== DEFAULT_VIEWPORT_SCALE;
+    if (panChanged) {
+      this.host.camera.applyExternalState({
+        pan: { x: next.panX, y: next.panY },
+        scale: DEFAULT_VIEWPORT_SCALE,
+      });
+    }
+    // renderer.resize clears the drawing buffer; paint now so we don't flash
+    // empty until the next game rAF (same as ThreeSceneRenderer.resize).
+    if (sizeChanged || panChanged) {
+      this.renderFrame();
+    }
+  }
+
   async destroy(): Promise<void> {
     await this.initPromise;
+    if (this.designFitRafId !== 0) {
+      cancelAnimationFrame(this.designFitRafId);
+      this.designFitRafId = 0;
+    }
     this.parentResizeObserver?.disconnect();
     this.parentResizeObserver = undefined;
     this.host.camera.detach();

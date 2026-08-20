@@ -17,6 +17,7 @@ const validProject: ProjectData = {
   renderers: ["pixi"],
   startScene: "main",
   resolution: { width: 1280, height: 720 },
+  scaleMode: "cover",
   background: DEFAULT_PROJECT_BACKGROUND,
 };
 

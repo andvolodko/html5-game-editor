@@ -2,6 +2,7 @@ export type {
   ProjectData,
   ProjectListEntry,
   ProjectResolution,
+  ProjectScaleMode,
   AndroidBuildSettings,
   AndroidOrientation,
 } from "./types.js";
@@ -9,6 +10,8 @@ export {
   PROJECT_SCHEMA_VERSION,
   DEFAULT_START_SCENE,
   DEFAULT_PROJECT_RESOLUTION,
+  DEFAULT_PROJECT_SCALE_MODE,
+  resolveProjectScaleMode,
   DEFAULT_PROJECT_BACKGROUND,
   ANDROID_APPLICATION_ID_PATTERN,
   ANDROID_ICON_RECOMMENDED_SIZE,
@@ -33,17 +36,33 @@ export {
   rendererKindSchema,
   projectDataSchema,
   projectResolutionSchema,
+  projectScaleModeSchema,
   projectBackgroundSchema,
   androidBuildSettingsSchema,
   androidOrientationSchema,
 } from "./schema.js";
+export type { ProjectBackgroundClear } from "./project-background.js";
 export {
   PROJECT_BACKGROUND_HEX_PATTERN,
+  OPAQUE_PROJECT_BACKGROUND_ALPHA,
+  PROJECT_BACKGROUND_ALPHA_MIN,
+  PROJECT_BACKGROUND_ALPHA_MAX,
   normalizeProjectBackgroundHex,
+  projectBackgroundRgbHex,
+  composeProjectBackgroundHex,
   projectBackgroundToPixiColor,
+  projectBackgroundToPixiAlpha,
+  projectBackgroundToClear,
+  projectBackgroundRendererClear,
 } from "./project-background.js";
-export type { FittedRect } from "./fit-contain-rect.js";
-export { fitContainRect } from "./fit-contain-rect.js";
+export type { FittedRect, ExpandedFit } from "./fit-contain-rect.js";
+export {
+  fitContainRect,
+  fitCoverRect,
+  fitExpandRect,
+  fitDesignRect,
+  integerExpandBuffer,
+} from "./fit-contain-rect.js";
 export {
   GAME_MOUNT_ELEMENT_ID,
   GAME_LOADING_ELEMENT_ID,

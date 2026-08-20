@@ -231,7 +231,7 @@ Docking is `DockLayout` / dockview (`apps/editor/src/layout/`). Layout is UI chr
 
 Dockable **States** panel (`EDITOR_PANEL_IDS.states`), tabbed with Console by default. Selects the editor-only active state (`NodeStateEditSession` — not written into scene JSON). While a named state is active, Inspector and Transform2D gizmos write sparse `stateOverrides` instead of Base. Inspector shows effective values and a reset control on overridden MVP fields. How-to: [Use node states](./guides/use-node-states.md).
 
-Pixi and Three are used in the scene viewport (and game Preview). Standard chrome stays DOM/React. Preview Play / Pause / Stop drives an isolated `GameRuntime`; Pause freezes scripts, input, audio, and playback animation without writing into the open document. Inspector Script property edits still reach the live preview via `onPropertiesChanged`.
+Pixi and Three are used in the scene viewport (and game Preview). Standard chrome stays DOM/React. Preview Play / Pause / Stop drives an isolated `GameRuntime` inside `GameScreenHost`, which fits `project.json` `resolution` with `scaleMode` (`expand` keeps the design centered and fills leftover space with Pixi; playback Three letterboxes to that same rectangle; `cover` crops; `contain` letterboxes). Pause freezes scripts, input, audio, and playback animation without writing into the open document. Inspector Script property edits still reach the live preview via `onPropertiesChanged`.
 
 ---
 

@@ -36,9 +36,10 @@ export interface PixiSceneRendererOptions {
    */
   editable?: boolean;
   /**
-   * Fixed design resolution buffer. Canvas CSS fills `canvasParent` while
-   * the backbuffer stays at this size (preview / runtime letterboxing).
-   * Omit for the Scene editor, which tracks the host via resizeTo.
+   * Design resolution for playback. Canvas CSS fills `canvasParent` while
+   * the backbuffer expand-fits that parent (design stays centered; leftover
+   * bands stay in Pixi). Omit for the Scene editor, which tracks the host via
+   * resizeTo.
    */
   designResolution?: { width: number; height: number };
 }

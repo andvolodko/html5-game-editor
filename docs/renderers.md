@@ -48,7 +48,7 @@ interface RenderLayer {
 }
 ```
 
-For the first implementation it is acceptable to use multiple stacked canvases (Pixi foreground/UI, Three world, Pixi background). Do not tightly couple scene logic to the number of canvases. Canvas composition is a renderer implementation detail. Hybrid playback picks through a DOM overlay (canvases use `pointer-events: none`); that pick must honor grouping HitZone ownership and `pointerEventMode`, not only smallest visual AABB.
+For the first implementation it is acceptable to use multiple stacked canvases (Pixi foreground/UI, Three world, Pixi background). Do not tightly couple scene logic to the number of canvases. Canvas composition is a renderer implementation detail. Hybrid playback picks through a DOM overlay (canvases use `pointer-events: none`); that pick must honor grouping HitZone ownership and `pointerEventMode`, not only smallest visual AABB. Playback Three uses the project design resolution: the camera keeps that aspect and letterboxes into the same centered rectangle Pixi uses, so 3D does not drift when the window is taller than it is wide.
 
 ---
 

@@ -48,6 +48,20 @@ Root-level scripts that exist today include `pnpm dev`, `pnpm dev:editor`, `pnpm
 
 ---
 
+## Design resolution
+
+`project.json` `resolution` is the authored world size. `GameScreenHost` maps that rectangle onto the window with uniform scale and **keeps it centered**.
+
+`scaleMode` (default `expand` when omitted):
+
+- **`expand`** — fit the whole design (same uniform scale as contain), then grow the Pixi/Three view to fill leftover window bands. Authored 2D content stays centered; extra space is more Pixi world (tilemaps, sprites), not host letterbox. Playback Three keeps the design aspect and letterboxes into that same rectangle so 3D stays aligned with Pixi. Do not zoom the 3D camera to fill the extra bands.
+- **`cover`** — fill the window; crop overflow (CSS `object-fit: cover`).
+- **`contain`** — letterbox / pillarbox (CSS `object-fit: contain`). Host `background` (`#RRGGBB` or `#RRGGBBAA`) shows in the bars.
+
+Editor Preview uses the same host. Change the mode in **Project Settings**.
+
+---
+
 ## Optional renderer dependencies
 
 Games that do not use Three.js should not have to ship Three.js.
@@ -75,7 +89,7 @@ Games that never use 2D must not depend on Pixi. `project.json` `renderers` and 
 
 `resolveGameProject` accepts `prefabsByPath` (project-relative `.prefab.json` modules) and builds a catalog keyed by catalogue `assetId`. Every bundled scene is resolved before it reaches `GameRuntime` / renderer adapters.
 
-`GameRuntime.loadScene` also resolves prefab instances so standalone games and editor preview stay consistent. `collectSceneAssetIds` walks prefab documents with a visited set so indirect textures, Script property assets, Spine/glTF references are preloaded and cycles cannot loop.
+`GameRuntime.loadScene` copies the input graph, then resolves prefab instances, so spawn/clone/transform patches cannot mutate bundled scenes or the editor document. Reloading the same authored scene starts clean. `collectSceneAssetIds` walks prefab documents with a visited set so indirect textures, Script property assets, Spine/glTF references are preloaded and cycles cannot loop.
 
 **Load All Scene Assets** (`shared.LoadAllSceneAssets`) lists those ids and calls `preloadSceneAsset`. **Loading Scene** (game-local) must wait for that component’s `completeEvent` **and** `minDisplayMs` before `changeScene`. Do not navigate on a timer alone — that aborts preload.
 

@@ -20,6 +20,7 @@ describe("ProjectBuildService", () => {
         renderers: ["pixi" as const],
         startScene: "main",
         resolution: { width: 1280, height: 720 },
+        scaleMode: "cover",
         background: "#0b0d12",
       })),
     } as unknown as ProjectFileService;

@@ -36,8 +36,28 @@ export const DEFAULT_PROJECT_RESOLUTION: ProjectResolution = {
 /**
  * Default clear / letterbox color (CSS `#RRGGBB`).
  * Used for the game host background and Pixi Application clear color.
+ * `#RRGGBBAA` is also valid when a transparent clear is needed.
  */
 export const DEFAULT_PROJECT_BACKGROUND = "#0b0d12";
+
+/**
+ * How the design resolution maps onto the game window.
+ * `expand` fits the design (uniform scale, centered) and lets Pixi fill leftover
+ * bands. `cover` crops to fill. `contain` letterboxes.
+ */
+export type ProjectScaleMode = "contain" | "cover" | "expand";
+
+/** Default scale mode when missing from older project.json files. */
+export const DEFAULT_PROJECT_SCALE_MODE: ProjectScaleMode = "expand";
+
+export function resolveProjectScaleMode(
+  value: ProjectScaleMode | undefined,
+): ProjectScaleMode {
+  if (value === "contain" || value === "cover" || value === "expand") {
+    return value;
+  }
+  return DEFAULT_PROJECT_SCALE_MODE;
+}
 
 /** Design resolution in world/CSS-independent pixels. */
 export interface ProjectResolution {
@@ -56,7 +76,13 @@ export interface ProjectData {
   renderers: RendererKind[];
   startScene: string;
   resolution: ProjectResolution;
-  /** CSS `#RRGGBB` clear / letterbox color. */
+  /**
+   * CSS fit of the design buffer in the game window / Preview.
+   * Parse fills {@link DEFAULT_PROJECT_SCALE_MODE} when omitted.
+   * `expand` keeps the design centered and fills leftover window with Pixi.
+   */
+  scaleMode: ProjectScaleMode;
+  /** CSS `#RRGGBB` or `#RRGGBBAA` clear / letterbox color. */
   background: string;
   /**
    * Optional Android packaging settings. Omitted on older projects;

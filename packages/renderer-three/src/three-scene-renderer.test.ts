@@ -160,6 +160,31 @@ describe("ThreeSceneRenderer", () => {
     expect(renderer.getSize()).toEqual({ width: 1600, height: 900 });
   });
 
+  it("keeps design aspect and letterboxes when the canvas is taller than wide", () => {
+    const camera = createNodeWithTransform3D(
+      "Cam",
+      { x: 0, y: 5, z: 10 },
+      createPerspectiveCameraComponent({ active: true }),
+    );
+    const design = { width: 1920, height: 1080 };
+    const renderer = new ThreeSceneRenderer({
+      headless: true,
+      editable: false,
+      designResolution: design,
+    });
+    renderer.createNode(camera);
+    renderer.resize(400, 800);
+    expect(renderer.getRuntimeCameraAspect(camera.id)).toBeCloseTo(
+      1920 / 1080,
+    );
+    expect(renderer.getRuntimeDesignView()).toEqual({
+      x: 0,
+      y: Math.round((800 - 225) / 2),
+      width: 400,
+      height: 225,
+    });
+  });
+
   it("samples Object3D count without inventing GPU stats in headless mode", () => {
     const node = createNodeWithTransform3D(
       "M",

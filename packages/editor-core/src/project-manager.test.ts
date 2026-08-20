@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   DEFAULT_PROJECT_BACKGROUND,
   DEFAULT_PROJECT_RESOLUTION,
+  DEFAULT_PROJECT_SCALE_MODE,
   PROJECT_SCHEMA_VERSION,
   type ProjectData,
 } from "@game-editor/project";
@@ -15,6 +16,7 @@ const sample: ProjectData = {
   renderers: ["pixi"],
   startScene: "main",
   resolution: { ...DEFAULT_PROJECT_RESOLUTION },
+  scaleMode: DEFAULT_PROJECT_SCALE_MODE,
   background: DEFAULT_PROJECT_BACKGROUND,
 };
 
@@ -25,6 +27,7 @@ const sampleTwo: ProjectData = {
   renderers: ["pixi"],
   startScene: "main",
   resolution: { ...DEFAULT_PROJECT_RESOLUTION },
+  scaleMode: DEFAULT_PROJECT_SCALE_MODE,
   background: DEFAULT_PROJECT_BACKGROUND,
 };
 
@@ -110,6 +113,31 @@ describe("ProjectManager", () => {
     expect(saveProject).not.toHaveBeenCalled();
   });
 
+  it("sets scaleMode via API and skips when unchanged", async () => {
+    const saveProject = vi.fn(async (project: ProjectData) => project);
+    const manager = new ProjectManager({
+      getProject: async () => sample,
+      saveProject,
+      listProjects: async () => ({
+        projects: [],
+        activeProjectId: null,
+      }),
+      openProject: async () => ({ projectId: "editor-features-demo", project: sample }),
+    });
+    await manager.refresh();
+
+    await manager.setScaleMode("contain");
+    expect(saveProject).toHaveBeenCalledWith({
+      ...sample,
+      scaleMode: "contain",
+    });
+    expect(manager.getProject()?.scaleMode).toBe("contain");
+
+    saveProject.mockClear();
+    await manager.setScaleMode("contain");
+    expect(saveProject).not.toHaveBeenCalled();
+  });
+
   it("sets background via API and skips when unchanged", async () => {
     const saveProject = vi.fn(async (project: ProjectData) => project);
     const manager = new ProjectManager({
@@ -132,6 +160,10 @@ describe("ProjectManager", () => {
 
     saveProject.mockClear();
     await manager.setBackground("#112233");
+    expect(saveProject).not.toHaveBeenCalled();
+
+    saveProject.mockClear();
+    await manager.setBackground("#112233ff");
     expect(saveProject).not.toHaveBeenCalled();
   });
 

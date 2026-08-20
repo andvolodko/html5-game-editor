@@ -2,8 +2,12 @@ import type {
   AndroidBuildSettings,
   ProjectData,
   ProjectListEntry,
+  ProjectScaleMode,
 } from "@game-editor/project";
-import { androidBuildSettingsEqual } from "@game-editor/project";
+import {
+  androidBuildSettingsEqual,
+  normalizeProjectBackgroundHex,
+} from "@game-editor/project";
 import type {
   OpenProjectResult,
   ProjectApiClient,
@@ -198,12 +202,12 @@ export class ProjectManager {
     }
   }
 
-  async setBackground(background: string): Promise<ProjectData> {
+  async setScaleMode(scaleMode: ProjectScaleMode): Promise<ProjectData> {
     if (!this.api) {
       throw new Error("Project API is not configured");
     }
     const current = this.project ?? (await this.refresh());
-    if (current.background.toLowerCase() === background.trim().toLowerCase()) {
+    if (current.scaleMode === scaleMode) {
       return current;
     }
     this.status = "saving";
@@ -212,7 +216,41 @@ export class ProjectManager {
     try {
       const saved = await this.api.saveProject({
         ...current,
-        background,
+        scaleMode,
+      });
+      this.project = saved;
+      this.status = "idle";
+      this.revision += 1;
+      this.emit();
+      return saved;
+    } catch (error) {
+      this.status = "error";
+      this.error = error instanceof Error ? error.message : "Failed to save project";
+      this.emit();
+      throw error;
+    }
+  }
+
+  async setBackground(background: string): Promise<ProjectData> {
+    if (!this.api) {
+      throw new Error("Project API is not configured");
+    }
+    const current = this.project ?? (await this.refresh());
+    const next =
+      normalizeProjectBackgroundHex(background) ?? background.trim();
+    const currentNormalized =
+      normalizeProjectBackgroundHex(current.background) ??
+      current.background.toLowerCase();
+    if (currentNormalized === next.toLowerCase()) {
+      return current;
+    }
+    this.status = "saving";
+    this.error = undefined;
+    this.emit();
+    try {
+      const saved = await this.api.saveProject({
+        ...current,
+        background: next,
       });
       this.project = saved;
       this.status = "idle";

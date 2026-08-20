@@ -11,7 +11,8 @@
     "width": 1920,
     "height": 1080
   },
-  "background": "#1c2a4a",
+  "scaleMode": "expand",
+  "background": "#1c2a4aff",
   "android": {
     "appName": "Editor Features Demo",
     "applicationId": "com.gameeditor.editor_features_demo",
@@ -21,9 +22,9 @@
     "fullscreen": true,
     "immersiveMode": true,
     "keepScreenAwake": false,
-    "iconAssetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
-    "splashAssetId": "asset_caa58877-d0c5-4392-977d-cb77baefb8fc",
     "keystorePath": ".editor/upload.p12",
-    "keyAlias": "upload"
+    "keyAlias": "upload",
+    "iconAssetId": "asset_404a3c48-41a0-49ca-88f2-c114a3db004d",
+    "splashAssetId": "asset_caa58877-d0c5-4392-977d-cb77baefb8fc"
   }
 }

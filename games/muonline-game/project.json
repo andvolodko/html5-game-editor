@@ -11,6 +11,7 @@
     "width": 1280,
     "height": 720
   },
+  "scaleMode": "expand",
   "background": "#0c1018",
   "android": {
     "appName": "MU Online",

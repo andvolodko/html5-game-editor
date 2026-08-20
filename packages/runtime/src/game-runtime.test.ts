@@ -1276,6 +1276,63 @@ describe("GameRuntime.loadScene", () => {
     ]);
   });
 
+  it("loadScene snapshots the input so clones do not persist across reloads", () => {
+    const renderer = createMockRenderer();
+    const clonedIds: string[] = [];
+    const registry = new ComponentRegistry();
+    registry.register(
+      defineComponent({
+        id: "test.Cloner",
+        displayName: "Cloner",
+        category: "Test",
+        categoryOrder: 0,
+        order: 0,
+        properties: {},
+        create: (ctx) => ({
+          update() {
+            if (clonedIds.length > 0) {
+              return;
+            }
+            const id = ctx.services.cloneNodeByName?.("Hero", 0);
+            if (id) {
+              clonedIds.push(id);
+            }
+          },
+        }),
+      }),
+    );
+
+    const runtime = new GameRuntime({ components: registry });
+    runtime.registerRenderer({
+      kind: "pixi",
+      renderer,
+      layer: { id: "main", renderer: "pixi", order: 0 },
+    });
+    const source = createSpriteNode("Hero", { x: 10, y: 20 });
+    const host = createSpriteNode("Host", { x: 0, y: 0 });
+    host.components.push(createScriptComponent("test.Cloner"));
+    const scene = createEmptyScene("Clone");
+    scene.nodes = [source, host];
+    runtime.loadScene(scene);
+
+    runtime.tick(1 / 60);
+    expect(clonedIds).toHaveLength(1);
+    expect(runtime.getScene()).not.toBe(scene);
+    expect(scene.nodes.map((node) => node.name)).toEqual(["Hero", "Host"]);
+    expect(runtime.getScene()?.nodes.map((node) => node.name)).toEqual([
+      "Hero",
+      "Host",
+      "Hero Copy",
+    ]);
+
+    runtime.loadScene(scene);
+    expect(scene.nodes.map((node) => node.name)).toEqual(["Hero", "Host"]);
+    expect(runtime.getScene()?.nodes.map((node) => node.name)).toEqual([
+      "Hero",
+      "Host",
+    ]);
+  });
+
   it("destroyNode ignores authored scene nodes", () => {
     const renderer = createMockRenderer();
     const registry = new ComponentRegistry();

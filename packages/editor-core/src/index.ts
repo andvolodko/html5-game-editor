@@ -295,7 +295,7 @@ export {
   createFetchComponentCatalogApiClient,
 } from "./component-catalog-api-client.js";
 export type { ComponentCatalogApiClient } from "./component-catalog-api-client.js";
-export type { ProjectListEntry, ProjectData, ProjectResolution } from "@game-editor/project";
+export type { ProjectListEntry, ProjectData, ProjectResolution, ProjectScaleMode } from "@game-editor/project";
 export {
   applyComponentCatalog,
   buildComponentCatalog,

@@ -30,6 +30,12 @@ export interface ThreeSceneRendererOptions {
    * When omitted, the renderer owns a private cache cleared on destroy.
    */
   gltfCache?: ThreeGltfCache;
+  /**
+   * Playback design resolution. Canvas fills `canvasParent`; the camera keeps
+   * this aspect and letterboxes so 3D stays aligned with the Pixi design
+   * rectangle. Omit in the Scene editor.
+   */
+  designResolution?: { width: number; height: number };
 }
 
 export interface ThreeGizmoDragEnd {

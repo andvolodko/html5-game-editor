@@ -116,6 +116,7 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
           sceneId: selectedSceneId,
           assetResolver: editor.assets,
           resolution: project.resolution,
+          scaleMode: project.scaleMode,
           background: project.background,
           components: editor.components,
           projectId: editor.project.getActiveProjectId(),
@@ -282,7 +283,7 @@ export function PreviewPanel({ api, containerApi }: IDockviewPanelProps) {
           </p>
         ) : null}
         {busy ? (
-          <p className="panel-empty preview-idle-hint">Starting previewù</p>
+          <p className="panel-empty preview-idle-hint">Starting preview...</p>
         ) : null}
       </div>
       {error ? <p className="panel-error preview-error">{error}</p> : null}

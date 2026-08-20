@@ -13,7 +13,8 @@ export interface ClientCanvasRect {
 
 /**
  * Map a browser client point onto the renderer screen (design pixels).
- * CSS canvas size can differ from `app.screen` when the game frame is letterboxed.
+ * CSS canvas size can differ from `app.screen` when the game frame is
+ * contain/cover/expand-fitted.
  */
 export function clientPointToScreen(input: ClientCanvasRect): Vec2 {
   if (input.canvasWidth <= 0 || input.canvasHeight <= 0) {

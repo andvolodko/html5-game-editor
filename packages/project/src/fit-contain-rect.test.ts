@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fitContainRect } from "./fit-contain-rect.js";
+import { fitContainRect, fitCoverRect, fitDesignRect, fitExpandRect, integerExpandBuffer } from "./fit-contain-rect.js";
 
 describe("fitContainRect", () => {
   it("letterboxes a wide design in a tall host", () => {
@@ -43,5 +43,109 @@ describe("fitContainRect", () => {
     expect(
       fitContainRect({ width: 1280, height: 720 }, { width: 0, height: 100 }),
     ).toEqual({ width: 0, height: 0, x: 0, y: 0, scale: 0 });
+  });
+});
+
+describe("fitCoverRect", () => {
+  it("covers a tall host and centers the design horizontally", () => {
+    const fitted = fitCoverRect(
+      { width: 1280, height: 720 },
+      { width: 800, height: 800 },
+    );
+    expect(fitted.height).toBeCloseTo(800, 5);
+    expect(fitted.width).toBeCloseTo((1280 * 800) / 720, 5);
+    expect(fitted.x).toBeCloseTo((800 - fitted.width) / 2, 5);
+    expect(fitted.y).toBeCloseTo(0, 5);
+    expect(fitted.x).toBeLessThan(0);
+    expect(fitted.scale).toBeCloseTo(800 / 720, 5);
+  });
+
+  it("covers a wide host and centers the design vertically", () => {
+    const fitted = fitCoverRect(
+      { width: 720, height: 1280 },
+      { width: 1000, height: 500 },
+    );
+    expect(fitted.width).toBeCloseTo(1000, 5);
+    expect(fitted.height).toBeCloseTo((1280 * 1000) / 720, 5);
+    expect(fitted.x).toBeCloseTo(0, 5);
+    expect(fitted.y).toBeCloseTo((500 - fitted.height) / 2, 5);
+    expect(fitted.y).toBeLessThan(0);
+  });
+
+  it("matches contain when aspects match", () => {
+    const design = { width: 1920, height: 1080 };
+    const available = { width: 960, height: 540 };
+    expect(fitCoverRect(design, available)).toEqual(
+      fitContainRect(design, available),
+    );
+  });
+});
+
+describe("fitDesignRect", () => {
+  it("dispatches contain, cover, and expand", () => {
+    const design = { width: 1280, height: 720 };
+    const available = { width: 800, height: 800 };
+    expect(fitDesignRect(design, available, "contain")).toEqual(
+      fitContainRect(design, available),
+    );
+    expect(fitDesignRect(design, available, "cover")).toEqual(
+      fitCoverRect(design, available),
+    );
+    expect(fitDesignRect(design, available, "expand")).toEqual(
+      fitExpandRect(design, available),
+    );
+  });
+});
+
+describe("fitExpandRect", () => {
+  it("fills a tall host and centers the design vertically in extra world", () => {
+    const fitted = fitExpandRect(
+      { width: 1280, height: 720 },
+      { width: 800, height: 800 },
+    );
+    expect(fitted.width).toBe(800);
+    expect(fitted.height).toBe(800);
+    expect(fitted.x).toBe(0);
+    expect(fitted.y).toBe(0);
+    expect(fitted.scale).toBeCloseTo(800 / 1280, 5);
+    expect(fitted.visibleWidth).toBeCloseTo(1280, 5);
+    expect(fitted.visibleHeight).toBeCloseTo(1280, 5);
+    expect(fitted.offsetX).toBeCloseTo(0, 5);
+    expect(fitted.offsetY).toBeCloseTo((1280 - 720) / 2, 5);
+  });
+
+  it("fills a wide host and centers the design horizontally in extra world", () => {
+    const fitted = fitExpandRect(
+      { width: 720, height: 1280 },
+      { width: 1000, height: 500 },
+    );
+    expect(fitted.width).toBe(1000);
+    expect(fitted.height).toBe(500);
+    expect(fitted.visibleHeight).toBeCloseTo(1280, 5);
+    expect(fitted.visibleWidth).toBeCloseTo(2560, 5);
+    expect(fitted.offsetY).toBeCloseTo(0, 5);
+    expect(fitted.offsetX).toBeCloseTo((2560 - 720) / 2, 5);
+  });
+
+  it("matches contain when aspects match", () => {
+    const design = { width: 1920, height: 1080 };
+    const available = { width: 960, height: 540 };
+    const fitted = fitExpandRect(design, available);
+    expect(fitted.visibleWidth).toBeCloseTo(1920, 5);
+    expect(fitted.visibleHeight).toBeCloseTo(1080, 5);
+    expect(fitted.offsetX).toBeCloseTo(0, 5);
+    expect(fitted.offsetY).toBeCloseTo(0, 5);
+    expect(fitted.scale).toBe(0.5);
+  });
+
+  it("rounds to an integer buffer with centered pan", () => {
+    const buffer = integerExpandBuffer(
+      { width: 1280, height: 720 },
+      { width: 800, height: 800 },
+    );
+    expect(buffer.width).toBe(1280);
+    expect(buffer.height).toBe(1280);
+    expect(buffer.panX).toBe(0);
+    expect(buffer.panY).toBe(280);
   });
 });

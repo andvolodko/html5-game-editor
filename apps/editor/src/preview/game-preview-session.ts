@@ -1,12 +1,12 @@
 import type { AssetResolver } from "@game-editor/assets";
 import { EventBus } from "@game-editor/core";
-import type { ProjectResolution } from "@game-editor/editor-core";
+import type { ProjectResolution, ProjectScaleMode } from "@game-editor/editor-core";
 import {
   ComponentRegistry,
   installSceneFlowRuntime,
   type ComponentDefinition,
 } from "@game-editor/game-components";
-import { projectBackgroundToPixiColor } from "@game-editor/project";
+import { projectBackgroundToClear } from "@game-editor/project";
 import { PixiSceneRenderer, preloadPixiSceneAsset } from "@game-editor/renderer-pixi";
 import { ThreeGltfCache, ThreeSceneRenderer } from "@game-editor/renderer-three";
 import {
@@ -38,9 +38,11 @@ export interface GamePreviewStartOptions {
   canvasParent: HTMLElement;
   scene: SceneData;
   assetResolver: AssetResolver;
-  /** Design resolution from project.json — drives letterboxing + buffer size. */
+  /** Design resolution from project.json — drives CSS fit + buffer size. */
   resolution: ProjectResolution;
-  /** CSS `#RRGGBB` clear / letterbox color from project.json. */
+  /** Cover fills the host; expand fills leftover bands with Pixi; contain letterboxes. */
+  scaleMode?: ProjectScaleMode;
+  /** CSS `#RRGGBB` or `#RRGGBBAA` clear / letterbox color from project.json. */
   background: string;
   /** Session script catalog from the open project (optional). */
   components?: ComponentRegistry;
@@ -113,10 +115,16 @@ export class GamePreviewSession {
     const token = ++this.startToken;
     await this.disposeInternal();
 
-    const screen = new GameScreenHost(options.canvasParent, options.resolution);
+    const screen = new GameScreenHost(
+      options.canvasParent,
+      options.resolution,
+      options.scaleMode,
+    );
     const design = screen.getResolution();
     options.canvasParent.style.background = options.background;
-    const pixiBgColor = projectBackgroundToPixiColor(options.background);
+    const { color: pixiBgColor, alpha: pixiBgAlpha } = projectBackgroundToClear(
+      options.background,
+    );
 
     const bus = new EventBus();
     const components = cloneComponentRegistry(options.components);
@@ -220,6 +228,7 @@ export class GamePreviewSession {
             assetResolver: options.assetResolver,
             design,
             pixiBgColor,
+            pixiBgAlpha,
             runtime,
             gltfCache,
           }),
@@ -348,11 +357,20 @@ async function mountPreviewRenderers(args: {
   assetResolver: AssetResolver;
   design: ProjectResolution;
   pixiBgColor: number;
+  pixiBgAlpha: number;
   runtime: GameRuntime;
   gltfCache: ThreeGltfCache;
 }): Promise<PreviewRendererBundle> {
-  const { frame, kind, assetResolver, design, pixiBgColor, runtime, gltfCache } =
-    args;
+  const {
+    frame,
+    kind,
+    assetResolver,
+    design,
+    pixiBgColor,
+    pixiBgAlpha,
+    runtime,
+    gltfCache,
+  } = args;
   frame.replaceChildren();
 
   if (kind === "three") {
@@ -361,6 +379,7 @@ async function mountPreviewRenderers(args: {
       assetResolver,
       editable: false,
       background: pixiBgColor,
+      backgroundAlpha: pixiBgAlpha,
       gltfCache,
     });
     await three.whenReady();
@@ -399,6 +418,7 @@ async function mountPreviewRenderers(args: {
       mode: "preview",
       designResolution: design,
       pixiBackgroundColor: pixiBgColor,
+      pixiBackgroundAlpha: pixiBgAlpha,
       gltfCache,
     });
 
@@ -451,6 +471,7 @@ async function mountPreviewRenderers(args: {
     editable: false,
     designResolution: design,
     background: pixiBgColor,
+    backgroundAlpha: pixiBgAlpha,
   });
   await pixi.whenReady();
   runtime.registerRenderer({

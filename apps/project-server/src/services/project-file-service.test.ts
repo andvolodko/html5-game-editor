@@ -19,6 +19,7 @@ async function writeProjectJson(
     renderers: project.renderers ?? ["pixi"],
     startScene: project.startScene ?? "main",
     resolution: project.resolution ?? { width: 1280, height: 720 },
+    scaleMode: project.scaleMode ?? "cover",
     background: project.background ?? "#0b0d12",
   };
   await writeFile(
