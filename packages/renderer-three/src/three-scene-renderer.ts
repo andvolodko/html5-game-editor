@@ -1,26 +1,18 @@
 import type { AssetResolver } from "@game-editor/assets";
 import {
-  getAmbientLight,
-  getDirectionalLight,
   getLeafThreeComponent,
   getModel3D,
   getNodeVisible,
   getPerspectiveCamera,
-  getTransform3D,
   type SceneNodeData,
   type SceneRenderStats,
   type SceneRenderer,
   type Vec2,
 } from "@game-editor/scene";
 import {
-  AmbientLight,
-  BoxGeometry,
   Color,
-  DirectionalLight,
   GridHelper,
   Group,
-  Mesh,
-  MeshStandardMaterial,
   PerspectiveCamera,
   Raycaster,
   Scene,
@@ -39,16 +31,16 @@ import {
   EDITOR_CAMERA_POSITION,
   EDITOR_GRID_DIVISIONS,
   EDITOR_GRID_SIZE,
-  MODEL3D_PLACEHOLDER_HALF,
 } from "./three-constants.js";
 import {
   tagObjectWithNodeId,
   ThreeEditorTools,
+  findTaggedNodeId,
+  isObjectWorldVisible,
 } from "./three-editor-tools.js";
 import { ThreeEditorNodeHelpers } from "./three-editor-node-helpers.js";
 import {
   isPlaceholderObject,
-  markPlaceholder,
   ThreeGltfCache,
 } from "./three-gltf-cache.js";
 import {
@@ -76,14 +68,18 @@ import type {
   ThreePointerHandlers,
   ThreeSceneRendererOptions,
 } from "./three-scene-renderer-types.js";
+import {
+  applyThreeLightOrCameraProps,
+  applyThreeTransform,
+  buildThreeObject,
+  createThreePlaceholder,
+} from "./three-object-factory.js";
 
 export type {
   ThreeSceneRendererOptions,
   ThreePointerHandlers,
   ThreeGizmoDragEnd,
 } from "./three-scene-renderer-types.js";
-
-const NODE_ID_USER_DATA_KEY = "gameEditorNodeId";
 
 /**
  * Three.js scene renderer. Maps SceneNodeData → Object3D.
@@ -366,9 +362,9 @@ export class ThreeSceneRenderer implements SceneRenderer {
       this.updateNode(node);
       return;
     }
-    const object = this.buildObject(node);
+    const object = buildThreeObject(node);
     tagObjectWithNodeId(object, node.id);
-    this.applyTransform(object, node);
+    applyThreeTransform(object, node);
     const model = getModel3D(node);
     const entry = {
       object,
@@ -407,9 +403,13 @@ export class ThreeSceneRenderer implements SceneRenderer {
     // scene Transform3D. Re-applying the authored pose here snaps monsters
     // back to spawn on every clip change (idle → walk → attack).
     if (this.editable) {
-      this.applyTransform(entry.object, node);
+      applyThreeTransform(entry.object, node);
     }
-    this.applyLightOrCameraProps(entry.object, node);
+    applyThreeLightOrCameraProps(
+      entry.object,
+      node,
+      this.resolveCameraAspect(),
+    );
     entry.runtimeVisible = getNodeVisible(node);
     this.applyDisplayVisible(entry);
     if (nextKind === "PerspectiveCamera") {
@@ -441,7 +441,7 @@ export class ThreeSceneRenderer implements SceneRenderer {
     if (!entry) {
       return;
     }
-    this.applyTransform(entry.object, node);
+    applyThreeTransform(entry.object, node);
   }
 
   destroyNode(nodeId: string): void {
@@ -829,85 +829,6 @@ export class ThreeSceneRenderer implements SceneRenderer {
     }
   }
 
-  private buildObject(node: SceneNodeData): Object3D {
-    const leaf = getLeafThreeComponent(node);
-    if (!leaf) {
-      return new Group();
-    }
-    switch (leaf.type) {
-      case "Model3D":
-        return this.createPlaceholder();
-      case "PerspectiveCamera": {
-        const cam = getPerspectiveCamera(node)!;
-        return new PerspectiveCamera(cam.fov, 1, cam.near, cam.far);
-      }
-      case "DirectionalLight": {
-        const data = getDirectionalLight(node)!;
-        return new DirectionalLight(data.color, data.intensity);
-      }
-      case "AmbientLight": {
-        const data = getAmbientLight(node)!;
-        return new AmbientLight(data.color, data.intensity);
-      }
-      default: {
-        const _exhaustive: never = leaf;
-        return _exhaustive;
-      }
-    }
-  }
-
-  private createPlaceholder(): Mesh {
-    const mesh = new Mesh(
-      new BoxGeometry(
-        MODEL3D_PLACEHOLDER_HALF * 2,
-        MODEL3D_PLACEHOLDER_HALF * 2,
-        MODEL3D_PLACEHOLDER_HALF * 2,
-      ),
-      new MeshStandardMaterial({ color: 0x6b8cff, flatShading: true }),
-    );
-    markPlaceholder(mesh);
-    return mesh;
-  }
-
-  private applyTransform(object: Object3D, node: SceneNodeData): void {
-    const transform = getTransform3D(node);
-    if (!transform) {
-      return;
-    }
-    object.position.set(
-      transform.position.x,
-      transform.position.y,
-      transform.position.z,
-    );
-    object.rotation.set(
-      transform.rotation.x,
-      transform.rotation.y,
-      transform.rotation.z,
-    );
-    object.scale.set(transform.scale.x, transform.scale.y, transform.scale.z);
-  }
-
-  private applyLightOrCameraProps(object: Object3D, node: SceneNodeData): void {
-    const cam = getPerspectiveCamera(node);
-    if (cam && object instanceof PerspectiveCamera) {
-      object.fov = cam.fov;
-      object.near = cam.near;
-      object.far = cam.far;
-      object.aspect = this.resolveCameraAspect();
-      object.updateProjectionMatrix();
-    }
-    const dir = getDirectionalLight(node);
-    if (dir && object instanceof DirectionalLight) {
-      object.color.setHex(dir.color);
-      object.intensity = dir.intensity;
-    }
-    const amb = getAmbientLight(node);
-    if (amb && object instanceof AmbientLight) {
-      object.color.setHex(amb.color);
-      object.intensity = amb.intensity;
-    }
-  }
-
   private attachToParent(
     nodeId: string,
     parentId: string | undefined,
@@ -939,9 +860,9 @@ export class ThreeSceneRenderer implements SceneRenderer {
     disposeMixer(entry);
     const parent = entry.object.parent ?? this.worldRoot;
     entry.object.parent?.remove(entry.object);
-    const next = this.buildObject(node);
+    const next = buildThreeObject(node);
     tagObjectWithNodeId(next, node.id);
-    this.applyTransform(next, node);
+    applyThreeTransform(next, node);
     entry.object = next;
     entry.runtimeTransform?.retarget(next);
     entry.kind = kind;
@@ -990,7 +911,7 @@ export class ThreeSceneRenderer implements SceneRenderer {
     if (!assetId) {
       disposeMixer(entry);
       if (!isPlaceholderObject(entry.object)) {
-        this.swapModelVisual(nodeId, this.createPlaceholder());
+        this.swapModelVisual(nodeId, createThreePlaceholder());
       }
       return;
     }
@@ -1005,7 +926,7 @@ export class ThreeSceneRenderer implements SceneRenderer {
     if (!loaded) {
       disposeMixer(current);
       if (!isPlaceholderObject(current.object)) {
-        this.swapModelVisual(nodeId, this.createPlaceholder());
+        this.swapModelVisual(nodeId, createThreePlaceholder());
       }
       return;
     }
@@ -1013,7 +934,7 @@ export class ThreeSceneRenderer implements SceneRenderer {
     if (!instance) {
       disposeMixer(current);
       if (!isPlaceholderObject(current.object)) {
-        this.swapModelVisual(nodeId, this.createPlaceholder());
+        this.swapModelVisual(nodeId, createThreePlaceholder());
       }
       return;
     }
@@ -1048,27 +969,4 @@ export class ThreeSceneRenderer implements SceneRenderer {
       this.editorTools?.setSelectedNodeIds([...this.selectedNodeIds]);
     }
   }
-}
-
-function findTaggedNodeId(object: Object3D): string | undefined {
-  let current: Object3D | null = object;
-  while (current) {
-    const id = current.userData[NODE_ID_USER_DATA_KEY];
-    if (typeof id === "string" && id.length > 0) {
-      return id;
-    }
-    current = current.parent;
-  }
-  return undefined;
-}
-
-function isObjectWorldVisible(object: Object3D): boolean {
-  let current: Object3D | null = object;
-  while (current) {
-    if (!current.visible) {
-      return false;
-    }
-    current = current.parent;
-  }
-  return true;
 }

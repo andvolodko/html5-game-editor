@@ -1,9 +1,17 @@
 import type { Application, Container } from "pixi.js";
-import type { Vec2 } from "@game-editor/scene";
+import type {
+  GraphicsShapeData,
+  HitZoneComponentData,
+  MaskComponentData,
+  Vec2,
+} from "@game-editor/scene";
 import type { RuntimeNode } from "./pixi-runtime-nodes.js";
 import type { NodeDragHost } from "./pixi-node-drag.js";
 import type { NodeClickHost } from "./pixi-node-click.js";
 import type { GizmoDragHost } from "./pixi-gizmo-drag.js";
+import type { HitZoneDragHost } from "./pixi-hit-zone-drag.js";
+import type { MaskDragHost } from "./pixi-mask-drag.js";
+import type { GraphicsPolygonDragHost } from "./pixi-graphics-polygon-drag.js";
 import type { PixiPointerHandlers } from "./pixi-scene-renderer-types.js";
 
 export interface InteractionHostSource {
@@ -23,6 +31,9 @@ export interface InteractionHostSource {
   paintVisuals(runtime: RuntimeNode): Promise<void>;
   paintSelection(runtime: RuntimeNode): void;
   paint(runtime: RuntimeNode): void;
+  previewHitZone(nodeId: string, hitZone: HitZoneComponentData): void;
+  previewMask(nodeId: string, mask: MaskComponentData): void;
+  previewGraphicsShape(nodeId: string, shape: GraphicsShapeData): void;
 }
 
 export function createNodeDragHost(source: InteractionHostSource): NodeDragHost {
@@ -87,5 +98,56 @@ export function createGizmoDragHost(
       source.getPointerHandlers()?.onGizmoAnchorEnd?.(nodeId, result),
     onGizmoFlip: (nodeId, axis) =>
       source.getPointerHandlers()?.onGizmoFlip?.(nodeId, axis),
+  };
+}
+
+function paintSelectionById(
+  source: InteractionHostSource,
+  nodeId: string,
+): void {
+  const live = source.getRuntime(nodeId);
+  if (live) {
+    source.paintSelection(live);
+  }
+}
+
+export function createHitZoneDragHost(
+  source: InteractionHostSource,
+): HitZoneDragHost {
+  return {
+    getApp: () => source.getApp(),
+    world: source.world,
+    getRuntime: (nodeId) => source.getRuntime(nodeId),
+    previewHitZone: (nodeId, hitZone) => source.previewHitZone(nodeId, hitZone),
+    paintSelection: (nodeId) => paintSelectionById(source, nodeId),
+    onHitZoneResizeEnd: (nodeId, hitZone) =>
+      source.getPointerHandlers()?.onHitZoneResizeEnd?.(nodeId, hitZone),
+  };
+}
+
+export function createMaskDragHost(source: InteractionHostSource): MaskDragHost {
+  return {
+    getApp: () => source.getApp(),
+    world: source.world,
+    getRuntime: (nodeId) => source.getRuntime(nodeId),
+    previewMask: (nodeId, mask) => source.previewMask(nodeId, mask),
+    paintSelection: (nodeId) => paintSelectionById(source, nodeId),
+    onMaskResizeEnd: (nodeId, mask) =>
+      source.getPointerHandlers()?.onMaskResizeEnd?.(nodeId, mask),
+  };
+}
+
+export function createGraphicsPolygonDragHost(
+  source: InteractionHostSource,
+): GraphicsPolygonDragHost {
+  return {
+    getApp: () => source.getApp(),
+    world: source.world,
+    getRuntime: (nodeId) => source.getRuntime(nodeId),
+    previewGraphicsShape: (nodeId, shape) =>
+      source.previewGraphicsShape(nodeId, shape),
+    paintSelection: (nodeId) => paintSelectionById(source, nodeId),
+    onGraphicsPolygonEnd: (nodeId, shape) =>
+      source.getPointerHandlers()?.onGraphicsPolygonEnd?.(nodeId, shape),
   };
 }

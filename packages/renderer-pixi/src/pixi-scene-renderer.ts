@@ -57,10 +57,14 @@ import { redrawEditorOverlays as syncEditorOverlays } from "./pixi-editor-overla
 import { PixiAppLifecycle } from "./pixi-app-lifecycle.js";
 import {
   createGizmoDragHost,
+  createGraphicsPolygonDragHost,
+  createHitZoneDragHost,
+  createMaskDragHost,
   createNodeClickHost,
   createNodeDragHost,
   type InteractionHostSource,
 } from "./pixi-interaction-hosts.js";
+import { isPixiWorldVisible } from "./pixi-world-visible.js";
 import type {
   PixiPointerHandlers,
   PixiSceneRendererOptions,
@@ -727,32 +731,23 @@ export class PixiSceneRenderer implements SceneRenderer {
     handle: HitZoneGizmoHandle,
     event: FederatedPointerEvent,
   ): void {
-    this.hitZoneDrag.beginHandle(runtime, handle, event, this.hitZoneDragHost());
+    this.hitZoneDrag.beginHandle(
+      runtime,
+      handle,
+      event,
+      createHitZoneDragHost(this.interactionSource()),
+    );
   }
 
   private beginHitZoneMove(
     runtime: RuntimeNode,
     event: FederatedPointerEvent,
   ): void {
-    this.hitZoneDrag.beginMove(runtime, event, this.hitZoneDragHost());
-  }
-
-  private hitZoneDragHost() {
-    return {
-      getApp: () => this.lifecycle.app,
-      world: this.graph.world,
-      getRuntime: (nodeId: string) => this.graph.get(nodeId),
-      previewHitZone: (nodeId: string, hitZone: HitZoneComponentData) =>
-        this.previewHitZone(nodeId, hitZone),
-      paintSelection: (nodeId: string) => {
-        const live = this.graph.get(nodeId);
-        if (live) {
-          this.painter.paintSelection(live);
-        }
-      },
-      onHitZoneResizeEnd: (nodeId: string, hitZone: HitZoneComponentData) =>
-        this.pointerHandlers?.onHitZoneResizeEnd?.(nodeId, hitZone),
-    };
+    this.hitZoneDrag.beginMove(
+      runtime,
+      event,
+      createHitZoneDragHost(this.interactionSource()),
+    );
   }
 
   private beginMaskDrag(
@@ -760,32 +755,23 @@ export class PixiSceneRenderer implements SceneRenderer {
     handle: HitZoneGizmoHandle,
     event: FederatedPointerEvent,
   ): void {
-    this.maskDrag.beginHandle(runtime, handle, event, this.maskDragHost());
+    this.maskDrag.beginHandle(
+      runtime,
+      handle,
+      event,
+      createMaskDragHost(this.interactionSource()),
+    );
   }
 
   private beginMaskMove(
     runtime: RuntimeNode,
     event: FederatedPointerEvent,
   ): void {
-    this.maskDrag.beginMove(runtime, event, this.maskDragHost());
-  }
-
-  private maskDragHost() {
-    return {
-      getApp: () => this.lifecycle.app,
-      world: this.graph.world,
-      getRuntime: (nodeId: string) => this.graph.get(nodeId),
-      previewMask: (nodeId: string, mask: MaskComponentData) =>
-        this.previewMask(nodeId, mask),
-      paintSelection: (nodeId: string) => {
-        const live = this.graph.get(nodeId);
-        if (live) {
-          this.painter.paintSelection(live);
-        }
-      },
-      onMaskResizeEnd: (nodeId: string, mask: MaskComponentData) =>
-        this.pointerHandlers?.onMaskResizeEnd?.(nodeId, mask),
-    };
+    this.maskDrag.beginMove(
+      runtime,
+      event,
+      createMaskDragHost(this.interactionSource()),
+    );
   }
 
   private previewMask(nodeId: string, mask: MaskComponentData): void {
@@ -806,26 +792,8 @@ export class PixiSceneRenderer implements SceneRenderer {
       runtime,
       handle,
       event,
-      this.graphicsPolygonDragHost(),
+      createGraphicsPolygonDragHost(this.interactionSource()),
     );
-  }
-
-  private graphicsPolygonDragHost() {
-    return {
-      getApp: () => this.lifecycle.app,
-      world: this.graph.world,
-      getRuntime: (nodeId: string) => this.graph.get(nodeId),
-      previewGraphicsShape: (nodeId: string, shape: GraphicsShapeData) =>
-        this.previewGraphicsShape(nodeId, shape),
-      paintSelection: (nodeId: string) => {
-        const live = this.graph.get(nodeId);
-        if (live) {
-          this.painter.paintSelection(live);
-        }
-      },
-      onGraphicsPolygonEnd: (nodeId: string, shape: GraphicsShapeData) =>
-        this.pointerHandlers?.onGraphicsPolygonEnd?.(nodeId, shape),
-    };
   }
 
   private previewGraphicsShape(nodeId: string, shape: GraphicsShapeData): void {
@@ -969,17 +937,10 @@ export class PixiSceneRenderer implements SceneRenderer {
       paintVisuals: (runtime) => this.painter.paintVisuals(runtime),
       paintSelection: (runtime) => this.painter.paintSelection(runtime),
       paint: (runtime) => this.painter.paint(runtime),
+      previewHitZone: (nodeId, hitZone) => this.previewHitZone(nodeId, hitZone),
+      previewMask: (nodeId, mask) => this.previewMask(nodeId, mask),
+      previewGraphicsShape: (nodeId, shape) =>
+        this.previewGraphicsShape(nodeId, shape),
     };
   }
-}
-
-function isPixiWorldVisible(container: Container): boolean {
-  let current: Container | null = container;
-  while (current) {
-    if (!current.visible) {
-      return false;
-    }
-    current = current.parent;
-  }
-  return true;
 }

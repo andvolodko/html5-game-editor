@@ -1,9 +1,5 @@
 import { type AssetRecord, type TileSetData } from "@game-editor/assets";
-import {
-  CommandManager,
-  CompositeCommand,
-  type Command,
-} from "@game-editor/commands";
+import { CommandManager, type Command } from "@game-editor/commands";
 import { ComponentRegistry } from "@game-editor/game-components";
 import {
   applyComponentCatalog,
@@ -13,8 +9,6 @@ import {
 import {
   BASE_NODE_STATE_ID,
   createEmptyScene,
-  getAncestorIds,
-  parseSceneData,
   resolveScenePrefabs,
   type NodeStateId,
   type NodeStatePropertyPath,
@@ -27,20 +21,6 @@ import {
   type Vec3,
 } from "@game-editor/scene";
 import {
-  AddSceneStateCommand,
-  DeleteSceneStateCommand,
-  DuplicateSceneStateCommand,
-  PasteNodesCommand,
-  PasteComponentCommand,
-  RenameSceneFileCommand,
-  DeleteSceneFileCommand,
-  RenameAssetCommand,
-  DeleteAssetCommand,
-  DuplicateAssetCommand,
-  RenameAssetFolderCommand,
-  DeleteAssetFolderCommand,
-  RenameSceneStateCommand,
-  SetNodeStateOverrideCommand,
   type AddSceneStateOptions,
   type CreateNodeOptions,
   type Transform2DPatch,
@@ -81,15 +61,8 @@ import {
 import type { ProjectApiClient } from "./project-api-client.js";
 import type { ComponentCatalogApiClient } from "./component-catalog-api-client.js";
 import { bindEditorHotkeys } from "./editor-hotkeys.js";
-import { NodeClipboard, resolvePasteLocation } from "./node-clipboard.js";
-import {
-  ComponentClipboard,
-  describeCopiedComponents,
-  isCopyableComponent,
-  listCopyableComponents,
-  pasteComponentsBlockedReason,
-  selectPasteableComponents,
-} from "./component-clipboard.js";
+import { NodeClipboard } from "./node-clipboard.js";
+import { ComponentClipboard } from "./component-clipboard.js";
 import { isAsyncCommand, type SceneFileHistoryHost } from "./scene-file-history-host.js";
 import type { AssetHistoryHost } from "./asset-history-host.js";
 import {
@@ -111,10 +84,6 @@ import type { PrefabApiClient } from "./prefab-api-client.js";
 import type { TileSetApiClient } from "./tileset-api-client.js";
 import { TilemapEditSession } from "./tilemap-edit-session.js";
 import { NodeStateEditSession } from "./node-state-edit-session.js";
-import {
-  buildStateOverrideAfterResetProperty,
-  isEditingNamedNodeState,
-} from "./commands/node-state-override-build.js";
 import {
   createTileSetFromTexture,
   saveTileSetDocument,
@@ -179,18 +148,54 @@ import {
 } from "./editor-component-edits.js";
 import {
   applyEditorNodeOverlay,
-  descendantNodeIds,
-  getEditorNodeFlags,
-  isNodeEffectivelyLocked,
-  isNodeEffectivelyVisible,
-  isNodeHiddenInEditor,
-  isNodeLocked,
-  sceneHasHiddenNodes,
-  sceneHasLockedNodes,
-  subtreeNodeIds,
   type EditorNodeFlags,
 } from "./editor-node-metadata.js";
 import { EditorNodeMetadataStore } from "./editor-node-metadata-store.js";
+import {
+  editorAddSceneState,
+  editorDeleteSceneState,
+  editorDuplicateSceneState,
+  editorEnsurePortraitLandscapeStates,
+  editorRenameSceneState,
+  editorResetNodeStateProperty,
+  editorSetActiveNodeState,
+} from "./editor-node-state-edits.js";
+import {
+  editorGetNodeFlags,
+  editorHideAllNodes,
+  editorIsNodeEffectivelyLocked,
+  editorIsNodeEffectivelyVisible,
+  editorIsNodeHiddenInEditor,
+  editorIsNodeLocked,
+  editorLockAllNodes,
+  editorSetNodeHidden,
+  editorSetNodeHiddenRecursive,
+  editorSetNodeLocked,
+  editorSetNodeLockedRecursive,
+  editorShowAllNodes,
+  editorToggleAllNodesHidden,
+  editorToggleAllNodesLocked,
+  editorUnlockAllNodes,
+  editorUnlockNodeForEditing,
+} from "./editor-node-flags-edits.js";
+import {
+  editorCopiedComponentLabel,
+  editorCopyComponent,
+  editorCopyComponents,
+  editorCopySelectedNodes,
+  editorPasteComponent,
+  editorPasteComponentBlockedReason,
+  editorPasteNodes,
+} from "./editor-clipboard-edits.js";
+import {
+  editorDeleteAsset,
+  editorDeleteFolder,
+  editorDeleteSceneFile,
+  editorDuplicateAsset,
+  editorRenameAsset,
+  editorRenameFolder,
+  editorRenameSceneFile,
+} from "./editor-file-edits.js";
 
 export type { RenameRequestTarget } from "./rename-request-bus.js";
 export { isChordLetter } from "./editor-hotkeys.js";
@@ -570,10 +575,7 @@ export class Editor {
 
   /** Copy selected root-most nodes into the editor clipboard. */
   copySelectedNodes(): boolean {
-    return this.nodeClipboard.copyFromScene(
-      this.document.getScene(),
-      this.selection.getSelectedNodeIds(),
-    );
+    return editorCopySelectedNodes(this, this.nodeClipboard);
   }
 
   /**
@@ -581,29 +583,7 @@ export class Editor {
    * (or at the scene root). One undo step.
    */
   pasteNodes(): readonly string[] {
-    if (!this.nodeClipboard.hasContent()) {
-      return [];
-    }
-    const scene = this.document.getScene();
-    const location = resolvePasteLocation(
-      scene,
-      this.selection.getPrimaryNodeId(),
-    );
-    if (
-      location.parentId !== undefined &&
-      this.isNodeEffectivelyLocked(location.parentId)
-    ) {
-      return [];
-    }
-    const command = new PasteNodesCommand(
-      this.document,
-      this.selection,
-      this.nodeClipboard.templates(),
-      location.parentId,
-      location.index,
-    );
-    this.execute(command);
-    return command.createdNodeIds;
+    return editorPasteNodes(this, this.nodeClipboard);
   }
 
   deleteSelectedNodes(): void {
@@ -698,45 +678,23 @@ export class Editor {
 
   /** Select Base or a catalog state for editing (editor session only). */
   setActiveNodeState(stateId: NodeStateId | typeof BASE_NODE_STATE_ID): void {
-    const previous = this.nodeStates.getActiveStateId();
-    if (stateId !== BASE_NODE_STATE_ID) {
-      const exists = (this.getScene().states ?? []).some(
-        (entry) => entry.id === stateId,
-      );
-      if (!exists) {
-        return;
-      }
-    }
-    this.nodeStates.setActiveStateId(stateId);
-    this.viewport.applyActiveNodeStateDisplay(previous);
+    editorSetActiveNodeState(this, stateId);
   }
 
   addSceneState(options: AddSceneStateOptions): string {
-    const command = new AddSceneStateCommand(this.document, options);
-    this.execute(command);
-    return command.createdStateId;
+    return editorAddSceneState(this, options);
   }
 
   renameSceneState(stateId: NodeStateId, name: string): void {
-    this.execute(new RenameSceneStateCommand(this.document, stateId, name));
+    editorRenameSceneState(this, stateId, name);
   }
 
   deleteSceneState(stateId: NodeStateId): void {
-    const wasActive = this.nodeStates.getActiveStateId() === stateId;
-    this.execute(new DeleteSceneStateCommand(this.document, stateId));
-    const catalogIds = new Set(
-      (this.getScene().states ?? []).map((entry) => entry.id),
-    );
-    this.nodeStates.ensureActiveStateExists(catalogIds);
-    if (wasActive) {
-      this.viewport.applyActiveNodeStateDisplay(stateId);
-    }
+    editorDeleteSceneState(this, stateId);
   }
 
   duplicateSceneState(stateId: NodeStateId): string | undefined {
-    const command = new DuplicateSceneStateCommand(this.document, stateId);
-    this.execute(command);
-    return command.createdStateId || undefined;
+    return editorDuplicateSceneState(this, stateId);
   }
 
   /**
@@ -744,33 +702,7 @@ export class Editor {
    * Names are presets only — not special to the resolver.
    */
   ensurePortraitLandscapeStates(): void {
-    const existing = this.getScene().states ?? [];
-    const names = new Set(existing.map((entry) => entry.name.toLowerCase()));
-    const commands: Command[] = [];
-    if (!names.has("portrait")) {
-      commands.push(
-        new AddSceneStateCommand(this.document, {
-          name: "Portrait",
-          viewport: { width: 1080, height: 1920 },
-        }),
-      );
-    }
-    if (!names.has("landscape")) {
-      commands.push(
-        new AddSceneStateCommand(this.document, {
-          name: "Landscape",
-          viewport: { width: 1920, height: 1080 },
-        }),
-      );
-    }
-    if (commands.length === 0) {
-      return;
-    }
-    if (commands.length === 1) {
-      this.execute(commands[0]!);
-      return;
-    }
-    this.execute(new CompositeCommand("AddPortraitLandscapeStates", commands));
+    editorEnsurePortraitLandscapeStates(this);
   }
 
   getSceneStates(): readonly SceneStateDefinition[] {
@@ -782,18 +714,7 @@ export class Editor {
     nodeId: string,
     path: NodeStatePropertyPath,
   ): void {
-    const stateId = this.nodeStates.getActiveStateId();
-    if (!isEditingNamedNodeState(stateId)) {
-      return;
-    }
-    const node = this.document.getNode(nodeId);
-    if (!node || this.isNodeEffectivelyLocked(nodeId)) {
-      return;
-    }
-    const after = buildStateOverrideAfterResetProperty(node, stateId, path);
-    this.execute(
-      new SetNodeStateOverrideCommand(this.document, nodeId, stateId, after),
-    );
+    editorResetNodeStateProperty(this, nodeId, path);
   }
 
   /**
@@ -884,35 +805,23 @@ export class Editor {
   }
 
   isNodeHiddenInEditor(nodeId: string): boolean {
-    return isNodeHiddenInEditor(this.nodeMetadata.getSnapshot(), nodeId);
+    return editorIsNodeHiddenInEditor(this, nodeId);
   }
 
   isNodeEffectivelyVisible(nodeId: string): boolean {
-    return isNodeEffectivelyVisible(
-      this.getScene(),
-      this.nodeMetadata.getSnapshot(),
-      nodeId,
-    );
+    return editorIsNodeEffectivelyVisible(this, nodeId);
   }
 
   isNodeLocked(nodeId: string): boolean {
-    return isNodeLocked(this.nodeMetadata.getSnapshot(), nodeId);
+    return editorIsNodeLocked(this, nodeId);
   }
 
   isNodeEffectivelyLocked(nodeId: string): boolean {
-    return isNodeEffectivelyLocked(
-      this.getScene(),
-      this.nodeMetadata.getSnapshot(),
-      nodeId,
-    );
+    return editorIsNodeEffectivelyLocked(this, nodeId);
   }
 
   getEditorNodeFlags(nodeId: string): EditorNodeFlags {
-    return getEditorNodeFlags(
-      this.getScene(),
-      this.nodeMetadata.getSnapshot(),
-      nodeId,
-    );
+    return editorGetNodeFlags(this, nodeId);
   }
 
   setNodeHidden(
@@ -920,11 +829,7 @@ export class Editor {
     hidden: boolean,
     options?: { recursive?: boolean },
   ): void {
-    const ids =
-      options?.recursive === true
-        ? subtreeNodeIds(this.getScene(), nodeId)
-        : [nodeId];
-    this.nodeMetadata.setHidden(ids, hidden);
+    editorSetNodeHidden(this, nodeId, hidden, options);
   }
 
   setNodeLocked(
@@ -932,57 +837,39 @@ export class Editor {
     locked: boolean,
     options?: { recursive?: boolean },
   ): void {
-    const ids =
-      options?.recursive === true
-        ? subtreeNodeIds(this.getScene(), nodeId)
-        : [nodeId];
-    this.nodeMetadata.setLocked(ids, locked);
+    editorSetNodeLocked(this, nodeId, locked, options);
   }
 
   setNodeHiddenRecursive(nodeId: string, hidden: boolean): void {
-    this.nodeMetadata.setHidden(
-      descendantNodeIds(this.getScene(), nodeId),
-      hidden,
-    );
+    editorSetNodeHiddenRecursive(this, nodeId, hidden);
   }
 
   setNodeLockedRecursive(nodeId: string, locked: boolean): void {
-    this.nodeMetadata.setLocked(
-      descendantNodeIds(this.getScene(), nodeId),
-      locked,
-    );
+    editorSetNodeLockedRecursive(this, nodeId, locked);
   }
 
   showAllNodes(): void {
-    this.nodeMetadata.showAll(this.getScene());
+    editorShowAllNodes(this);
   }
 
   hideAllNodes(): void {
-    this.nodeMetadata.hideAll(this.getScene());
+    editorHideAllNodes(this);
   }
 
   lockAllNodes(): void {
-    this.nodeMetadata.lockAll(this.getScene());
+    editorLockAllNodes(this);
   }
 
   unlockAllNodes(): void {
-    this.nodeMetadata.unlockAll(this.getScene());
+    editorUnlockAllNodes(this);
   }
 
   toggleAllNodesHidden(): void {
-    if (sceneHasHiddenNodes(this.getScene(), this.nodeMetadata.getSnapshot())) {
-      this.showAllNodes();
-      return;
-    }
-    this.hideAllNodes();
+    editorToggleAllNodesHidden(this);
   }
 
   toggleAllNodesLocked(): void {
-    if (sceneHasLockedNodes(this.getScene(), this.nodeMetadata.getSnapshot())) {
-      this.unlockAllNodes();
-      return;
-    }
-    this.lockAllNodes();
+    editorToggleAllNodesLocked(this);
   }
 
   /**
@@ -990,17 +877,7 @@ export class Editor {
    * is restored without walking the tree in the UI.
    */
   unlockNodeForEditing(nodeId: string): void {
-    if (this.isNodeLocked(nodeId)) {
-      this.setNodeLocked(nodeId, false);
-      return;
-    }
-    const ancestors = getAncestorIds(this.getScene(), nodeId);
-    for (const ancestorId of ancestors) {
-      if (this.isNodeLocked(ancestorId)) {
-        this.setNodeLocked(ancestorId, false);
-        return;
-      }
-    }
+    editorUnlockNodeForEditing(this, nodeId);
   }
 
   /** Add a registered Script component to a node (one undo step). */
@@ -1038,14 +915,16 @@ export class Editor {
    * Does not mutate the scene.
    */
   copyComponent(nodeId: string, componentId: string): boolean {
-    const node = this.document.getNode(nodeId);
-    const component = node?.components.find((entry) => entry.id === componentId);
-    if (!component || !isCopyableComponent(component)) {
-      return false;
+    const did = editorCopyComponent(
+      this,
+      this.componentClipboard,
+      nodeId,
+      componentId,
+    );
+    if (did) {
+      this.emit();
     }
-    this.componentClipboard.copy([component]);
-    this.emit();
-    return true;
+    return did;
   }
 
   /**
@@ -1053,15 +932,11 @@ export class Editor {
    * Does not mutate the scene.
    */
   copyComponents(nodeId: string): boolean {
-    const node = this.document.getNode(nodeId);
-    if (!node) {
-      return false;
+    const did = editorCopyComponents(this, this.componentClipboard, nodeId);
+    if (did) {
+      this.emit();
     }
-    if (!this.componentClipboard.copy(listCopyableComponents(node))) {
-      return false;
-    }
-    this.emit();
-    return true;
+    return did;
   }
 
   hasCopiedComponent(): boolean {
@@ -1069,26 +944,16 @@ export class Editor {
   }
 
   copiedComponentLabel(): string | undefined {
-    return describeCopiedComponents(
-      this.componentClipboard.templates(),
-      this.components,
-    );
+    return editorCopiedComponentLabel(this, this.componentClipboard);
   }
 
   /** Why paste is blocked on this node, or `undefined` if at least one can paste. */
   pasteComponentBlockedReason(nodeId: string): string | undefined {
-    const templates = this.componentClipboard.templates();
-    if (templates.length === 0) {
-      return "No component on the clipboard";
-    }
-    if (this.isNodeEffectivelyLocked(nodeId)) {
-      return "Node is locked";
-    }
-    const node = this.document.getNode(nodeId);
-    if (!node) {
-      return "Unknown node";
-    }
-    return pasteComponentsBlockedReason(node, templates, this.components);
+    return editorPasteComponentBlockedReason(
+      this,
+      this.componentClipboard,
+      nodeId,
+    );
   }
 
   canPasteComponent(nodeId: string): boolean {
@@ -1100,40 +965,7 @@ export class Editor {
    * Skips items the target cannot accept. New component ids.
    */
   pasteComponent(nodeId: string): readonly string[] {
-    if (this.pasteComponentBlockedReason(nodeId) !== undefined) {
-      return [];
-    }
-    const node = this.document.getNode(nodeId);
-    if (!node) {
-      return [];
-    }
-    const pasteable = selectPasteableComponents(
-      node,
-      this.componentClipboard.templates(),
-      this.components,
-    );
-    const commands = pasteable.map(
-      (template) =>
-        new PasteComponentCommand(
-          this.document,
-          nodeId,
-          template,
-          this.components,
-        ),
-    );
-    if (commands.length === 0) {
-      return [];
-    }
-    if (commands.length === 1) {
-      const command = commands[0];
-      if (!command) {
-        return [];
-      }
-      this.execute(command);
-      return [command.addedComponentId];
-    }
-    this.execute(new CompositeCommand("PasteComponents", commands));
-    return commands.map((command) => command.addedComponentId);
+    return editorPasteComponent(this, this.componentClipboard, nodeId);
   }
 
   /** Patch Script.properties (one undo step). */
@@ -1261,21 +1093,14 @@ export class Editor {
    * updates `sceneFileId` after a successful rename.
    */
   async renameSceneFile(sceneFileId: string, newSceneFileId: string): Promise<SceneListEntry> {
-    const entry = await renameSceneDocumentFile(
+    const entry = await editorRenameSceneFile(
+      this,
       this.persistenceHost(),
+      this.sceneFileHistoryHost(),
       sceneFileId,
       newSceneFileId,
     );
-    if (sceneFileId !== entry.id) {
-      this.commands.record(
-        new RenameSceneFileCommand(
-          this.sceneFileHistoryHost(),
-          sceneFileId,
-          entry.id,
-        ),
-      );
-      this.emit();
-    }
+    this.emit();
     return entry;
   }
 
@@ -1284,29 +1109,12 @@ export class Editor {
    * after the file is removed (caller must pick a remaining scene id).
    */
   async deleteSceneFile(sceneFileId: string, fallbackSceneId: string): Promise<void> {
-    const api = this.sceneApi;
-    if (!api) {
-      throw new Error("Scene API client is not configured");
-    }
-    const wasActive = this.sceneFileId === sceneFileId;
-    const snapshot = wasActive
-      ? structuredClone(this.document.getScene())
-      : parseSceneData(await api.loadScene(sceneFileId));
-    const wasStartScene = this.project.getProject()?.startScene === sceneFileId;
-    await deleteSceneDocumentFile(
+    await editorDeleteSceneFile(
+      this,
       this.persistenceHost(),
+      this.sceneFileHistoryHost(),
       sceneFileId,
       fallbackSceneId,
-    );
-    this.commands.record(
-      new DeleteSceneFileCommand(
-        this.sceneFileHistoryHost(),
-        sceneFileId,
-        snapshot,
-        fallbackSceneId,
-        wasActive,
-        wasStartScene,
-      ),
     );
     this.emit();
   }
@@ -1315,19 +1123,13 @@ export class Editor {
    * Renames an asset file. Stable assetId is unchanged.
    */
   async renameAsset(assetId: string, name: string): Promise<AssetRecord> {
-    const before = this.assets.get(assetId);
-    const asset = await this.assets.renameAsset(assetId, name);
-    if (before && before.name !== asset.name) {
-      this.commands.record(
-        new RenameAssetCommand(
-          this.assetHistoryHost(),
-          assetId,
-          before.name,
-          asset.name,
-        ),
-      );
-      this.emit();
-    }
+    const asset = await editorRenameAsset(
+      this,
+      this.assetHistoryHost(),
+      assetId,
+      name,
+    );
+    this.emit();
     return asset;
   }
 
@@ -1335,10 +1137,7 @@ export class Editor {
    * Deletes an asset. Undo restores the same assetId and files.
    */
   async deleteAsset(assetId: string): Promise<void> {
-    await this.assets.deleteAsset(assetId);
-    this.commands.record(
-      new DeleteAssetCommand(this.assetHistoryHost(), assetId),
-    );
+    await editorDeleteAsset(this, this.assetHistoryHost(), assetId);
     this.emit();
   }
 
@@ -1349,9 +1148,11 @@ export class Editor {
     assetId: string,
     destinationFolder?: string,
   ): Promise<AssetRecord> {
-    const created = await this.assets.duplicateAsset(assetId, destinationFolder);
-    this.commands.record(
-      new DuplicateAssetCommand(this.assetHistoryHost(), created.id),
+    const created = await editorDuplicateAsset(
+      this,
+      this.assetHistoryHost(),
+      assetId,
+      destinationFolder,
     );
     this.emit();
     return created;
@@ -1361,13 +1162,13 @@ export class Editor {
    * Renames an asset folder. Nested asset ids stay stable; paths update.
    */
   async renameFolder(folderPath: string, name: string): Promise<string> {
-    const next = await this.assets.renameFolder(folderPath, name);
-    if (next !== folderPath) {
-      this.commands.record(
-        new RenameAssetFolderCommand(this.assetHistoryHost(), folderPath, next),
-      );
-      this.emit();
-    }
+    const next = await editorRenameFolder(
+      this,
+      this.assetHistoryHost(),
+      folderPath,
+      name,
+    );
+    this.emit();
     return next;
   }
 
@@ -1375,10 +1176,7 @@ export class Editor {
    * Deletes an asset folder. Undo restores nested files and the same asset ids.
    */
   async deleteFolder(folderPath: string): Promise<void> {
-    await this.assets.deleteFolder(folderPath);
-    this.commands.record(
-      new DeleteAssetFolderCommand(this.assetHistoryHost(), folderPath),
-    );
+    await editorDeleteFolder(this, this.assetHistoryHost(), folderPath);
     this.emit();
   }
 

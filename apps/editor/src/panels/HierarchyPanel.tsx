@@ -13,22 +13,16 @@ import {
   sceneHasHiddenNodes,
   sceneHasLockedNodes,
 } from "@game-editor/editor-core";
-import {
-  findNodeById,
-  flattenNodes,
-  getAncestorIds,
-  nodeCanHaveChildren,
-  type SceneData,
-} from "@game-editor/scene";
-import { MOUSE_BUTTON_PRIMARY } from "@game-editor/shared";
+import { flattenNodes, getAncestorIds } from "@game-editor/scene";
 import { useAssetPreviewSelection } from "../assets/asset-preview-selection";
 import { useEditor } from "../editor-context";
 import { useEditorState } from "../hooks/useEditorState";
-import { treeIndentPadding } from "../ui/tree-indent";
 import { HierarchyContextMenu } from "./HierarchyContextMenu";
 import { HierarchyNodeRow } from "./HierarchyNodeRow";
+import { HierarchySceneRow } from "./HierarchySceneRow";
 import { HierarchyToolbar } from "./HierarchyToolbar";
-import type { HierarchyContextMenuState } from "./hierarchy-types";
+import { resolvePrefabDropParent } from "./hierarchy-prefab-drop";
+import { useHierarchyContextMenu } from "./useHierarchyContextMenu";
 import { useHierarchyDnD } from "./useHierarchyDnD";
 import { useHierarchyKeyboard } from "./useHierarchyKeyboard";
 import { useHierarchyRename } from "./useHierarchyRename";
@@ -43,9 +37,6 @@ export function HierarchyPanel() {
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const [sceneExpanded, setSceneExpanded] = useState(true);
   const [query, setQuery] = useState("");
-  const [contextMenu, setContextMenu] = useState<HierarchyContextMenuState | null>(
-    null,
-  );
   const rowRefs = useRef(new Map<string, HTMLDivElement>());
   const sceneRowRef = useRef<HTMLDivElement | null>(null);
   const treeRef = useRef<HTMLDivElement | null>(null);
@@ -92,6 +83,14 @@ export function HierarchyPanel() {
     setSceneExpanded,
     setExpanded,
   );
+  const { contextMenu, setContextMenu, closeMenu, runMenu } =
+    useHierarchyContextMenu({
+      editor,
+      setSceneExpanded,
+      setExpanded,
+      setRenamingTarget,
+      setSelectedAssetId,
+    });
 
   useHierarchyKeyboard({
     editor,
@@ -186,172 +185,6 @@ export function HierarchyPanel() {
     });
   };
 
-  const closeMenu = () => setContextMenu(null);
-
-  useEffect(() => {
-    if (!contextMenu) {
-      return;
-    }
-    const close = () => setContextMenu(null);
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        close();
-      }
-    };
-    window.addEventListener("pointerdown", close);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("pointerdown", close);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [contextMenu]);
-
-  const runMenu = (action: string) => {
-    const menu = contextMenu;
-    closeMenu();
-    if (!menu) {
-      return;
-    }
-    if (action === "create-root") {
-      editor.createContainer();
-      setSceneExpanded(true);
-      return;
-    }
-    if (action === "show-all") {
-      editor.showAllNodes();
-      return;
-    }
-    if (action === "hide-all") {
-      editor.hideAllNodes();
-      return;
-    }
-    if (action === "lock-all") {
-      editor.lockAllNodes();
-      return;
-    }
-    if (action === "unlock-all") {
-      editor.unlockAllNodes();
-      return;
-    }
-    if (action === "rename-scene") {
-      setRenamingTarget("scene");
-      return;
-    }
-    if (menu.target === "scene" || menu.target === "background") {
-      return;
-    }
-    const nodeId = menu.target.nodeId;
-    if (action === "create-child") {
-      if (editor.isNodeEffectivelyLocked(nodeId)) {
-        return;
-      }
-      setExpanded((prev) => new Set(prev).add(nodeId));
-      setSceneExpanded(true);
-      editor.selectNodes([nodeId]);
-      editor.createNode({ typeId: "pixi.container" });
-      return;
-    }
-    if (action === "rename") {
-      if (editor.isNodeEffectivelyLocked(nodeId)) {
-        return;
-      }
-      setRenamingTarget(nodeId);
-      return;
-    }
-    if (action === "duplicate") {
-      editor.duplicateNode(nodeId);
-      return;
-    }
-    if (action === "delete") {
-      editor.deleteNode(nodeId);
-      return;
-    }
-    if (action === "hide") {
-      editor.setNodeHidden(nodeId, true);
-      return;
-    }
-    if (action === "show") {
-      editor.setNodeHidden(nodeId, false);
-      return;
-    }
-    if (action === "lock") {
-      editor.setNodeLocked(nodeId, true);
-      return;
-    }
-    if (action === "unlock") {
-      editor.setNodeLocked(nodeId, false);
-      return;
-    }
-    if (action === "hide-children") {
-      editor.setNodeHiddenRecursive(nodeId, true);
-      return;
-    }
-    if (action === "show-children") {
-      editor.setNodeHiddenRecursive(nodeId, false);
-      return;
-    }
-    if (action === "lock-children") {
-      editor.setNodeLockedRecursive(nodeId, true);
-      return;
-    }
-    if (action === "unlock-children") {
-      editor.setNodeLockedRecursive(nodeId, false);
-      return;
-    }
-    if (action === "create-prefab") {
-      void editor.createPrefabFromNode(nodeId).catch((error: unknown) => {
-        editor.console.log({
-          level: "error",
-          category: "prefab",
-          message: error instanceof Error ? error.message : "Create Prefab failed",
-        });
-      });
-      return;
-    }
-    if (action === "open-prefab") {
-      const node = findNodeById(editor.getScene(), nodeId);
-      const assetId = node?.prefab?.prefabAssetId;
-      if (assetId) {
-        void editor.openPrefab(assetId).catch(() => undefined);
-      }
-      return;
-    }
-    if (action === "select-prefab-asset") {
-      const node = findNodeById(editor.getScene(), nodeId);
-      const assetId = node?.prefab?.prefabAssetId;
-      if (assetId) {
-        setSelectedAssetId(assetId);
-      }
-      return;
-    }
-    if (action === "apply-all") {
-      void editor.applyPrefabOverrides(nodeId);
-      return;
-    }
-    if (action === "revert-all") {
-      editor.revertPrefabOverrides(nodeId);
-      return;
-    }
-    if (action === "unpack") {
-      editor.unpackPrefab(nodeId);
-    }
-  };
-
-  const sceneDropActive = dropIndicator?.placement === "root";
-  const [sceneDraft, setSceneDraft] = useState(scene.name);
-  const sceneInputRef = useRef<HTMLInputElement | null>(null);
-  const isRenamingScene = renamingTarget === "scene";
-
-  useEffect(() => {
-    if (isRenamingScene) {
-      setSceneDraft(scene.name);
-      queueMicrotask(() => {
-        sceneInputRef.current?.focus();
-        sceneInputRef.current?.select();
-      });
-    }
-  }, [isRenamingScene, scene.name]);
-
   const commitSceneRename = (name: string) => {
     setRenamingTarget(undefined);
     if (name.trim().length > 0) {
@@ -359,6 +192,8 @@ export function HierarchyPanel() {
     }
   };
 
+  const sceneDropActive = dropIndicator?.placement === "root";
+  const isRenamingScene = renamingTarget === "scene";
   const anyHidden = sceneHasHiddenNodes(scene, metadata);
   const anyLocked = sceneHasLockedNodes(scene, metadata);
 
@@ -448,18 +283,15 @@ export function HierarchyPanel() {
         }}
       >
         <div className="hierarchy-branch">
-          <div
-            ref={sceneRowRef}
-            data-scene-root
-            className={[
-              "hierarchy-row",
-              "scene-root",
-              sceneSelected ? "selected" : "",
-              sceneDropActive ? "drop-inside" : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
-            style={{ paddingLeft: treeIndentPadding(0) }}
+          <HierarchySceneRow
+            sceneName={scene.name}
+            sceneSelected={sceneSelected}
+            sceneDropActive={sceneDropActive}
+            displaySceneExpanded={displaySceneExpanded}
+            searching={searching}
+            isRenamingScene={isRenamingScene}
+            onSelectScene={() => editor.selectScene()}
+            onToggleExpanded={() => setSceneExpanded((prev) => !prev)}
             onContextMenu={(event) => {
               event.preventDefault();
               event.stopPropagation();
@@ -470,60 +302,12 @@ export function HierarchyPanel() {
                 target: "scene",
               });
             }}
-            onPointerDown={(event) => {
-              if (event.button !== MOUSE_BUTTON_PRIMARY || isRenamingScene) {
-                return;
-              }
-              if ((event.target as HTMLElement).closest("[data-expand]")) {
-                return;
-              }
-              editor.selectScene();
+            onCommitRename={commitSceneRename}
+            onCancelRename={() => setRenamingTarget(undefined)}
+            registerRow={(el) => {
+              sceneRowRef.current = el;
             }}
-          >
-            <button
-              type="button"
-              data-expand
-              className="hierarchy-expand"
-              tabIndex={-1}
-              aria-label={displaySceneExpanded ? "Collapse" : "Expand"}
-              disabled={searching}
-              onPointerDown={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-              }}
-              onClick={(event) => {
-                event.stopPropagation();
-                setSceneExpanded((prev) => !prev);
-              }}
-            >
-              {displaySceneExpanded ? "▼" : "▶"}
-            </button>
-            <span className="hierarchy-icon" aria-hidden>
-              ◈
-            </span>
-            {isRenamingScene ? (
-              <input
-                ref={sceneInputRef}
-                className="hierarchy-rename-input"
-                value={sceneDraft}
-                onChange={(event) => setSceneDraft(event.target.value)}
-                onClick={(event) => event.stopPropagation()}
-                onPointerDown={(event) => event.stopPropagation()}
-                onBlur={() => commitSceneRename(sceneDraft)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    commitSceneRename(sceneDraft);
-                  } else if (event.key === "Escape") {
-                    event.preventDefault();
-                    setRenamingTarget(undefined);
-                  }
-                }}
-              />
-            ) : (
-              <span className="hierarchy-label">{scene.name}</span>
-            )}
-          </div>
+          />
           {displaySceneExpanded ? (
             <>
               {rootNodes.map((node) => (
@@ -605,21 +389,4 @@ export function HierarchyPanel() {
       ) : null}
     </div>
   );
-}
-
-function resolvePrefabDropParent(
-  scene: SceneData,
-  targetId: string | undefined,
-): string | undefined {
-  if (targetId === undefined) {
-    return undefined;
-  }
-  const node = findNodeById(scene, targetId);
-  if (!node) {
-    return undefined;
-  }
-  if (nodeCanHaveChildren(node)) {
-    return node.id;
-  }
-  return node.parentId;
 }

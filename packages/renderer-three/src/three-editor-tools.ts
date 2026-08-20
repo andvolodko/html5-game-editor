@@ -23,7 +23,7 @@ export function tagObjectWithNodeId(object: Object3D, nodeId: string): void {
   });
 }
 
-function findNodeId(object: Object3D): string | undefined {
+export function findTaggedNodeId(object: Object3D): string | undefined {
   let current: Object3D | null = object;
   while (current) {
     const id = current.userData[NODE_ID_USER_DATA_KEY];
@@ -33,6 +33,17 @@ function findNodeId(object: Object3D): string | undefined {
     current = current.parent;
   }
   return undefined;
+}
+
+export function isObjectWorldVisible(object: Object3D): boolean {
+  let current: Object3D | null = object;
+  while (current) {
+    if (!current.visible) {
+      return false;
+    }
+    current = current.parent;
+  }
+  return true;
 }
 
 function isObjectInScene(object: Object3D, scene: Scene): boolean {
@@ -198,7 +209,7 @@ export class ThreeEditorTools {
     roots.push(...this.pickRootsExtra());
     const hits = this.raycaster.intersectObjects(roots, true);
     for (const hit of hits) {
-      const nodeId = findNodeId(hit.object);
+      const nodeId = findTaggedNodeId(hit.object);
       if (nodeId) {
         return nodeId;
       }
@@ -233,15 +244,4 @@ export class ThreeEditorTools {
       scale,
     });
   }
-}
-
-function isObjectWorldVisible(object: Object3D): boolean {
-  let current: Object3D | null = object;
-  while (current) {
-    if (!current.visible) {
-      return false;
-    }
-    current = current.parent;
-  }
-  return true;
 }
