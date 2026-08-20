@@ -38,3 +38,34 @@ export function resolveInspectorNumber(
   }
   return next;
 }
+
+export type InspectorNumberDraftResult =
+  | { kind: "revert" }
+  | { kind: "commit"; value: number };
+
+/**
+ * Resolve a blur/Enter draft against the node the field was bound to.
+ * Compare with that stored value, not the newly selected node's value —
+ * Hierarchy selects on pointerdown before the input blurs.
+ */
+export function resolveInspectorNumberDraft(
+  draft: string,
+  stored: number,
+  integer?: boolean,
+): InspectorNumberDraftResult {
+  if (integer) {
+    const next = Number.parseInt(draft, 10);
+    if (Number.isNaN(next) || next === stored) {
+      return { kind: "revert" };
+    }
+    return { kind: "commit", value: next };
+  }
+  if (inspectorNumberUnchanged(draft, stored)) {
+    return { kind: "revert" };
+  }
+  const next = Number(draft);
+  if (Number.isNaN(next)) {
+    return { kind: "revert" };
+  }
+  return { kind: "commit", value: next };
+}

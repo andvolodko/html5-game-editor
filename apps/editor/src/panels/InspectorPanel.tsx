@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { CompositeCommand } from "@game-editor/commands";
-import type { Transform2DPatch, Transform3DPatch } from "@game-editor/editor-core";
+import type { Editor, Transform2DPatch, Transform3DPatch } from "@game-editor/editor-core";
 import {
   SetTransform2DCommand,
   SetVisualComponentCommand,
@@ -80,6 +80,240 @@ interface SpriteSizeDraft {
   height: string;
 }
 
+function createTransform2DDraft(
+  transform: { skew?: { x: number; y: number } },
+  effectiveTransform2D: {
+    position: { x: number; y: number };
+    rotation: number;
+    scale: { x: number; y: number };
+  },
+  visualAnchor: { x: number; y: number } | undefined,
+): TransformDraft {
+  const skew = transform.skew ?? { x: 0, y: 0 };
+  const anchor = visualAnchor ?? { x: 0.5, y: 0.5 };
+  return {
+    x: formatInspectorNumber(effectiveTransform2D.position.x),
+    y: formatInspectorNumber(effectiveTransform2D.position.y),
+    rotation: formatInspectorNumber(effectiveTransform2D.rotation),
+    scaleX: formatInspectorNumber(effectiveTransform2D.scale.x),
+    scaleY: formatInspectorNumber(effectiveTransform2D.scale.y),
+    skewX: formatInspectorNumber(skew.x),
+    skewY: formatInspectorNumber(skew.y),
+    anchorX: formatInspectorNumber(anchor.x),
+    anchorY: formatInspectorNumber(anchor.y),
+  };
+}
+
+function createTransform3DDraft(transform3D: {
+  position: { x: number; y: number; z: number };
+  rotation: { x: number; y: number; z: number };
+  scale: { x: number; y: number; z: number };
+}): Transform3DDraft {
+  return {
+    x: formatInspectorNumber(transform3D.position.x),
+    y: formatInspectorNumber(transform3D.position.y),
+    z: formatInspectorNumber(transform3D.position.z),
+    rotX: formatInspectorNumber(transform3D.rotation.x),
+    rotY: formatInspectorNumber(transform3D.rotation.y),
+    rotZ: formatInspectorNumber(transform3D.rotation.z),
+    scaleX: formatInspectorNumber(transform3D.scale.x),
+    scaleY: formatInspectorNumber(transform3D.scale.y),
+    scaleZ: formatInspectorNumber(transform3D.scale.z),
+  };
+}
+
+function createSpriteSizeDraft(sprite: { width: number; height: number }): SpriteSizeDraft {
+  return {
+    width: formatInspectorNumber(sprite.width),
+    height: formatInspectorNumber(sprite.height),
+  };
+}
+
+type Transform2DCommitTarget = {
+  nodeId: string;
+  transform: NonNullable<ReturnType<typeof getTransform2D>>;
+  effectiveTransform2D: NonNullable<
+    ReturnType<typeof getInspectorEffectiveTransform2D>
+  >;
+  visual: ReturnType<typeof getVisualComponent>;
+  sprite: ReturnType<typeof getSprite>;
+  supportsAnchor: boolean;
+};
+
+type Transform3DCommitTarget = {
+  nodeId: string;
+  transform3D: NonNullable<ReturnType<typeof getTransform3D>>;
+};
+
+type SizeCommitTarget = {
+  nodeId: string;
+  sprite: NonNullable<ReturnType<typeof getSprite>>;
+};
+
+function commitBoundTransform2D(
+  editor: Editor,
+  target: Transform2DCommitTarget,
+  draft: TransformDraft,
+): void {
+  const { nodeId, transform: boundTransform, effectiveTransform2D: boundPose } =
+    target;
+  const x = resolveInspectorNumber(draft.x, boundPose.position.x);
+  const y = resolveInspectorNumber(draft.y, boundPose.position.y);
+  const rotation = resolveInspectorNumber(draft.rotation, boundPose.rotation);
+  const scaleX = resolveInspectorNumber(draft.scaleX, boundPose.scale.x);
+  const scaleY = resolveInspectorNumber(draft.scaleY, boundPose.scale.y);
+  const currentSkew = boundTransform.skew ?? { x: 0, y: 0 };
+  const skewX = resolveInspectorNumber(draft.skewX, currentSkew.x);
+  const skewY = resolveInspectorNumber(draft.skewY, currentSkew.y);
+  if (
+    x === undefined ||
+    y === undefined ||
+    rotation === undefined ||
+    scaleX === undefined ||
+    scaleY === undefined ||
+    skewX === undefined ||
+    skewY === undefined
+  ) {
+    return;
+  }
+  const unchanged =
+    x === boundPose.position.x &&
+    y === boundPose.position.y &&
+    rotation === boundPose.rotation &&
+    scaleX === boundPose.scale.x &&
+    scaleY === boundPose.scale.y &&
+    skewX === currentSkew.x &&
+    skewY === currentSkew.y;
+  if (unchanged) {
+    return;
+  }
+  const patch: Transform2DPatch = {
+    position: { x, y },
+    rotation,
+    scale: { x: scaleX, y: scaleY },
+    skew: { x: skewX, y: skewY },
+  };
+  editor.setTransform2D(nodeId, patch);
+}
+
+function commitBoundAnchor(
+  editor: Editor,
+  target: Transform2DCommitTarget,
+  draft: TransformDraft,
+): void {
+  if (!target.visual || !target.supportsAnchor) {
+    return;
+  }
+  const { nodeId, visual: boundVisual, sprite: boundSprite, transform: boundTransform } =
+    target;
+  const current = getVisualAnchorOrDefault(boundVisual);
+  const x = resolveInspectorNumber(draft.anchorX, current.x);
+  const y = resolveInspectorNumber(draft.anchorY, current.y);
+  if (x === undefined || y === undefined) {
+    return;
+  }
+  if (x === current.x && y === current.y) {
+    return;
+  }
+  const nextAnchor = { x, y };
+  if (boundSprite && boundTransform) {
+    const delta = positionDeltaForAnchorChange(
+      current,
+      nextAnchor,
+      boundSprite.width,
+      boundSprite.height,
+      boundTransform.rotation,
+      boundTransform.scale,
+    );
+    editor.execute(
+      new CompositeCommand("SetVisualAnchor", [
+        new SetVisualComponentCommand(editor.document, nodeId, {
+          anchor: nextAnchor,
+        }),
+        new SetTransform2DCommand(editor.document, nodeId, {
+          position: {
+            x: boundTransform.position.x + delta.x,
+            y: boundTransform.position.y + delta.y,
+          },
+        }),
+      ]),
+    );
+    return;
+  }
+  editor.setVisualComponent(nodeId, { anchor: nextAnchor });
+}
+
+function commitBoundTransform3D(
+  editor: Editor,
+  target: Transform3DCommitTarget,
+  draft: Transform3DDraft,
+): void {
+  const { nodeId, transform3D: boundTransform3D } = target;
+  const x = resolveInspectorNumber(draft.x, boundTransform3D.position.x);
+  const y = resolveInspectorNumber(draft.y, boundTransform3D.position.y);
+  const z = resolveInspectorNumber(draft.z, boundTransform3D.position.z);
+  const rotX = resolveInspectorNumber(draft.rotX, boundTransform3D.rotation.x);
+  const rotY = resolveInspectorNumber(draft.rotY, boundTransform3D.rotation.y);
+  const rotZ = resolveInspectorNumber(draft.rotZ, boundTransform3D.rotation.z);
+  const scaleX = resolveInspectorNumber(draft.scaleX, boundTransform3D.scale.x);
+  const scaleY = resolveInspectorNumber(draft.scaleY, boundTransform3D.scale.y);
+  const scaleZ = resolveInspectorNumber(draft.scaleZ, boundTransform3D.scale.z);
+  if (
+    x === undefined ||
+    y === undefined ||
+    z === undefined ||
+    rotX === undefined ||
+    rotY === undefined ||
+    rotZ === undefined ||
+    scaleX === undefined ||
+    scaleY === undefined ||
+    scaleZ === undefined
+  ) {
+    return;
+  }
+  const unchanged =
+    x === boundTransform3D.position.x &&
+    y === boundTransform3D.position.y &&
+    z === boundTransform3D.position.z &&
+    rotX === boundTransform3D.rotation.x &&
+    rotY === boundTransform3D.rotation.y &&
+    rotZ === boundTransform3D.rotation.z &&
+    scaleX === boundTransform3D.scale.x &&
+    scaleY === boundTransform3D.scale.y &&
+    scaleZ === boundTransform3D.scale.z;
+  if (unchanged) {
+    return;
+  }
+  const patch: Transform3DPatch = {
+    position: { x, y, z },
+    rotation: { x: rotX, y: rotY, z: rotZ },
+    scale: { x: scaleX, y: scaleY, z: scaleZ },
+  };
+  editor.setTransform3D(nodeId, patch);
+}
+
+function commitBoundSpriteSize(
+  editor: Editor,
+  target: SizeCommitTarget,
+  draft: SpriteSizeDraft,
+): void {
+  const { nodeId, sprite: boundSprite } = target;
+  const width = resolveInspectorNumber(draft.width, boundSprite.width);
+  const height = resolveInspectorNumber(draft.height, boundSprite.height);
+  if (
+    width === undefined ||
+    height === undefined ||
+    width <= 0 ||
+    height <= 0
+  ) {
+    return;
+  }
+  if (width === boundSprite.width && height === boundSprite.height) {
+    return;
+  }
+  editor.setSpriteSize(nodeId, { width, height });
+}
+
 export function InspectorPanel() {
   const editor = useEditor();
   const scene = useEditorState((ed) => ed.getScene());
@@ -118,32 +352,80 @@ export function InspectorPanel() {
   const [draft3D, setDraft3D] = useState<Transform3DDraft | null>(null);
   const [sizeDraft, setSizeDraft] = useState<SpriteSizeDraft | null>(null);
   const [sceneNameDraft, setSceneNameDraft] = useState(scene.name);
+  const inspectorIdentity = `${selectedId ?? ""}:${activeStateId}`;
+  const inspectorIdentityRef = useRef(inspectorIdentity);
+  const ignoreStaleInspectorBlurRef = useRef(false);
+  const draftRef = useRef(draft);
+  const draft3DRef = useRef(draft3D);
+  const sizeDraftRef = useRef(sizeDraft);
+  draftRef.current = draft;
+  draft3DRef.current = draft3D;
+  sizeDraftRef.current = sizeDraft;
+  const transformCommitRef = useRef<Transform2DCommitTarget | null>(null);
+  const transform3DCommitRef = useRef<Transform3DCommitTarget | null>(null);
+  const sizeCommitRef = useRef<SizeCommitTarget | null>(null);
 
   useEffect(() => {
     setSceneNameDraft(scene.name);
   }, [scene.id, scene.name, sceneSelected]);
 
-  useEffect(() => {
-    if (!transform || !effectiveTransform2D) {
-      setDraft(null);
-      return;
+  useLayoutEffect(() => {
+    if (inspectorIdentityRef.current !== inspectorIdentity) {
+      const transformTarget = transformCommitRef.current;
+      const transformDraft = draftRef.current;
+      if (transformTarget && transformDraft) {
+        commitBoundTransform2D(editor, transformTarget, transformDraft);
+        commitBoundAnchor(editor, transformTarget, transformDraft);
+      }
+      const transform3DTarget = transform3DCommitRef.current;
+      const transform3DDraft = draft3DRef.current;
+      if (transform3DTarget && transform3DDraft) {
+        commitBoundTransform3D(editor, transform3DTarget, transform3DDraft);
+      }
+      const sizeTarget = sizeCommitRef.current;
+      const spriteSizeDraft = sizeDraftRef.current;
+      if (sizeTarget && spriteSizeDraft) {
+        commitBoundSpriteSize(editor, sizeTarget, spriteSizeDraft);
+      }
+      ignoreStaleInspectorBlurRef.current = true;
+      inspectorIdentityRef.current = inspectorIdentity;
     }
-    const skew = transform.skew ?? { x: 0, y: 0 };
-    const anchor = visualAnchor ?? { x: 0.5, y: 0.5 };
-    setDraft({
-      x: formatInspectorNumber(effectiveTransform2D.position.x),
-      y: formatInspectorNumber(effectiveTransform2D.position.y),
-      rotation: formatInspectorNumber(effectiveTransform2D.rotation),
-      scaleX: formatInspectorNumber(effectiveTransform2D.scale.x),
-      scaleY: formatInspectorNumber(effectiveTransform2D.scale.y),
-      skewX: formatInspectorNumber(skew.x),
-      skewY: formatInspectorNumber(skew.y),
-      anchorX: formatInspectorNumber(anchor.x),
-      anchorY: formatInspectorNumber(anchor.y),
-    });
+
+    if (!node || !transform || !effectiveTransform2D) {
+      transformCommitRef.current = null;
+      setDraft(null);
+    } else {
+      transformCommitRef.current = {
+        nodeId: node.id,
+        transform,
+        effectiveTransform2D,
+        visual,
+        sprite,
+        supportsAnchor,
+      };
+      setDraft(
+        createTransform2DDraft(transform, effectiveTransform2D, visualAnchor),
+      );
+    }
+
+    if (!node || !transform3D) {
+      transform3DCommitRef.current = null;
+      setDraft3D(null);
+    } else {
+      transform3DCommitRef.current = { nodeId: node.id, transform3D };
+      setDraft3D(createTransform3DDraft(transform3D));
+    }
+
+    if (!node || !sprite) {
+      sizeCommitRef.current = null;
+      setSizeDraft(null);
+    } else {
+      sizeCommitRef.current = { nodeId: node.id, sprite };
+      setSizeDraft(createSpriteSizeDraft(sprite));
+    }
   }, [
-    selectedId,
-    activeStateId,
+    inspectorIdentity,
+    supportsAnchor,
     effectiveTransform2D?.position.x,
     effectiveTransform2D?.position.y,
     effectiveTransform2D?.rotation,
@@ -153,26 +435,8 @@ export function InspectorPanel() {
     transform?.skew?.y,
     visualAnchor?.x,
     visualAnchor?.y,
-  ]);
-
-  useEffect(() => {
-    if (!transform3D) {
-      setDraft3D(null);
-      return;
-    }
-    setDraft3D({
-      x: formatInspectorNumber(transform3D.position.x),
-      y: formatInspectorNumber(transform3D.position.y),
-      z: formatInspectorNumber(transform3D.position.z),
-      rotX: formatInspectorNumber(transform3D.rotation.x),
-      rotY: formatInspectorNumber(transform3D.rotation.y),
-      rotZ: formatInspectorNumber(transform3D.rotation.z),
-      scaleX: formatInspectorNumber(transform3D.scale.x),
-      scaleY: formatInspectorNumber(transform3D.scale.y),
-      scaleZ: formatInspectorNumber(transform3D.scale.z),
-    });
-  }, [
-    selectedId,
+    sprite?.width,
+    sprite?.height,
     transform3D?.position.x,
     transform3D?.position.y,
     transform3D?.position.z,
@@ -185,15 +449,8 @@ export function InspectorPanel() {
   ]);
 
   useEffect(() => {
-    if (!sprite) {
-      setSizeDraft(null);
-      return;
-    }
-    setSizeDraft({
-      width: formatInspectorNumber(sprite.width),
-      height: formatInspectorNumber(sprite.height),
-    });
-  }, [selectedId, sprite?.width, sprite?.height]);
+    ignoreStaleInspectorBlurRef.current = false;
+  });
 
   if (sceneSelected) {
     const commitSceneName = () => {
@@ -269,100 +526,27 @@ export function InspectorPanel() {
   }
 
   const commitTransform = () => {
-    if (!transform || !draft || !effectiveTransform2D) {
+    if (ignoreStaleInspectorBlurRef.current) {
       return;
     }
-    const x = resolveInspectorNumber(draft.x, effectiveTransform2D.position.x);
-    const y = resolveInspectorNumber(draft.y, effectiveTransform2D.position.y);
-    const rotation = resolveInspectorNumber(
-      draft.rotation,
-      effectiveTransform2D.rotation,
-    );
-    const scaleX = resolveInspectorNumber(
-      draft.scaleX,
-      effectiveTransform2D.scale.x,
-    );
-    const scaleY = resolveInspectorNumber(
-      draft.scaleY,
-      effectiveTransform2D.scale.y,
-    );
-    const currentSkew = transform.skew ?? { x: 0, y: 0 };
-    const skewX = resolveInspectorNumber(draft.skewX, currentSkew.x);
-    const skewY = resolveInspectorNumber(draft.skewY, currentSkew.y);
-
-    if (
-      x === undefined ||
-      y === undefined ||
-      rotation === undefined ||
-      scaleX === undefined ||
-      scaleY === undefined ||
-      skewX === undefined ||
-      skewY === undefined
-    ) {
+    const target = transformCommitRef.current;
+    const currentDraft = draftRef.current;
+    if (!target || !currentDraft) {
       return;
     }
-
-    const position = { x, y };
-    const scale = { x: scaleX, y: scaleY };
-    const skew = { x: skewX, y: skewY };
-
-    const unchanged =
-      x === effectiveTransform2D.position.x &&
-      y === effectiveTransform2D.position.y &&
-      rotation === effectiveTransform2D.rotation &&
-      scaleX === effectiveTransform2D.scale.x &&
-      scaleY === effectiveTransform2D.scale.y &&
-      skewX === currentSkew.x &&
-      skewY === currentSkew.y;
-
-    if (unchanged) {
-      return;
-    }
-
-    const patch: Transform2DPatch = { position, rotation, scale, skew };
-    editor.setTransform2D(node!.id, patch);
+    commitBoundTransform2D(editor, target, currentDraft);
   };
 
   const commitAnchor = () => {
-    if (!node || !visual || !supportsAnchor || !draft) {
+    if (ignoreStaleInspectorBlurRef.current) {
       return;
     }
-    const current = getVisualAnchorOrDefault(visual);
-    const x = resolveInspectorNumber(draft.anchorX, current.x);
-    const y = resolveInspectorNumber(draft.anchorY, current.y);
-    if (x === undefined || y === undefined) {
+    const target = transformCommitRef.current;
+    const currentDraft = draftRef.current;
+    if (!target || !currentDraft) {
       return;
     }
-    if (x === current.x && y === current.y) {
-      return;
-    }
-    const nextAnchor = { x, y };
-    // Keep the on-screen visual fixed when the pivot moves (same as gizmo drag).
-    if (sprite && transform) {
-      const delta = positionDeltaForAnchorChange(
-        current,
-        nextAnchor,
-        sprite.width,
-        sprite.height,
-        transform.rotation,
-        transform.scale,
-      );
-      editor.execute(
-        new CompositeCommand("SetVisualAnchor", [
-          new SetVisualComponentCommand(editor.document, node.id, {
-            anchor: nextAnchor,
-          }),
-          new SetTransform2DCommand(editor.document, node.id, {
-            position: {
-              x: transform.position.x + delta.x,
-              y: transform.position.y + delta.y,
-            },
-          }),
-        ]),
-      );
-      return;
-    }
-    editor.setVisualComponent(node.id, { anchor: nextAnchor });
+    commitBoundAnchor(editor, target, currentDraft);
   };
 
   const setFlip = (axis: "x" | "y", flipped: boolean) => {
@@ -386,69 +570,27 @@ export function InspectorPanel() {
   };
 
   const commitSize = () => {
-    if (!sprite || !sizeDraft) {
+    if (ignoreStaleInspectorBlurRef.current) {
       return;
     }
-    const width = resolveInspectorNumber(sizeDraft.width, sprite.width);
-    const height = resolveInspectorNumber(sizeDraft.height, sprite.height);
-    if (
-      width === undefined ||
-      height === undefined ||
-      width <= 0 ||
-      height <= 0
-    ) {
+    const target = sizeCommitRef.current;
+    const currentDraft = sizeDraftRef.current;
+    if (!target || !currentDraft) {
       return;
     }
-    if (width === sprite.width && height === sprite.height) {
-      return;
-    }
-    editor.setSpriteSize(node.id, { width, height });
+    commitBoundSpriteSize(editor, target, currentDraft);
   };
 
   const commitTransform3D = () => {
-    if (!transform3D || !draft3D) {
+    if (ignoreStaleInspectorBlurRef.current) {
       return;
     }
-    const x = resolveInspectorNumber(draft3D.x, transform3D.position.x);
-    const y = resolveInspectorNumber(draft3D.y, transform3D.position.y);
-    const z = resolveInspectorNumber(draft3D.z, transform3D.position.z);
-    const rotX = resolveInspectorNumber(draft3D.rotX, transform3D.rotation.x);
-    const rotY = resolveInspectorNumber(draft3D.rotY, transform3D.rotation.y);
-    const rotZ = resolveInspectorNumber(draft3D.rotZ, transform3D.rotation.z);
-    const scaleX = resolveInspectorNumber(draft3D.scaleX, transform3D.scale.x);
-    const scaleY = resolveInspectorNumber(draft3D.scaleY, transform3D.scale.y);
-    const scaleZ = resolveInspectorNumber(draft3D.scaleZ, transform3D.scale.z);
-    if (
-      x === undefined ||
-      y === undefined ||
-      z === undefined ||
-      rotX === undefined ||
-      rotY === undefined ||
-      rotZ === undefined ||
-      scaleX === undefined ||
-      scaleY === undefined ||
-      scaleZ === undefined
-    ) {
+    const target = transform3DCommitRef.current;
+    const currentDraft = draft3DRef.current;
+    if (!target || !currentDraft) {
       return;
     }
-    const position = { x, y, z };
-    const rotation = { x: rotX, y: rotY, z: rotZ };
-    const scale = { x: scaleX, y: scaleY, z: scaleZ };
-    const unchanged =
-      x === transform3D.position.x &&
-      y === transform3D.position.y &&
-      z === transform3D.position.z &&
-      rotX === transform3D.rotation.x &&
-      rotY === transform3D.rotation.y &&
-      rotZ === transform3D.rotation.z &&
-      scaleX === transform3D.scale.x &&
-      scaleY === transform3D.scale.y &&
-      scaleZ === transform3D.scale.z;
-    if (unchanged) {
-      return;
-    }
-    const patch: Transform3DPatch = { position, rotation, scale };
-    editor.setTransform3D(node.id, patch);
+    commitBoundTransform3D(editor, target, currentDraft);
   };
 
   const editorFlags = editor.getEditorNodeFlags(node.id);
@@ -615,9 +757,13 @@ export function InspectorPanel() {
                       </span>
                       <input
                         value={draft[key]}
-                        onChange={(event) =>
-                          setDraft({ ...draft, [key]: event.target.value })
-                        }
+                        onChange={(event) => {
+                          setDraft((current) =>
+                            current
+                              ? { ...current, [key]: event.target.value }
+                              : current,
+                          );
+                        }}
                         onBlur={commitTransform}
                         onKeyDown={(event) => {
                           if (event.key === "Enter") {
@@ -636,9 +782,13 @@ export function InspectorPanel() {
                   Anchor X
                   <input
                     value={draft.anchorX}
-                    onChange={(event) =>
-                      setDraft({ ...draft, anchorX: event.target.value })
-                    }
+                    onChange={(event) => {
+                      setDraft((current) =>
+                        current
+                          ? { ...current, anchorX: event.target.value }
+                          : current,
+                      );
+                    }}
                     onBlur={commitAnchor}
                     onKeyDown={(event) => {
                       if (event.key === "Enter") {
@@ -651,9 +801,13 @@ export function InspectorPanel() {
                   Anchor Y
                   <input
                     value={draft.anchorY}
-                    onChange={(event) =>
-                      setDraft({ ...draft, anchorY: event.target.value })
-                    }
+                    onChange={(event) => {
+                      setDraft((current) =>
+                        current
+                          ? { ...current, anchorY: event.target.value }
+                          : current,
+                      );
+                    }}
                     onBlur={commitAnchor}
                     onKeyDown={(event) => {
                       if (event.key === "Enter") {
@@ -715,9 +869,13 @@ export function InspectorPanel() {
                     {label}
                     <input
                       value={draft3D[key]}
-                      onChange={(event) =>
-                        setDraft3D({ ...draft3D, [key]: event.target.value })
-                      }
+                      onChange={(event) => {
+                        setDraft3D((current) =>
+                          current
+                            ? { ...current, [key]: event.target.value }
+                            : current,
+                        );
+                      }}
                       onBlur={commitTransform3D}
                       onKeyDown={(event) => {
                         if (event.key === "Enter") {
@@ -760,9 +918,13 @@ export function InspectorPanel() {
                 Width
                 <input
                   value={sizeDraft.width}
-                  onChange={(event) =>
-                    setSizeDraft({ ...sizeDraft, width: event.target.value })
-                  }
+                  onChange={(event) => {
+                    setSizeDraft((current) =>
+                      current
+                        ? { ...current, width: event.target.value }
+                        : current,
+                    );
+                  }}
                   onBlur={commitSize}
                   onKeyDown={(event) => {
                     if (event.key === "Enter") {
@@ -775,9 +937,13 @@ export function InspectorPanel() {
                 Height
                 <input
                   value={sizeDraft.height}
-                  onChange={(event) =>
-                    setSizeDraft({ ...sizeDraft, height: event.target.value })
-                  }
+                  onChange={(event) => {
+                    setSizeDraft((current) =>
+                      current
+                        ? { ...current, height: event.target.value }
+                        : current,
+                    );
+                  }}
                   onBlur={commitSize}
                   onKeyDown={(event) => {
                     if (event.key === "Enter") {

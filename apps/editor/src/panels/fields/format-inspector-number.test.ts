@@ -3,6 +3,7 @@ import {
   formatInspectorNumber,
   inspectorNumberUnchanged,
   resolveInspectorNumber,
+  resolveInspectorNumberDraft,
 } from "./format-inspector-number";
 
 describe("formatInspectorNumber", () => {
@@ -54,5 +55,35 @@ describe("resolveInspectorNumber", () => {
 
   it("returns undefined for invalid drafts", () => {
     expect(resolveInspectorNumber("abc", stored)).toBeUndefined();
+  });
+});
+
+describe("resolveInspectorNumberDraft", () => {
+  it("commits a typed edit against the bound stored value", () => {
+    expect(resolveInspectorNumberDraft("0.5", 1)).toEqual({
+      kind: "commit",
+      value: 0.5,
+    });
+  });
+
+  it("does not skip commit when another node coincidentally has the typed value", () => {
+    expect(resolveInspectorNumberDraft("0.8", 1)).toEqual({
+      kind: "commit",
+      value: 0.8,
+    });
+    expect(resolveInspectorNumberDraft("0.8", 0.8)).toEqual({ kind: "revert" });
+  });
+
+  it("reverts invalid and unchanged drafts", () => {
+    expect(resolveInspectorNumberDraft("abc", 1)).toEqual({ kind: "revert" });
+    expect(resolveInspectorNumberDraft("1", 1)).toEqual({ kind: "revert" });
+  });
+
+  it("parses integer drafts", () => {
+    expect(resolveInspectorNumberDraft("12.9", 1, true)).toEqual({
+      kind: "commit",
+      value: 12,
+    });
+    expect(resolveInspectorNumberDraft("1", 1, true)).toEqual({ kind: "revert" });
   });
 });

@@ -6,6 +6,10 @@ PixiJS handles 2D. Three.js handles 3D. React is the editor shell. Games build i
 
 ![HTML5 Game Editor — PixiJS and Three.js scene viewport](docs/screenshots/html5-game-editor-pixijs-threejs-monorepo.png)
 
+[![Watch the walkthrough: Open Source HTML5 Game Editor | PixiJS + Three.js](https://img.youtube.com/vi/qy9HUQZDxx4/maxresdefault.jpg)](https://youtu.be/qy9HUQZDxx4)
+
+**[Watch the video](https://youtu.be/qy9HUQZDxx4)** — editor walkthrough (PixiJS + Three.js).
+
 **[Live demo](https://andvolodko.github.io/html5-game-editor/)** — static GitHub Pages build of the editor (all `games/*` projects, no project-server). Scene edits stay in this browser (`localStorage`). Asset import needs a local `pnpm dev`.
 
 Playable standalone builds of every game are on the same site: **[demo games](https://andvolodko.github.io/html5-game-editor/games/)** ([Editor Features Demo](https://andvolodko.github.io/html5-game-editor/games/editor-features-demo/), [MU Online](https://andvolodko.github.io/html5-game-editor/games/muonline-game/), [Solitaire](https://andvolodko.github.io/html5-game-editor/games/solitaire/)).

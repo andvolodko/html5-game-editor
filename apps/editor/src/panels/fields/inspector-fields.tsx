@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { AssetType } from "@game-editor/assets";
 import { useEditorState } from "../../hooks/useEditorState";
 import {
@@ -8,9 +8,10 @@ import {
 } from "./asset-select-options";
 import {
   formatInspectorNumber,
-  inspectorNumberUnchanged,
+  resolveInspectorNumberDraft,
 } from "./format-inspector-number";
 import { uniqueSelectOptions } from "./unique-select-options";
+import { useInspectorBlurDraft } from "./inspector-blur-draft";
 
 function displayInspectorNumber(value: number, integer?: boolean): string {
   return integer ? String(value) : formatInspectorNumber(value);
@@ -36,33 +37,22 @@ export function NumberField({
   overridden?: boolean;
   onResetOverride?: () => void;
 }) {
-  const [draft, setDraft] = useState(displayInspectorNumber(value, integer));
-  useEffect(
-    () => setDraft(displayInspectorNumber(value, integer)),
-    [value, integer],
-  );
-  const commit = () => {
-    const display = displayInspectorNumber(value, integer);
-    if (integer) {
-      const next = Number.parseInt(draft, 10);
-      if (Number.isNaN(next) || next === value) {
-        setDraft(display);
+  const committedDisplay = displayInspectorNumber(value, integer);
+  const { draft, setDraft, beginEdit, commit } = useInspectorBlurDraft(
+    committedDisplay,
+    { value, integer, onCommit },
+    (text, bound) => {
+      const resolved = resolveInspectorNumberDraft(
+        text,
+        bound.value,
+        bound.integer,
+      );
+      if (resolved.kind === "revert") {
         return;
       }
-      onCommit(next);
-      return;
-    }
-    if (inspectorNumberUnchanged(draft, value)) {
-      setDraft(display);
-      return;
-    }
-    const next = Number(draft);
-    if (Number.isNaN(next)) {
-      setDraft(display);
-      return;
-    }
-    onCommit(next);
-  };
+      bound.onCommit(resolved.value);
+    },
+  );
   return (
     <label className={overridden ? "inspector-field-overridden" : undefined}>
       <span className="inspector-field-label-row">
@@ -83,7 +73,11 @@ export function NumberField({
       </span>
       <input
         value={draft}
-        onChange={(e) => setDraft(e.target.value)}
+        onFocus={beginEdit}
+        onChange={(e) => {
+          beginEdit();
+          setDraft(e.target.value);
+        }}
         onBlur={commit}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
@@ -108,21 +102,27 @@ export function TextAreaField({
   rows?: number;
   overridden?: boolean;
 }) {
-  const [draft, setDraft] = useState(value);
-  useEffect(() => setDraft(value), [value]);
-  const commit = () => {
-    if (draft === value) {
-      return;
-    }
-    onCommit(draft);
-  };
+  const { draft, setDraft, beginEdit, commit } = useInspectorBlurDraft(
+    value,
+    { value, onCommit },
+    (text, bound) => {
+      if (text === bound.value) {
+        return;
+      }
+      bound.onCommit(text);
+    },
+  );
   return (
     <label className={overridden ? "inspector-field-overridden" : undefined}>
       {label}
       <textarea
         rows={rows}
         value={draft}
-        onChange={(e) => setDraft(e.target.value)}
+        onFocus={beginEdit}
+        onChange={(e) => {
+          beginEdit();
+          setDraft(e.target.value);
+        }}
         onBlur={commit}
       />
     </label>
@@ -140,20 +140,26 @@ export function StringField({
   onCommit: (value: string) => void;
   overridden?: boolean;
 }) {
-  const [draft, setDraft] = useState(value);
-  useEffect(() => setDraft(value), [value]);
-  const commit = () => {
-    if (draft === value) {
-      return;
-    }
-    onCommit(draft);
-  };
+  const { draft, setDraft, beginEdit, commit } = useInspectorBlurDraft(
+    value,
+    { value, onCommit },
+    (text, bound) => {
+      if (text === bound.value) {
+        return;
+      }
+      bound.onCommit(text);
+    },
+  );
   return (
     <label className={overridden ? "inspector-field-overridden" : undefined}>
       {label}
       <input
         value={draft}
-        onChange={(e) => setDraft(e.target.value)}
+        onFocus={beginEdit}
+        onChange={(e) => {
+          beginEdit();
+          setDraft(e.target.value);
+        }}
         onBlur={commit}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
