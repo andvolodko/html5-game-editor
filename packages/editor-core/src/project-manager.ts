@@ -1,4 +1,9 @@
-import type { ProjectData, ProjectListEntry } from "@game-editor/project";
+import type {
+  AndroidBuildSettings,
+  ProjectData,
+  ProjectListEntry,
+} from "@game-editor/project";
+import { androidBuildSettingsEqual } from "@game-editor/project";
 import type {
   OpenProjectResult,
   ProjectApiClient,
@@ -217,6 +222,38 @@ export class ProjectManager {
     } catch (error) {
       this.status = "error";
       this.error = error instanceof Error ? error.message : "Failed to save project";
+      this.emit();
+      throw error;
+    }
+  }
+
+  async setAndroidSettings(
+    android: AndroidBuildSettings,
+  ): Promise<ProjectData> {
+    if (!this.api) {
+      throw new Error("Project API is not configured");
+    }
+    const current = this.project ?? (await this.refresh());
+    if (androidBuildSettingsEqual(current.android, android)) {
+      return current;
+    }
+    this.status = "saving";
+    this.error = undefined;
+    this.emit();
+    try {
+      const saved = await this.api.saveProject({
+        ...current,
+        android,
+      });
+      this.project = saved;
+      this.status = "idle";
+      this.revision += 1;
+      this.emit();
+      return saved;
+    } catch (error) {
+      this.status = "error";
+      this.error =
+        error instanceof Error ? error.message : "Failed to save project";
       this.emit();
       throw error;
     }

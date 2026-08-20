@@ -7,6 +7,10 @@ coverage
 .vite
 .turbo
 *.log
+# Generated native/packaging output (Capacitor Android, future targets)
+**/.build/
+# Local editor secrets (Android signing passwords, etc.) — never commit
+**/.editor/
 # Derived Aseprite PNG/JSON under games/*/.generated are committed so CI/Pages
 # can build the demo without the Aseprite CLI. Cache and undo trash stay local.
 **/.project/aseprite-cache.json

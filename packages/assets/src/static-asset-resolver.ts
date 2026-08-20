@@ -14,7 +14,10 @@ import {
 } from "./texture-extensions.js";
 import { resolveGltfPartRelativePath } from "./gltf-extensions.js";
 import { resolveSpinePartRelativePath } from "./spine-extensions.js";
-import { resolveAsepritePartRelativePath } from "./aseprite-extensions.js";
+import {
+  resolveAsepritePartRelativePath,
+  toPublicAssetPath,
+} from "./aseprite-extensions.js";
 import { resolveBitmapFontPartRelativePath } from "./bitmap-font-extensions.js";
 import { normalizeProjectRelativePath } from "./factories.js";
 import { tileSetResolvedFromMetadata } from "./tileset.js";
@@ -38,7 +41,9 @@ export function createStaticAssetResolver(
   const baseUrl = normalizeBaseUrl(options.baseUrl ?? "/");
 
   const toUrl = (projectPath: string): string => {
-    const normalized = normalizeProjectRelativePath(projectPath);
+    const normalized = toPublicAssetPath(
+      normalizeProjectRelativePath(projectPath),
+    );
     return `${baseUrl}${normalized}`;
   };
 

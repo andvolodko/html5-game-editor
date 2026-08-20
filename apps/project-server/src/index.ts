@@ -25,6 +25,8 @@ import { AssetSyncService } from "./services/asset-sync-service.js";
 import { ComponentCatalogService } from "./services/component-catalog-service.js";
 import { PrefabFileService } from "./services/prefab-file-service.js";
 import { TileSetFileService } from "./services/tileset-file-service.js";
+import { ProjectBuildService } from "./services/project-build-service.js";
+import { createGameBuildService } from "@game-editor/game-build-android";
 import { createRouter } from "./http/router.js";
 import { sendNoContent } from "./http/responses.js";
 import { DEFAULT_PROJECT_SERVER_PORT } from "@game-editor/shared";
@@ -91,6 +93,11 @@ const tileSetFileService = new TileSetFileService(
   projectService,
   assetDatabaseStore,
 );
+const projectBuildService = new ProjectBuildService(
+  projectService,
+  projectFileService,
+  createGameBuildService(),
+);
 
 const router = createRouter({
   projectService,
@@ -105,6 +112,7 @@ const router = createRouter({
   componentCatalogService,
   prefabFileService,
   tileSetFileService,
+  projectBuildService,
 });
 
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {

@@ -20,7 +20,7 @@ Orientation: [`PROJECT.md`](../PROJECT.md). Asset pipeline: [`assets.md`](./asse
 * collaboration;
 * resource locking;
 * project discovery;
-* build orchestration where necessary.
+* build orchestration where necessary (`POST /build`, `POST /build/reveal` — see [`android-export.md`](./android-export.md)).
 
 The browser must never receive arbitrary unrestricted filesystem access. All filesystem paths must be validated relative to the opened project root. Prevent path traversal.
 

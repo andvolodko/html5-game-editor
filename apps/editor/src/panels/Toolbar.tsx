@@ -11,6 +11,7 @@ import { useEditorState } from "../hooks/useEditorState";
 import { useEditorLayoutControls } from "../layout/layout-context";
 import { OpenProjectDialog } from "../project/OpenProjectDialog";
 import { PreferencesDialog } from "../settings/PreferencesDialog";
+import { BuildGameDialog } from "../build/BuildGameDialog";
 import { useUnsavedChangesGuard } from "../unsaved/useUnsavedChangesGuard";
 import { syncEditorComponentCatalog } from "../components/sync-editor-component-catalog";
 import { isDemoMode } from "../demo/demo-mode";
@@ -35,6 +36,7 @@ export function Toolbar() {
   const [openMenu, setOpenMenu] = useState<MenuId | null>(null);
   const [projectPickerOpen, setProjectPickerOpen] = useState(false);
   const [preferencesOpen, setPreferencesOpen] = useState(false);
+  const [buildOpen, setBuildOpen] = useState(false);
   const [projectOptions, setProjectOptions] = useState<ProjectListEntry[]>([]);
   const [projectPickerError, setProjectPickerError] = useState<string | null>(
     null,
@@ -296,6 +298,15 @@ export function Toolbar() {
             Open Project…
           </MenuItem>
           <MenuItem
+            disabled={busy}
+            onClick={() => {
+              closeMenus();
+              setBuildOpen(true);
+            }}
+          >
+            Build Game…
+          </MenuItem>
+          <MenuItem
             onClick={() => {
               layout.resetLayout();
               setStatus("Layout reset");
@@ -471,6 +482,11 @@ export function Toolbar() {
       <PreferencesDialog
         open={preferencesOpen}
         onClose={() => setPreferencesOpen(false)}
+      />
+
+      <BuildGameDialog
+        open={buildOpen}
+        onClose={() => setBuildOpen(false)}
       />
 
       {dialog}

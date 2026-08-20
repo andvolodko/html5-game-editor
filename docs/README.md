@@ -16,6 +16,7 @@ Operator setup (`pnpm dev`, demo site, daily commands) lives in the root [`READM
 | Add a Script behaviour (Inspector + runtime) | [Add a script component](./guides/add-a-script-component.md) |
 | Understand undo, selection, Inspector, panels | [`editor.md`](./editor.md) |
 | Boot a standalone game | [`runtime.md`](./runtime.md) |
+| Android / Debug APK export | [`android-export.md`](./android-export.md) |
 | Add or change a Pixi / Three node type | [`renderers.md`](./renderers.md), [`scene-model.md`](./scene-model.md) |
 | Import assets, IDs, `.generated/` | [`assets.md`](./assets.md) |
 | Aseprite / LibreSprite compile | [`aseprite.md`](./aseprite.md) |
@@ -33,6 +34,7 @@ Operator setup (`pnpm dev`, demo site, daily commands) lives in the root [`READM
 | [`scene-model.md`](./scene-model.md) | Scene graph, components, Zod, prefabs | Shipped (`version: 1`) |
 | [`editor.md`](./editor.md) | `Editor` façade, commands, selection, Inspector | Shipped |
 | [`runtime.md`](./runtime.md) | `GameRuntime`, independent game builds | Shipped |
+| [`android-export.md`](./android-export.md) | BuildTarget + Capacitor Debug APK | Shipped (debug APK) |
 | [`renderers.md`](./renderers.md) | Pixi / Three adapters, hybrid layers, node types | Shipped (see per-type table) |
 | [`assets.md`](./assets.md) | Catalogue, import, atlas, generated files | Partial (Aseprite in; loose-PNG atlas not) |
 | [`aseprite.md`](./aseprite.md) | Compile pipeline, CLI, serialization | Shipped |

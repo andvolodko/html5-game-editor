@@ -452,7 +452,7 @@ Created and written by **[Andrii Volodko](https://github.com/andvolodko)**.
 
 ## Acknowledgments
 
-This project was developed with [Cursor](https://cursor.com) using the **High Fast** preset.
+This project was developed with [Cursor](https://cursor.com) using **cursor-grok-4.6-high-fast** and **cursor-grok-4.6-high**.
 
 ---
 

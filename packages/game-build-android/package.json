@@ -1,0 +1,37 @@
+{
+  "name": "@game-editor/game-build-android",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "files": ["dist", "src", "templates"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "lint": "eslint src --max-warnings=0",
+    "build:debug": "tsx src/build-android-cli.ts --format apk",
+    "build:android": "tsx src/build-android-cli.ts"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
+    "@game-editor/assets": "workspace:*",
+    "@game-editor/core": "workspace:*",
+    "@game-editor/game-build": "workspace:*",
+    "@game-editor/project": "workspace:*",
+    "sharp": "^0.34.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

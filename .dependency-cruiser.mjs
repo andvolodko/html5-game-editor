@@ -49,6 +49,29 @@ export default {
       from: { path: "^games/" },
       to: { path: "(packages/editor-core|apps/editor)" },
     },
+    {
+      name: "games-no-game-build",
+      comment:
+        "Games must not import Node-only build packages (Capacitor/Gradle).",
+      severity: "error",
+      from: { path: "^games/" },
+      to: { path: "packages/game-build" },
+    },
+    {
+      name: "editor-no-game-build",
+      comment:
+        "Browser editor must not import Node-only build packages; use project-server HTTP.",
+      severity: "error",
+      from: { path: "^apps/editor" },
+      to: { path: "packages/game-build" },
+    },
+    {
+      name: "runtime-no-game-build",
+      comment: "Runtime must not depend on native packaging packages.",
+      severity: "error",
+      from: { path: "^packages/runtime" },
+      to: { path: "packages/game-build" },
+    },
   ],
   options: {
     doNotFollow: {

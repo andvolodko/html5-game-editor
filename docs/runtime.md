@@ -38,7 +38,9 @@ pnpm --filter @games/editor-features-demo build
 
 Output: `games/editor-features-demo/dist/`.
 
-Standalone `vite build` uses a relative `base` (`./`) so `bundle/` and `assets/` resolve next to `index.html`. That is required for zip hosts such as itch.io. `pnpm build:pages` still sets `VITE_BASE` to `/<repo>/games/<id>/` for GitHub Pages.
+Standalone `vite build` uses a relative `base` (`./`) so `bundle/`, `assets/`, and `_generated/` resolve next to `index.html`. That is required for zip hosts such as itch.io. `pnpm build:pages` still sets `VITE_BASE` to `/<repo>/games/<id>/` for GitHub Pages.
+
+Android packaging **reuses** this production `dist/` via Capacitor — see [`android-export.md`](./android-export.md). Do not add a second game bundler for native targets.
 
 Building one game must not bundle another game. The monorepo does **not** produce one global game bundle.
 
@@ -97,6 +99,8 @@ constructor → start() once (node + ctx.transform ready)
 ```
 
 `GameRuntime.setPaused(true)` skips `tick` / playback pointer events and calls `SceneRenderer.setPlaybackPaused` so Pixi tickers and glTF mixers freeze. Spine and AnimatedSprite (Aseprite) attach to Pixi `Ticker.shared` by default; preview pause detaches them and drives updates from the Application ticker instead. Inspector `onPropertiesChanged` still runs. Editor preview Pause uses this plus `HtmlAudioPlayer.setPaused`.
+
+Standalone games register `bindDocumentVisibilityPause` so background tabs / Android WebView hide pause tick and audio without Capacitor imports.
 
 `ScriptHost` isolates hook errors (script id, component id, node id, hook name) so one broken behaviour does not stop the rest of the loop.
 

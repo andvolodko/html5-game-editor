@@ -10,6 +10,7 @@ import type { AssetSyncService } from "../services/asset-sync-service.js";
 import type { ComponentCatalogService } from "../services/component-catalog-service.js";
 import type { PrefabFileService } from "../services/prefab-file-service.js";
 import type { TileSetFileService } from "../services/tileset-file-service.js";
+import type { ProjectBuildService } from "../services/project-build-service.js";
 
 export interface RouterDeps {
   projectService: ProjectService;
@@ -27,4 +28,6 @@ export interface RouterDeps {
   componentCatalogService?: ComponentCatalogService;
   prefabFileService: PrefabFileService;
   tileSetFileService: TileSetFileService;
+  /** Optional: allowlisted web/android build orchestration. */
+  projectBuildService?: ProjectBuildService;
 }

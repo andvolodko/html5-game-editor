@@ -270,6 +270,21 @@ export type {
   OpenProjectResult,
 } from "./project-api-client.js";
 export {
+  createFetchBuildApiClient,
+} from "./build-api-client.js";
+export type {
+  BuildApiClient,
+  BuildRequestDto,
+  BuildResultDto,
+  BuildProgressEventDto,
+  BuildIssueDto,
+  BuildArtifactDto,
+  BuildPlatform,
+  BuildMode,
+  BuildFormat,
+  BuildType,
+} from "./build-api-client.js";
+export {
   createFetchComponentCatalogApiClient,
 } from "./component-catalog-api-client.js";
 export type { ComponentCatalogApiClient } from "./component-catalog-api-client.js";

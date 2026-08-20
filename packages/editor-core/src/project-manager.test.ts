@@ -135,6 +135,45 @@ describe("ProjectManager", () => {
     expect(saveProject).not.toHaveBeenCalled();
   });
 
+  it("sets android settings via API and skips when unchanged", async () => {
+    const saveProject = vi.fn(async (project: ProjectData) => project);
+    const android = {
+      appName: "Demo",
+      applicationId: "com.example.demo",
+      versionName: "1.0.0",
+      versionCode: 1,
+      orientation: "portrait" as const,
+      fullscreen: true,
+      immersiveMode: true,
+      keepScreenAwake: false,
+    };
+    const withAndroid: ProjectData = { ...sample, android };
+    const manager = new ProjectManager({
+      getProject: async () => withAndroid,
+      saveProject,
+      listProjects: async () => ({
+        projects: [],
+        activeProjectId: null,
+      }),
+      openProject: async () => ({
+        projectId: "editor-features-demo",
+        project: withAndroid,
+      }),
+    });
+    await manager.refresh();
+
+    const next = { ...android, versionCode: 2 };
+    await manager.setAndroidSettings(next);
+    expect(saveProject).toHaveBeenCalledWith({
+      ...withAndroid,
+      android: next,
+    });
+
+    saveProject.mockClear();
+    await manager.setAndroidSettings(next);
+    expect(saveProject).not.toHaveBeenCalled();
+  });
+
   it("opens a project and updates active id", async () => {
     const openProject = vi.fn(async () => ({
       projectId: "solitaire",

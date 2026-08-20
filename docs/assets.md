@@ -174,4 +174,4 @@ Example: `assets/characters/hero.aseprite` → `.generated/assets/characters/her
 
 Do not invent a second generated-folder convention. Do not manually edit generated files.
 
-Derived PNG/JSON under `games/<name>/.generated` are committed so GitHub Actions can build the static demo and standalone games without the Aseprite CLI. Keep `.project/aseprite-cache.json` and `.generated` undo trash gitignored. After changing a source `.aseprite`, regenerate locally and commit the matching PNG/JSON. Game Vite copies `.generated` into the production `dist`; the editor demo plugin copies it under `/demo/<id>/.generated`.
+Derived PNG/JSON under `games/<name>/.generated` are committed so GitHub Actions can build the static demo and standalone games without the Aseprite CLI. Keep `.project/aseprite-cache.json` and `.generated` undo trash gitignored. After changing a source `.aseprite`, regenerate locally and commit the matching PNG/JSON. Game Vite copies `.generated` into production `dist/_generated` (skipping `asset-trash` / `folder-trash`); the editor demo plugin copies the on-disk tree under `/demo/<id>/.generated`.

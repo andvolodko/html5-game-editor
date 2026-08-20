@@ -101,7 +101,7 @@ Pixi maps tags to `spritesheet.animations[tagName]`. Reverse and ping-pong tags 
 
 ## Runtime / export
 
-`createStaticAssetResolver` maps an Aseprite `assetId` to `/.generated/...json` and the sibling PNG. Game Vite copies `.generated` into `dist`. The static editor demo copies the same tree under `/demo/<projectId>/.generated`. Derived PNG/JSON are committed so GitHub Actions can build Pages without installing Aseprite. After changing a source `.aseprite`, regenerate locally and commit the matching PNG/JSON. Players never need the CLI.
+`createStaticAssetResolver` maps an Aseprite `assetId` to `/_generated/...json` and the sibling PNG. Game Vite copies `.generated` into `dist/_generated` (skipping undo trash) so Android WebView can fetch the sheets (hidden `/.generated/` URLs are dropped by Capacitor/aapt). The static editor demo still copies the on-disk tree under `/demo/<projectId>/.generated`. Derived PNG/JSON are committed so GitHub Actions can build Pages without installing Aseprite. After changing a source `.aseprite`, regenerate locally and commit the matching PNG/JSON. Players never need the CLI.
 
 ## Tests
 

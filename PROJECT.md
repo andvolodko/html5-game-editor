@@ -107,6 +107,8 @@ packages/game-components defineComponent + shared behaviours
 packages/runtime         Game loop, scene host (no editor deps)
 packages/renderer-pixi   Pixi scene adapter
 packages/renderer-three  Three scene adapter
+packages/game-build      BuildTarget registry, WebBuildTarget, ProcessRunner (Node)
+packages/game-build-android  Capacitor Android packaging → Debug APK (Node)
 
 games/<name>/            Independently buildable game + editable content
                          (assets/, project.json, .project/) — not a top-level projects/ tree
@@ -127,7 +129,7 @@ Current games include `editor-features-demo` (hybrid), `muonline-game` (hybrid),
 * Do not swallow errors. Surface meaningful messages for editor/filesystem/asset failures.
 * Before adding a dependency: confirm it is needed, not duplicated, and acceptable in the runtime bundle if it is a game dependency.
 
-Common commands: `pnpm dev`, `pnpm test`, `pnpm typecheck`, `pnpm lint`. Per-game: `pnpm --filter @games/<id> build`.
+Common commands: `pnpm dev`, `pnpm test`, `pnpm typecheck`, `pnpm lint`. Per-game: `pnpm --filter @games/<id> build`. Android Debug APK: `pnpm --filter @game-editor/game-build-android build:debug -- games/<id>`. Release AAB: `pnpm --filter @game-editor/game-build-android build:android -- games/<id> --format aab` (see [`docs/android-export.md`](./docs/android-export.md)).
 
 ---
 

@@ -23,3 +23,5 @@ export {
 export { GameScreenHost } from "./game-screen-host.js";
 export { bindPlaybackOverlayPointer } from "./playback-overlay-pointer.js";
 export type { PlaybackOverlayPointerOptions } from "./playback-overlay-pointer.js";
+export { bindDocumentVisibilityPause } from "./document-visibility-pause.js";
+export type { DocumentVisibilityPauseHandles } from "./document-visibility-pause.js";

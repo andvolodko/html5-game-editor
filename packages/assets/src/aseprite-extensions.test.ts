@@ -9,6 +9,7 @@ import {
   ownedAssetPaths,
   relocateOwnedAssetPaths,
   resolveAsepritePartRelativePath,
+  toPublicAssetPath,
 } from "./index.js";
 
 describe("aseprite extensions", () => {
@@ -23,6 +24,13 @@ describe("aseprite extensions", () => {
       sheetPath: ".generated/assets/characters/hero.png",
       dataPath: ".generated/assets/characters/hero.json",
     });
+  });
+
+  it("maps on-disk .generated paths to public _generated/ URLs", () => {
+    expect(toPublicAssetPath(".generated/assets/hero.json")).toBe(
+      "_generated/assets/hero.json",
+    );
+    expect(toPublicAssetPath("assets/ui/hero.png")).toBe("assets/ui/hero.png");
   });
 
   it("treats generated files as derived, not owned source paths", () => {

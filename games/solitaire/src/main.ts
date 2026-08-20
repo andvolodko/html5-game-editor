@@ -15,6 +15,7 @@ import {
   EventBus,
   GameRuntime,
   GameScreenHost,
+  bindDocumentVisibilityPause,
   collectSceneAssetIds,
   createHtmlAudioPlayer,
   resolveGameProject,
@@ -197,6 +198,15 @@ async function boot(): Promise<void> {
   runtime.loadScene(session.loaded.scene);
   runtime.resize(design.width, design.height);
   runtime.render();
+
+  bindDocumentVisibilityPause({
+    setPaused: (paused) => {
+      runtime.setPaused(paused);
+    },
+    setAudioPaused: (paused) => {
+      htmlAudio.setPaused(paused);
+    },
+  });
 
   let lastFrameMs = performance.now();
   const frame = (nowMs: number): void => {

@@ -131,9 +131,11 @@ export type { SpineSkeletonMeta } from "./spine-extensions.js";
 export {
   ASEPRITE_FILE_EXTENSIONS,
   GENERATED_ASSETS_ROOT,
+  PUBLIC_GENERATED_ASSETS_ROOT,
   isSupportedAsepriteExtension,
   isSupportedAsepriteFile,
   generatedAsepriteOutputPaths,
+  toPublicAssetPath,
   derivedAsepritePaths,
   withAsepriteSourcePath,
   isAsepriteAnimated,

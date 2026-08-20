@@ -37,6 +37,12 @@ import {
   handleTileSetItemRoute,
   handleTileSetsCollectionRoute,
 } from "./routes/tilesets.js";
+import {
+  handleBuildRevealRoute,
+  handleBuildRoute,
+  handleAndroidSecretsRoute,
+  handleAndroidKeystoreRoute,
+} from "./routes/build.js";
 
 export type { RouterDeps } from "./router-deps.js";
 
@@ -45,7 +51,11 @@ const ROUTE_HANDLERS: readonly RouteHandler[] = [
   handleHealthRoute,
   handleProjectsRoute,
   handleProjectOpenRoute,
+  handleAndroidSecretsRoute,
+  handleAndroidKeystoreRoute,
   handleProjectRoute,
+  handleBuildRevealRoute,
+  handleBuildRoute,
   handleAssetsListRoute,
   handleAssetFoldersCreateRoute,
   handleAssetFoldersRenameRoute,

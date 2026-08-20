@@ -85,7 +85,7 @@ try {
 } catch {}
 ```
 
-Prefer typed/domain errors (`DomainError` / `ValidationError` from `@game-editor/core`). Editor operations that may fail should surface meaningful messages. Filesystem and asset pipeline failures must include enough context for diagnosis.
+Prefer typed/domain errors (`DomainError` / `ValidationError` from `@game-editor/core`). Editor operations that may fail should surface meaningful messages. Filesystem and asset pipeline failures must include enough context for diagnosis. Native packaging failures use structured `BuildIssue` codes from `@game-editor/game-build` (see [`android-export.md`](./android-export.md)).
 
 ---
 

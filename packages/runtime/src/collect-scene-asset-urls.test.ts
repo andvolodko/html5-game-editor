@@ -141,8 +141,8 @@ describe("collectSceneAssetUrls", () => {
       ),
     );
     expect(collectSceneAssetUrls([scene], resolver)).toEqual([
-      "/.generated/assets/characters/hero.json",
-      "/.generated/assets/characters/hero.png",
+      "/_generated/assets/characters/hero.json",
+      "/_generated/assets/characters/hero.png",
     ]);
   });
 

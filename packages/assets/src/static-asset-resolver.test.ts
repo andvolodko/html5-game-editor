@@ -137,14 +137,14 @@ describe("createStaticAssetResolver", () => {
     const resolver = createStaticAssetResolver(database);
 
     expect(resolver.resolveAsepriteUrls?.("asset_hero")).toEqual({
-      jsonUrl: "/.generated/assets/characters/hero.json",
-      imageUrl: "/.generated/assets/characters/hero.png",
+      jsonUrl: "/_generated/assets/characters/hero.json",
+      imageUrl: "/_generated/assets/characters/hero.png",
       tags: ["idle"],
       frameDurations: [],
       frameCount: 4,
     });
     expect(resolver.resolveAsepritePartUrl?.("asset_hero", "hero.json")).toBe(
-      "/.generated/assets/characters/hero.json",
+      "/_generated/assets/characters/hero.json",
     );
     expect(resolver.resolveUrl("asset_hero")).toBe(
       "/assets/characters/hero.aseprite",

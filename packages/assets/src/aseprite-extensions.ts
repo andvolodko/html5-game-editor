@@ -13,6 +13,12 @@ const ASEPRITE_EXTENSION_SET = new Set<string>(ASEPRITE_FILE_EXTENSIONS);
 /** Project-relative root for derived spritesheets (not listed in the Assets tree). */
 export const GENERATED_ASSETS_ROOT = ".generated";
 
+/**
+ * Dist / HTTP folder for those sheets. Android WebView and aapt skip hidden
+ * paths, so production must not request `/.generated/`.
+ */
+export const PUBLIC_GENERATED_ASSETS_ROOT = "_generated";
+
 const ASEPRITE_PART_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._ -]*$/;
 
 export function isSupportedAsepriteExtension(fileName: string): boolean {
@@ -42,6 +48,21 @@ export function generatedAsepriteOutputPaths(sourcePath: string): {
     sheetPath: `${generatedDir}/${stem}.png`,
     dataPath: `${generatedDir}/${stem}.json`,
   };
+}
+
+/**
+ * Catalogue paths stay under `.generated/`. Fetchable URLs / dist use `_generated/`.
+ */
+export function toPublicAssetPath(projectPath: string): string {
+  const normalized = normalizePath(projectPath);
+  if (normalized === GENERATED_ASSETS_ROOT) {
+    return PUBLIC_GENERATED_ASSETS_ROOT;
+  }
+  const prefix = `${GENERATED_ASSETS_ROOT}/`;
+  if (normalized.startsWith(prefix)) {
+    return `${PUBLIC_GENERATED_ASSETS_ROOT}/${normalized.slice(prefix.length)}`;
+  }
+  return normalized;
 }
 
 export function derivedAsepritePaths(record: AssetRecord): string[] {

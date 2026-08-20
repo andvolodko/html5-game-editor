@@ -132,8 +132,8 @@ describe("preloadPixiSceneAsset", () => {
     const resolver = createStaticAssetResolver(database);
     await preloadPixiSceneAsset(resolver, "asset_hero");
     expect(load).toHaveBeenCalledWith({
-      src: "/.generated/assets/hero.json",
-      data: { cachePrefix: "/.generated/assets/hero.json#" },
+      src: "/_generated/assets/hero.json",
+      data: { cachePrefix: "/_generated/assets/hero.json#" },
     });
   });
 
