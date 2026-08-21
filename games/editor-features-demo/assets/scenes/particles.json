@@ -5,7 +5,7 @@
   "nodes": [
     {
       "id": "node_c9b9a0e3-939d-4596-ab5f-b121a93b49e9",
-      "name": "Particle Emitter",
+      "name": "Explosion",
       "components": [
         {
           "type": "Transform2D",
@@ -106,7 +106,7 @@
     },
     {
       "id": "node_eee4047a-5276-47bb-a401-c6428e81373f",
-      "name": "Particle Emitter 2",
+      "name": "Fire",
       "components": [
         {
           "type": "Transform2D",
@@ -210,7 +210,7 @@
     },
     {
       "id": "node_b3aa45af-ff71-4ce4-bcfa-5743168caa0e",
-      "name": "Particle Emitter 3",
+      "name": "Smoke",
       "components": [
         {
           "type": "Transform2D",
@@ -306,7 +306,7 @@
     },
     {
       "id": "node_5352cd62-01ba-41f5-a2e5-090afc8eed64",
-      "name": "Particle Emitter 4",
+      "name": "Sparkles",
       "components": [
         {
           "type": "Transform2D",
@@ -410,7 +410,7 @@
     },
     {
       "id": "node_f2366050-361b-4d20-b724-a547d4b0f267",
-      "name": "Particle Emitter 5",
+      "name": "Magic",
       "components": [
         {
           "type": "Transform2D",
@@ -510,7 +510,7 @@
     },
     {
       "id": "node_833bfa37-84d2-429e-b83a-6fb42f35f72c",
-      "name": "Particle Emitter 6",
+      "name": "Snow",
       "components": [
         {
           "type": "Transform2D",
@@ -611,7 +611,7 @@
     },
     {
       "id": "node_b76c80f1-6eae-4224-beee-66c0527de341",
-      "name": "Particle Emitter 7",
+      "name": "Rain",
       "components": [
         {
           "type": "Transform2D",
@@ -704,7 +704,7 @@
     },
     {
       "id": "node_cde5c484-4478-4f0d-b71a-80ce304fce3b",
-      "name": "Particle Emitter 8",
+      "name": "Textured",
       "components": [
         {
           "type": "Transform2D",
@@ -895,7 +895,7 @@
         {
           "type": "Text",
           "id": "comp_particles_title",
-          "text": "ParticleEmitter — Fire / Smoke / Sparkles / Explosion",
+          "text": "ParticleEmitter — Explosion / Fire / Smoke / Sparkles / Magic / Snow / Rain",
           "style": {
             "fontFamily": "Arial",
             "fontSize": 28,

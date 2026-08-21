@@ -18,10 +18,14 @@ describe("particles demo scene", () => {
       node.components.some((c) => c.type === "ParticleEmitter"),
     );
     expect(emitters.map((n) => n.name)).toEqual([
+      "Explosion",
       "Fire",
       "Smoke",
       "Sparkles",
-      "Explosion",
+      "Magic",
+      "Snow",
+      "Rain",
+      "Textured",
     ]);
   });
 });

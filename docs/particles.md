@@ -90,7 +90,7 @@ circle instead of a white square.
 
 ## Demo
 
-`games/editor-features-demo/assets/scenes/particles.json` — Fire, Smoke, Sparkles, Explosion.
+`games/editor-features-demo/assets/scenes/particles.json` — Explosion, Fire, Smoke, Sparkles, Magic, Snow, Rain, plus a textured emitter.
 
 ## Out of scope (v1)
 
