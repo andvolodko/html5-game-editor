@@ -20,6 +20,7 @@ Operator setup (`pnpm dev`, demo site, daily commands) lives in the root [`READM
 | Boot a standalone game | [`runtime.md`](./runtime.md) |
 | Android / Debug APK export | [`android-export.md`](./android-export.md) |
 | Add or change a Pixi / Three node type | [`renderers.md`](./renderers.md), [`scene-model.md`](./scene-model.md) |
+| ParticleEmitter FX | [`particles.md`](./particles.md) |
 | Import assets, IDs, `.generated/` | [`assets.md`](./assets.md) |
 | Aseprite / LibreSprite compile | [`aseprite.md`](./aseprite.md) |
 | project-server HTTP / path confinement | [`project-server.md`](./project-server.md) |
@@ -38,6 +39,7 @@ Operator setup (`pnpm dev`, demo site, daily commands) lives in the root [`READM
 | [`runtime.md`](./runtime.md) | `GameRuntime`, independent game builds | Shipped |
 | [`android-export.md`](./android-export.md) | BuildTarget + Capacitor Debug APK | Shipped (debug APK) |
 | [`renderers.md`](./renderers.md) | Pixi / Three adapters, hybrid layers, node types | Shipped (see per-type table) |
+| [`particles.md`](./particles.md) | ParticleEmitter config, curves, runtime API, presets | Shipped |
 | [`assets.md`](./assets.md) | Catalogue, import, atlas, generated files | Partial (Aseprite in; loose-PNG atlas not) |
 | [`aseprite.md`](./aseprite.md) | Compile pipeline, CLI, serialization | Shipped |
 | [`project-server.md`](./project-server.md) | Filesystem API used by the browser editor | Shipped |

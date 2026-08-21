@@ -32,6 +32,10 @@ export {
 export { createSpineComponent } from "./factories/spine.js";
 export { createTilemapComponent } from "./factories/tilemap.js";
 export {
+  createParticleEmitterComponent,
+  createParticleEmitterNode,
+} from "./factories/particle-emitter.js";
+export {
   createModel3DComponent,
   createPerspectiveCameraComponent,
   createDirectionalLightComponent,

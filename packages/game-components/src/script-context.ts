@@ -4,6 +4,7 @@ import {
   type RuntimeTransform3D,
 } from "@game-editor/scene";
 import { createScriptAnimationsApi } from "./script-animations-api.js";
+import { createScriptParticlesApi } from "./script-particles-api.js";
 import { createScriptAudioApi } from "./script-audio-api.js";
 import { createScriptNodeHandleCache } from "./script-node-api.js";
 import { createScriptSceneApi } from "./script-scene-api.js";
@@ -27,7 +28,7 @@ export interface CreateScriptContextInput {
 
 /**
  * Canonical ScriptCreateContext factory.
- * Builds persistent `transform3D`, `animations`, `node`, `audio`, and `scene`
+ * Builds persistent `transform3D`, `animations`, `particles`, `node`, `audio`, and `scene`
  * wrappers bound to `nodeId`.
  */
 export function createScriptContext(
@@ -46,6 +47,7 @@ export function createScriptContext(
       input.transform3D ??
       createScriptTransformApi(input.nodeId, input.services),
     animations: createScriptAnimationsApi(input.nodeId, input.services),
+    particles: createScriptParticlesApi(input.nodeId, input.services),
     node: cache.get(input.nodeId),
     audio: createScriptAudioApi(input.services),
     scene: createScriptSceneApi(

@@ -21,6 +21,7 @@ import {
 import { SpineFields } from "./visual-fields/spine";
 import { BitmapTextFields, TextStyleFields } from "./visual-fields/text";
 import { TilemapFields } from "./visual-fields/tilemap";
+import { ParticleEmitterFields } from "./visual-fields/particle-emitter";
 import type { VisualCommit } from "./visual-fields/types";
 
 interface Props {
@@ -98,6 +99,15 @@ function VisualFields({
     case "Tilemap":
       return (
         <TilemapFields visual={visual} commit={commit} editor={editor} />
+      );
+    case "ParticleEmitter":
+      return (
+        <ParticleEmitterFields
+          visual={visual}
+          commit={commit}
+          editor={editor}
+          nodeId={nodeId}
+        />
       );
     default: {
       const _exhaustive: never = visual;

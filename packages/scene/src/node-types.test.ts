@@ -24,6 +24,7 @@ import {
   createAnimatedSpriteComponent,
   createSpineComponent,
   createTilemapComponent,
+  createParticleEmitterComponent,
   nodeCanHaveChildren,
   parseSceneData,
   insertNodeInScene,
@@ -162,6 +163,15 @@ describe("pixi visual components round-trip", () => {
           "Tilemap",
           { x: 0, y: 0 },
           createTilemapComponent({ tileSetId: "asset_tileset" }),
+        ),
+    ],
+    [
+      "ParticleEmitter",
+      () =>
+        createNodeWithVisual(
+          "Particle Emitter",
+          { x: 0, y: 0 },
+          createParticleEmitterComponent({ assetId: "asset_tex" }),
         ),
     ],
   ] as const;

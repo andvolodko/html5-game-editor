@@ -49,6 +49,23 @@ describe("createScriptContext", () => {
     expect(playAudio).toHaveBeenCalledWith("asset_hit");
   });
 
+  it("binds particles.play to controlParticleEmitter", () => {
+    const controlParticleEmitter = vi.fn();
+    const ctx = createScriptContext({
+      nodeId: "node_fx",
+      componentId: "comp_1",
+      scriptId: "test.Fx",
+      properties: {},
+      services: {
+        bus: new EventBus(),
+        changeScene: () => undefined,
+        controlParticleEmitter,
+      },
+    });
+    ctx.particles.restart();
+    expect(controlParticleEmitter).toHaveBeenCalledWith("node_fx", "restart");
+  });
+
   it("uses a provided live transform3D handle instead of services", () => {
     const live = createDetachedRuntimeTransform3D({
       position: { x: 1, y: 2, z: 3 },

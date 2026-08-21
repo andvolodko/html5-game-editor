@@ -124,6 +124,7 @@ Discriminated union `ComponentData` on `type`:
 | `AnimatedSprite` | `visual-components.ts` | frame `assetId`s or Aseprite `assetId` + `animation` tag |
 | `Spine` | `visual-components.ts` | skeleton + atlas catalogue id |
 | `Tilemap` | `tilemap-data.ts` | `tileSetId` + chunked cells |
+| `ParticleEmitter` | `particle-emitter-data.ts` | Library-agnostic FX; Pixi ParticleContainer backend — [`particles.md`](./particles.md) |
 | `HitZone` | `hit-zone-component.ts` | Optional 2D pointer region (Graphics shapes + offset). Not a leaf visual, not physics. One per node. |
 | `Mask` | `mask-component.ts` | Optional 2D clip (shape or sprite/alpha, optional inverse). Not a leaf visual. One per node. Pixi-only. |
 | `Model3D` | `three-components.ts` | glTF `assetId`, clip / loop / playing |

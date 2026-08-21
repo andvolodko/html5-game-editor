@@ -325,6 +325,13 @@ export class GameRuntime implements RuntimeScriptServiceHost {
     this.sceneHost.writeAnimatedSpritePlayback(nodeId, patch);
   }
 
+  controlParticleEmitter(
+    nodeId: string,
+    action: "play" | "pause" | "stop" | "restart",
+  ): void {
+    this.sceneHost.controlParticleEmitter(nodeId, action);
+  }
+
   reparentLiveNode(
     nodeId: string,
     parentId: string | undefined,

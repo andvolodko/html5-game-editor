@@ -1,0 +1,1276 @@
+{
+  "id": "scene_particles_demo",
+  "name": "particles",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "node_c9b9a0e3-939d-4596-ab5f-b121a93b49e9",
+      "name": "Particle Emitter",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_ba271806-a9d8-43a3-b4c4-3d61d6bbf9f4",
+          "position": {
+            "x": 974.0146910374316,
+            "y": 395.4439702861005
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "ParticleEmitter",
+          "id": "comp_6a51f6fa-6ad1-489e-9b98-2c183d64314e",
+          "seed": 42,
+          "playOnStart": true,
+          "loop": true,
+          "prewarm": false,
+          "emission": {
+            "rate": 0,
+            "maxParticles": 80,
+            "duration": 0.15
+          },
+          "lifetime": {
+            "min": 0.4,
+            "max": 0.9
+          },
+          "spawn": {
+            "type": "circle",
+            "radius": 30
+          },
+          "velocity": {
+            "speedMin": 120,
+            "speedMax": 280,
+            "angleMin": 0,
+            "angleMax": 360
+          },
+          "acceleration": {
+            "x": 0,
+            "y": 40
+          },
+          "scale": {
+            "points": [
+              {
+                "time": 0,
+                "value": 1.2
+              },
+              {
+                "time": 1,
+                "value": 0
+              }
+            ]
+          },
+          "alpha": {
+            "points": [
+              {
+                "time": 0,
+                "value": 1
+              },
+              {
+                "time": 0.5,
+                "value": 0.8
+              },
+              {
+                "time": 1,
+                "value": 0
+              }
+            ]
+          },
+          "color": {
+            "points": [
+              {
+                "time": 0,
+                "color": 16772744
+              },
+              {
+                "time": 0.4,
+                "color": 16737792
+              },
+              {
+                "time": 1,
+                "color": 4465152
+              }
+            ]
+          },
+          "rotation": {
+            "startMin": 0,
+            "startMax": 360,
+            "speedMin": -180,
+            "speedMax": 180
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_eee4047a-5276-47bb-a401-c6428e81373f",
+      "name": "Particle Emitter 2",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_902def7a-6b4e-4937-9d0b-cc9c6a3bcd50",
+          "position": {
+            "x": 682.977562474207,
+            "y": 411.2108994911701
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "ParticleEmitter",
+          "id": "comp_ea029108-4714-48a4-83e2-63d8b9bbd737",
+          "seed": 7,
+          "playOnStart": true,
+          "loop": true,
+          "prewarm": true,
+          "emission": {
+            "rate": 40,
+            "maxParticles": 120
+          },
+          "lifetime": {
+            "min": 0.5,
+            "max": 1.2
+          },
+          "spawn": {
+            "type": "circle",
+            "radius": 12
+          },
+          "velocity": {
+            "speedMin": 30,
+            "speedMax": 80,
+            "angleMin": -110,
+            "angleMax": -70
+          },
+          "acceleration": {
+            "x": 0,
+            "y": -20
+          },
+          "scale": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0.6
+              },
+              {
+                "time": 0.3,
+                "value": 1
+              },
+              {
+                "time": 1,
+                "value": 0.2
+              }
+            ]
+          },
+          "alpha": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0.9
+              },
+              {
+                "time": 0.6,
+                "value": 0.7
+              },
+              {
+                "time": 1,
+                "value": 0
+              }
+            ]
+          },
+          "color": {
+            "points": [
+              {
+                "time": 0,
+                "color": 16772710
+              },
+              {
+                "time": 0.35,
+                "color": 16746496
+              },
+              {
+                "time": 1,
+                "color": 8917248
+              }
+            ]
+          },
+          "rotation": {
+            "startMin": 0,
+            "startMax": 360,
+            "speedMin": -40,
+            "speedMax": 40
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_b3aa45af-ff71-4ce4-bcfa-5743168caa0e",
+      "name": "Particle Emitter 3",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_48d2a93b-30a5-4e51-95ff-1d56512216b0",
+          "position": {
+            "x": 732.0297830445086,
+            "y": 631.2408176469974
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "ParticleEmitter",
+          "id": "comp_00222bea-8bcd-438c-b0ac-3c89bc4d6c86",
+          "seed": 11,
+          "playOnStart": true,
+          "loop": true,
+          "prewarm": true,
+          "emission": {
+            "rate": 18,
+            "maxParticles": 80
+          },
+          "lifetime": {
+            "min": 1.2,
+            "max": 2.5
+          },
+          "spawn": {
+            "type": "circle",
+            "radius": 16
+          },
+          "velocity": {
+            "speedMin": 10,
+            "speedMax": 40,
+            "angleMin": -100,
+            "angleMax": -80
+          },
+          "acceleration": {
+            "x": 8,
+            "y": -15
+          },
+          "scale": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0.4
+              },
+              {
+                "time": 1,
+                "value": 1.8
+              }
+            ]
+          },
+          "alpha": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0.5
+              },
+              {
+                "time": 0.4,
+                "value": 0.35
+              },
+              {
+                "time": 1,
+                "value": 0
+              }
+            ]
+          },
+          "color": {
+            "points": [
+              {
+                "time": 0,
+                "color": 11184810
+              },
+              {
+                "time": 1,
+                "color": 5592405
+              }
+            ]
+          },
+          "rotation": {
+            "startMin": 0,
+            "startMax": 360,
+            "speedMin": -20,
+            "speedMax": 20
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_5352cd62-01ba-41f5-a2e5-090afc8eed64",
+      "name": "Particle Emitter 4",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_7768094d-3280-4d25-bf33-752564ee5cd2",
+          "position": {
+            "x": 962.0342587259686,
+            "y": 682.0197217862367
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "ParticleEmitter",
+          "id": "comp_73de2d35-138f-4d3a-a88b-39739a385ae2",
+          "seed": 3,
+          "playOnStart": true,
+          "loop": true,
+          "prewarm": false,
+          "emission": {
+            "rate": 30,
+            "maxParticles": 100
+          },
+          "lifetime": {
+            "min": 0.4,
+            "max": 1
+          },
+          "spawn": {
+            "type": "circle",
+            "radius": 40
+          },
+          "velocity": {
+            "speedMin": 5,
+            "speedMax": 40,
+            "angleMin": 0,
+            "angleMax": 360
+          },
+          "acceleration": {
+            "x": 0,
+            "y": 30
+          },
+          "scale": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0
+              },
+              {
+                "time": 0.2,
+                "value": 1
+              },
+              {
+                "time": 1,
+                "value": 0
+              }
+            ]
+          },
+          "alpha": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0
+              },
+              {
+                "time": 0.15,
+                "value": 1
+              },
+              {
+                "time": 1,
+                "value": 0
+              }
+            ]
+          },
+          "color": {
+            "points": [
+              {
+                "time": 0,
+                "color": 16777215
+              },
+              {
+                "time": 0.5,
+                "color": 16772795
+              },
+              {
+                "time": 1,
+                "color": 16764006
+              }
+            ]
+          },
+          "rotation": {
+            "startMin": 0,
+            "startMax": 360,
+            "speedMin": -120,
+            "speedMax": 120
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_f2366050-361b-4d20-b724-a547d4b0f267",
+      "name": "Particle Emitter 5",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_c9188523-28f3-49b4-9380-6b706880bf6d",
+          "position": {
+            "x": 470.65869061936615,
+            "y": 536.5711352067974
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "ParticleEmitter",
+          "id": "comp_0887090f-fe8d-4d3a-bcf9-31ace11ea864",
+          "seed": 99,
+          "playOnStart": true,
+          "loop": true,
+          "prewarm": false,
+          "emission": {
+            "rate": 25,
+            "maxParticles": 90
+          },
+          "lifetime": {
+            "min": 0.8,
+            "max": 1.6
+          },
+          "spawn": {
+            "type": "circle",
+            "radius": 8
+          },
+          "velocity": {
+            "speedMin": 20,
+            "speedMax": 70,
+            "angleMin": 0,
+            "angleMax": 360
+          },
+          "acceleration": {
+            "x": 0,
+            "y": -10
+          },
+          "scale": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0.3
+              },
+              {
+                "time": 0.4,
+                "value": 1
+              },
+              {
+                "time": 1,
+                "value": 0
+              }
+            ]
+          },
+          "alpha": {
+            "points": [
+              {
+                "time": 0,
+                "value": 1
+              },
+              {
+                "time": 1,
+                "value": 0
+              }
+            ]
+          },
+          "color": {
+            "points": [
+              {
+                "time": 0,
+                "color": 11167487
+              },
+              {
+                "time": 0.5,
+                "color": 6737151
+              },
+              {
+                "time": 1,
+                "color": 16737996
+              }
+            ]
+          },
+          "rotation": {
+            "startMin": 0,
+            "startMax": 360,
+            "speedMin": -90,
+            "speedMax": 90
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_833bfa37-84d2-429e-b83a-6fb42f35f72c",
+      "name": "Particle Emitter 6",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_b362a4af-4614-4511-a90f-2d706fb8b5f2",
+          "position": {
+            "x": 1521.2128290893434,
+            "y": 358.4689368638613
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "ParticleEmitter",
+          "id": "comp_603bc4fb-3083-4bd7-a3b8-51d6aa5e7f30",
+          "seed": 21,
+          "playOnStart": true,
+          "loop": true,
+          "prewarm": true,
+          "emission": {
+            "rate": 35,
+            "maxParticles": 150
+          },
+          "lifetime": {
+            "min": 3,
+            "max": 5
+          },
+          "spawn": {
+            "type": "rectangle",
+            "width": 400,
+            "height": 20
+          },
+          "velocity": {
+            "speedMin": 20,
+            "speedMax": 50,
+            "angleMin": 70,
+            "angleMax": 110
+          },
+          "acceleration": {
+            "x": 5,
+            "y": 10
+          },
+          "scale": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0.3
+              },
+              {
+                "time": 1,
+                "value": 0.2
+              }
+            ]
+          },
+          "alpha": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0
+              },
+              {
+                "time": 0.1,
+                "value": 0.9
+              },
+              {
+                "time": 0.9,
+                "value": 0.9
+              },
+              {
+                "time": 1,
+                "value": 0
+              }
+            ]
+          },
+          "color": {
+            "points": [
+              {
+                "time": 0,
+                "color": 16777215
+              },
+              {
+                "time": 1,
+                "color": 16777215
+              }
+            ]
+          },
+          "rotation": {
+            "startMin": 0,
+            "startMax": 360,
+            "speedMin": -30,
+            "speedMax": 30
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_b76c80f1-6eae-4224-beee-66c0527de341",
+      "name": "Particle Emitter 7",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_85183db1-5eee-47f8-ad05-56933a9cb4f8",
+          "position": {
+            "x": 370.4203296907458,
+            "y": 678.5477469742773
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "ParticleEmitter",
+          "id": "comp_a1ab0c39-c9b6-49c0-a814-f62aebd2b794",
+          "seed": 5,
+          "playOnStart": true,
+          "loop": true,
+          "prewarm": true,
+          "emission": {
+            "rate": 120,
+            "maxParticles": 300
+          },
+          "lifetime": {
+            "min": 0.6,
+            "max": 1
+          },
+          "spawn": {
+            "type": "rectangle",
+            "width": 500,
+            "height": 10
+          },
+          "velocity": {
+            "speedMin": 280,
+            "speedMax": 360,
+            "angleMin": 95,
+            "angleMax": 105
+          },
+          "acceleration": {
+            "x": 0,
+            "y": 80
+          },
+          "scale": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0.15
+              },
+              {
+                "time": 1,
+                "value": 0.15
+              }
+            ]
+          },
+          "alpha": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0.5
+              },
+              {
+                "time": 1,
+                "value": 0.3
+              }
+            ]
+          },
+          "color": {
+            "points": [
+              {
+                "time": 0,
+                "color": 11193599
+              },
+              {
+                "time": 1,
+                "color": 8956637
+              }
+            ]
+          },
+          "rotation": {
+            "startMin": 0,
+            "startMax": 0,
+            "speedMin": 0,
+            "speedMax": 0
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_cde5c484-4478-4f0d-b71a-80ce304fce3b",
+      "name": "Particle Emitter 8",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_d6cf0efb-5e2c-4ecd-b11d-fb270af33576",
+          "position": {
+            "x": 224.4665441961333,
+            "y": 397.1959404132563
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "ParticleEmitter",
+          "id": "comp_2b5a7ecd-ae2c-4ca5-903b-2d4c06e497ac",
+          "assetId": "asset_75a91e43-b61c-4ed0-8750-15bd40d891c5",
+          "seed": 7,
+          "playOnStart": true,
+          "loop": true,
+          "prewarm": true,
+          "emission": {
+            "rate": 222,
+            "maxParticles": 555
+          },
+          "lifetime": {
+            "min": 8,
+            "max": 12
+          },
+          "spawn": {
+            "type": "point"
+          },
+          "velocity": {
+            "speedMin": 85,
+            "speedMax": 90,
+            "angleMin": -85,
+            "angleMax": -95
+          },
+          "acceleration": {
+            "x": 22,
+            "y": -20
+          },
+          "scale": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0.06
+              },
+              {
+                "time": 0.206,
+                "value": 0.279
+              },
+              {
+                "time": 0.994,
+                "value": 1.514
+              }
+            ]
+          },
+          "alpha": {
+            "points": [
+              {
+                "time": 0,
+                "value": 0.9
+              },
+              {
+                "time": 0.516,
+                "value": 0.682
+              },
+              {
+                "time": 1,
+                "value": 0
+              }
+            ]
+          },
+          "color": {
+            "points": [
+              {
+                "time": 0,
+                "color": 8026746
+              },
+              {
+                "time": 0.35,
+                "color": 8421504
+              },
+              {
+                "time": 1,
+                "color": 2171169
+              }
+            ]
+          },
+          "rotation": {
+            "startMin": 0,
+            "startMax": 0,
+            "speedMin": 0,
+            "speedMax": 0
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_7879eaab-11e0-4635-bbb2-e9f5eeadbbff",
+      "name": "Stats Copy",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_fb4cd4b1-66a1-45aa-b46e-2c72a022cbbd",
+          "position": {
+            "x": 16,
+            "y": 16
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_071e95f2-1cdd-483c-a9e6-536c8ca5ef26",
+          "text": "Stats",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 16,
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 2031360,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_ef2020e3-d2d7-44d3-8a5e-7803df686699",
+          "scriptId": "shared.PerformanceMeter",
+          "properties": {
+            "enabled": true,
+            "refreshIntervalMs": 250
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_particles_title",
+      "name": "Title",
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_particles_title_t",
+          "position": {
+            "x": 640,
+            "y": 64
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Text",
+          "id": "comp_particles_title",
+          "text": "ParticleEmitter — Fire / Smoke / Sparkles / Explosion",
+          "style": {
+            "fontFamily": "Arial",
+            "fontSize": 28,
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fontVariant": "normal",
+            "fill": 16777215,
+            "fillAlpha": 1,
+            "align": "left",
+            "letterSpacing": 0,
+            "lineHeight": 0,
+            "leading": 0,
+            "wordWrap": false,
+            "wordWrapWidth": 440,
+            "breakWords": false,
+            "whiteSpace": "pre",
+            "padding": 0,
+            "trim": false,
+            "textBaseline": "alphabetic",
+            "strokeColor": 0,
+            "strokeAlpha": 1,
+            "strokeWidth": 0,
+            "strokeJoin": "miter",
+            "miterLimit": 10,
+            "dropShadow": false,
+            "dropShadowColor": 0,
+            "dropShadowAlpha": 1,
+            "dropShadowBlur": 0,
+            "dropShadowDistance": 5,
+            "dropShadowAngle": 30
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "children": []
+    },
+    {
+      "id": "node_9d0e5f5f-14ce-472a-bd6f-244887d2d6a8",
+      "name": "GoMainSceneButton Copy",
+      "prefab": {
+        "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+        "instanceId": "pinst_09856de7-f031-4916-9f55-5d43f8267970",
+        "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+        "componentSources": {
+          "comp_37e42700-3ff4-409e-bd90-7607bf2bd552": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+          "comp_bf5f5e77-2423-43b8-bf6a-f1bc702f795e": "comp_888624e2-d9e6-4044-b3eb-029091d75468",
+          "comp_61520e18-82e3-4e77-ad40-9505f70d26fb": "comp_4d87ba98-71aa-4892-a326-fd8d2b7134ba",
+          "comp_e3016559-eb83-446b-843d-451a226decec": "comp_ead0350e-74e0-45f4-be2c-2b0165aa2e2e",
+          "comp_65bee325-1918-4697-83b1-f0efe152f53c": "comp_0bb0f605-62d6-44ba-b901-e95a8b9253fc"
+        },
+        "isRoot": true,
+        "overrides": [
+          {
+            "kind": "name",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "value": "GoMainSceneButton Copy"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_ead0350e-74e0-45f4-be2c-2b0165aa2e2e",
+            "propertyPath": "properties.sceneName",
+            "value": "main"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+            "propertyPath": "position.x",
+            "value": 960
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+            "propertyPath": "position.y",
+            "value": 1008
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "componentId": "comp_14bd0013-0ac4-4402-a320-f30c7c155794",
+            "propertyPath": "text",
+            "value": "Main Scene"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "componentId": "comp_c6ed5775-a184-4572-b01a-4cd71700e3e0",
+            "propertyPath": "text",
+            "value": "Main Scene"
+          }
+        ]
+      },
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_37e42700-3ff4-409e-bd90-7607bf2bd552",
+          "position": {
+            "x": 960,
+            "y": 1008
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_bf5f5e77-2423-43b8-bf6a-f1bc702f795e",
+          "scriptId": "shared.Button",
+          "properties": {
+            "regularChildName": "regular",
+            "pressedChildName": "pressed"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_61520e18-82e3-4e77-ad40-9505f70d26fb",
+          "scriptId": "shared.AudioClick",
+          "properties": {
+            "audioAssetId": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
+            "mouseEvent": "pointertap"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_e3016559-eb83-446b-843d-451a226decec",
+          "scriptId": "editor-features-demo.GoSpineButton",
+          "properties": {
+            "sceneName": "main"
+          }
+        },
+        {
+          "type": "HitZone",
+          "id": "comp_65bee325-1918-4697-83b1-f0efe152f53c",
+          "offset": {
+            "x": 0.327808422492609,
+            "y": 5.219397450536029
+          },
+          "shape": {
+            "type": "rectangle",
+            "width": 294.86349319337575,
+            "height": 86.97858021431925
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_39d5534f-9c8c-431c-8df8-b25fc37e1b71",
+          "name": "regular",
+          "parentId": "node_9d0e5f5f-14ce-472a-bd6f-244887d2d6a8",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_09856de7-f031-4916-9f55-5d43f8267970",
+            "sourceNodeId": "node_7a7af1e4-01f9-42d4-9772-ad76bdba2635",
+            "componentSources": {
+              "comp_082a7160-a393-4031-b6dd-7cfe80af42d1": "comp_d5af0834-a8fc-4a2d-ad67-34beff5b7a06",
+              "comp_94952eb6-1656-401b-9303-3fe2c790254f": "comp_78aa241b-abce-45ff-9043-be8eddae7b5f"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_082a7160-a393-4031-b6dd-7cfe80af42d1",
+              "position": {
+                "x": 0,
+                "y": 5
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_94952eb6-1656-401b-9303-3fe2c790254f",
+              "assetId": "asset_bc24bff4-6cfc-4c16-ad20-48ea9332d25d",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_5adfe240-3715-449d-a033-609bab5f32c0",
+          "name": "pressed",
+          "parentId": "node_9d0e5f5f-14ce-472a-bd6f-244887d2d6a8",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_09856de7-f031-4916-9f55-5d43f8267970",
+            "sourceNodeId": "node_8a5e8c14-108d-4045-869f-a3ea8bbbf334",
+            "componentSources": {
+              "comp_e0b303bb-e79a-4547-abc8-9bf4f0564376": "comp_7bd7ebbd-ef36-48fa-b79c-aecf1db86695",
+              "comp_69a5954a-bb3b-42d9-8e21-4b41fbdbd0e4": "comp_6586d428-a0e0-4941-a45f-8eb7188fc149"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_e0b303bb-e79a-4547-abc8-9bf4f0564376",
+              "position": {
+                "x": 0,
+                "y": -1
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_69a5954a-bb3b-42d9-8e21-4b41fbdbd0e4",
+              "assetId": "asset_685a786e-4b9f-4717-aa9e-9aa0d282fced",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_21a55ec5-991f-4f62-8e8f-0be5c9bf24f7",
+          "name": "text-regular",
+          "parentId": "node_9d0e5f5f-14ce-472a-bd6f-244887d2d6a8",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_09856de7-f031-4916-9f55-5d43f8267970",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "componentSources": {
+              "comp_1925cf2e-8f7f-49fe-8e7a-476fe5c6fd23": "comp_631ea417-8cf6-4bbb-b6bc-d4c35e059d7a",
+              "comp_7e319433-2c35-45fe-a65c-650b78e020b0": "comp_14bd0013-0ac4-4402-a320-f30c7c155794"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_1925cf2e-8f7f-49fe-8e7a-476fe5c6fd23",
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_7e319433-2c35-45fe-a65c-650b78e020b0",
+              "text": "Main Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  13750737,
+                  16777215,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_64aeefed-0909-465f-b3b3-f8f57124dec0",
+          "name": "text-pressed",
+          "parentId": "node_9d0e5f5f-14ce-472a-bd6f-244887d2d6a8",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_09856de7-f031-4916-9f55-5d43f8267970",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "componentSources": {
+              "comp_54ce3dbc-60b8-497c-a092-727f8de2cc0e": "comp_ba586bbf-cecb-4019-9554-6677fe0834cc",
+              "comp_f0d7276e-e125-4720-b06a-e45fa256d071": "comp_c6ed5775-a184-4572-b01a-4cd71700e3e0"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_54ce3dbc-60b8-497c-a092-727f8de2cc0e",
+              "position": {
+                "x": 0,
+                "y": 4
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_f0d7276e-e125-4720-b06a-e45fa256d071",
+              "text": "Main Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  7895160,
+                  14277081,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
+    }
+  ]
+}

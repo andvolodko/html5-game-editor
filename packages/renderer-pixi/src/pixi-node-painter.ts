@@ -41,6 +41,7 @@ import {
   EDITOR_SELECTION_FILL_ALPHA,
   EDITOR_SELECTION_STROKE_WIDTH,
 } from "./editor-chrome.js";
+import { paintParticleEmitterSelection } from "./pixi-particle-emitter-selection.js";
 
 export interface NodePainterHost {
   readonly editable: boolean;
@@ -261,6 +262,19 @@ export class PixiNodePainter {
       runtime.hitZoneGizmo?.setVisible(false);
       runtime.maskGizmo?.setVisible(false);
       runtime.graphicsPolygonGizmo?.setVisible(false);
+      return;
+    }
+
+    if (visual?.type === "ParticleEmitter") {
+      runtime.gizmo?.setVisible(false);
+      paintParticleEmitterSelection(
+        selection,
+        visual,
+        EDITOR_SELECTION_STROKE_WIDTH * invStroke,
+      );
+      this.layoutHitZoneGizmo(runtime, cameraScale, nodeScale);
+      this.layoutMaskGizmo(runtime, cameraScale, nodeScale);
+      this.layoutGraphicsPolygonGizmo(runtime, cameraScale, nodeScale);
       return;
     }
 

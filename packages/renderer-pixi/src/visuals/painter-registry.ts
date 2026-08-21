@@ -23,6 +23,7 @@ import {
 import { animatedSpritePainter } from "./painters/animated-sprite.js";
 import { spinePainter } from "./painters/spine.js";
 import { tilemapPainter } from "./painters/tilemap.js";
+import { particleEmitterPainter } from "./painters/particle-emitter.js";
 
 const painters: PixiVisualPainter[] = [
   spritePainter,
@@ -40,6 +41,7 @@ const painters: PixiVisualPainter[] = [
   animatedSpritePainter,
   spinePainter,
   tilemapPainter,
+  particleEmitterPainter,
 ];
 
 const painterByType = new Map<string, PixiVisualPainter>(

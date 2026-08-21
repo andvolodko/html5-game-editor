@@ -12,6 +12,7 @@ import {
   resolveScenePrefabs,
   type NodeStateId,
   type NodeStatePropertyPath,
+  type ParticleEmitterComponentData,
   type SceneData,
   type SceneRenderer,
   type SceneRendererKind,
@@ -136,6 +137,11 @@ import {
   editorSetTransform3D,
   editorSetVisualComponent,
 } from "./editor-transform-edits.js";
+import {
+  editorControlParticleEmitter,
+  editorGetParticleEmitterStats,
+  editorPreviewParticleEmitterConfig,
+} from "./editor-particle-controls.js";
 import {
   editorAddHitZone,
   editorAddMask,
@@ -732,6 +738,32 @@ export class Editor {
   /** Patch the node's leaf visual component (one undo step). */
   setVisualComponent(nodeId: string, patch: Record<string, unknown>): void {
     editorSetVisualComponent(this, nodeId, patch);
+  }
+
+  /**
+   * Transient ParticleEmitter play/pause/stop/restart.
+   * Does not dirty the document or write scene JSON.
+   */
+  controlParticleEmitter(
+    nodeId: string,
+    action: "play" | "pause" | "stop" | "restart",
+  ): void {
+    editorControlParticleEmitter(this, nodeId, action);
+  }
+
+  /** Live particle counts for Inspector stats. */
+  getParticleEmitterStats(
+    nodeId: string,
+  ): { alive: number; maxParticles: number; rate: number } | undefined {
+    return editorGetParticleEmitterStats(this, nodeId);
+  }
+
+  /** Live ParticleEmitter config preview (no undo / no dirty). */
+  previewParticleEmitterConfig(
+    nodeId: string,
+    config: ParticleEmitterComponentData,
+  ): void {
+    editorPreviewParticleEmitterConfig(this, nodeId, config);
   }
 
   /** Commit one paint/erase stroke (changed cells only). */

@@ -13,6 +13,7 @@ export function registerPixiHitZoneType(registry: NodeTypeRegistry): void {
       order: 20,
       icon: "▭",
       canHaveChildren: true,
+      creatable: false,
       createDefaultNode: (ctx: NodeCreationContext) =>
         withParent(
           createHitZoneNode(ctx.name, ctx.position, ctx.parentId),

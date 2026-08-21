@@ -75,6 +75,8 @@ export function convertScreenToNodeLocal(
   container: Container,
   screen: Vec2,
 ): Vec2 {
-  const local = container.worldTransform.applyInverse(screen);
+  // `toLocal` walks and updates the transform chain (preview camera pan/scale).
+  // `worldTransform.applyInverse` is stale until the next render.
+  const local = container.toLocal(screen);
   return { x: local.x, y: local.y };
 }

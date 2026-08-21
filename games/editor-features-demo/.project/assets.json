@@ -3018,6 +3018,18 @@
       }
     },
     {
+      "id": "asset_75a91e43-b61c-4ed0-8750-15bd40d891c5",
+      "type": "texture",
+      "name": "smoke-particle",
+      "path": "assets/particles/smoke-particle.png",
+      "metadata": {
+        "kind": "texture",
+        "width": 835,
+        "height": 806,
+        "mimeType": "image/png"
+      }
+    },
+    {
       "id": "asset_778d8d14-3b13-4adf-8db3-5ff49caf56f2",
       "type": "tileset",
       "name": "Water Background color TileSet",

@@ -13,6 +13,7 @@ import {
 import type { RuntimeNode } from "./pixi-runtime-nodes.js";
 import type { VisualBounds } from "./visuals/types.js";
 import { convertScreenToNodeLocal } from "./pixi-hit-zone-hit-area.js";
+import type { Container } from "pixi.js";
 
 const MIN_PICK_AREA = 1;
 
@@ -125,6 +126,10 @@ export function pickRuntimeNodeId(
 /**
  * Pick score (smaller wins). Playback: HitZone replaces visual bounds.
  * Edit mode: union — either visual AABB or HitZone counts.
+ *
+ * Prefer the live Pixi `hitArea` (already in node-local space, transformed by
+ * the preview camera via worldTransform) so zoom/pan matches EventSystem.
+ * Fall back to `visualBounds` when hitArea is missing (playback / tests).
  */
 export function pickAreaIfHit(
   runtime: RuntimeNode,
@@ -138,6 +143,19 @@ export function pickAreaIfHit(
   }
   if (hitZone && !runtime.editable) {
     return undefined;
+  }
+  if (
+    hitAreaContainsScreen(runtime.visual, screen) ||
+    hitAreaContainsScreen(runtime.visualsRoot, screen)
+  ) {
+    return pickArea(runtime.visualBounds ?? hitAreaFallbackAabb(), runtime);
+  }
+  const aabb = runtime.visualBounds;
+  if (aabb && aabb.width > 0 && aabb.height > 0) {
+    if (!localPointHitsAabb(local, aabb)) {
+      return undefined;
+    }
+    return pickArea(aabb, runtime);
   }
   const target = runtime.visual ?? runtime.visualsRoot;
   if (!target || !target.visible) {
@@ -153,6 +171,34 @@ export function pickAreaIfHit(
     return undefined;
   }
   return Math.max(MIN_PICK_AREA, bounds.width * bounds.height);
+}
+
+function hitAreaContainsScreen(
+  target: Container | undefined,
+  screen: Vec2,
+): boolean {
+  if (!target?.visible || typeof target.toLocal !== "function") {
+    return false;
+  }
+  const hitArea = target.hitArea;
+  if (!hitArea || typeof hitArea.contains !== "function") {
+    return false;
+  }
+  const local = target.toLocal(screen);
+  return hitArea.contains(local.x, local.y);
+}
+
+function localPointHitsAabb(local: Vec2, aabb: VisualBounds): boolean {
+  return (
+    local.x >= aabb.x &&
+    local.y >= aabb.y &&
+    local.x <= aabb.x + aabb.width &&
+    local.y <= aabb.y + aabb.height
+  );
+}
+
+function hitAreaFallbackAabb(): VisualBounds {
+  return { x: 0, y: 0, width: 1, height: 1 };
 }
 
 function pickArea(aabb: VisualBounds, runtime: RuntimeNode): number {

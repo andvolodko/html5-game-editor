@@ -12,6 +12,21 @@ import {
   TEXT_STROKE_JOIN_OPTIONS,
   TEXT_WHITE_SPACE_OPTIONS,
 } from "./visual-components.js";
+import { particleEmitterComponentSchema } from "./particle-emitter-schema.js";
+
+export { particleEmitterComponentSchema } from "./particle-emitter-schema.js";
+export {
+  particleCurvePointSchema,
+  particleCurveSchema,
+  particleColorPointSchema,
+  particleColorGradientSchema,
+  particleSpawnShapeSchema,
+  particleEmissionSchema,
+  particleLifetimeSchema,
+  particleVelocitySchema,
+  particleAccelerationSchema,
+  particleRotationSchema,
+} from "./particle-emitter-schema.js";
 
 export const vec2Schema = z.object({
   x: z.number(),
@@ -383,6 +398,7 @@ export const componentSchema = z.discriminatedUnion("type", [
   animatedSpriteComponentSchema,
   spineComponentSchema,
   tilemapComponentSchema,
+  particleEmitterComponentSchema,
   model3DComponentSchema,
   perspectiveCameraComponentSchema,
   directionalLightComponentSchema,

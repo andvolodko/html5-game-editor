@@ -113,6 +113,8 @@ export function visualTypeToNodeTypeId(type: LeafVisualComponentType): string {
       return "pixi.spine";
     case "Tilemap":
       return "pixi.tilemap";
+    case "ParticleEmitter":
+      return "pixi.particle-emitter";
     default: {
       const _exhaustive: never = type;
       return _exhaustive;
@@ -187,6 +189,8 @@ export function getNodeTypeIcon(node: SceneNodeData): string {
       return "◇";
     case "Tilemap":
       return "⊞";
+    case "ParticleEmitter":
+      return "✦";
     case undefined:
       if (node.components.some((c) => c.type === "HitZone")) {
         return "▭";

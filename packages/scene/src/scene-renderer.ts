@@ -1,6 +1,7 @@
 import type { RuntimeTransform2D } from "./runtime-transform-2d.js";
 import type { RuntimeTransform3D } from "./runtime-transform-3d.js";
 import type { SceneNodeData, Vec3 } from "./types.js";
+import type { ParticleEmitterComponentData } from "./particle-emitter-data.js";
 
 /** Optional GPU / canvas counters sampled after a frame (performance overlays). */
 export interface SceneRenderStats {
@@ -125,4 +126,24 @@ export interface SceneRenderer {
   setNodeCursor?(nodeId: string, cursor: string): void;
   /** Last cursor assigned via `setNodeCursor`, if any. */
   getNodeCursor?(nodeId: string): string | undefined;
+  /**
+   * Transient ParticleEmitter playback control. Does not write scene JSON.
+   * Editor Inspector Play/Pause/Restart and script `ctx.particles` use this.
+   */
+  controlParticleEmitter?(
+    nodeId: string,
+    action: "play" | "pause" | "stop" | "restart",
+  ): void;
+  /** Live particle counts for the selected emitter Inspector stats. */
+  getParticleEmitterStats?(nodeId: string):
+    | { alive: number; maxParticles: number; rate: number }
+    | undefined;
+  /**
+   * Live ParticleEmitter config preview (curve drag, etc.).
+   * Does not write scene JSON; paint/updateNode remains the persistence path.
+   */
+  previewParticleEmitterConfig?(
+    nodeId: string,
+    config: ParticleEmitterComponentData,
+  ): void;
 }

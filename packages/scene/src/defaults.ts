@@ -84,6 +84,36 @@ export const DEFAULT_MESH_ROPE_PLACEHOLDER_HEIGHT = 32;
 /** Default Spine playback rate (1 = authored speed). */
 export const DEFAULT_SPINE_TIME_SCALE = 1;
 
+/** Hard upper bound for ParticleEmitter maxParticles (safety). */
+export const MAX_PARTICLE_COUNT = 100_000;
+/** Default emission rate (particles per second). */
+export const DEFAULT_PARTICLE_EMISSION_RATE = 20;
+/** Default max live particles. */
+export const DEFAULT_PARTICLE_MAX_PARTICLES = 200;
+/** Default particle lifetime minimum (seconds). */
+export const DEFAULT_PARTICLE_LIFETIME_MIN = 0.8;
+/** Default particle lifetime maximum (seconds). */
+export const DEFAULT_PARTICLE_LIFETIME_MAX = 1.5;
+/** Default spawn circle radius (local px). */
+export const DEFAULT_PARTICLE_SPAWN_RADIUS = 30;
+/** Default spawn rectangle width (local px). */
+export const DEFAULT_PARTICLE_SPAWN_WIDTH = 60;
+/** Default spawn rectangle height (local px). */
+export const DEFAULT_PARTICLE_SPAWN_HEIGHT = 60;
+/** Default emission speed minimum (local units / s). */
+export const DEFAULT_PARTICLE_SPEED_MIN = 20;
+/** Default emission speed maximum (local units / s). */
+export const DEFAULT_PARTICLE_SPEED_MAX = 80;
+/** Default emission angle range (degrees). */
+export const DEFAULT_PARTICLE_ANGLE_MIN = 0;
+export const DEFAULT_PARTICLE_ANGLE_MAX = 360;
+/** Default ParticleEmitter seed for deterministic previews. */
+export const DEFAULT_PARTICLE_SEED = 1;
+/** Default particle color (white RGB hex). */
+export const DEFAULT_PARTICLE_COLOR = 0xffffff;
+/** Fallback selection AABB half-extent for point spawn. */
+export const DEFAULT_PARTICLE_POINT_BOUNDS_HALF = 16;
+
 export const DEFAULT_PERSPECTIVE_CAMERA_FOV = 50;
 export const DEFAULT_PERSPECTIVE_CAMERA_NEAR = 0.1;
 export const DEFAULT_PERSPECTIVE_CAMERA_FAR = 1000;

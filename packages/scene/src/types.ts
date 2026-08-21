@@ -141,6 +141,8 @@ export type {
 
   TilemapComponentData,
 
+  ParticleEmitterComponentData,
+
   VisualComponentData,
 
   LeafVisualComponentType,

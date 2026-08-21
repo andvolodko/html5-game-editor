@@ -6,6 +6,7 @@ import {
   getNodeVisible,
   getTransform2D,
   getVisualComponent,
+  type ParticleEmitterComponentData,
   type SceneNodeData,
   type SceneRenderer,
   type SceneRenderStats,
@@ -26,6 +27,7 @@ import { PixelGridOverlay } from "./pixel-grid.js";
 import { TilemapGridOverlay } from "./tilemap-grid-overlay.js";
 import { evictTileTextureCache } from "./visuals/painters/tilemap.js";
 import { PixiTilemapView } from "./pixi-tilemap-view.js";
+import { isParticleEmitterView } from "./visuals/particle-emitter-view.js";
 import {
   PixiRuntimeGraph,
   type RuntimeNode,
@@ -674,6 +676,56 @@ export class PixiSceneRenderer implements SceneRenderer {
       return undefined;
     }
     return cursor;
+  }
+
+  controlParticleEmitter(
+    nodeId: string,
+    action: "play" | "pause" | "stop" | "restart",
+  ): void {
+    const runtime = this.graph.get(nodeId);
+    if (!isParticleEmitterView(runtime?.visual)) {
+      return;
+    }
+    const view = runtime.visual;
+    switch (action) {
+      case "play":
+        view.play();
+        break;
+      case "pause":
+        view.pause();
+        break;
+      case "stop":
+        view.stop();
+        break;
+      case "restart":
+        view.restart();
+        break;
+      default: {
+        const _exhaustive: never = action;
+        return _exhaustive;
+      }
+    }
+  }
+
+  getParticleEmitterStats(
+    nodeId: string,
+  ): { alive: number; maxParticles: number; rate: number } | undefined {
+    const runtime = this.graph.get(nodeId);
+    if (!isParticleEmitterView(runtime?.visual)) {
+      return undefined;
+    }
+    return runtime.visual.getStats();
+  }
+
+  previewParticleEmitterConfig(
+    nodeId: string,
+    config: ParticleEmitterComponentData,
+  ): void {
+    const runtime = this.graph.get(nodeId);
+    if (!isParticleEmitterView(runtime?.visual)) {
+      return;
+    }
+    runtime.visual.setConfig(config);
   }
 
   /**

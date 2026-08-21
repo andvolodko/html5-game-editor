@@ -1,6 +1,7 @@
 import { AnimatedSprite, type Container, type Ticker } from "pixi.js";
 import { Spine } from "@esotericsoftware/spine-pixi-v8";
 import { getSpine, type SceneNodeData } from "@game-editor/scene";
+import { isParticleEmitterView } from "./visuals/particle-emitter-view.js";
 
 const MS_PER_SECOND = 1000;
 
@@ -36,7 +37,7 @@ export function detachSharedTickerVisuals(
   }
 }
 
-/** Advance host-driven Spine / AnimatedSprite from the Application ticker. */
+/** Advance host-driven Spine / AnimatedSprite / ParticleEmitter from the Application ticker. */
 export function advanceHostDrivenVisuals(
   nodes: Iterable<PlaybackVisualNode>,
   ticker: Ticker,
@@ -54,6 +55,10 @@ export function advanceHostDrivenVisuals(
       continue;
     }
     if (isSpineView(view) && getSpine(runtime.node)?.playing !== false) {
+      view.update(deltaSeconds);
+      continue;
+    }
+    if (isParticleEmitterView(view)) {
       view.update(deltaSeconds);
     }
   }

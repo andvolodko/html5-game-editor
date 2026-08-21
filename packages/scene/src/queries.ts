@@ -32,6 +32,8 @@ import type {
 
   TilemapComponentData,
 
+  ParticleEmitterComponentData,
+
   TextComponentData,
 
   TilingSpriteComponentData,
@@ -407,6 +409,18 @@ export function getTilemap(
 ): TilemapComponentData | undefined {
 
   return getComponentByType(node, "Tilemap");
+
+}
+
+
+
+export function getParticleEmitter(
+
+  node: SceneNodeData,
+
+): ParticleEmitterComponentData | undefined {
+
+  return getComponentByType(node, "ParticleEmitter");
 
 }
 

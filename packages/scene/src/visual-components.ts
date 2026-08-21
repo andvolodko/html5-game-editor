@@ -8,8 +8,10 @@ import {
   DEFAULT_TILING_SPRITE_SIZE,
 } from "./defaults.js";
 import type { TilemapComponentData } from "./tilemap-data.js";
+import type { ParticleEmitterComponentData } from "./particle-emitter-data.js";
 
 export type { TilemapComponentData } from "./tilemap-data.js";
+export type { ParticleEmitterComponentData } from "./particle-emitter-data.js";
 
 /**
  * Stable visual component discriminants (domain identity — not PIXI class names).
@@ -323,7 +325,8 @@ export type VisualComponentData =
   | PerspectiveMeshComponentData
   | AnimatedSpriteComponentData
   | SpineComponentData
-  | TilemapComponentData;
+  | TilemapComponentData
+  | ParticleEmitterComponentData;
 
 /** Component types that are renderable leaves (may not receive scene children). */
 export const LEAF_VISUAL_COMPONENT_TYPES = [
@@ -342,6 +345,7 @@ export const LEAF_VISUAL_COMPONENT_TYPES = [
   "AnimatedSprite",
   "Spine",
   "Tilemap",
+  "ParticleEmitter",
 ] as const;
 
 export type LeafVisualComponentType =

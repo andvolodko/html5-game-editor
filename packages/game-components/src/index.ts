@@ -25,6 +25,7 @@ export type {
   ScriptVec3,
   ScriptAnimationsApi,
   ScriptPlayAnimationOptions,
+  ScriptParticlesApi,
   ScriptNodeHandle,
   ScriptNodeStatesApi,
   ScriptAudioApi,
@@ -44,6 +45,7 @@ export type {
 export { createDetachedRuntimeTransform2D } from "@game-editor/scene";
 export { createScriptContext } from "./script-context.js";
 export type { CreateScriptContextInput } from "./script-context.js";
+export { createScriptParticlesApi } from "./script-particles-api.js";
 export { NODE_POINTER_EVENTS, COMPONENT_ASSET_TYPES } from "./types.js";
 export { seededUnitFloat } from "@game-editor/shared";
 export {

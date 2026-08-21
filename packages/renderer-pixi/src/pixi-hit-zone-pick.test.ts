@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Container } from "pixi.js";
+import { Container, Rectangle } from "pixi.js";
 import {
   createContainerNode,
   createHitZoneComponent,
@@ -147,5 +147,56 @@ describe("hybrid overlay pick vs HitZone / pointerEventMode", () => {
     } as RuntimeNode;
 
     expect(isPlaybackOverlayPointerTarget(runtime, () => undefined)).toBe(true);
+  });
+
+  it("picks from visualBounds when the display object reports empty getBounds", () => {
+    const node = createSpriteNode("Fire", { x: 0, y: 0 }, {
+      width: 8,
+      height: 8,
+    });
+    const runtime = {
+      editable: true,
+      node,
+      container: new Container(),
+      visual: stubVisual({ x: 0, y: 0, width: 0, height: 0 }),
+      visualBounds: { x: -40, y: -40, width: 80, height: 80 },
+      visualsRoot: undefined,
+    } as RuntimeNode;
+
+    expect(pickAreaIfHit(runtime, { x: 0, y: 0 })).toBe(80 * 80);
+    expect(pickAreaIfHit(runtime, { x: 50, y: 0 })).toBeUndefined();
+  });
+
+  it("maps screen hits through preview camera pan and scale", () => {
+    const camera = new Container();
+    camera.position.set(40, 10);
+    camera.scale.set(2);
+    const container = new Container();
+    camera.addChild(container);
+    const visual = new Container();
+    visual.hitArea = new Rectangle(-16, -16, 32, 32);
+    container.addChild(visual);
+
+    const node = createSpriteNode("Emitter", { x: 0, y: 0 }, {
+      width: 32,
+      height: 32,
+    });
+    const runtime = {
+      editable: true,
+      node,
+      container,
+      visual,
+      visualsRoot: visual,
+      visualBounds: { x: -16, y: -16, width: 32, height: 32 },
+    } as RuntimeNode;
+
+    // local (0,0) → screen (40, 10)
+    expect(pickAreaIfHit(runtime, { x: 40, y: 10 })).toBeDefined();
+    // local (16, 0) → screen (72, 10) — on the spawn edge
+    expect(pickAreaIfHit(runtime, { x: 72, y: 10 })).toBeDefined();
+    // local (17, 0) → screen (74, 10) — outside spawn
+    expect(pickAreaIfHit(runtime, { x: 74, y: 10 })).toBeUndefined();
+    // identity mapping would treat screen (0,0) as a hit; camera must miss
+    expect(pickAreaIfHit(runtime, { x: 0, y: 0 })).toBeUndefined();
   });
 });

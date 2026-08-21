@@ -192,6 +192,19 @@ export class RuntimeSceneHost {
     });
   }
 
+  controlParticleEmitter(
+    nodeId: string,
+    action: "play" | "pause" | "stop" | "restart",
+  ): void {
+    const node = this.sceneIndex.getNode(nodeId);
+    if (!node) {
+      return;
+    }
+    this.forOwningRenderers(node, (renderer) => {
+      renderer.controlParticleEmitter?.(nodeId, action);
+    });
+  }
+
   reparentLiveNode(
     nodeId: string,
     parentId: string | undefined,

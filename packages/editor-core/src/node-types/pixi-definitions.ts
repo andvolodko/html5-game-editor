@@ -8,6 +8,7 @@ import { registerPixiSpriteTypes } from "./pixi/sprites.js";
 import { registerPixiSpineTypes } from "./pixi/spine.js";
 import { registerPixiTextTypes } from "./pixi/text.js";
 import { registerPixiTilemapTypes } from "./pixi/tilemap.js";
+import { registerPixiParticleEmitterTypes } from "./pixi/particle-emitter.js";
 
 /** Registers built-in PixiJS node types into the given registry. */
 export function registerPixiNodeTypes(registry: NodeTypeRegistry): void {
@@ -20,7 +21,5 @@ export function registerPixiNodeTypes(registry: NodeTypeRegistry): void {
   registerPixiTextTypes(registry);
   registerPixiGraphicsTypes(registry);
   registerPixiMeshTypes(registry);
-
-  // ParticleContainer is available in pixi.js@8.19 but only accepts Particle
-  // children (not Container hierarchy). Deferred to keep scene parenting stable.
+  registerPixiParticleEmitterTypes(registry);
 }

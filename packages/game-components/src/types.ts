@@ -352,6 +352,14 @@ export interface ScriptRuntimeServices {
     patch: ScriptAnimatedSpritePlaybackPatch,
   ) => void;
   /**
+   * Transient ParticleEmitter playback control.
+   * Runtime-only; does not write scene files (unlike AnimatedSprite `playing`).
+   */
+  controlParticleEmitter?: (
+    nodeId: string,
+    action: "play" | "pause" | "stop" | "restart",
+  ) => void;
+  /**
    * Move a live node under a new parent (or scene root) at `index`.
    * Runtime-only; does not write scene files. No-op when the move is invalid.
    */
@@ -467,6 +475,17 @@ export interface ScriptAnimationsApi {
   duration(clip?: string): number;
 }
 
+/**
+ * High-level ParticleEmitter control for the host node.
+ * Playback is transient — does not write scene JSON.
+ */
+export interface ScriptParticlesApi {
+  play(): void;
+  pause(): void;
+  stop(): void;
+  restart(): void;
+}
+
 /** Lightweight runtime node facade. Does not expose Pixi or Three objects. */
 export interface ScriptNodeHandle {
   readonly id: string;
@@ -545,6 +564,12 @@ export interface ScriptCreateContext {
    * Prefer this over `services.setModel3DPlayback`.
    */
   animations: ScriptAnimationsApi;
+  /**
+   * ParticleEmitter playback for this component's node.
+   * Prefer this over `services.controlParticleEmitter`.
+   * Transient — does not write scene JSON.
+   */
+  particles: ScriptParticlesApi;
   /** Host node facade (no renderer objects). */
   node: ScriptNodeHandle;
   /** Catalogue audio playback. */

@@ -12,6 +12,7 @@ import {
   createSpriteNode,
   createTextComponent,
   createTilemapComponent,
+  createParticleEmitterComponent,
   parseSceneData,
   SCENE_SCHEMA_VERSION,
   setTile,
@@ -647,5 +648,67 @@ describe("scene schema", () => {
         ],
       }),
     ).toThrow();
+  });
+
+  it("round-trips ParticleEmitter and collects assetId", () => {
+    const scene = createEmptyScene("FX");
+    scene.nodes.push(
+      createNodeWithVisual(
+        "Emitter",
+        { x: 10, y: 20 },
+        createParticleEmitterComponent({
+          assetId: "asset_fire",
+          emission: { rate: 12, maxParticles: 40 },
+        }),
+      ),
+    );
+    const parsed = parseSceneData(JSON.parse(JSON.stringify(scene)));
+    const emitter = parsed.nodes[0]?.components.find(
+      (c) => c.type === "ParticleEmitter",
+    );
+    expect(emitter).toMatchObject({
+      type: "ParticleEmitter",
+      assetId: "asset_fire",
+      emission: { rate: 12, maxParticles: 40 },
+      playOnStart: true,
+    });
+    expect(collectReferencedAssetIds(parsed)).toEqual(["asset_fire"]);
+  });
+
+  it("fills ParticleEmitter parse defaults for partial JSON", () => {
+    const parsed = parseSceneData({
+      id: "scene_1",
+      name: "Partial",
+      version: SCENE_SCHEMA_VERSION,
+      nodes: [
+        {
+          id: "node_1",
+          name: "E",
+          components: [
+            {
+              type: "Transform2D",
+              id: "comp_t",
+              position: { x: 0, y: 0 },
+              rotation: 0,
+              scale: { x: 1, y: 1 },
+            },
+            {
+              type: "ParticleEmitter",
+              id: "comp_p",
+            },
+          ],
+          children: [],
+        },
+      ],
+    });
+    const emitter = parsed.nodes[0]?.components.find(
+      (c) => c.type === "ParticleEmitter",
+    );
+    expect(emitter).toMatchObject({
+      type: "ParticleEmitter",
+      playOnStart: true,
+      loop: true,
+      emission: { rate: 20, maxParticles: 200 },
+    });
   });
 });

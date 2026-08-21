@@ -13,6 +13,7 @@ export function registerPixiMaskType(registry: NodeTypeRegistry): void {
       order: 30,
       icon: "◐",
       canHaveChildren: true,
+      creatable: false,
       createDefaultNode: (ctx: NodeCreationContext) =>
         withParent(
           createMaskNode(ctx.name, ctx.position, ctx.parentId),

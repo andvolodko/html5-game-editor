@@ -49,6 +49,10 @@ export interface RuntimeScriptServiceHost {
     nodeId: string,
     patch: ScriptAnimatedSpritePlaybackPatch,
   ): void;
+  controlParticleEmitter(
+    nodeId: string,
+    action: "play" | "pause" | "stop" | "restart",
+  ): void;
   reparentLiveNode(
     nodeId: string,
     parentId: string | undefined,
@@ -192,6 +196,13 @@ export function createRuntimeScriptServices(
         return;
       }
       host.writeAnimatedSpritePlayback(nodeId, patch);
+    },
+    controlParticleEmitter: (nodeId, action) => {
+      if (external.controlParticleEmitter) {
+        external.controlParticleEmitter(nodeId, action);
+        return;
+      }
+      host.controlParticleEmitter(nodeId, action);
     },
     reparentNode: (nodeId, parentId, index) => {
       if (external.reparentNode) {

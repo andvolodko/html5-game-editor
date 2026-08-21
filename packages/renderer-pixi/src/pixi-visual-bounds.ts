@@ -4,6 +4,7 @@ import {
   DEFAULT_SPRITE_SIZE,
   DEFAULT_TILEMAP_EMPTY_EXTENT_TILES,
   getVisualAnchorOrDefault,
+  particleSpawnLocalBounds,
   tilemapLocalBounds,
   type Vec2,
   type VisualComponentData,
@@ -147,6 +148,8 @@ export function provisionalVisualBounds(
       return centeredFallback(DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE);
     case "Tilemap":
       return tilemapLocalBounds(data, DEFAULT_TILEMAP_EMPTY_EXTENT_TILES);
+    case "ParticleEmitter":
+      return particleSpawnLocalBounds(data);
     default: {
       const _exhaustive: never = data;
       return _exhaustive;

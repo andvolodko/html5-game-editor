@@ -265,6 +265,7 @@ Adding a Script to a node in the editor is `AddScriptComponentCommand` (`package
 - `ctx.node.states` — named property overrides on **this** node (`set` / `setBase` / `active`). See [Use node states](./use-node-states.md).
 - `ctx.animations` — Model3D clips on **this** node (`list` / `play` / `stop` / `freeze` / `duration`)
 - `getAnimatedSpritePlayback` / `setAnimatedSpritePlayback` — Aseprite / AnimatedSprite clip, loop, playing
+- `ctx.particles` / `controlParticleEmitter` — ParticleEmitter play/pause/stop/restart (transient; does not write scene JSON)
 - `playAudio` / `stopAudio` / `preloadSceneAsset` / `resolveAssetUrl`
 - `cloneNodeByName` / `spawnModel3D` / `destroyNode` — runtime-only graph edits
 

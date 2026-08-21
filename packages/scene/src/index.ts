@@ -58,6 +58,8 @@ export type {
 
   TilemapComponentData,
 
+  ParticleEmitterComponentData,
+
   Model3DComponentData,
 
   PerspectiveCameraComponentData,
@@ -195,7 +197,7 @@ export {
   spineComponentSchema,
 
   tilemapComponentSchema,
-
+  particleEmitterComponentSchema,
   model3DComponentSchema,
 
   perspectiveCameraComponentSchema,
@@ -318,6 +320,10 @@ export {
 
   createTilemapComponent,
 
+  createParticleEmitterComponent,
+
+  createParticleEmitterNode,
+
   createModel3DComponent,
 
   createPerspectiveCameraComponent,
@@ -398,6 +404,8 @@ export {
 
   getTilemap,
 
+  getParticleEmitter,
+
   getModel3D,
 
   getPerspectiveCamera,
@@ -415,6 +423,58 @@ export {
   removeNodeById,
 
 } from "./queries.js";
+
+export {
+  PARTICLE_SPAWN_SHAPE_TYPES,
+  createDefaultParticleFadeCurve,
+  createDefaultParticleColorGradient,
+  createDefaultParticleEmission,
+  createDefaultParticleLifetime,
+  createDefaultParticleSpawn,
+  createDefaultParticleVelocity,
+  createDefaultParticleAcceleration,
+  createDefaultParticleRotation,
+  clampParticleMaxParticles,
+  particleSpawnLocalBounds,
+  particleEmitterLocalBounds,
+  cloneParticleCurve,
+  cloneParticleColorGradient,
+  cloneParticleSpawn,
+} from "./particle-emitter-data.js";
+export type {
+  ParticleCurvePoint,
+  ParticleCurve,
+  ParticleColorPoint,
+  ParticleColorGradient,
+  ParticleSpawnShape,
+  ParticleSpawnShapeType,
+  ParticleEmissionConfig,
+  ParticleLifetimeConfig,
+  ParticleVelocityConfig,
+  ParticleAccelerationConfig,
+  ParticleRotationConfig,
+} from "./particle-emitter-data.js";
+
+export {
+  PARTICLE_PRESET_IDS,
+  PARTICLE_PRESET_LABELS,
+  getParticlePresetConfig,
+  particlePresetToVisualPatch,
+} from "./particle-presets.js";
+export type { ParticlePresetId } from "./particle-presets.js";
+
+export { evaluateCurve } from "./particles/evaluate-curve.js";
+export { evaluateGradient } from "./particles/evaluate-gradient.js";
+export { createSeededRng } from "./particles/seeded-rng.js";
+export type { SeededRng } from "./particles/seeded-rng.js";
+export {
+  ParticleSimulation,
+} from "./particles/particle-simulation.js";
+export type {
+  SimParticle,
+  ParticleEmitterStats,
+  ParticleEmitterPlaybackState,
+} from "./particles/particle-simulation.js";
 
 export {
 
@@ -766,6 +826,21 @@ export {
   DEFAULT_MESH_ROPE_BOUNDS_PAD_Y,
   DEFAULT_MESH_ROPE_PLACEHOLDER_HEIGHT,
   DEFAULT_SPINE_TIME_SCALE,
+  MAX_PARTICLE_COUNT,
+  DEFAULT_PARTICLE_EMISSION_RATE,
+  DEFAULT_PARTICLE_MAX_PARTICLES,
+  DEFAULT_PARTICLE_LIFETIME_MIN,
+  DEFAULT_PARTICLE_LIFETIME_MAX,
+  DEFAULT_PARTICLE_SPAWN_RADIUS,
+  DEFAULT_PARTICLE_SPAWN_WIDTH,
+  DEFAULT_PARTICLE_SPAWN_HEIGHT,
+  DEFAULT_PARTICLE_SPEED_MIN,
+  DEFAULT_PARTICLE_SPEED_MAX,
+  DEFAULT_PARTICLE_ANGLE_MIN,
+  DEFAULT_PARTICLE_ANGLE_MAX,
+  DEFAULT_PARTICLE_SEED,
+  DEFAULT_PARTICLE_COLOR,
+  DEFAULT_PARTICLE_POINT_BOUNDS_HALF,
   DEFAULT_MODEL3D_TIME_SCALE,
   DEFAULT_PERSPECTIVE_CAMERA_FOV,
   DEFAULT_PERSPECTIVE_CAMERA_NEAR,

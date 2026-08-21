@@ -1,4 +1,5 @@
 import type { SceneNodeData } from "./types.js";
+import type { ParticleEmitterComponentData } from "./particle-emitter-data.js";
 import {
   addSceneRenderStats,
   EMPTY_SCENE_RENDER_STATS,
@@ -183,5 +184,33 @@ export class MultiSceneRenderer implements SceneRenderer {
       }
     }
     return undefined;
+  }
+
+  controlParticleEmitter(
+    nodeId: string,
+    action: "play" | "pause" | "stop" | "restart",
+  ): void {
+    for (const slot of this.slots) {
+      slot.renderer.controlParticleEmitter?.(nodeId, action);
+    }
+  }
+
+  getParticleEmitterStats(nodeId: string) {
+    for (const slot of this.slots) {
+      const stats = slot.renderer.getParticleEmitterStats?.(nodeId);
+      if (stats) {
+        return stats;
+      }
+    }
+    return undefined;
+  }
+
+  previewParticleEmitterConfig(
+    nodeId: string,
+    config: ParticleEmitterComponentData,
+  ): void {
+    for (const slot of this.slots) {
+      slot.renderer.previewParticleEmitterConfig?.(nodeId, config);
+    }
   }
 }

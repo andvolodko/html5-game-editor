@@ -73,8 +73,8 @@ Initial supported resources: PNG, JPG, WebP, spritesheets, Aseprite / LibreSprit
 | Type | Status | Notes |
 | --- | --- | --- |
 | Container | Supported | Transform2D-only grouping; `canHaveChildren` |
-| Hit Zone | Supported | `Transform2D` + `HitZone`; optional click/touch region. Also addable on existing 2D nodes. Not a leaf visual. Polygon vertices are editable in the viewport. |
-| Mask | Supported | `Transform2D` + `Mask`; shape or sprite/alpha clip of the node visual and scene children. Inverse optional. Editor gizmos live on an unmasked chrome layer. |
+| Hit Zone | Supported | Extra on Transform2D nodes via Inspector (`Add Hit Zone`), not the Node create menu. Optional click/touch region. Not a leaf visual. Polygon vertices are editable in the viewport. |
+| Mask | Supported | Extra on Transform2D nodes via Inspector (`Add Mask`), not the Node create menu. Shape or sprite/alpha clip of the node visual and scene children. Inverse optional. Editor gizmos live on an unmasked chrome layer. |
 | Sprite | Supported | Texture or Aseprite `assetId` + display size |
 | NineSliceSprite | Supported | |
 | TilingSprite | Supported | |
@@ -90,8 +90,8 @@ Initial supported resources: PNG, JPG, WebP, spritesheets, Aseprite / LibreSprit
 | AnimatedSprite | Supported | Frames as assetId[], or Aseprite `assetId` + `animation` tag; play/loop/speed |
 | Spine | Supported | Bundled skeleton+atlas+pages; Pixi playback via `@esotericsoftware/spine-pixi-v8` |
 | Tilemap | Supported | One node; chunked cells; `@pixi/tilemap` `CompositeTilemap` per chunk. Animated tiles share one clock per logical ID and rebuild only chunks that contain that ID. Not `TilingSprite`. |
-| ParticleContainer | Deferred | Pixi Particle API accepts Particle children only — incompatible with Container hierarchy |
+| ParticleEmitter | Supported | Editor-owned config in scene JSON; Pixi `Particle` + `ParticleContainer` is an internal backend only (not a creatable Container node). See [`particles.md`](./particles.md). |
 
-Node creation is driven by `NodeTypeRegistry` (`pixi.*` stable IDs). Menus and `CreateNodeCommand` share that registry. Leaf visuals cannot receive scene children (domain `canMoveNode` / create-parent policy). `HitZone` is not a leaf: it maps to a dedicated overlay / playback `hitTarget` and must never set Pixi `hitArea` on the node container (that would prune child sprites). In playback, an enabled HitZone on a grouping node is the pointer target; child visuals stay visible but do not receive hits. `Mask` is not a leaf: the Pixi stencil is a dedicated child; in the editor the clip is applied to `contentRoot` so selection gizmos on `chromeRoot` are not clipped.
+Node creation is driven by `NodeTypeRegistry` (`pixi.*` stable IDs). Menus and `CreateNodeCommand` share that registry (`creatable: false` types stay registered for lookup but are omitted from menus). Leaf visuals cannot receive scene children (domain `canMoveNode` / create-parent policy). `HitZone` is not a leaf: it maps to a dedicated overlay / playback `hitTarget` and must never set Pixi `hitArea` on the node container (that would prune child sprites). In playback, an enabled HitZone on a grouping node is the pointer target; child visuals stay visible but do not receive hits. `Mask` is not a leaf: the Pixi stencil is a dedicated child; in the editor the clip is applied to `contentRoot` so selection gizmos on `chromeRoot` are not clipped.
 
-Future compatibility: particles / ParticleContainer (experimental), filters, custom shaders, visual mesh vertex editor.
+Future compatibility: filters, custom shaders, visual mesh vertex editor, world-space particles.

@@ -195,8 +195,8 @@ ComponentData.type / Script definition.properties
 | Scene | Name, renderer (`pixi` / `three` / `hybrid`) |
 | Node | Visible, alpha, 2D **Pointer** (`pointerEventMode`, `cursor`, `pointerChildren` — playback only) |
 | Node visuals | `VisualComponentInspector` + per-type fields under `apps/editor/src/panels/visual-fields/`. Graphics polygons are editable in the Inspector and viewport (same vertex/edge handles as Mask). |
-| Hit Zone | `HitZoneInspector` — Add/Remove on Transform2D nodes; not a Script. Polygon vertices are editable in the Inspector and viewport. |
-| Mask | `MaskInspector` — Add/Remove on Transform2D nodes; shape or sprite/alpha clip. Not a Script. Viewport handles commit `SetMaskCommand`. |
+| Hit Zone | `HitZoneInspector` — Add/Remove on Transform2D nodes; not a Script, not in the Node create menu. Polygon vertices are editable in the Inspector and viewport. |
+| Mask | `MaskInspector` — Add/Remove on Transform2D nodes; shape or sprite/alpha clip. Not a Script, not in the Node create menu. Viewport handles commit `SetMaskCommand`. |
 | Script | `ScriptComponentsInspector` — catalog from `editor.components` |
 | Prefab instance | `PrefabInspectorSection` — Apply / Revert / Unpack |
 

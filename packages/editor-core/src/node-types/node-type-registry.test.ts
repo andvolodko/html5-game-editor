@@ -19,6 +19,9 @@ describe("NodeTypeRegistry", () => {
     registerPixiNodeTypes(registry);
     expect(registry.get("pixi.sprite")?.label).toBe("Sprite");
     expect(registry.has("pixi.particle-container")).toBe(false);
+    expect(registry.get("pixi.particle-emitter")?.label).toBe(
+      "Particle Emitter",
+    );
     const groups = registry.listMenuGroups();
     expect(groups.map((g) => g.category)).toEqual([
       "Container",
@@ -27,13 +30,12 @@ describe("NodeTypeRegistry", () => {
       "Tilemap",
       "Text",
       "Graphics",
+      "Effects",
       "Mesh",
     ]);
-    expect(groups[0]?.types.map((t) => t.id)).toEqual([
-      "pixi.container",
-      "pixi.hit-zone",
-      "pixi.mask",
-    ]);
+    expect(groups[0]?.types.map((t) => t.id)).toEqual(["pixi.container"]);
+    expect(registry.get("pixi.hit-zone")?.creatable).toBe(false);
+    expect(registry.get("pixi.mask")?.creatable).toBe(false);
     expect(groups[1]?.types.map((t) => t.id)).toContain("pixi.animated-sprite");
   });
 
@@ -44,6 +46,8 @@ describe("NodeTypeRegistry", () => {
     const groups = registry.listRendererMenuGroups();
     expect(groups.map((g) => g.renderer)).toEqual(["pixi", "three"]);
     expect(groups[0]?.types.map((t) => t.id)).toContain("pixi.sprite");
+    expect(groups[0]?.types.map((t) => t.id)).not.toContain("pixi.hit-zone");
+    expect(groups[0]?.types.map((t) => t.id)).not.toContain("pixi.mask");
     expect(groups[0]?.types.every((t) => t.renderer === "pixi")).toBe(true);
     expect(groups[1]?.types.map((t) => t.id)).toContain("three.model");
     expect(groups[1]?.types.every((t) => t.renderer === "three")).toBe(true);
