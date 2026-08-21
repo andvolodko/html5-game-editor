@@ -55,14 +55,21 @@ export {
   projectBackgroundToClear,
   projectBackgroundRendererClear,
 } from "./project-background.js";
-export type { FittedRect, ExpandedFit } from "./fit-contain-rect.js";
+export type { FittedRect, ExpandedFit, PlaybackCameraFit } from "./fit-contain-rect.js";
 export {
   fitContainRect,
   fitCoverRect,
   fitExpandRect,
   fitDesignRect,
   integerExpandBuffer,
+  playbackCameraForParent,
 } from "./fit-contain-rect.js";
+export {
+  writeGameLayoutSize,
+  readGameLayoutSizeFromDataset,
+  measurePlaybackParentSize,
+} from "./game-layout-size.js";
+export type { LayoutSize } from "./game-layout-size.js";
 export {
   GAME_MOUNT_ELEMENT_ID,
   GAME_LOADING_ELEMENT_ID,

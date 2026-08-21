@@ -39,6 +39,8 @@ import {
   isObjectWorldVisible,
 } from "./three-editor-tools.js";
 import { ThreeEditorNodeHelpers } from "./three-editor-node-helpers.js";
+import { measurePlaybackParentSize } from "@game-editor/project";
+import { applyPlaybackCanvasLayout } from "./playback-canvas-layout.js";
 import {
   isPlaceholderObject,
   ThreeGltfCache,
@@ -518,10 +520,11 @@ export class ThreeSceneRenderer implements SceneRenderer {
     }
     const parent = this.canvasParent;
     if (this.designResolution && parent) {
-      if (parent.clientWidth < 1 || parent.clientHeight < 1) {
+      const measured = measurePlaybackParentSize(parent);
+      if (measured.width < 1 || measured.height < 1) {
         return;
       }
-      this.applyCanvasSize(parent.clientWidth, parent.clientHeight);
+      this.applyCanvasSize(measured.width, measured.height);
       return;
     }
     this.applyCanvasSize(width, height);
@@ -656,6 +659,7 @@ export class ThreeSceneRenderer implements SceneRenderer {
     if (nextWidth === this.width && nextHeight === this.height) {
       this.refreshDesignView();
       this.syncAllCameraAspects();
+      this.applyPlaybackCanvasCss();
       return;
     }
     this.width = nextWidth;
@@ -663,9 +667,19 @@ export class ThreeSceneRenderer implements SceneRenderer {
     this.refreshDesignView();
     this.syncAllCameraAspects();
     this.renderer?.setSize(this.width, this.height, false);
+    this.applyPlaybackCanvasCss();
     // setSize clears the drawing buffer; paint immediately to avoid a blank flash
     // until the next rAF (especially with transparent hybrid mid-layer).
     this.presentFrame();
+  }
+
+  private applyPlaybackCanvasCss(): void {
+    const canvas = this.renderer?.domElement;
+    const parent = this.canvasParent;
+    if (!canvas || !parent) {
+      return;
+    }
+    applyPlaybackCanvasLayout(canvas, parent);
   }
 
   private applyPlaybackViewport(): void {
@@ -761,14 +775,13 @@ export class ThreeSceneRenderer implements SceneRenderer {
         this.backgroundAlpha,
       );
     }
-    const width = Math.max(1, parent.clientWidth);
-    const height = Math.max(1, parent.clientHeight);
+    const measured = measurePlaybackParentSize(parent);
+    const width = Math.max(1, measured.width);
+    const height = Math.max(1, measured.height);
     renderer.setSize(width, height, false);
-    renderer.domElement.style.width = "100%";
-    renderer.domElement.style.height = "100%";
-    renderer.domElement.style.display = "block";
-    parent.appendChild(renderer.domElement);
     this.renderer = renderer;
+    applyPlaybackCanvasLayout(renderer.domElement, parent);
+    parent.appendChild(renderer.domElement);
     this.width = width;
     this.height = height;
     this.refreshDesignView();
@@ -811,7 +824,8 @@ export class ThreeSceneRenderer implements SceneRenderer {
       if (this.destroyed) {
         return;
       }
-      this.scheduleHostResize(parent.clientWidth, parent.clientHeight);
+      const measured = measurePlaybackParentSize(parent);
+      this.scheduleHostResize(measured.width, measured.height);
     });
     this.resizeObserver.observe(parent);
 

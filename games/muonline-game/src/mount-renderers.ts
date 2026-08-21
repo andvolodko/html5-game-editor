@@ -94,6 +94,7 @@ export async function mountMuonlineGameRenderers(args: {
     stack.className = "scene-viewport-stack";
     stack.style.position = "absolute";
     stack.style.inset = "0";
+    stack.style.overflow = "hidden";
     frame.appendChild(stack);
 
     const layer = (className: string) => {
@@ -101,6 +102,7 @@ export async function mountMuonlineGameRenderers(args: {
       el.className = `scene-viewport-layer ${className}`;
       el.style.position = "absolute";
       el.style.inset = "0";
+      el.style.overflow = "hidden";
       stack.appendChild(el);
       return el;
     };

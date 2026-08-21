@@ -27,9 +27,14 @@ describe("game index.html template", () => {
     expect(template).toContain(`id="${GAME_LOADING_ELEMENT_ID}"`);
     expect(template).toContain(`id="${GAME_LOADING_PERCENT_ELEMENT_ID}"`);
     expect(template).toContain("Loading <span id=\"game-loading-percent\">0</span>%");
-    expect(template).toContain("<style>");
+    expect(template).toContain("user-select: none");
+    expect(template).toContain("canvas {");
     expect(template).toContain("fetch(entryUrl)");
     expect(template).toContain(`src="${GAME_ENTRY_MODULE_SRC}"`);
+    expect(template).toContain("width=device-width");
+    expect(template).toContain("viewport-fit=cover");
+    expect(template).toContain("maximum-scale=1.0");
+    expect(template).toContain("position: fixed");
     expect(template).toContain(GAME_INDEX_TITLE_PLACEHOLDER);
     expect(template).toContain(GAME_INDEX_BACKGROUND_PLACEHOLDER);
     expect(template).toContain(GAME_INDEX_FAVICON_PLACEHOLDER);

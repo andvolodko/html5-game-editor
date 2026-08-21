@@ -3,11 +3,14 @@ import { bindPlaybackOverlayPointer } from "./playback-overlay-pointer.js";
 
 function createHost(): {
   host: HTMLElement;
-  emit: (type: string, init?: { clientX?: number; clientY?: number }) => void;
+  emit: (
+    type: string,
+    init?: { clientX?: number; clientY?: number },
+  ) => { preventDefault: ReturnType<typeof vi.fn> };
 } {
   const listeners = new Map<string, EventListener>();
   const host = {
-    style: { cursor: "" },
+    style: { cursor: "", userSelect: "", webkitUserSelect: "", touchAction: "" },
     addEventListener(type: string, listener: EventListener) {
       listeners.set(type, listener);
     },
@@ -18,13 +21,14 @@ function createHost(): {
   return {
     host,
     emit(type, init) {
+      const preventDefault = vi.fn();
       const listener = listeners.get(type);
-      listener?.(
-        {
-          clientX: init?.clientX ?? 0,
-          clientY: init?.clientY ?? 0,
-        } as PointerEvent,
-      );
+      listener?.({
+        clientX: init?.clientX ?? 0,
+        clientY: init?.clientY ?? 0,
+        preventDefault,
+      } as unknown as PointerEvent);
+      return { preventDefault };
     },
   };
 }
@@ -69,6 +73,21 @@ describe("bindPlaybackOverlayPointer", () => {
     fire("pointermove", { clientX: 20, clientY: 0 });
     expect(emit).toHaveBeenCalledWith("node_a", "pointerout");
     expect(emit).toHaveBeenCalledWith("node_b", "pointerover");
+  });
+
+  it("prevents native canvas selection on pointerdown", () => {
+    const { host, emit } = createHost();
+    bindPlaybackOverlayPointer({
+      host,
+      pick: () => "node_btn",
+      cursorFor: () => "pointer",
+      emit: () => undefined,
+    });
+
+    const { preventDefault } = emit("pointerdown", { clientX: 1, clientY: 1 });
+    expect(preventDefault).toHaveBeenCalled();
+    expect(emit("selectstart").preventDefault).toHaveBeenCalled();
+    expect(emit("dragstart").preventDefault).toHaveBeenCalled();
   });
 
   it("emits pointerdown, pointerup, and pointertap on the same node", () => {

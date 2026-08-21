@@ -20,6 +20,19 @@ export interface ExpandedFit extends FittedRect {
   offsetY: number;
 }
 
+/**
+ * Playback camera for a CSS parent: backbuffer matches the parent box (GPU-safe
+ * on portrait phones). Uniform contain-scale maps the design; pan keeps it
+ * centered. Extra parent area is extra world, not a 1920-tall WebGL texture.
+ */
+export interface PlaybackCameraFit {
+  width: number;
+  height: number;
+  scale: number;
+  panX: number;
+  panY: number;
+}
+
 function fitUniformRect(
   design: ProjectResolution,
   available: ProjectResolution,
@@ -127,6 +140,7 @@ export function fitDesignRect(
 }
 
 const MIN_EXPAND_BUFFER = 1;
+const DEFAULT_PLAYBACK_SCALE = 1;
 
 /**
  * Integer backbuffer + centered pan for expand-fit inside a CSS parent.
@@ -153,5 +167,40 @@ export function integerExpandBuffer(
     height,
     panX: (width - designWidth) / 2,
     panY: (height - designHeight) / 2,
+  };
+}
+
+/**
+ * Size the WebGL view to the CSS parent and place the design with uniform scale.
+ * Portrait 412×915 stays a ~412×915 buffer, not a 1920×4264 one that mobile GPUs
+ * clamp — which left a 16:9 strip at the top of the screen.
+ */
+export function playbackCameraForParent(
+  design: ProjectResolution,
+  parent: ProjectResolution,
+): PlaybackCameraFit {
+  const parentWidth = Math.max(parent.width, 0);
+  const parentHeight = Math.max(parent.height, 0);
+  const designWidth = Math.max(design.width, MIN_EXPAND_BUFFER);
+  const designHeight = Math.max(design.height, MIN_EXPAND_BUFFER);
+  if (parentWidth < 1 || parentHeight < 1) {
+    return {
+      width: designWidth,
+      height: designHeight,
+      scale: DEFAULT_PLAYBACK_SCALE,
+      panX: 0,
+      panY: 0,
+    };
+  }
+  const contained = fitContainRect(design, {
+    width: parentWidth,
+    height: parentHeight,
+  });
+  return {
+    width: Math.max(MIN_EXPAND_BUFFER, Math.round(parentWidth)),
+    height: Math.max(MIN_EXPAND_BUFFER, Math.round(parentHeight)),
+    scale: contained.scale,
+    panX: contained.x,
+    panY: contained.y,
   };
 }

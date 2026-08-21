@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>{{title}}</title>
     {{faviconLinks}}
     <style>
@@ -12,11 +12,30 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
+        position: fixed;
+        inset: 0;
+        touch-action: none;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
         background: {{background}};
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+      }
+      canvas {
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-user-drag: none;
+        outline: none;
+        touch-action: none;
       }
       #app {
+        position: absolute;
+        inset: 0;
         width: 100%;
         height: 100%;
+        overflow: hidden;
       }
       #game-loading {
         position: fixed;

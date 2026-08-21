@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fitContainRect, fitCoverRect, fitDesignRect, fitExpandRect, integerExpandBuffer } from "./fit-contain-rect.js";
+import { fitContainRect, fitCoverRect, fitDesignRect, fitExpandRect, integerExpandBuffer, playbackCameraForParent } from "./fit-contain-rect.js";
 
 describe("fitContainRect", () => {
   it("letterboxes a wide design in a tall host", () => {
@@ -127,6 +127,19 @@ describe("fitExpandRect", () => {
     expect(fitted.offsetX).toBeCloseTo((2560 - 720) / 2, 5);
   });
 
+  it("expands a landscape design into a portrait phone box", () => {
+    const fitted = fitExpandRect(
+      { width: 1920, height: 1080 },
+      { width: 360, height: 800 },
+    );
+    expect(fitted.width).toBe(360);
+    expect(fitted.height).toBe(800);
+    expect(fitted.scale).toBeCloseTo(360 / 1920, 5);
+    expect(fitted.visibleWidth).toBeCloseTo(1920, 5);
+    expect(fitted.visibleHeight).toBeCloseTo(800 / (360 / 1920), 5);
+    expect(fitted.offsetX).toBeCloseTo(0, 5);
+  });
+
   it("matches contain when aspects match", () => {
     const design = { width: 1920, height: 1080 };
     const available = { width: 960, height: 540 };
@@ -147,5 +160,29 @@ describe("fitExpandRect", () => {
     expect(buffer.height).toBe(1280);
     expect(buffer.panX).toBe(0);
     expect(buffer.panY).toBe(280);
+  });
+
+  it("rounds a portrait phone expand buffer without stretching", () => {
+    const buffer = integerExpandBuffer(
+      { width: 1920, height: 1080 },
+      { width: 360, height: 800 },
+    );
+    expect(buffer.width).toBe(1920);
+    expect(buffer.height).toBe(Math.round(800 / (360 / 1920)));
+    expect(buffer.panX).toBe(0);
+  });
+});
+
+describe("playbackCameraForParent", () => {
+  it("uses the CSS parent size and centers a landscape design in portrait", () => {
+    const view = playbackCameraForParent(
+      { width: 1920, height: 1080 },
+      { width: 412, height: 915 },
+    );
+    expect(view.width).toBe(412);
+    expect(view.height).toBe(915);
+    expect(view.scale).toBeCloseTo(412 / 1920, 5);
+    expect(view.panX).toBeCloseTo(0, 5);
+    expect(view.panY).toBeCloseTo((915 - 1080 * (412 / 1920)) / 2, 5);
   });
 });

@@ -52,6 +52,8 @@ Root-level scripts that exist today include `pnpm dev`, `pnpm dev:editor`, `pnpm
 
 `project.json` `resolution` is the authored world size. `GameScreenHost` maps that rectangle onto the window with uniform scale and **keeps it centered**.
 
+Standalone games (including Android WebView) measure the **visible** viewport (`visualViewport` when present) and relayout on orientation change. Playback maps the design onto that CSS box with **camera scale** so the WebGL buffer stays at screen size. Sizing the Pixi backbuffer to world pixels (for example 1920×4264 in portrait) exceeds typical mobile `MAX_TEXTURE_SIZE` and leaves a 16:9 strip at the top of the screen.
+
 `scaleMode` (default `expand` when omitted):
 
 - **`expand`** — fit the whole design (same uniform scale as contain), then grow the Pixi/Three view to fill leftover window bands. Authored 2D content stays centered; extra space is more Pixi world (tilemaps, sprites), not host letterbox. Playback Three keeps the design aspect and letterboxes into that same rectangle so 3D stays aligned with Pixi. Do not zoom the 3D camera to fill the extra bands.

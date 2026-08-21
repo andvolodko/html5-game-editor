@@ -4,7 +4,7 @@ Package a game as a **debug APK**, **release APK**, or **release AAB** (Play App
 
 **Status:** shipped. Needs the live editor (`pnpm dev`) and a local Android toolchain. Not available in the GitHub Pages / `pnpm dev:demo` snapshot.
 
-Orientation: [`PROJECT.md`](../PROJECT.md). Runtime / Vite builds: [`runtime.md`](./runtime.md).
+Orientation: [`PROJECT.md`](../PROJECT.md). Runtime / Vite builds: [`runtime.md`](./runtime.md). Scene scale (`scaleMode` + design resolution) uses the same `GameScreenHost` path as the web build; portrait WebView layout is covered there.
 
 ---
 

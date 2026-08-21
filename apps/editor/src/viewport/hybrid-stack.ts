@@ -73,9 +73,11 @@ export function createHybridCanvasHosts(host: HTMLElement): HybridCanvasHosts {
   );
   stack.style.position = "absolute";
   stack.style.inset = "0";
+  stack.style.overflow = "hidden";
   for (const el of [bgHost, midHost, fgHost, inputHost]) {
     el.style.position = "absolute";
     el.style.inset = "0";
+    el.style.overflow = "hidden";
   }
   return { stack, bgHost, midHost, fgHost, inputHost };
 }

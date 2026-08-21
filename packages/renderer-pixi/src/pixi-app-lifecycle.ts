@@ -5,14 +5,17 @@ import {
   type ViewportPointerModifiers,
   viewportPointerModifiersFrom,
 } from "@game-editor/shared";
-import { integerExpandBuffer } from "@game-editor/project";
+import { playbackCameraForParent, measurePlaybackParentSize } from "@game-editor/project";
 import type { Vec2 } from "@game-editor/scene";
+import { applyPlaybackCanvasLayout } from "./playback-canvas-layout.js";
 import { clientPointToWorld } from "./viewport-math.js";
-import { DEFAULT_VIEWPORT_SCALE } from "./viewport-camera.js";
 import type { ViewportCameraController } from "./viewport-camera-controller.js";
 import type { PixiRuntimeGraph } from "./pixi-runtime-nodes.js";
 import type { PixelGridOverlay } from "./pixel-grid.js";
 import type { ScreenGuidesOverlay } from "./screen-guides.js";
+
+/** Match Three playback; uncapped DPR × world-size buffers overflow mobile GPUs. */
+const PLAYBACK_MAX_PIXEL_RATIO = 2;
 
 /** Browser console / DevTools bridges for the live Pixi Application. */
 interface PixiDebugGlobals {
@@ -138,12 +141,15 @@ export class PixiAppLifecycle {
   private async init(): Promise<void> {
     const app = new Application();
     const design = this.host.designResolution;
+    const pixelRatio = window.devicePixelRatio || 1;
     await app.init({
       background: this.host.background,
       backgroundAlpha: this.host.backgroundAlpha,
       antialias: true,
       autoDensity: true,
-      resolution: window.devicePixelRatio || 1,
+      resolution: design
+        ? Math.min(pixelRatio, PLAYBACK_MAX_PIXEL_RATIO)
+        : pixelRatio,
       ...(design
         ? { width: design.width, height: design.height }
         : { resizeTo: this.host.canvasParent }),
@@ -151,8 +157,8 @@ export class PixiAppLifecycle {
     this.app = app;
     publishPixiApp(app);
     app.stage.label = "stage";
-    this.host.canvasParent.appendChild(app.canvas);
     this.fillDesignCanvasCss();
+    this.host.canvasParent.appendChild(app.canvas);
     if (this.host.pixelGrid) {
       this.host.camera.root.addChild(this.host.pixelGrid.root);
     }
@@ -291,16 +297,15 @@ export class PixiAppLifecycle {
    * Pixi `renderer.resize` writes inline canvas CSS in backbuffer pixels.
    * Playback needs the bitmap stretched across the parent so the 1920×1080
    * design stays fully visible and centered inside expand/contain/cover.
+   * Pin to the parent CSS box so Android WebView cannot expand the layout
+   * viewport (portrait scale would then be computed against 1920px width).
    */
   private fillDesignCanvasCss(): void {
     const canvas = this.app?.canvas;
     if (!canvas || !this.host.designResolution) {
       return;
     }
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    canvas.style.display = "block";
-    canvas.style.objectFit = "fill";
+    applyPlaybackCanvasLayout(canvas, this.host.canvasParent);
   }
 
   /** Coalesce parent resizes to one buffer sync per frame (avoids clear-flash spam). */
@@ -321,13 +326,11 @@ export class PixiAppLifecycle {
       return;
     }
     const parent = this.host.canvasParent;
-    if (parent.clientWidth < 1 || parent.clientHeight < 1) {
+    const measured = measurePlaybackParentSize(parent);
+    if (measured.width < 1 || measured.height < 1) {
       return;
     }
-    const next = integerExpandBuffer(design, {
-      width: parent.clientWidth,
-      height: parent.clientHeight,
-    });
+    const next = playbackCameraForParent(design, measured);
     const sizeChanged =
       app.screen.width !== next.width || app.screen.height !== next.height;
     if (sizeChanged) {
@@ -338,19 +341,19 @@ export class PixiAppLifecycle {
     this.height = next.height;
     app.stage.hitArea = app.screen;
     const camera = this.host.camera.getState();
-    const panChanged =
+    const cameraChanged =
       camera.pan.x !== next.panX ||
       camera.pan.y !== next.panY ||
-      camera.scale !== DEFAULT_VIEWPORT_SCALE;
-    if (panChanged) {
+      camera.scale !== next.scale;
+    if (cameraChanged) {
       this.host.camera.applyExternalState({
         pan: { x: next.panX, y: next.panY },
-        scale: DEFAULT_VIEWPORT_SCALE,
+        scale: next.scale,
       });
     }
     // renderer.resize clears the drawing buffer; paint now so we don't flash
     // empty until the next game rAF (same as ThreeSceneRenderer.resize).
-    if (sizeChanged || panChanged) {
+    if (sizeChanged || cameraChanged) {
       this.renderFrame();
     }
   }

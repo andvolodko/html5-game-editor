@@ -32,10 +32,16 @@ export function bindPlaybackOverlayPointer(
   };
 
   const onDown = (event: PointerEvent): void => {
+    // Stacked Pixi/Three canvases sit under this overlay. Without preventDefault
+    // the browser treats them like images and flashes a native selection.
+    event.preventDefault();
     downId = pick(event.clientX, event.clientY);
     if (downId) {
       emit(downId, "pointerdown");
     }
+  };
+  const preventNativeSelection = (event: Event): void => {
+    event.preventDefault();
   };
   const onUp = (event: PointerEvent): void => {
     const id = pick(event.clientX, event.clientY);
@@ -58,16 +64,23 @@ export function bindPlaybackOverlayPointer(
     downId = undefined;
   };
 
+  host.style.userSelect = "none";
+  host.style.webkitUserSelect = "none";
+  host.style.touchAction = "none";
   host.addEventListener("pointerdown", onDown);
   host.addEventListener("pointerup", onUp);
   host.addEventListener("pointermove", onMove);
   host.addEventListener("pointerleave", onLeave);
+  host.addEventListener("selectstart", preventNativeSelection);
+  host.addEventListener("dragstart", preventNativeSelection);
 
   return () => {
     host.removeEventListener("pointerdown", onDown);
     host.removeEventListener("pointerup", onUp);
     host.removeEventListener("pointermove", onMove);
     host.removeEventListener("pointerleave", onLeave);
+    host.removeEventListener("selectstart", preventNativeSelection);
+    host.removeEventListener("dragstart", preventNativeSelection);
     host.style.cursor = "";
   };
 }
