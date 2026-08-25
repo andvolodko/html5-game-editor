@@ -257,6 +257,8 @@ Full pipeline, serialization, and runtime notes: `[docs/aseprite.md](./docs/asep
 
 The hosted site is a **static Vite build**. It does not run `project-server`. The editor bundles every package under `games/` (scenes, `project.json`, asset catalogue) and serves files from `/demo/<project-id>/assets` plus `/demo/<project-id>/_generated`. Switch games with **File → Open Project**.
 
+`pnpm build:demo` uses a relative Vite `base` (`./assets/...`) so `apps/editor/dist` works at the site root **and** when copied under a subdirectory. `pnpm build:pages` still sets `VITE_BASE=/<repo>/` for GitHub Pages.
+
 Each `games/<id>` package is also built as a standalone player and copied to `/games/<id>/`. New games are picked up automatically — no workflow edit.
 
 

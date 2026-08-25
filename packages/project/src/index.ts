@@ -78,7 +78,9 @@ export {
 } from "./game-shell.js";
 export {
   STANDALONE_GAMES_SEGMENT,
+  RELATIVE_PUBLIC_VITE_BASE,
   normalizePublicBaseUrl,
+  resolveViteBase,
   standaloneGameBaseUrl,
   standaloneGamesIndexUrl,
 } from "./pages-urls.js";

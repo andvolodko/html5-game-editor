@@ -1,7 +1,7 @@
 import { Editor } from "@game-editor/editor-core";
 import { createDemoEditorClients } from "./create-demo-clients";
+import { demoAssetBaseUrl } from "./demo-content-paths";
 import {
-  demoAssetBaseUrl,
   loadBundledDemoSnapshots,
   loadDemoComponentCatalogs,
 } from "./load-demo-snapshot";
@@ -10,7 +10,7 @@ import {
 export function createEditor(): Editor {
   return new Editor(
     createDemoEditorClients(loadBundledDemoSnapshots(), {
-      assetBaseUrl: demoAssetBaseUrl(),
+      assetBaseUrl: demoAssetBaseUrl(import.meta.env.BASE_URL),
       catalogs: loadDemoComponentCatalogs(),
       storage: window.localStorage,
     }),

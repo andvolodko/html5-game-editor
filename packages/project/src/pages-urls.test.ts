@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   STANDALONE_GAMES_SEGMENT,
   normalizePublicBaseUrl,
+  resolveViteBase,
   standaloneGameBaseUrl,
   standaloneGamesIndexUrl,
 } from "./pages-urls.js";
@@ -10,6 +11,16 @@ describe("pages URLs", () => {
   it("keeps the site root as a single slash", () => {
     expect(normalizePublicBaseUrl("")).toBe("/");
     expect(normalizePublicBaseUrl("/")).toBe("/");
+  });
+
+  it("keeps a relative Vite base unchanged", () => {
+    expect(normalizePublicBaseUrl("./")).toBe("./");
+  });
+
+  it("defaults Vite base to ./ so builds work from a subdirectory", () => {
+    expect(resolveViteBase(undefined)).toBe("./");
+    expect(resolveViteBase("")).toBe("./");
+    expect(resolveViteBase("/html5-game-editor/")).toBe("/html5-game-editor/");
   });
 
   it("adds a trailing slash to a repo Pages prefix", () => {

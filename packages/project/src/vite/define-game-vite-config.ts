@@ -1,4 +1,5 @@
 import { defineConfig, type UserConfig } from "vite";
+import { resolveViteBase } from "../pages-urls.js";
 import { gameContentPlugin } from "./game-content-plugin.js";
 import {
   gameBundleLoaderPlugin,
@@ -19,16 +20,11 @@ export interface GameViteConfigOptions {
   base?: string;
 }
 
-const RELATIVE_GAME_VITE_BASE = "./";
-
 /** `vite.base` from `VITE_BASE`, or `./` for local / zip / preview builds. */
 export function resolveGameViteBase(
   envBase: string | undefined = process.env.VITE_BASE,
 ): string {
-  if (envBase === undefined || envBase === "") {
-    return RELATIVE_GAME_VITE_BASE;
-  }
-  return envBase;
+  return resolveViteBase(envBase);
 }
 
 /**

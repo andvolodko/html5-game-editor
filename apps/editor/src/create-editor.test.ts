@@ -49,5 +49,6 @@ describe("live Vite watch", () => {
     expect(viteConfig).toContain("**/games/**/.project/**");
     expect(viteConfig).toContain("**/games/**/assets/**");
     expect(viteConfig).toContain("create-demo-editor.ts");
+    expect(viteConfig).toContain("resolveViteBase");
   });
 });

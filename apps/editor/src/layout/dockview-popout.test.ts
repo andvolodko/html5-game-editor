@@ -26,6 +26,7 @@ function fakePanel<TGroup extends object>(
 describe("dockviewPopoutUrl", () => {
   it("joins the Vite base with popout.html", () => {
     expect(dockviewPopoutUrl("/")).toBe(`/${DOCKVIEW_POPOUT_PAGE}`);
+    expect(dockviewPopoutUrl("./")).toBe(`./${DOCKVIEW_POPOUT_PAGE}`);
     expect(dockviewPopoutUrl("/editor/")).toBe(`/editor/${DOCKVIEW_POPOUT_PAGE}`);
     expect(dockviewPopoutUrl("/editor")).toBe(`/editor/${DOCKVIEW_POPOUT_PAGE}`);
   });

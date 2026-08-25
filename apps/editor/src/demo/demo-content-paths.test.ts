@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  demoAssetBaseUrl,
   isAllowedDemoContentRelative,
   isGeneratedTrashRelative,
   parseDemoContentUrl,
+  stripViteBase,
 } from "./demo-content-paths";
 
 describe("isAllowedDemoContentRelative", () => {
@@ -88,5 +90,41 @@ describe("parseDemoContentUrl", () => {
     expect(parseDemoContentUrl("/games/editor-features-demo/assets/x.png")).toBe(
       undefined,
     );
+  });
+});
+
+describe("stripViteBase", () => {
+  it("leaves pathnames unchanged for root and relative bases", () => {
+    expect(stripViteBase("/demo/game/assets/hero.png", "/")).toBe(
+      "/demo/game/assets/hero.png",
+    );
+    expect(stripViteBase("/demo/game/assets/hero.png", "./")).toBe(
+      "/demo/game/assets/hero.png",
+    );
+  });
+
+  it("strips a subdirectory public base", () => {
+    expect(
+      stripViteBase(
+        "/html5-game-editor/demo/game/assets/hero.png",
+        "/html5-game-editor/",
+      ),
+    ).toBe("/demo/game/assets/hero.png");
+    expect(
+      stripViteBase("/_test/demo/game/assets/hero.png", "/_test/"),
+    ).toBe("/demo/game/assets/hero.png");
+  });
+});
+
+describe("demoAssetBaseUrl", () => {
+  it("resolves demo files next to index.html for a relative Vite base", () => {
+    expect(demoAssetBaseUrl("./")).toBe("./demo/");
+  });
+
+  it("prefixes demo files with a subdirectory public base", () => {
+    expect(demoAssetBaseUrl("/html5-game-editor/")).toBe(
+      "/html5-game-editor/demo/",
+    );
+    expect(demoAssetBaseUrl("/_test")).toBe("/_test/demo/");
   });
 });

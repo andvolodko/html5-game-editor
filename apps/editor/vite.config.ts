@@ -2,6 +2,7 @@ import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveViteBase } from "@game-editor/project";
 import { demoAssetsPlugin } from "./src/demo/demo-assets-plugin";
 
 /**
@@ -54,7 +55,7 @@ function demoEditorFactoryPlugin(): Plugin {
 
 export default defineConfig(({ mode }) => {
   const demo = mode === "demo" || process.env.VITE_DEMO === "true";
-  const base = process.env.VITE_BASE ?? "/";
+  const base = resolveViteBase(process.env.VITE_BASE);
   return {
     base,
     plugins: [

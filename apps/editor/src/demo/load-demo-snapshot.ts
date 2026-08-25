@@ -8,8 +8,6 @@ import {
 } from "./demo-glob-paths";
 import type { DemoSnapshot } from "./demo-store";
 
-const DEMO_ASSET_MOUNT = "demo";
-
 const projectModules = import.meta.glob(
   "../../../../games/*/project.json",
   { eager: true, import: "default" },
@@ -45,12 +43,6 @@ function groupByProjectId<T>(
     grouped.set(projectId, value);
   }
   return grouped;
-}
-
-/** Static files live at `${base}demo/<projectId>/assets/...`. */
-export function demoAssetBaseUrl(baseUrl = import.meta.env.BASE_URL): string {
-  const normalized = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-  return `${normalized}${DEMO_ASSET_MOUNT}/`;
 }
 
 export function loadBundledDemoSnapshots(): DemoSnapshot[] {

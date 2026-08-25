@@ -10,6 +10,7 @@ import {
 import {
   isGeneratedTrashRelative,
   parseDemoContentUrl,
+  stripViteBase,
 } from "./demo-content-paths";
 
 const FORBIDDEN_STATUS = 403;
@@ -35,20 +36,6 @@ const MIME_BY_EXTENSION: Readonly<Record<string, string>> = {
 function mimeForFile(filePath: string): string {
   const ext = path.extname(filePath).toLowerCase();
   return MIME_BY_EXTENSION[ext] ?? "application/octet-stream";
-}
-
-function stripViteBase(pathname: string, base: string): string {
-  if (base === "/" || base === "") {
-    return pathname;
-  }
-  const prefix = base.endsWith("/") ? base.slice(0, -1) : base;
-  if (pathname === prefix) {
-    return "/";
-  }
-  if (pathname.startsWith(`${prefix}/`)) {
-    return pathname.slice(prefix.length);
-  }
-  return pathname;
 }
 
 function isInsideRoot(root: string, candidate: string): boolean {
