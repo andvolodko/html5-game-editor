@@ -539,6 +539,12 @@ This project was developed with [Cursor](https://cursor.com) using **cursor-grok
 ---
 
 
+## Assets
+
+Some of the artwork and game-ready assets used while creating and testing the demo projects came from [free isometric game assets](https://digitalsplace.com/isometric-game-assets) on  **DigitalsPlace**.
+
+---
+
 
 ## License
 
