@@ -13,6 +13,8 @@ import type {
   ScriptTransform2DPatch,
   ScriptTransform3D,
   ScriptTransform3DPatch,
+  ScriptTweenStart,
+  ScriptTweenTimelineOptions,
 } from "@game-editor/game-components";
 import type { SceneIndex } from "@game-editor/scene";
 import {
@@ -75,6 +77,10 @@ export interface RuntimeScriptServiceHost {
   setNodeState(nodeId: string, stateIdOrName: string | null): void;
   getNodeState(nodeId: string): string | null;
   setNodeCursor(nodeId: string, cursor: string): void;
+  startTween(request: ScriptTweenStart): string;
+  stopTween(tweenId: string): void;
+  createTweenTimeline(options: ScriptTweenTimelineOptions): string;
+  stopTweenTimeline(timelineId: string): void;
 }
 
 /**
@@ -290,6 +296,32 @@ export function createRuntimeScriptServices(
         return;
       }
       host.setNodeCursor(nodeId, cursor);
+    },
+    startTween: (request) => {
+      if (external.startTween) {
+        return external.startTween(request);
+      }
+      return host.startTween(request);
+    },
+    stopTween: (tweenId) => {
+      if (external.stopTween) {
+        external.stopTween(tweenId);
+        return;
+      }
+      host.stopTween(tweenId);
+    },
+    createTweenTimeline: (options) => {
+      if (external.createTweenTimeline) {
+        return external.createTweenTimeline(options);
+      }
+      return host.createTweenTimeline(options);
+    },
+    stopTweenTimeline: (timelineId) => {
+      if (external.stopTweenTimeline) {
+        external.stopTweenTimeline(timelineId);
+        return;
+      }
+      host.stopTweenTimeline(timelineId);
     },
   };
 }

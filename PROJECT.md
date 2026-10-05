@@ -22,6 +22,7 @@ Start at [`docs/README.md`](./docs/README.md) for “I want to…” links. Use 
 | Scene / domain model, components, serialization, prefabs, named states | [`docs/scene-model.md`](./docs/scene-model.md) |
 | Add a Script behaviour (Inspector + runtime) | [`docs/guides/add-a-script-component.md`](./docs/guides/add-a-script-component.md) |
 | Author and activate named node states | [`docs/guides/use-node-states.md`](./docs/guides/use-node-states.md) |
+| Tween position, scale, rotation, or alpha | [`docs/guides/use-tweens.md`](./docs/guides/use-tweens.md) |
 | Asset database, import, browser, atlas, generated files | [`docs/assets.md`](./docs/assets.md) |
 | Aseprite / LibreSprite compile pipeline | [`docs/aseprite.md`](./docs/aseprite.md) |
 | Editor core, commands, undo, inspector, selection, layout, node states | [`docs/editor.md`](./docs/editor.md) |

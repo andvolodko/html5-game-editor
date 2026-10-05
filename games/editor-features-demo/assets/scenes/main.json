@@ -3076,6 +3076,343 @@
       ]
     },
     {
+      "id": "node_5c91796d-2b75-4b8d-9995-925c64da4a1c",
+      "name": "GoTweenSceneButton",
+      "prefab": {
+        "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+        "instanceId": "pinst_a214ef2c-cedb-4ee8-956a-0956902a4bb4",
+        "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+        "componentSources": {
+          "comp_62b4ef24-afd8-4569-8dd9-ea28cd046dcf": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+          "comp_ac36811a-31f1-4e40-96ac-f053446a359e": "comp_888624e2-d9e6-4044-b3eb-029091d75468",
+          "comp_464567f1-558a-49c2-b0fd-4dd4cc7fcba9": "comp_4d87ba98-71aa-4892-a326-fd8d2b7134ba",
+          "comp_cad9fc74-627c-4b3b-8345-3bd3a0a389f4": "comp_ead0350e-74e0-45f4-be2c-2b0165aa2e2e",
+          "comp_f9bc1c13-1277-49bd-86fd-d5114e795edd": "comp_0bb0f605-62d6-44ba-b901-e95a8b9253fc"
+        },
+        "isRoot": true,
+        "overrides": [
+          {
+            "kind": "name",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "value": "GoTweenSceneButton"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_ead0350e-74e0-45f4-be2c-2b0165aa2e2e",
+            "propertyPath": "properties.sceneName",
+            "value": "tween"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+            "propertyPath": "position.x",
+            "value": 960
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_2605cefb-5734-44b7-b330-a68f77f63785",
+            "componentId": "comp_fdb54851-a3ae-4ca3-956e-03326922f3a6",
+            "propertyPath": "position.y",
+            "value": 768
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "componentId": "comp_14bd0013-0ac4-4402-a320-f30c7c155794",
+            "propertyPath": "text",
+            "value": "Tween Scene"
+          },
+          {
+            "kind": "property",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "componentId": "comp_c6ed5775-a184-4572-b01a-4cd71700e3e0",
+            "propertyPath": "text",
+            "value": "Tween Scene"
+          }
+        ]
+      },
+      "components": [
+        {
+          "type": "Transform2D",
+          "id": "comp_62b4ef24-afd8-4569-8dd9-ea28cd046dcf",
+          "position": {
+            "x": 960,
+            "y": 768
+          },
+          "rotation": 0,
+          "scale": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_ac36811a-31f1-4e40-96ac-f053446a359e",
+          "scriptId": "shared.Button",
+          "properties": {
+            "regularChildName": "regular",
+            "pressedChildName": "pressed"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_464567f1-558a-49c2-b0fd-4dd4cc7fcba9",
+          "scriptId": "shared.AudioClick",
+          "properties": {
+            "audioAssetId": "asset_a6ab9258-09ef-4fcc-aee5-076f73871b86",
+            "mouseEvent": "pointertap"
+          }
+        },
+        {
+          "type": "Script",
+          "id": "comp_cad9fc74-627c-4b3b-8345-3bd3a0a389f4",
+          "scriptId": "editor-features-demo.GoSpineButton",
+          "properties": {
+            "sceneName": "tween"
+          }
+        },
+        {
+          "type": "HitZone",
+          "id": "comp_f9bc1c13-1277-49bd-86fd-d5114e795edd",
+          "offset": {
+            "x": 0.327808422492609,
+            "y": 5.219397450536029
+          },
+          "shape": {
+            "type": "rectangle",
+            "width": 294.86349319337575,
+            "height": 86.97858021431925
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "node_15cdcade-d24b-4737-82ea-942229a9d2b4",
+          "name": "regular",
+          "parentId": "node_5c91796d-2b75-4b8d-9995-925c64da4a1c",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_a214ef2c-cedb-4ee8-956a-0956902a4bb4",
+            "sourceNodeId": "node_7a7af1e4-01f9-42d4-9772-ad76bdba2635",
+            "componentSources": {
+              "comp_223b802a-ffe5-4386-a337-bd9344a64e37": "comp_d5af0834-a8fc-4a2d-ad67-34beff5b7a06",
+              "comp_4cf76859-e7a3-4515-ac82-1a95a6943eb0": "comp_78aa241b-abce-45ff-9043-be8eddae7b5f"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_223b802a-ffe5-4386-a337-bd9344a64e37",
+              "position": {
+                "x": 0,
+                "y": 5
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_4cf76859-e7a3-4515-ac82-1a95a6943eb0",
+              "assetId": "asset_bc24bff4-6cfc-4c16-ad20-48ea9332d25d",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_f8c04704-4001-43f2-8dd2-499535f585de",
+          "name": "pressed",
+          "parentId": "node_5c91796d-2b75-4b8d-9995-925c64da4a1c",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_a214ef2c-cedb-4ee8-956a-0956902a4bb4",
+            "sourceNodeId": "node_8a5e8c14-108d-4045-869f-a3ea8bbbf334",
+            "componentSources": {
+              "comp_3668c144-83db-4a36-849e-4558d68b4990": "comp_7bd7ebbd-ef36-48fa-b79c-aecf1db86695",
+              "comp_dc69b799-47ee-4271-8b54-4df4a32880ca": "comp_6586d428-a0e0-4941-a45f-8eb7188fc149"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_3668c144-83db-4a36-849e-4558d68b4990",
+              "position": {
+                "x": 0,
+                "y": -1
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "NineSliceSprite",
+              "id": "comp_dc69b799-47ee-4271-8b54-4df4a32880ca",
+              "assetId": "asset_685a786e-4b9f-4717-aa9e-9aa0d282fced",
+              "width": 328.89496316408133,
+              "height": 117.84887995492628,
+              "leftWidth": 64,
+              "rightWidth": 64,
+              "topHeight": 64,
+              "bottomHeight": 64
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_ef700b7e-d240-408c-89e7-eb2efec5a646",
+          "name": "text-regular",
+          "parentId": "node_5c91796d-2b75-4b8d-9995-925c64da4a1c",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_a214ef2c-cedb-4ee8-956a-0956902a4bb4",
+            "sourceNodeId": "node_9044c787-939f-4f2f-8eb2-775639e514f6",
+            "componentSources": {
+              "comp_d7c3d552-885d-43f5-be67-529ea6306df6": "comp_631ea417-8cf6-4bbb-b6bc-d4c35e059d7a",
+              "comp_60b10183-54f1-4694-9fc8-e200ea6a50fc": "comp_14bd0013-0ac4-4402-a320-f30c7c155794"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_d7c3d552-885d-43f5-be67-529ea6306df6",
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_60b10183-54f1-4694-9fc8-e200ea6a50fc",
+              "text": "Tween Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  13750737,
+                  16777215,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "node_09cfc663-473c-4bbb-941c-3c11ac68c2cd",
+          "name": "text-pressed",
+          "parentId": "node_5c91796d-2b75-4b8d-9995-925c64da4a1c",
+          "prefab": {
+            "prefabAssetId": "asset_df76471b-e659-4f52-a958-bd1f19de072d",
+            "instanceId": "pinst_a214ef2c-cedb-4ee8-956a-0956902a4bb4",
+            "sourceNodeId": "node_de382a68-7af7-4650-8256-b058cd669f37",
+            "componentSources": {
+              "comp_b8b77282-acb3-4f00-bf69-880337cbac2d": "comp_ba586bbf-cecb-4019-9554-6677fe0834cc",
+              "comp_2a2fd26d-73b3-43d1-aac1-5322dcbe5727": "comp_c6ed5775-a184-4572-b01a-4cd71700e3e0"
+            }
+          },
+          "components": [
+            {
+              "type": "Transform2D",
+              "id": "comp_b8b77282-acb3-4f00-bf69-880337cbac2d",
+              "position": {
+                "x": 0,
+                "y": 4
+              },
+              "rotation": 0,
+              "scale": {
+                "x": 1,
+                "y": 1
+              }
+            },
+            {
+              "type": "Text",
+              "id": "comp_2a2fd26d-73b3-43d1-aac1-5322dcbe5727",
+              "text": "Tween Scene",
+              "style": {
+                "fontFamily": "Arial",
+                "fontSize": 32,
+                "fontWeight": "normal",
+                "fontStyle": "normal",
+                "fontVariant": "normal",
+                "fill": [
+                  7895160,
+                  14277081,
+                  14277081
+                ],
+                "fillAlpha": 1,
+                "align": "left",
+                "letterSpacing": 0,
+                "lineHeight": 0,
+                "leading": 0,
+                "wordWrap": false,
+                "wordWrapWidth": 440,
+                "breakWords": false,
+                "whiteSpace": "pre",
+                "padding": 0,
+                "trim": false,
+                "textBaseline": "alphabetic",
+                "strokeColor": 0,
+                "strokeAlpha": 1,
+                "strokeWidth": 0,
+                "strokeJoin": "miter",
+                "miterLimit": 10,
+                "dropShadow": true,
+                "dropShadowColor": 3880245,
+                "dropShadowAlpha": 0.8,
+                "dropShadowBlur": 1,
+                "dropShadowDistance": 5,
+                "dropShadowAngle": 30
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
       "id": "node_c5929b1b-4ca6-4563-a986-54bc24d7cec9",
       "name": "Units",
       "components": [

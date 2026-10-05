@@ -4,6 +4,11 @@ import type {
   RuntimeTransform2D,
   SceneNodeData,
 } from "@game-editor/scene";
+import type {
+  ScriptTweenApi,
+  ScriptTweenStart,
+  ScriptTweenTimelineOptions,
+} from "./tween-types.js";
 
 export type { RuntimeTransform2D };
 
@@ -425,6 +430,17 @@ export interface ScriptRuntimeServices {
    * CSS cursor on a node's runtime object (e.g. `pointer`). Pixi playback.
    */
   setNodeCursor?: (nodeId: string, cursor: string) => void;
+  /**
+   * Start a property tween. Returns an id for `stopTween`.
+   * Runtime-only; does not write scene files.
+   */
+  startTween?: (request: ScriptTweenStart) => string;
+  /** Stop one tween started via `startTween`. */
+  stopTween?: (tweenId: string) => void;
+  /** Create an empty timeline. Children are `startTween` calls with `timelineId`. */
+  createTweenTimeline?: (options: ScriptTweenTimelineOptions) => string;
+  /** Stop a timeline and every child tween. */
+  stopTweenTimeline?: (timelineId: string) => void;
 }
 
 /** Live 3D vector that writes through to the host node's Transform3D. */
@@ -570,6 +586,11 @@ export interface ScriptCreateContext {
    * Transient — does not write scene JSON.
    */
   particles: ScriptParticlesApi;
+  /**
+   * Property tweens for this node (and other nodes by id).
+   * Transient — does not write scene files. How-to: docs/guides/use-tweens.md.
+   */
+  tween: ScriptTweenApi;
   /** Host node facade (no renderer objects). */
   node: ScriptNodeHandle;
   /** Catalogue audio playback. */

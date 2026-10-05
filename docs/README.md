@@ -16,6 +16,7 @@ Operator setup (`pnpm dev`, demo site, daily commands) lives in the root [`READM
 | Read or change scene JSON | [`scene-model.md`](./scene-model.md) |
 | Add a Script behaviour (Inspector + runtime) | [Add a script component](./guides/add-a-script-component.md) |
 | Author and activate named node states | [Use node states](./guides/use-node-states.md) |
+| Tween position, scale, rotation, or alpha | [Use tweens](./guides/use-tweens.md) |
 | Understand undo, selection, Inspector, panels | [`editor.md`](./editor.md) |
 | Boot a standalone game | [`runtime.md`](./runtime.md) |
 | Android / Debug APK export | [`android-export.md`](./android-export.md) |
@@ -57,6 +58,7 @@ Guides are written as developer how-tos. A few topic pages still mix “what exi
 | --- | --- |
 | [Add a script component](./guides/add-a-script-component.md) | `defineComponent` + behaviour class, catalog, Inspector, runtime install |
 | [Use node states](./guides/use-node-states.md) | Named property overrides (States panel, sparse JSON, `ctx.node.states`) |
+| [Use tweens](./guides/use-tweens.md) | `ctx.tween` property animation (`to` / `from` / `fromTo`, timelines, stagger) |
 
 Scaffolding an entire game: copy an existing `games/*` package (see [README — Working with games](../README.md#working-with-games)) or follow `.cursor/skills/create-game/`. Other Cursor workflows (`add-node-type`, `add-asset-type`, `add-editor-command`, `add-editor-panel`, `implement-runtime-feature`, `modify-scene-schema`, …) live under `.cursor/skills/` — see `PROJECT.md`.
 

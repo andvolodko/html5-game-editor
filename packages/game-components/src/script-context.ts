@@ -9,6 +9,7 @@ import { createScriptAudioApi } from "./script-audio-api.js";
 import { createScriptNodeHandleCache } from "./script-node-api.js";
 import { createScriptSceneApi } from "./script-scene-api.js";
 import { createScriptTransformApi } from "./script-transform-api.js";
+import { createScriptTweenApi } from "./script-tween-api.js";
 import type {
   ScriptCreateContext,
   ScriptRuntimeServices,
@@ -28,8 +29,8 @@ export interface CreateScriptContextInput {
 
 /**
  * Canonical ScriptCreateContext factory.
- * Builds persistent `transform3D`, `animations`, `particles`, `node`, `audio`, and `scene`
- * wrappers bound to `nodeId`.
+ * Builds persistent `transform3D`, `animations`, `particles`, `tween`, `node`,
+ * `audio`, and `scene` wrappers bound to `nodeId`.
  */
 export function createScriptContext(
   input: CreateScriptContextInput,
@@ -48,6 +49,7 @@ export function createScriptContext(
       createScriptTransformApi(input.nodeId, input.services),
     animations: createScriptAnimationsApi(input.nodeId, input.services),
     particles: createScriptParticlesApi(input.nodeId, input.services),
+    tween: createScriptTweenApi(input.nodeId, input.services),
     node: cache.get(input.nodeId),
     audio: createScriptAudioApi(input.services),
     scene: createScriptSceneApi(

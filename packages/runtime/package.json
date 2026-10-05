@@ -9,7 +9,10 @@
       "import": "./src/index.ts"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -22,7 +25,8 @@
     "@game-editor/game-components": "workspace:*",
     "@game-editor/project": "workspace:*",
     "@game-editor/scene": "workspace:*",
-    "@game-editor/shared": "workspace:*"
+    "@game-editor/shared": "workspace:*",
+    "@tweenjs/tween.js": "^25.0.0"
   },
   "devDependencies": {
     "typescript": "^5.9.2",

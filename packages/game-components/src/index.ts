@@ -46,6 +46,29 @@ export { createDetachedRuntimeTransform2D } from "@game-editor/scene";
 export { createScriptContext } from "./script-context.js";
 export type { CreateScriptContextInput } from "./script-context.js";
 export { createScriptParticlesApi } from "./script-particles-api.js";
+export { createScriptTweenApi } from "./script-tween-api.js";
+export type {
+  TweenEaseName,
+  TweenNumeric,
+  TweenChannel,
+  TweenChannelValues,
+  TweenPlaybackOptions,
+  TweenVars,
+  TweenTarget,
+  TweenTimelinePosition,
+  ScriptTweenTimelineOptions,
+  TweenHandle,
+  TweenTimeline,
+  TweenPlayMode,
+  ScriptTweenApi,
+  ScriptTweenStart,
+} from "./tween-types.js";
+export {
+  DEFAULT_TWEEN_DURATION_SECONDS,
+  DEFAULT_TWEEN_EASE,
+  TWEEN_INFINITE_REPEAT,
+  isTweenEaseName,
+} from "./tween-types.js";
 export { NODE_POINTER_EVENTS, COMPONENT_ASSET_TYPES } from "./types.js";
 export { seededUnitFloat } from "@game-editor/shared";
 export {

@@ -22,6 +22,10 @@ import {
 } from "./clone-object.js";
 import { cloudComponent, installCloudRuntime } from "./cloud.js";
 import {
+  installTweenGalleryRuntime,
+  tweenGalleryComponent,
+} from "./tween-gallery.js";
+import {
   installUnitLogicRuntime,
   unitLogicComponent,
 } from "./unit-logic.js";
@@ -35,6 +39,7 @@ export function registerGameComponents(registry: ComponentRegistry): void {
   registry.register(cloneObjectComponent);
   registry.register(cloudComponent);
   registry.register(unitLogicComponent);
+  registry.register(tweenGalleryComponent);
 }
 
 /** Bus events for Inspector dynamicEnum source `busEvents`. */
@@ -58,6 +63,7 @@ export function installEditorFeaturesDemoRuntime(registry: ComponentRegistry): v
   installCloneObjectRuntime(registry);
   installCloudRuntime(registry);
   installUnitLogicRuntime(registry);
+  installTweenGalleryRuntime(registry);
 }
 
 /** Standard hook discovered by the editor via import.meta.glob. */
@@ -87,3 +93,8 @@ export {
   installUnitLogicRuntime,
   UnitLogicBehaviour,
 } from "./unit-logic.js";
+export {
+  tweenGalleryComponent,
+  installTweenGalleryRuntime,
+  TweenGalleryBehaviour,
+} from "./tween-gallery.js";

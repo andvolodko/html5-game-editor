@@ -4,6 +4,8 @@ import type {
   NodePointerEventName,
   ScriptPerformanceStats,
   ScriptRuntimeServices,
+  ScriptTweenStart,
+  ScriptTweenTimelineOptions,
 } from "@game-editor/game-components";
 import {
   findNodeByName,
@@ -31,6 +33,8 @@ import {
   createRuntimeScriptServices,
   type RuntimeScriptServiceHost,
 } from "./runtime-script-services.js";
+import { createTweenPoseSink } from "./tween-pose-sink.js";
+import { TweenRunner } from "./tween-runner.js";
 
 export type { RuntimeRendererRegistration };
 
@@ -68,6 +72,7 @@ export class GameRuntime implements RuntimeScriptServiceHost {
   private lastFrameDt = 0;
   private paused = false;
   private disposed = false;
+  private readonly tweens: TweenRunner;
   private performanceStats: ScriptPerformanceStats = {
     frameTimeMs: 0,
     fps: 0,
@@ -82,6 +87,7 @@ export class GameRuntime implements RuntimeScriptServiceHost {
   constructor(options: GameRuntimeOptions = {}) {
     this.bus = options.services?.bus ?? new EventBus();
     this.changeSceneHandler = options.services?.changeScene;
+    this.tweens = new TweenRunner(createTweenPoseSink(this));
     if (options.prefabs) {
       this.sceneHost.setPrefabCatalog(options.prefabs);
     }
@@ -189,6 +195,7 @@ export class GameRuntime implements RuntimeScriptServiceHost {
    * editor document). Reloading the same authored scene starts clean.
    */
   loadScene(scene: SceneData): void {
+    this.tweens.clear();
     this.disposed = false;
     this.nodeEvents.clear();
     const resolved = this.sceneHost.loadScene(structuredClone(scene));
@@ -230,6 +237,7 @@ export class GameRuntime implements RuntimeScriptServiceHost {
     if (this.disposed) {
       return;
     }
+    this.tweens.clear();
     this.scriptHost.clear();
     this.nodeEvents.clear();
     this.sceneHost.unload();
@@ -258,6 +266,7 @@ export class GameRuntime implements RuntimeScriptServiceHost {
     this.lastFrameDt = Math.max(0, dt);
     const startedMs = performance.now();
     this.scriptHost.tick(dt);
+    this.tweens.step(this.lastFrameDt);
     this.lastTickMs = performance.now() - startedMs;
   }
 
@@ -384,6 +393,22 @@ export class GameRuntime implements RuntimeScriptServiceHost {
 
   setNodeAlpha(nodeId: string, alpha: number): void {
     this.sceneHost.setNodeAlpha(nodeId, alpha);
+  }
+
+  startTween(request: ScriptTweenStart): string {
+    return this.tweens.start(request);
+  }
+
+  stopTween(tweenId: string): void {
+    this.tweens.stop(tweenId);
+  }
+
+  createTweenTimeline(options: ScriptTweenTimelineOptions): string {
+    return this.tweens.createTimeline(options);
+  }
+
+  stopTweenTimeline(timelineId: string): void {
+    this.tweens.stopTimeline(timelineId);
   }
 
   setNodeState(nodeId: string, stateIdOrName: string | null): void {
