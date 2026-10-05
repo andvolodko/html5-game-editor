@@ -6,7 +6,6 @@ import {
   createHitZoneNode,
   createNodeWithVisual,
   createSpriteNode,
-  spriteGizmoHitOutsets,
 } from "@game-editor/scene";
 import { Circle, Rectangle } from "pixi.js";
 import { PixiSceneRenderer } from "./pixi-scene-renderer.js";
@@ -46,10 +45,12 @@ describe("Pixi HitZone", () => {
     expect(container.hitArea).toBeUndefined();
     expect(visuals.hitArea).toBeInstanceOf(Rectangle);
 
-    const outset = spriteGizmoHitOutsets();
     const hit = visuals.hitArea as Rectangle;
-    expect(hit.width).toBeGreaterThanOrEqual(200 + outset.left + outset.right);
-    expect(hit.height).toBeGreaterThanOrEqual(80 + outset.top + outset.bottom);
+    // Sprite 64×64 sits inside the 200×80 HitZone; pick rect is that zone, not the gizmo.
+    expect(hit.x).toBeCloseTo(-100);
+    expect(hit.y).toBeCloseTo(-40);
+    expect(hit.width).toBeCloseTo(200);
+    expect(hit.height).toBeCloseTo(80);
 
     const overlay = renderer.getRuntimeHitZoneOverlay(node.id);
     expect(overlay?.visible).toBe(true);

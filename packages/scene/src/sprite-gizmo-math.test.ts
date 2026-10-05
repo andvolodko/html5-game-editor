@@ -10,12 +10,8 @@ import {
   sizeFromHandleDrag,
   sizeHandleCursor,
   scaleFromAxisDrag,
-  spriteGizmoHitOutsets,
-  SPRITE_GIZMO_HANDLE_HIT_EXTENT,
   SPRITE_GIZMO_MIN_SIZE,
   SPRITE_GIZMO_MIN_SCALE,
-  SPRITE_GIZMO_ROTATE_HIT_EXTENT,
-  SPRITE_GIZMO_ROTATE_OFFSET,
 } from "./sprite-gizmo-math.js";
 
 describe("sprite-gizmo-math", () => {
@@ -149,34 +145,5 @@ describe("sprite-gizmo-math", () => {
     );
     expect(delta.x).toBeCloseTo(-50, 5);
     expect(delta.y).toBeCloseTo(0, 5);
-  });
-
-  it("reports hit outsets that cover rotate and flip tools", () => {
-    const outset = spriteGizmoHitOutsets();
-    expect(outset.top).toBeGreaterThanOrEqual(SPRITE_GIZMO_ROTATE_OFFSET + SPRITE_GIZMO_ROTATE_HIT_EXTENT);
-    expect(outset.left).toBe(SPRITE_GIZMO_HANDLE_HIT_EXTENT);
-    expect(outset.right).toBe(SPRITE_GIZMO_HANDLE_HIT_EXTENT);
-    expect(outset.bottom).toBeGreaterThanOrEqual(SPRITE_GIZMO_HANDLE_HIT_EXTENT);
-  });
-
-  it("scales hit outsets with inverse camera zoom for screen-constant chrome", () => {
-    const zoomedIn = spriteGizmoHitOutsets(2);
-    expect(zoomedIn.top).toBeCloseTo(
-      (SPRITE_GIZMO_ROTATE_OFFSET + SPRITE_GIZMO_ROTATE_HIT_EXTENT) / 2,
-      5,
-    );
-    const zoomedOut = spriteGizmoHitOutsets(0.5);
-    expect(zoomedOut.left).toBeCloseTo(SPRITE_GIZMO_HANDLE_HIT_EXTENT * 2, 5);
-  });
-
-  it("scales hit outsets with inverse node scale so handles stay hittable", () => {
-    const scaledUp = spriteGizmoHitOutsets(1, { x: 3, y: 2 });
-    expect(scaledUp.left).toBeCloseTo(SPRITE_GIZMO_HANDLE_HIT_EXTENT / 3, 5);
-    expect(scaledUp.top).toBeCloseTo(
-      (SPRITE_GIZMO_ROTATE_OFFSET + SPRITE_GIZMO_ROTATE_HIT_EXTENT) / 2,
-      5,
-    );
-    const scaledDown = spriteGizmoHitOutsets(2, { x: 0.5, y: 0.5 });
-    expect(scaledDown.left).toBeCloseTo(SPRITE_GIZMO_HANDLE_HIT_EXTENT * 1, 5);
   });
 });

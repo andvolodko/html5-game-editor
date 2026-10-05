@@ -1,12 +1,9 @@
 import type { Container } from "pixi.js";
 import { getTilemap } from "@game-editor/scene";
 import type { PixiRuntimeGraph, RuntimeNode } from "./pixi-runtime-nodes.js";
-import { chromeHitBounds } from "./pixi-hit-zone-pick.js";
 import type { PixelGridOverlay } from "./pixel-grid.js";
 import type { ScreenGuidesOverlay } from "./screen-guides.js";
 import type { TilemapGridOverlay } from "./tilemap-grid-overlay.js";
-import { hitAreaFromBounds } from "./pixi-visual-hit-area.js";
-import { localScaleTowardAncestor } from "./pixi-chrome-scale.js";
 import {
   visibleWorldRect,
   type ViewportCameraState,
@@ -45,19 +42,9 @@ export function redrawEditorOverlays(host: EditorOverlaySyncHost): void {
     );
   }
   host.screenGuides?.redraw(cameraScale);
-  // Selection chrome + gizmo hit pads are screen-constant under zoom
-  // and node scale.
+  // Selection chrome is screen-constant under zoom. Node hit areas stay on
+  // the visual bounds and are not rewritten here.
   for (const runtime of host.graph.values()) {
-    if (
-      runtime.visualBounds &&
-      runtime.visualsRoot !== runtime.container
-    ) {
-      runtime.visualsRoot.hitArea = hitAreaFromBounds(
-        chromeHitBounds(runtime, runtime.visualBounds) ?? runtime.visualBounds,
-        cameraScale,
-        localScaleTowardAncestor(runtime.container, host.graph.world),
-      );
-    }
     if (host.getSelectedNodeIds().has(runtime.node.id)) {
       host.paintSelection(runtime);
     }

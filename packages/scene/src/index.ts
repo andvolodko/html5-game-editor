@@ -733,8 +733,6 @@ export {
 
   SPRITE_GIZMO_ANCHOR_HIT_EXTENT,
 
-  spriteGizmoHitOutsets,
-
 } from "./sprite-gizmo-math.js";
 
 export type {

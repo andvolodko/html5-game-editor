@@ -513,11 +513,7 @@ export class PixiNodePainter {
     if (runtime.container.destroyed || runtime.visualsRoot.destroyed) {
       return;
     }
-    runtime.visualsRoot.hitArea = hitAreaFromBounds(
-      bounds,
-      this.host.getCameraScale(),
-      localScaleTowardAncestor(runtime.container, this.host.graph.world),
-    );
+    runtime.visualsRoot.hitArea = hitAreaFromBounds(bounds);
   }
 
   private clearVisualsHitArea(runtime: RuntimeNode): void {

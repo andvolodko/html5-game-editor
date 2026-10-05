@@ -47,14 +47,15 @@ describe("ParticleEmitter editor picking", () => {
     expect(visuals.hitArea).toBeInstanceOf(Rectangle);
     const hit = visuals.hitArea as Rectangle;
     const expected = particleSpawnLocalBounds(visual);
-    expect(hit.width).toBeGreaterThanOrEqual(expected.width);
-    expect(hit.height).toBeGreaterThanOrEqual(expected.height);
-
+    expect(hit.width).toBeCloseTo(expected.width);
+    expect(hit.height).toBeCloseTo(expected.height);
     const widthAt1 = hit.width;
+    const heightAt1 = hit.height;
     renderer.setViewportScale(0.5);
     await flushPaint();
     const zoomed = visuals.hitArea as Rectangle;
-    expect(zoomed.width).toBeGreaterThan(widthAt1);
+    expect(zoomed.width).toBeCloseTo(widthAt1);
+    expect(zoomed.height).toBeCloseTo(heightAt1);
 
     await renderer.destroy();
   });

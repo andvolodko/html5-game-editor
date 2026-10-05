@@ -79,7 +79,7 @@ ParticleEmitterView → ParticleContainer + Particle (@game-editor/renderer-pixi
 ```
 
 Editor Scene picking uses the spawn volume (circle / rectangle / point) on
-`ParticleEmitterView`, plus camera-scaled hit padding on `visualsRoot`. Pixi
+`ParticleEmitterView`, and the same bounds as the `visualsRoot` hit area. Pixi
 `ParticleContainer` is not interactive and does not contribute `getBounds()`.
 Marquee pick tests those `hitArea`s through the preview-camera world transform
 so zoom/pan stay aligned with the pointer.

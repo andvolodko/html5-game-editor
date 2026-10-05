@@ -3,7 +3,6 @@ import {
   createContainerNode,
   createSpriteNode,
   getTransform2D,
-  spriteGizmoHitOutsets,
 } from "@game-editor/scene";
 import { Container, Rectangle } from "pixi.js";
 import { PixiSceneRenderer } from "./pixi-scene-renderer.js";
@@ -76,12 +75,11 @@ describe("Pixi container selection gizmo", () => {
 
     const visuals = renderer.getRuntimeVisualsRoot(group.id)!;
     expect(visuals.hitArea).toBeInstanceOf(Rectangle);
-    const outset = spriteGizmoHitOutsets();
     const hit = visuals.hitArea as Rectangle;
-    expect(hit.x).toBeCloseTo(-32 - outset.left, 5);
-    expect(hit.y).toBeCloseTo(-32 - outset.top, 5);
-    expect(hit.width).toBeCloseTo(164 + outset.left + outset.right, 5);
-    expect(hit.height).toBeCloseTo(64 + outset.top + outset.bottom, 5);
+    expect(hit.x).toBeCloseTo(-32, 5);
+    expect(hit.y).toBeCloseTo(-32, 5);
+    expect(hit.width).toBeCloseTo(164, 5);
+    expect(hit.height).toBeCloseTo(64, 5);
     expect(renderer.getRuntimeContainer(group.id)!.hitArea).toBeUndefined();
     expect(
       renderer.getRuntimeChildrenRoot(group.id)!.interactiveChildren,

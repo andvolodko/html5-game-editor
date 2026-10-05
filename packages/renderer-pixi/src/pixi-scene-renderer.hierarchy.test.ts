@@ -7,7 +7,6 @@ import {
   createSpriteNode,
   createTextComponent,
   createTransform2D,
-  spriteGizmoHitOutsets,
 } from "@game-editor/scene";
 import { Rectangle } from "pixi.js";
 import { PixiSceneRenderer } from "./pixi-scene-renderer.js";
@@ -94,12 +93,11 @@ describe("PixiSceneRenderer incremental hierarchy", () => {
     expect(parentContainer.hitArea).toBeUndefined();
     expect(parentVisuals.hitArea).toBeInstanceOf(Rectangle);
 
-    const outset = spriteGizmoHitOutsets();
     const parentHit = parentVisuals.hitArea as Rectangle;
-    expect(parentHit.x).toBe(-32 - outset.left);
-    expect(parentHit.y).toBe(-32 - outset.top);
-    expect(parentHit.width).toBe(64 + outset.left + outset.right);
-    expect(parentHit.height).toBe(64 + outset.top + outset.bottom);
+    expect(parentHit.x).toBe(-32);
+    expect(parentHit.y).toBe(-32);
+    expect(parentHit.width).toBe(64);
+    expect(parentHit.height).toBe(64);
 
     // Child still has its own visuals hitArea and is outside the parent's visual rect.
     expect(childContainer.hitArea).toBeUndefined();
